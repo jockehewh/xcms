@@ -1,0 +1,20 @@
+{
+  "name": "bestisback",
+  "version": "1.0.0",
+  "description": "xcms",
+  "main": "xcms.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "js"
+  ],
+  "author": "X",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.5.1",
+    "mongodb": "^3.0.7",
+    "mongoose": "^5.0.17",
+    "ws": "^5.1.1"
+  }
+}

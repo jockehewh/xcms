@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Creative side</title>
+    <link rel="stylesheet" href="./admin-site/xcms.css">
+</head>
+<body>
+    <div class="genesis-pop">
+        <!--Master titre maker-->
+        <div id="options-select">
+            <ul>
+                <li><a href="#" data-size="3">moyen (h3)</a></li>
+                <li><a href="#" data-size="4">casi cormal (h4)</a></li>
+                <li><a href="#" data-size="2">grand (h2)</a></li>
+                <li><a href="#" data-size="1">tres grand (h1)</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="genesis-popd">
+        <!--Master menu maker-->
+            <div id="options-selectd">
+                <ul>
+                    <li><a href="#" data-size="5">5 options</a></li>
+                    <li><a href="#" data-size="4">4 options</a></li>
+                    <li><a href="#" data-size="3">3 options</a></li>
+                    <li><a href="#" data-size="2">2 options</a></li>
+                </ul>
+            </div>
+        </div>
+    <main>
+        <div class="first-class">
+            <!--Master page maker-->
+            <input type="file" accept="image" id="imgpiker">
+            <div class="edit-zone">
+                <style scoped>
+                    .genesis-div, .genesis-img, .genesis-menu, .genesis-p, .genesis-titre{padding: 10px}
+                    .genesis-menu{
+                    list-style-type: none;
+                    color: black;
+                    }
+                    .genesis-menu li{
+                        display: inline;
+                        margin: 5%;
+                    }
+                    .genesis-div{
+                        width:100%;
+                        display:block;
+                    }
+                    .genesis-img{
+                        display:block;
+                        height: 250px;
+                        width: 350px;
+                    }
+                    .genesis-p{
+                        display:block;
+                    }
+                    .genesis-titre{
+                        display:block;
+                        color: var(--orange-pale)
+                    }
+                    .nav-menu{
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .nav-item{
+                        list-style-type: none;
+                        text-transform: uppercase;
+                    }
+                </style>
+                <nav><ul class="nav-menu">
+
+                </ul></nav>
+            </div>
+            <div class="maFrame">
+                
+            </div>
+        </div>
+        <div class="first-class-editor">
+            <section id="nodemaker">
+                <input id="titrepage" type="text" placeholder="nom de la nouvelle page">
+                <ul>
+                    <li><a href="#" data-demande="div">div</a></li>
+                    <li><a href="#" data-demande="texte">texte</a></li>
+                    <li><a href="#" data-demande="image">image</a></li>
+                    <li><a href="#" data-demande="titre">titre</a></li>
+                    <li><a href="#" data-demande="menu">menu</a></li>
+                    <li><a href="#" data-demande="video">video</a></li>
+                </ul>
+                <div>
+                    <p>editables.</p>
+                    <ul class="editables">
+                        
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <input type="radio" id="colorbox" name="color" value='back'> Couleur de fond: <br>
+                <input type="radio" id="colorbox" name="color" value='text'> Couleur du text: <br>
+                <input type="color" name="color-picker" id="color-picker">
+            </section>
+            <section>
+                <textarea name="contenuText" id="contenuCouleur" cols="30" rows="10"></textarea>
+                <a data-demande="hypertxt">apply</a>
+            </section>
+            <section>
+                <button id="crepage">VALIDER</button>
+                <button id="crenew">Creer page</button>
+                <div>
+                    <p style="border: solid red 3px">va être éditer</p>
+                    <p style="border: solid orange 3px">contiendra le prochain élément</p>
+                </div>
+            </section>
+        </div>
+    </main>
+<script>
+        /* 
+            CONNEXION EN WEBSOCKET 0 REFERMER
+        */
+        var mews = new WebSocket('ws://localhost:9898');
+        var crepage = document.querySelector('#crepage');
+        var jss = JSON.stringify
+        var jsp = JSON.parse
+        const pushToDom = document.querySelector('.edit-zone').appendChild
+        var titre, contenu, nouvellepage;
+        mews.onopen = ()=>{
+            console.log('connected')
+            crepage.addEventListener('click', e =>{
+                var imgs = document.querySelectorAll('img');
+                    console.log(imgs[0])
+                    var i = imgs.length-1
+                while ( i>=0 ){
+                    imgs[i].src = './imgs/'+titresImgs[i];
+                    i--
+                }
+                e.preventDefault();
+                titre = document.querySelector('#titrepage').value;
+                contenu = `<!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                    <title>${titre}</title>
+                    </head><body>
+                        ${document.querySelector('.edit-zone').innerHTML}
+                        </body></html>`
+                if(titre === "" || titre === undefined){
+                    titre = prompt("comment s'appelera la page que vous souhaitez envoyé")
+                }
+                nouvellepage = {titre, contenu}
+                mews.send(jss(nouvellepage))
+                var allnodes = document.querySelector('.edit-zone').childNodes
+                var j = allnodes.length
+                while( j>2 ){
+                    document.querySelector('.edit-zone').lastChild.remove()
+                    j--
+                }
+            })
+        }
+        mews.onmessage = (data)=>{
+            parsed = jsp(data.data)
+            if(parsed.lien && parsed.lien !== ""){
+                var li = document.createElement('li');
+                var a = document.createElement('a');
+                a.href = '#'
+                a.innerHTML = '/client-site/'+parsed.lien
+                li.appendChild(a);
+                a.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    myframe = document.querySelector('.maFrame')
+                    if(document.querySelector('iframe') !== null){
+                        document.querySelector('iframe').remove()
+                    }
+                    var theframe = document.createElement('iframe')
+                    if(e.target.innerText !== undefined){
+                        theframe.src = window.location.origin+e.target.innerText
+                    }
+                    myframe.appendChild(theframe)
+                    document.querySelector('iframe').addEventListener('click', (e)=>{console.log(e.target)})
+                    document.querySelector('.edit-zone').style.display = 'none'
+                }, false)
+                document.querySelector('.editables').appendChild(li)
+                li = a = ""
+                li = document.createElement('li');
+                a = document.createElement('a');
+                a.href = '/client-site/'+parsed.lien 
+                a.innerText = parsed.lien.slice(0, -5);
+                li.classList.add('nav-item');
+                li.appendChild(a)
+                document.querySelector('.nav-menu').appendChild(li)
+            }
+        }
+        /* 
+        CREATION DEZS ELEMENTS
+        */
+        /* 
+            elements creation
+        */
+       var titresImgs = []
+        document.querySelectorAll('.first-class-editor a').forEach((btn)=>{
+            btn.addEventListener('click', (e)=>{
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if(document.querySelector('iframe') !== null){
+                    document.querySelector('iframe').remove()
+                    document.querySelector('.edit-zone').style.display = 'block'
+                }
+                switch(e.target.dataset.demande){
+                    case 'div':
+                    document.querySelectorAll('#isActive').forEach(active =>{
+                    active.id = ''
+                })
+                        var div = document.createElement('div')
+                        div.id = 'isActive'
+                        div.classList.add('genesis-div')
+                        if(document.querySelector('#isContainer') !== null){
+                            document.querySelector('#isContainer').appendChild(div)
+                            document.querySelector('#isContainer').classList.add('not-empty-container')
+                        }
+                        if(document.querySelector('#isContainer') === null){
+                            document.querySelector('.edit-zone').appendChild(div)
+                        }
+                    break;
+                    case 'image':
+                    document.querySelectorAll('#isActive').forEach(active =>{
+                    active.id = ''
+                })
+                        var imgpicker = document.querySelector('#imgpiker');
+                        var img = document.createElement('img');
+                        img.id ='isActive'
+                        img.classList.add('genesis-img')
+                        if(document.querySelector('#isContainer') !== null){
+                            document.querySelector('#isContainer').appendChild(img)
+                            document.querySelector('#isContainer').classList.add('not-empty-container')
+                        }
+                        if(document.querySelector('#isContainer') === null){
+                            document.querySelector('.edit-zone').appendChild(img)
+                        }
+                        imgpicker.style.display = 'block'
+                        imgpicker.addEventListener('click', e=>{
+                            imgpicker.addEventListener('change', e=>{
+                                var type = {type: imgpicker.files[0].type}
+                                var file0 = imgpicker.files[0];
+                                mews.send(jss({name: file0.name, type: type.type}))
+                                mews.send(file0)
+                                img.src = window.URL.createObjectURL(file0)
+                                img.onload = function(){
+                                    console.log(this.src)
+                                window.URL.revokeObjectURL(this.src)
+                                img = ""
+                                }
+                                titresImgs.push(file0.name)
+                            })
+                            imgpicker.style.display = 'none'
+                        })
+                    break;
+                    case 'texte':
+                    document.querySelectorAll('#isActive').forEach(active =>{
+                    active.id = ''
+                })
+                        var pé = document.createElement('p');
+                        pé.id = "isActive"
+                        pé.classList.add('genesis-p')
+                        if(document.querySelector('#isContainer') !== null){
+                            document.querySelector('#isContainer').appendChild(pé)
+                            document.querySelector('#isContainer').classList.add('not-empty-container')
+                        }
+                        if(document.querySelector('#isContainer') === null){
+                            document.querySelector('.edit-zone').appendChild(pé)
+                        }
+                        document.querySelector('textarea').focus();
+                    break;
+                    case 'titre':
+                    document.querySelectorAll('#isActive').forEach(active =>{
+                    active.id = ''
+                })
+                    var headerVal;
+                        document.querySelector('.genesis-pop').style.display = 'flex'
+                        document.querySelectorAll('#options-select a').forEach(as =>{
+                            //defini la grandeur du Titre
+                                as.addEventListener('click', e =>{
+                                    e.stopImmediatePropagation()
+                                    headerVal = e.target.dataset.size
+                                    var titre = document.createElement(`h${headerVal}`)
+                                    titre.id = "isActive"
+                                    titre.classList.add('genesis-titre');
+                                    if(document.querySelector('#isContainer') !== null){
+                                        document.querySelector('#isContainer').appendChild(titre)
+                                        document.querySelector('#isContainer').classList.add('not-empty-container')
+                                    }else{
+                                        document.querySelector('.edit-zone').appendChild(titre)
+                                    }
+                                    document.querySelector('.genesis-pop').style.display = 'none'
+                                    document.querySelector('textarea').focus();
+                                })
+                            })
+                    break;
+                    case 'video':
+
+                    break;
+                    case 'menu':
+                    document.querySelectorAll('#isActive').forEach(active =>{
+                    active.id = ''
+                })
+                    var menuSize;
+                        document.querySelector('.genesis-popd').style.display = 'flex'
+                        document.querySelectorAll('#options-selectd a').forEach(as =>{
+                            //defini la longueur du menu
+                                as.addEventListener('click', e =>{
+                                    e.stopImmediatePropagation()
+                                    var ul = document.createElement('ul');
+                                    menuSize = 0
+                                    while(menuSize < Number(e.target.dataset.size)){
+                                        var li = document.createElement('li');
+                                        var alink = document.createElement('a');
+                                        alink.href = "#"
+                                        var titrelien = prompt("choisissez un titre pour le lien n°"+(menuSize+1)+"/"+Number(e.target.dataset.size)+":")
+                                        alink.innerText = titrelien
+                                        alink.id = "isActive"
+                                        li.appendChild(alink);
+                                        ul.appendChild(li);
+                                        ul.classList.add('genesis-menu')
+                                        alink.id = ""
+                                        menuSize++
+                                    }
+                                    menuSize = 0
+                                    if(document.querySelector('#isContainer') !== null){
+                                        document.querySelector('#isContainer').appendChild(ul)
+                                        document.querySelector('#isContainer').classList.add('not-empty-container')
+                                    }else{
+                                        document.querySelector('.edit-zone').appendChild(ul)
+                                    }
+                                    document.querySelector('.genesis-popd').style.display = 'none'
+                                    document.querySelector('textarea').focus();
+                                })
+                            })
+                    break;
+                    case 'hypertxt':
+                            var isActive = document.querySelector('#isActive')
+                            isActive.innerHTML = document.querySelector('textarea').value
+                            isActive.id = ""
+                            isActive = ""
+                            document.querySelector('textarea').value = ""
+                            document.querySelector('textarea').focus();
+                    break;
+                }
+                
+            })
+        })
+            //***************LIVE ON PAGE LIVE
+        document.querySelector('.edit-zone').addEventListener('click', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            if(e.target.id === "isActive"){
+                e.target.id = ""
+            }else{
+                e.target.id = "isActive"
+            }
+        })
+        document.querySelector('.edit-zone').addEventListener('dblclick', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            if(e.target.id === "isContainer"){
+                e.target.id = ""
+            }else{
+                e.target.id = "isContainer"
+            }
+        })
+            //******************CREATION DE PAGE
+            document.querySelector('#crenew').addEventListener('click', (e)=>{
+                e.preventDefault();
+                document.querySelector('.edit-zone').innerHTML = ""
+                document.querySelector('iframe').remove()
+                document.querySelector('.edit-zone').style.display = "block"
+            })
+</script>
+<script>
+    document.querySelector('#color-picker').addEventListener('change', (e)=>{
+        console.log(e.target.value)
+        document.querySelectorAll('#colorbox').forEach(colorBox=>{
+            if(colorBox.checked && colorBox.value === "back"){
+                if(document.querySelector('#isActive') !== null){
+                    document.querySelector('#isActive').style.backgroundColor = e.target.value
+                }
+                if(document.querySelector('#isContainer') !== null){
+                    document.querySelector('#isContainer').style.backgroundColor = e.target.value
+                }
+            }
+            if(colorBox.checked && colorBox.value === "text"){
+                if(document.querySelector('#isActive') !== null){
+                    document.querySelector('#isActive').style.color = e.target.value
+                }
+                if(document.querySelector('#isContainer') !== null){
+                    document.querySelector('#isContainer').style.color = e.target.value
+                }
+            }
+        })
+    })
+
+</script>
+</body>
+</html>

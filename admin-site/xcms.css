@@ -1,0 +1,126 @@
+/* 
+    couleurs:
+    #ef5350 rouge brique pale
+    #ff5252 rouge brick eclatant
+    #5c6bc0 bleu indigo leger
+    #536dfe bleu indigo eclatant
+    #e64a19 orange pale 
+    #cfd8dc bleu gris clair
+    #1de9b6 teal bleu special
+*/
+#isActive{
+    border: solid 3px red;
+}
+*{margin:0; padding:0; user-select: none;
+    --rouge-brick-pale: #ef5350;
+    --rouge-brique-eclatant: #ff5252;
+    --bleu-indigo-leger: #5c6bc0;
+    --bleu-indigo-eclatant: #536dfe;
+    --orange-pale: #e64a19;
+    --bleu-gris-clair: #cfd8dc;
+    --teal-bleu-special: #1de9b6;
+}
+body{
+    height: 100vh;
+    width:100vw;
+    overflow-x:hidden;
+}
+#imgpiker{
+    display:none;
+}
+main{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    height: inherit;
+    width: inherit;
+}
+.first-class{
+    grid-column: 1/3;
+    padding: 90px 90px 0 90px;
+}
+.edit-zone{
+    border: dotted var(--rouge-brick-pale) 1px;
+}
+.first-class-editor{
+    grid-column: 3;
+    height: inherit;
+}
+section{
+    height: 25%;
+}
+.genediv{
+    height: 10vh;
+}
+.genesis-pop{
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    background-color: #000;
+    top:0;
+    left:0;
+    display:none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    opacity: 0.7;
+}
+.genesis-popd{
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    background-color: #000;
+    top:0;
+    left:0;
+    display:none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    opacity: 0.7;
+}
+#options-select, #options-selectd{
+    opacity: 1;
+    height: 250px;
+    width: 250px;
+    list-style-type: none;
+    background-color: #fff;
+}
+#options-select ul, #options-selectd ul{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+    
+#options-select ul li, #options-selectd ul li{
+    list-style-type: none;
+    display: inline;
+}
+/* .genesis-menu{
+    list-style-type: none;
+    color: black;
+}
+.genesis-menu li{
+    display: inline;
+    margin: 5%;
+}
+.genesis-div{
+    display:block;
+}
+.genesis-img{
+    display:block;
+    height: 250px;
+    width: 350px;
+}
+.genesis-p{
+    display:block;
+}
+.genesis-titre{
+    display:block;
+} */
+iframe{
+    height: 100vh;
+    width: 100%;
+    overflow: scroll;
+}
+#isContainer{
+    border: solid 3px orange;
+}
