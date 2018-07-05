@@ -35,6 +35,8 @@
             <!--Master page maker-->
             <input type="file" accept="image" id="imgpiker">
             <div class="edit-zone">
+                <link rel="stylesheet" href="./admin-site/onepage.css">
+                <link rel="stylesheet" href="./admin-site/multipage.css">
                 <style scoped>
                     .genesis-div, .genesis-img, .genesis-menu, .genesis-p, .genesis-titre{padding: 10px}
                     .genesis-menu{
@@ -82,38 +84,47 @@
         </div>
         <div class="first-class-editor">
             <section id="nodemaker">
+                <label><input type="radio" id="designer" name="designer" value="single" checked> Site une page </label><br>
+                <label><input type="radio" id="designer" name="designer" value="multiple"> Site multipage </label><br>
                 <input id="titrepage" type="text" placeholder="nom de la nouvelle page">
                 <ul>
-                    <li><a href="#" data-demande="div">div</a></li>
+                    <li><a href="#" data-demande="header">header</a></li>
+                    <li><a href="#" data-demande="footer">footer</a></li>
+                    <li><a href="#" data-demande="div">section</a></li>
+                    <li><a href="#" data-demande="menu">menu</a></li>
                     <li><a href="#" data-demande="texte">texte</a></li>
                     <li><a href="#" data-demande="image">image</a></li>
                     <li><a href="#" data-demande="titre">titre</a></li>
-                    <li><a href="#" data-demande="menu">menu</a></li>
                     <li><a href="#" data-demande="video">video</a></li>
                 </ul>
-                <div>
-                    <p>editables.</p>
-                    <ul class="editables">
-                        
-                    </ul>
+                <div class="colors">
+                    <label id="fond">
+                        <input type="radio" id="colorbox" name="color" value='back'> Couleur de fond: <br>
+                    </label>
+                    <label id="texte">
+                            <input type="radio" id="colorbox" name="color" value='text'> Couleur du text: <br>
+                        </label>
+                    <input type="color" name="color-picker" id="color-picker">
                 </div>
-            </section>
-            <section>
-                <input type="radio" id="colorbox" name="color" value='back'> Couleur de fond: <br>
-                <input type="radio" id="colorbox" name="color" value='text'> Couleur du text: <br>
-                <input type="color" name="color-picker" id="color-picker">
-            </section>
-            <section>
-                <textarea name="contenuText" id="contenuCouleur" cols="30" rows="10"></textarea>
-                <a data-demande="hypertxt">apply</a>
+                <div>
+                    légende: 
+                    <p style="border: solid red 3px">va être éditer</p>
+                    <p style="border: solid orange 3px">contiendra le prochain élément</p>
+                </div>
             </section>
             <section>
                 <button id="crepage">VALIDER</button>
                 <button id="crenew">Creer page</button>
-                <div>
-                    <p style="border: solid red 3px">va être éditer</p>
-                    <p style="border: solid orange 3px">contiendra le prochain élément</p>
-                </div>
+            </section>
+            <!--<section>
+                <textarea name="contenuText" id="contenuCouleur" cols="30" rows="10"></textarea>
+                <a data-demande="hypertxt">apply</a>
+            </section>-->
+            <section>
+                <p>editables.</p>
+                <ul class="editables">
+                    
+                </ul>
             </section>
         </div>
     </main>
@@ -212,6 +223,36 @@
                     document.querySelector('.edit-zone').style.display = 'block'
                 }
                 switch(e.target.dataset.demande){
+                    case 'header':
+                    document.querySelectorAll('#isActive').forEach(active =>{
+                    active.id = ''
+                })
+                        var header = document.createElement('header')
+                        header.id = 'isActive'
+                        header.classList.add('genesis-header')
+                        if(document.querySelector('#isContainer') !== null){
+                            document.querySelector('#isContainer').appendChild(header)
+                            document.querySelector('#isContainer').classList.add('not-empty-container')
+                        }
+                        if(document.querySelector('#isContainer') === null){
+                            document.querySelector('.edit-zone').appendChild(header)
+                        }
+                    break;
+                    case 'footer':
+                    document.querySelectorAll('#isActive').forEach(active =>{
+                    active.id = ''
+                })
+                        var footer = document.createElement('footer')
+                        footer.id = 'isActive'
+                        footer.classList.add('genesis-footer')
+                        if(document.querySelector('#isContainer') !== null){
+                            document.querySelector('#isContainer').appendChild(footer)
+                            document.querySelector('#isContainer').classList.add('not-empty-container')
+                        }
+                        if(document.querySelector('#isContainer') === null){
+                            document.querySelector('.edit-zone').appendChild(footer)
+                        }
+                    break;
                     case 'div':
                     document.querySelectorAll('#isActive').forEach(active =>{
                     active.id = ''
@@ -267,6 +308,7 @@
                         var pé = document.createElement('p');
                         pé.id = "isActive"
                         pé.classList.add('genesis-p')
+                        pé.setAttribute('contenteditable', true)
                         if(document.querySelector('#isContainer') !== null){
                             document.querySelector('#isContainer').appendChild(pé)
                             document.querySelector('#isContainer').classList.add('not-empty-container')
@@ -274,7 +316,7 @@
                         if(document.querySelector('#isContainer') === null){
                             document.querySelector('.edit-zone').appendChild(pé)
                         }
-                        document.querySelector('textarea').focus();
+                        
                     break;
                     case 'titre':
                     document.querySelectorAll('#isActive').forEach(active =>{
@@ -289,6 +331,8 @@
                                     headerVal = e.target.dataset.size
                                     var titre = document.createElement(`h${headerVal}`)
                                     titre.id = "isActive"
+                                    titre.setAttribute('contenteditable', true)
+                                    titre.innerText = "Cliquer ici pour éditer le titre"
                                     titre.classList.add('genesis-titre');
                                     if(document.querySelector('#isContainer') !== null){
                                         document.querySelector('#isContainer').appendChild(titre)
@@ -297,7 +341,22 @@
                                         document.querySelector('.edit-zone').appendChild(titre)
                                     }
                                     document.querySelector('.genesis-pop').style.display = 'none'
-                                    document.querySelector('textarea').focus();
+                                    titre.onblur = e=>{
+                                        console.log(e)
+                                        if(e.target.hasAttribute('lien')){
+                                            return
+                                        }else{
+                                            var lien = e.target.innerText
+                                            var lienoulien = confirm(e.target.innerText+ ' sera-t-il la cible d\'un lien?')
+                                            if(lienoulien === true){
+                                                titre.setAttribute('lien', true)
+                                                titre.classList.add('lien')
+                                            }else{
+                                                titre.setAttribute('lien', false)
+                                            }
+                                        }
+                                        
+                                    }
                                 })
                             })
                     break;
@@ -312,6 +371,10 @@
                         document.querySelector('.genesis-popd').style.display = 'flex'
                         document.querySelectorAll('#options-selectd a').forEach(as =>{
                             //defini la longueur du menu
+                            /* 
+                                documenter : sequence de création et l'édition 
+                                double click pour éditer une section
+                            */
                                 as.addEventListener('click', e =>{
                                     e.stopImmediatePropagation()
                                     var ul = document.createElement('ul');
@@ -319,8 +382,8 @@
                                     while(menuSize < Number(e.target.dataset.size)){
                                         var li = document.createElement('li');
                                         var alink = document.createElement('a');
-                                        alink.href = "#"
-                                        var titrelien = prompt("choisissez un titre pour le lien n°"+(menuSize+1)+"/"+Number(e.target.dataset.size)+":")
+                                        var titrelien = prompt("choisissez la direction du lien n°"+(menuSize+1)+"/"+Number(e.target.dataset.size)+":")
+                                        alink.href = "#" + titrelien
                                         alink.innerText = titrelien
                                         alink.id = "isActive"
                                         li.appendChild(alink);
@@ -337,7 +400,7 @@
                                         document.querySelector('.edit-zone').appendChild(ul)
                                     }
                                     document.querySelector('.genesis-popd').style.display = 'none'
-                                    document.querySelector('textarea').focus();
+                                    
                                 })
                             })
                     break;
@@ -347,7 +410,7 @@
                             isActive.id = ""
                             isActive = ""
                             document.querySelector('textarea').value = ""
-                            document.querySelector('textarea').focus();
+                            
                     break;
                 }
                 
@@ -356,12 +419,17 @@
             //***************LIVE ON PAGE LIVE
         document.querySelector('.edit-zone').addEventListener('click', function(e){
             e.preventDefault();
-            e.stopPropagation();
-            if(e.target.id === "isActive"){
-                e.target.id = ""
-            }else{
-                e.target.id = "isActive"
+            e.stopImmediatePropagation();
+            if(e.target.getAttribute('contenteditable') === "false" || e.target.getAttribute('contenteditable') === null){
+                if(e.target.id === "isActive"){
+                    e.target.id = ""
+                }else{
+                    e.target.id = "isActive"
+                }
+            }else if(e.target.getAttribute('contenteditable') === "true"){
+                return
             }
+            
         })
         document.querySelector('.edit-zone').addEventListener('dblclick', function(e){
             e.preventDefault();
@@ -381,6 +449,30 @@
             })
 </script>
 <script>
+    var singlecss = document.styleSheets[1].cssRules
+    var multiplecss = document.styleSheets[2].cssRules
+    document.querySelectorAll('#designer').forEach(designer =>{
+        designer.addEventListener('change', e=>{
+            var i =0
+            console.log(e.target)
+            if(e.target.value === 'single'){
+                var styleEmbarque = document.querySelector('.edit-zone style')
+                styleEmbarque.innerText = ''
+                while (i < document.styleSheets[1].cssRules.length){
+                    styleEmbarque.innerText += singlecss[i].cssText
+                    i++
+                }
+            }
+            if(e.target.value === 'multiple'){
+                var styleEmbarque = document.querySelector('.edit-zone style')
+                styleEmbarque.innerText = ''
+                while (i < document.styleSheets[2].cssRules.length){
+                    styleEmbarque.innerText += multiplecss[i].cssText
+                    i++
+                }
+            }
+        })
+    })
     document.querySelector('#color-picker').addEventListener('change', (e)=>{
         console.log(e.target.value)
         document.querySelectorAll('#colorbox').forEach(colorBox=>{

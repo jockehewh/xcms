@@ -43,6 +43,7 @@ xcms.listen(9899,()=>{
         this.isAlive = true;
     }
     xcmsWs.on('connection', (peer)=>{
+        console.log(peer)
         peer.isAlive = true;
         peer.on('pong', heartbeat)
         fs.readdir('./client-site', (err, fil)=>{
@@ -91,5 +92,4 @@ xcms.listen(9899,()=>{
             }
         })
     })
-    
 })
