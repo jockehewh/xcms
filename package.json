@@ -13,8 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "koa": "^2.5.1",
-    "mongodb": "^3.0.7",
-    "mongoose": "^5.0.17",
+    "lokijs": "^1.5.5",
     "ws": "^5.1.1"
   }
 }

@@ -47,6 +47,9 @@
                         display: inline;
                         margin: 5%;
                     }
+                    .genesis-header{
+                        min-height: 50px;
+                    }
                     .genesis-div{
                         width:100%;
                         display:block;
@@ -230,6 +233,7 @@
                         var header = document.createElement('header')
                         header.id = 'isActive'
                         header.classList.add('genesis-header')
+                        header.innerText = prompt('Valeur du titre:')
                         if(document.querySelector('#isContainer') !== null){
                             document.querySelector('#isContainer').appendChild(header)
                             document.querySelector('#isContainer').classList.add('not-empty-container')
@@ -316,7 +320,6 @@
                         if(document.querySelector('#isContainer') === null){
                             document.querySelector('.edit-zone').appendChild(pé)
                         }
-                        
                     break;
                     case 'titre':
                     document.querySelectorAll('#isActive').forEach(active =>{
@@ -364,9 +367,7 @@
 
                     break;
                     case 'menu':
-                    document.querySelectorAll('#isActive').forEach(active =>{
-                    active.id = ''
-                })
+                    document.querySelectorAll('#isActive').forEach(active =>{active.id = ''})
                     var menuSize;
                         document.querySelector('.genesis-popd').style.display = 'flex'
                         document.querySelectorAll('#options-selectd a').forEach(as =>{
@@ -400,7 +401,6 @@
                                         document.querySelector('.edit-zone').appendChild(ul)
                                     }
                                     document.querySelector('.genesis-popd').style.display = 'none'
-                                    
                                 })
                             })
                     break;
@@ -410,7 +410,6 @@
                             isActive.id = ""
                             isActive = ""
                             document.querySelector('textarea').value = ""
-                            
                     break;
                 }
                 
@@ -429,7 +428,6 @@
             }else if(e.target.getAttribute('contenteditable') === "true"){
                 return
             }
-            
         })
         document.querySelector('.edit-zone').addEventListener('dblclick', function(e){
             e.preventDefault();
@@ -440,15 +438,16 @@
                 e.target.id = "isContainer"
             }
         })
-            //******************CREATION DE PAGE
-            document.querySelector('#crenew').addEventListener('click', (e)=>{
-                e.preventDefault();
-                document.querySelector('.edit-zone').innerHTML = ""
-                document.querySelector('iframe').remove()
-                document.querySelector('.edit-zone').style.display = "block"
-            })
+        //******************CREATION DE PAGE
+        document.querySelector('#crenew').addEventListener('click', (e)=>{
+            e.preventDefault();
+            document.querySelector('.edit-zone').innerHTML = ""
+            document.querySelector('iframe').remove()
+            document.querySelector('.edit-zone').style.display = "block"
+        })
 </script>
 <script>
+    // AFFICHAGE
     var singlecss = document.styleSheets[1].cssRules
     var multiplecss = document.styleSheets[2].cssRules
     document.querySelectorAll('#designer').forEach(designer =>{
@@ -494,7 +493,6 @@
             }
         })
     })
-
 </script>
 </body>
 </html>
