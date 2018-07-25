@@ -142,15 +142,17 @@
         var jsp = JSON.parse
         const pushToDom = document.querySelector('.edit-zone').appendChild
         var titre, contenu, nouvellepage;
+        var imgpicker = document.querySelector('#imgpiker');
         mews.onopen = ()=>{
             console.log('connected')
             crepage.addEventListener('click', e =>{
                 var imgs = document.querySelectorAll('img');
                     console.log(imgs[0])
-                    var i = imgs.length-1
-                while ( i>=0 ){
+                    var i = 0
+                while ( i<= imgs.length){
+                    console.log(imgs[i])
                     imgs[i].src = './imgs/'+titresImgs[i];
-                    i--
+                    i++
                 }
                 document.querySelector('.edit-zone').querySelectorAll('link').forEach(link=>{
                     link.remove()
@@ -193,7 +195,7 @@
                     document.querySelector('.edit-zone').lastChild.remove()
                     j--
                 }
-            })
+            }, false)
         }
         mews.onmessage = (data)=>{
             parsed = jsp(data.data)
@@ -235,6 +237,7 @@
             elements creation
         */
        var titresImgs = []
+       var pushCount = 0
         document.querySelectorAll('.first-class-editor a').forEach((btn)=>{
             btn.addEventListener('click', (e)=>{
                 e.preventDefault();
@@ -307,21 +310,32 @@
                             document.querySelector('.edit-zone').appendChild(img)
                         }
                         imgpicker.style.display = 'block'
-                        imgpicker.addEventListener('click', e=>{
-                            imgpicker.addEventListener('change', e=>{
+                        var imgpicklone = document.createElement('input');
+                            imgpicklone.setAttribute('type', 'file')
+                            imgpicklone.setAttribute('accept', 'image')
+                            imgpicklone.id = 'imgpiker'
+                            imgpicklone.style.display = 'none'
+                            imgpicker.addEventListener('change', function(ev){
+                                ev.stopPropagation()
+                                pushCount++
+                                console.log(pushCount)
+                                console.log(ev.eventPhase)
+                                console.log(ev.target, ev.currentTarget, ev)
                                 var type = {type: imgpicker.files[0].type}
                                 var file0 = imgpicker.files[0];
+                                titresImgs.push(file0.name)
+                                imgpicker.replaceWith(imgpicklone);
                                 mews.send(jss({name: file0.name, type: type.type}))
                                 mews.send(file0)
                                 img.src = window.URL.createObjectURL(file0)
-                                img.onload = function(){
+                                img.onload = function(eve){
                                 window.URL.revokeObjectURL(this.src)
                                 img = ""
+                                imgpicker.style.display = 'none'
                                 }
-                                titresImgs.push(file0.name)
-                            })
-                            imgpicker.style.display = 'none'
-                        })
+                            },false)
+                            
+
                     break;
                     case 'texte':
                     document.querySelectorAll('#isActive').forEach(active =>{
@@ -445,7 +459,7 @@
                     break;
                 }
                 
-            })
+            }, false)
         })
             //***************LIVE ON PAGE LIVE
         document.querySelector('.edit-zone').addEventListener('click', function(e){
@@ -460,7 +474,7 @@
             }else if(e.target.getAttribute('contenteditable') === "true"){
                 return
             }
-        })
+        }, false)
         document.querySelector('.edit-zone').addEventListener('dblclick', function(e){
             e.preventDefault();
             e.stopPropagation();
