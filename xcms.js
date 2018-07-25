@@ -8,6 +8,9 @@ const jsp = JSON.parse;
 const jss = JSON.stringify;
 var pagesCollection;
 var dbpages = xcmsDB.get()
+const fileCTL = /([a-z]{2,}).(html|css|js|jpeg|PNG|jpg)/
+const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG)/
+const typeCTL = /(html|css|js|jpeg|jpg|PNG)/
 dbpages.on('data', (data)=>{
     if(pagesCollection === undefined){
         pagesCollection = data
@@ -16,15 +19,13 @@ dbpages.on('data', (data)=>{
     }
 })
 dbpages.on('end', ()=>{
-console.log(pagesCollection,'+')
 pagesCollection = JSON.parse(pagesCollection)
-console.log(pagesCollection)
 })
 
 
 xcms.use(async (ctx, next) =>{
-    var urlctl = /([a-z]{2,}).(html|css|js|jpeg)/.exec(ctx.url)
-    ctx.type= "html"
+    var urlctl = fileCTL.exec(ctx.url)
+    //ctx.type= "html"
     //ctx.body = ctx.url;
     console.log(ctx.url)
     switch (ctx.url){
@@ -32,9 +33,11 @@ xcms.use(async (ctx, next) =>{
             ctx.redirect('/admin')
         break;
         case '/client' :
+            ctx.type= "html"
             ctx.body = fs.createReadStream('./client-site/index.html',{autoClose: true})
         break;
         case '/admin' :
+            ctx.type= "html"
             ctx.body = fs.createReadStream('./admin-site/index.html',{autoClose: true})
         break;
         case /\/client-site/.test(ctx.url):
@@ -43,22 +46,22 @@ xcms.use(async (ctx, next) =>{
         //ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
         break;
         default:
-        pagesCollection.forEach(page=>{
+        /* pagesCollection.forEach(page=>{
             if(Object.values(page)[0] === urlctl[0]){
                 ctx.body = Object.values(page)[1]
             }
-        })
+        }) */
         break;
     }
-    if(/\.(html|css|js|jpeg)/.test(ctx.url)){
-        console.log(/([a-z]{2,}).(html|css|js|jpeg)/.exec(ctx.url)[1])
-        /* console.log(ctx.origin)
-        console.log(ctx.href)
-        console.log(ctx.originalUrl) */
-        console.log(urlctl)
-        ctx.type = /(html|css|js|jpeg)/.exec(ctx.url)[0]
-        if(/\/client-site/.test(ctx.url)){
-            //ctx.type = /(html|css|js|jpeg)/.exec(ctx.url)[0]
+    if(extensionCTL.test(ctx.url)){
+        var urlctl = fileCTL.exec(ctx.url)
+        ctx.type = typeCTL.exec(ctx.url)[0]
+        if(/\/client-site\/imgs/.test(ctx.url)){
+            ctx.type = 'image/*'
+            ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
+        }
+        if(/\/client-site/.test(ctx.url) && urlctl[2] === 'html'){
+            ctx.type = 'html'
             pagesCollection.forEach(page=>{
                 if(Object.values(page)[0] === urlctl[0]){
                     ctx.body = Object.values(page)[1]
@@ -127,17 +130,15 @@ xcms.listen(9899,()=>{
                             count++
                             return
                         }
-                    }, /* second callback*/
-                    ()=>{
-                        if(count < pagesCollection.length){
-                            xcmsDB.set(nouvellePage)
-                        }else{
-                            console.log('erreur la page exist pour de vrai')
-                            count = 0
-                            return
-                        }
+                    })
+                    if(count === 0){
+                        console.log('creating page:', nouvellePage)
+                        xcmsDB.set(nouvellePage)
+                    }else{
+                        console.log('erreur la page exist pour de vrai')
+                        count = 0
+                        return
                     }
-                )
                     pagesCollection.push(nouvellePage)
                     //xcmsDB.set(nouvellePage)
                     /* var newFile = fs.createWriteStream('./client-site/'+datainfo.titre+".html", {encoding: 'utf8'})

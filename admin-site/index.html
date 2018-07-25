@@ -118,6 +118,7 @@
             <section>
                 <button id="crepage">VALIDER</button>
                 <button id="crenew">Creer page</button>
+                <button id="efface">EFFACER</button>
             </section>
             <!--<section>
                 <textarea name="contenuText" id="contenuCouleur" cols="30" rows="10"></textarea>
@@ -151,6 +152,24 @@
                     imgs[i].src = './imgs/'+titresImgs[i];
                     i--
                 }
+                document.querySelector('.edit-zone').querySelectorAll('link').forEach(link=>{
+                    link.remove()
+                })
+                var j = 1
+                while (j <= 6){
+                    if(document.querySelectorAll('h'+j) !== 0){
+                        document.querySelectorAll('h'+j).forEach(title=>{
+                            title.removeAttribute('contenteditable')
+                        })
+                    }
+                    j++
+                }
+                if(document.querySelectorAll('p').length !== 0){
+                    document.querySelectorAll('p').forEach(text=>{
+                        text.removeAttribute('contenteditable')
+                    })
+                }
+                document.querySelectorAll('p')
                 e.preventDefault();
                 titre = document.querySelector('#titrepage').value;
                 contenu = `<!DOCTYPE html>
@@ -345,7 +364,7 @@
                                     }
                                     document.querySelector('.genesis-pop').style.display = 'none'
                                     titre.onblur = e=>{
-                                        console.log(e)
+                                        titre.id = ""
                                         if(e.target.hasAttribute('lien')){
                                             return
                                         }else{
@@ -444,6 +463,15 @@
             document.querySelector('.edit-zone').innerHTML = ""
             document.querySelector('iframe').remove()
             document.querySelector('.edit-zone').style.display = "block"
+        })
+        //*****************RESET
+        document.querySelector('#efface').addEventListener('click', e=>{
+            var allnodes = document.querySelector('.edit-zone').childNodes
+                var j = allnodes.length
+                while( j>2 ){
+                    document.querySelector('.edit-zone').lastChild.remove()
+                    j--
+                }
         })
 </script>
 <script>
