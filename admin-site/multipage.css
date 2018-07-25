@@ -8,9 +8,14 @@
     #cfd8dc bleu gris clair
     #1de9b6 teal bleu special
 */
+*{margin:0; padding:0; user-select: none;}
+body{
+    display: flex;
+    flex-direction: column;
+}
 .genesis-div, .genesis-img, .genesis-menu, .genesis-p, .genesis-titre
 {
-    padding: 10px
+    padding: 0;
 }
 .genesis-menu{
     list-style-type: none;

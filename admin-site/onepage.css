@@ -8,41 +8,46 @@
     #cfd8dc bleu gris clair
     #1de9b6 teal bleu special
 */
-.genesis-div, .genesis-img, .genesis-menu, .genesis-p, .genesis-titre{padding: 10px}
-                    .genesis-menu{
-                    list-style-type: none;
-                    color: black;
-                    }
-                    .genesis-menu li{
-                        display: inline;
-                        margin: 5%;
-                    }
-                    .genesis-div{
-                        width:100%;
-                        display:block;
-                    }
-                    .genesis-img{
-                        display:block;
-                        height: 250px;
-                        width: 350px;
-                    }
-                    .genesis-p{
-                        display:block;
-                    }
-                    .genesis-titre{
-                        display:block;
-                        color: var(--orange-pale)
-                    }
-                    .nav-menu{
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-between;
-                        align-items: center;
-                    }
-                    .nav-item{
-                        list-style-type: none;
-                        text-transform: uppercase;
-                    }
-                    .lien{
-                        color: rgb(15, 85, 235);
-                    }
+*{margin:0; padding:0; user-select: none;}
+body{
+    display: flex;
+    flex-direction: column;
+}
+.genesis-div, .genesis-img, .genesis-menu, .genesis-p, .genesis-titre{padding: 0;}
+.genesis-menu{
+list-style-type: none;
+color: black;
+}
+.genesis-menu li{
+    display: inline;
+    margin: 5%;
+}
+.genesis-div{
+    width:100%;
+    display:block;
+}
+.genesis-img{
+    display:block;
+    height: 250px;
+    width: 350px;
+}
+.genesis-p{
+    display:block;
+}
+.genesis-titre{
+    display:block;
+    color: var(--orange-pale)
+}
+.nav-menu{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.nav-item{
+    list-style-type: none;
+    text-transform: uppercase;
+}
+.lien{
+    color: rgb(15, 85, 235);
+}

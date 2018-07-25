@@ -315,7 +315,6 @@
                                 mews.send(file0)
                                 img.src = window.URL.createObjectURL(file0)
                                 img.onload = function(){
-                                    console.log(this.src)
                                 window.URL.revokeObjectURL(this.src)
                                 img = ""
                                 }
@@ -339,6 +338,13 @@
                         if(document.querySelector('#isContainer') === null){
                             document.querySelector('.edit-zone').appendChild(pé)
                         }
+                        pé.addEventListener('keydown', e=>{
+                            if(e.code === 'Enter' || e.code === 'NumpadEnter'){
+                                e.preventDefault();
+                                document.execCommand('insertHTML', false, '<br><br>')
+                                return false
+                            }
+                        })
                     break;
                     case 'titre':
                     document.querySelectorAll('#isActive').forEach(active =>{
@@ -379,6 +385,13 @@
                                         }
                                         
                                     }
+                                    titre.addEventListener('keydown', e=>{
+                                        if(e.code === 'Enter' || e.code === 'NumpadEnter'){
+                                            titre.blur()
+                                            e.preventDefault();
+                                            return false
+                                        }
+                                    })
                                 })
                             })
                     break;

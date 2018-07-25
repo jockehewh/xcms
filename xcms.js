@@ -21,8 +21,6 @@ dbpages.on('data', (data)=>{
 dbpages.on('end', ()=>{
 pagesCollection = JSON.parse(pagesCollection)
 })
-
-
 xcms.use(async (ctx, next) =>{
     var urlctl = fileCTL.exec(ctx.url)
     //ctx.type= "html"
@@ -42,7 +40,6 @@ xcms.use(async (ctx, next) =>{
         break;
         case /\/client-site/.test(ctx.url):
         // récuperer le contenu depuis la db  avec ++++  /([a-z]{2,}).(html|css|js|jpeg)/
-        
         //ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
         break;
         default:
@@ -54,6 +51,9 @@ xcms.use(async (ctx, next) =>{
         break;
     }
     if(extensionCTL.test(ctx.url)){
+        if(/^\/imgs/.test(ctx.url)){
+            return
+        }
         var urlctl = fileCTL.exec(ctx.url)
         ctx.type = typeCTL.exec(ctx.url)[0]
         if(/\/client-site\/imgs/.test(ctx.url)){
@@ -71,7 +71,6 @@ xcms.use(async (ctx, next) =>{
             //ctx.type = urlctl[2]
             ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
         }
-        
         //ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
     }
     await next();
