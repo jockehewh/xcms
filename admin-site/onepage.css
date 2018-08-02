@@ -8,7 +8,15 @@
     #cfd8dc bleu gris clair
     #1de9b6 teal bleu special
 */
-*{margin:0; padding:0; user-select: none;}
+*{margin:0; padding:0; user-select: none;
+    --rouge-brick-pale: #ef5350;
+    --rouge-brique-eclatant: #ff5252;
+    --bleu-indigo-leger: #5c6bc0;
+    --bleu-indigo-eclatant: #536dfe;
+    --orange-pale: #e64a19;
+    --bleu-gris-clair: #cfd8dc;
+    --teal-bleu-special: #1de9b6;
+}
 body{
     display: flex;
     flex-direction: column;

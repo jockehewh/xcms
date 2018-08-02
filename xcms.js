@@ -8,9 +8,9 @@ const jsp = JSON.parse;
 const jss = JSON.stringify;
 var pagesCollection;
 var dbpages = xcmsDB.get()
-const fileCTL = /([a-z]{2,}).(html|css|js|jpeg|PNG|jpg)/
-const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG)/
-const typeCTL = /(html|css|js|jpeg|jpg|PNG)/
+const fileCTL = /([a-z]{2,}).(html|css|js|jpeg|PNG|jpg|png)/
+const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG|png)/
+const typeCTL = /(html|css|js|jpeg|jpg|PNG|png)/
 dbpages.on('data', (data)=>{
     if(pagesCollection === undefined){
         pagesCollection = data
@@ -38,16 +38,7 @@ xcms.use(async (ctx, next) =>{
             ctx.type= "html"
             ctx.body = fs.createReadStream('./admin-site/index.html',{autoClose: true})
         break;
-        case /\/client-site/.test(ctx.url):
-        // récuperer le contenu depuis la db  avec ++++  /([a-z]{2,}).(html|css|js|jpeg)/
-        //ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
-        break;
         default:
-        /* pagesCollection.forEach(page=>{
-            if(Object.values(page)[0] === urlctl[0]){
-                ctx.body = Object.values(page)[1]
-            }
-        }) */
         break;
     }
     if(extensionCTL.test(ctx.url)){
@@ -68,10 +59,8 @@ xcms.use(async (ctx, next) =>{
                 }
             })
         }else{
-            //ctx.type = urlctl[2]
             ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
         }
-        //ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
     }
     await next();
 })

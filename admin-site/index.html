@@ -149,7 +149,7 @@
                 var imgs = document.querySelectorAll('img');
                     console.log(imgs[0])
                     var i = 0
-                while ( i<= imgs.length){
+                while ( i<= imgs.length-1){
                     console.log(imgs[i])
                     imgs[i].src = './imgs/'+titresImgs[i];
                     i++
@@ -181,9 +181,8 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <title>${titre}</title>
-                    </head><body>
-                        ${document.querySelector('.edit-zone').innerHTML}
-                        </body></html>`
+                    <script src='./designer.js'><\/script>
+                    </head><body>${document.querySelector('.edit-zone').innerHTML}</body></html>`;
                 if(titre === "" || titre === undefined){
                     titre = prompt("comment s'appelera la page que vous souhaitez envoyé")
                 }
