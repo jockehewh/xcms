@@ -32,6 +32,7 @@ xcms.use(async (ctx, next) =>{
         break;
         case '/client' :
             ctx.type= "html"
+            //gérer pageCollection 
             ctx.body = fs.createReadStream('./client-site/index.html',{autoClose: true})
         break;
         case '/admin' :

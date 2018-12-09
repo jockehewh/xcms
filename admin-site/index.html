@@ -248,66 +248,34 @@
                 }
                 switch(e.target.dataset.demande){
                     case 'header':
-                    document.querySelectorAll('#isActive').forEach(active =>{
-                    active.id = ''
-                })
+                    desactive()
                         var header = document.createElement('header')
                         header.id = 'isActive'
                         header.classList.add('genesis-header')
                         header.innerText = prompt('Valeur du titre:')
-                        if(document.querySelector('#isContainer') !== null){
-                            document.querySelector('#isContainer').appendChild(header)
-                            document.querySelector('#isContainer').classList.add('not-empty-container')
-                        }
-                        if(document.querySelector('#isContainer') === null){
-                            document.querySelector('.edit-zone').appendChild(header)
-                        }
+                        xAppend(header)
                     break;
                     case 'footer':
-                    document.querySelectorAll('#isActive').forEach(active =>{
-                    active.id = ''
-                })
+                    desactive()
                         var footer = document.createElement('footer')
                         footer.id = 'isActive'
                         footer.classList.add('genesis-footer')
-                        if(document.querySelector('#isContainer') !== null){
-                            document.querySelector('#isContainer').appendChild(footer)
-                            document.querySelector('#isContainer').classList.add('not-empty-container')
-                        }
-                        if(document.querySelector('#isContainer') === null){
-                            document.querySelector('.edit-zone').appendChild(footer)
-                        }
+                        xAppend(footer)
                     break;
                     case 'div':
-                    document.querySelectorAll('#isActive').forEach(active =>{
-                    active.id = ''
-                })
+                    desactive()
                         var div = document.createElement('div')
                         div.id = 'isActive'
                         div.classList.add('genesis-div')
-                        if(document.querySelector('#isContainer') !== null){
-                            document.querySelector('#isContainer').appendChild(div)
-                            document.querySelector('#isContainer').classList.add('not-empty-container')
-                        }
-                        if(document.querySelector('#isContainer') === null){
-                            document.querySelector('.edit-zone').appendChild(div)
-                        }
+                        xAppend(div)
                     break;
                     case 'image':
-                    document.querySelectorAll('#isActive').forEach(active =>{
-                    active.id = ''
-                })
+                    desactive()
                         var imgpicker = document.querySelector('#imgpiker');
                         var img = document.createElement('img');
                         img.id ='isActive'
                         img.classList.add('genesis-img')
-                        if(document.querySelector('#isContainer') !== null){
-                            document.querySelector('#isContainer').appendChild(img)
-                            document.querySelector('#isContainer').classList.add('not-empty-container')
-                        }
-                        if(document.querySelector('#isContainer') === null){
-                            document.querySelector('.edit-zone').appendChild(img)
-                        }
+                        xAppend(img)
                         imgpicker.style.display = 'block'
                         var imgpicklone = document.createElement('input');
                             imgpicklone.setAttribute('type', 'file')
@@ -337,20 +305,12 @@
 
                     break;
                     case 'texte':
-                    document.querySelectorAll('#isActive').forEach(active =>{
-                    active.id = ''
-                })
+                    desactive()
                         var pé = document.createElement('p');
                         pé.id = "isActive"
                         pé.classList.add('genesis-p')
                         pé.setAttribute('contenteditable', true)
-                        if(document.querySelector('#isContainer') !== null){
-                            document.querySelector('#isContainer').appendChild(pé)
-                            document.querySelector('#isContainer').classList.add('not-empty-container')
-                        }
-                        if(document.querySelector('#isContainer') === null){
-                            document.querySelector('.edit-zone').appendChild(pé)
-                        }
+                        xAppend(pé)
                         pé.addEventListener('keydown', e=>{
                             if(e.code === 'Enter' || e.code === 'NumpadEnter'){
                                 e.preventDefault();
@@ -360,9 +320,7 @@
                         })
                     break;
                     case 'titre':
-                    document.querySelectorAll('#isActive').forEach(active =>{
-                    active.id = ''
-                })
+                    desactive()
                     var headerVal;
                         document.querySelector('.genesis-pop').style.display = 'flex'
                         document.querySelectorAll('#options-select a').forEach(as =>{
@@ -375,12 +333,7 @@
                                     titre.setAttribute('contenteditable', true)
                                     titre.innerText = "Cliquer ici pour éditer le titre"
                                     titre.classList.add('genesis-titre');
-                                    if(document.querySelector('#isContainer') !== null){
-                                        document.querySelector('#isContainer').appendChild(titre)
-                                        document.querySelector('#isContainer').classList.add('not-empty-container')
-                                    }else{
-                                        document.querySelector('.edit-zone').appendChild(titre)
-                                    }
+                                    xAppend(titre)
                                     document.querySelector('.genesis-pop').style.display = 'none'
                                     titre.onblur = e=>{
                                         titre.id = ""
@@ -412,7 +365,7 @@
 
                     break;
                     case 'menu':
-                    document.querySelectorAll('#isActive').forEach(active =>{active.id = ''})
+                    desactive()
                     var menuSize;
                         document.querySelector('.genesis-popd').style.display = 'flex'
                         document.querySelectorAll('#options-selectd a').forEach(as =>{
@@ -439,12 +392,7 @@
                                         menuSize++
                                     }
                                     menuSize = 0
-                                    if(document.querySelector('#isContainer') !== null){
-                                        document.querySelector('#isContainer').appendChild(ul)
-                                        document.querySelector('#isContainer').classList.add('not-empty-container')
-                                    }else{
-                                        document.querySelector('.edit-zone').appendChild(ul)
-                                    }
+                                    xAppend(ul)
                                     document.querySelector('.genesis-popd').style.display = 'none'
                                 })
                             })
@@ -499,6 +447,19 @@
                     j--
                 }
         })
+        //******************APPEND
+        function xAppend(item){
+            if(document.querySelector('#isContainer') !== null){
+                document.querySelector('#isContainer').appendChild(item)
+                document.querySelector('#isContainer').classList.add('not-empty-container')
+            }else{
+                document.querySelector('.edit-zone').appendChild(item)
+            }
+        }
+        //*************DEACTIVR
+        function desactive(){
+            document.querySelectorAll('#isActive').forEach(active =>{active.id = ''})
+        }
 </script>
 <script>
     // AFFICHAGE
