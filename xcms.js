@@ -6,7 +6,7 @@ const xcmsWs = new WS.Server({port: 9898});
 const xcms = new koa();
 const jsp = JSON.parse;
 const jss = JSON.stringify;
-var pagesCollection;
+var pagesCollection, paged;
 var dbpages = xcmsDB.get()
 const fileCTL = /([a-z]{2,}).(html|css|js|jpeg|PNG|jpg|png)/
 const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG|png)/
@@ -32,8 +32,16 @@ xcms.use(async (ctx, next) =>{
         break;
         case '/client' :
             ctx.type= "html"
+            if(/([a-z]{2,}).html/.test(ctx.url)){
+                paged = /([a-z]{2,}).html/.exec(ctx.url)[0]
+            }
             //gérer pageCollection 
-            ctx.body = fs.createReadStream('./client-site/index.html',{autoClose: true})
+            pagesCollection.forEach(page=>{
+                if(paged === page.name){
+                    ctx.body = `${page.page}`
+                }
+            })
+            //ctx.body = fs.createReadStream('./client-site/index.html',{autoClose: true})
         break;
         case '/admin' :
             ctx.type= "html"

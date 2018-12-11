@@ -1,0 +1,3 @@
+EDITEUR!
+créer un section pour chaque titre linké
+ajouté une bordure d'édition et une hauteur minimum
