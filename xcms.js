@@ -23,8 +23,6 @@ pagesCollection = JSON.parse(pagesCollection)
 })
 xcms.use(async (ctx, next) =>{
     var urlctl = fileCTL.exec(ctx.url)
-    //ctx.type= "html"
-    //ctx.body = ctx.url;
     console.log(ctx.url)
     switch (ctx.url){
         case '/' :
@@ -35,13 +33,11 @@ xcms.use(async (ctx, next) =>{
             if(/([a-z]{2,}).html/.test(ctx.url)){
                 paged = /([a-z]{2,}).html/.exec(ctx.url)[0]
             }
-            //gérer pageCollection 
             pagesCollection.forEach(page=>{
                 if(paged === page.name){
                     ctx.body = `${page.page}`
                 }
             })
-            //ctx.body = fs.createReadStream('./client-site/index.html',{autoClose: true})
         break;
         case '/admin' :
             ctx.type= "html"
@@ -85,21 +81,17 @@ xcms.listen(9899,()=>{
     xcmsWs.on('connection', (peer)=>{
         peer.isAlive = true;
         peer.on('pong', heartbeat)
-        fs.readdir('./client-site', (err, fil)=>{
-            fil.forEach(fi =>{
-                if(/\.html/.test(fi)){
-                    peer.send(jss({lien:fi}))
+        pagesCollection.forEach(fi =>{
+            if(/\.html/.test(fi.name)){
+                peer.send(jss({lien:fi.name}))
+            }
+        })
+        fs.watch('./xcmsDB/Xdata.db', {encoding: "utf-8"}, (change, filename)=>{
+            pagesCollection.forEach(fi =>{
+                if(/\.html/.test(fi.name)){
+                    peer.send(jss({lien:fi.name}))
                 }
             })
-        })
-        var waitEnd = []
-        fs.watch('./client-site', {encoding: "utf-8"}, (change, filename)=>{
-            if(waitEnd.length === 2){
-                peer.send(jss({lien:filename}))
-                waitEnd = []
-            }else{
-                waitEnd.push(filename)
-            }
         })
         peer.on('close', ()=>{
            console.log('connexion fermé')
@@ -129,7 +121,7 @@ xcms.listen(9899,()=>{
                         }
                     })
                     if(count === 0){
-                        console.log('creating page:', nouvellePage)
+                        //console.log('creating page:', nouvellePage)
                         xcmsDB.set(nouvellePage)
                     }else{
                         console.log('erreur la page exist pour de vrai')
@@ -137,10 +129,6 @@ xcms.listen(9899,()=>{
                         return
                     }
                     pagesCollection.push(nouvellePage)
-                    //xcmsDB.set(nouvellePage)
-                    /* var newFile = fs.createWriteStream('./client-site/'+datainfo.titre+".html", {encoding: 'utf8'})
-                    newFile.write(datainfo.contenu)
-                    newFile.end() */
                 }
             }
             if(typeof data === 'object'){

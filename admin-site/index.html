@@ -143,6 +143,7 @@
         const pushToDom = document.querySelector('.edit-zone').appendChild
         var titre, contenu, nouvellepage;
         var imgpicker = document.querySelector('#imgpiker');
+        let editablePages =[]
         mews.onopen = ()=>{
             console.log('connected')
             crepage.addEventListener('click', e =>{
@@ -196,37 +197,36 @@
                 }
             }, false)
         }
+
         mews.onmessage = (data)=>{
             parsed = jsp(data.data)
             if(parsed.lien && parsed.lien !== ""){
-                var li = document.createElement('li');
-                var a = document.createElement('a');
-                a.href = '#'
-                a.innerHTML = '/client-site/'+parsed.lien
-                li.appendChild(a);
-                a.addEventListener('click', (e)=>{
-                    e.preventDefault();
-                    myframe = document.querySelector('.maFrame')
-                    if(document.querySelector('iframe') !== null){
-                        document.querySelector('iframe').remove()
-                    }
-                    var theframe = document.createElement('iframe')
-                    if(e.target.innerText !== undefined){
-                        theframe.src = window.location.origin+e.target.innerText
-                    }
-                    myframe.appendChild(theframe)
-                    document.querySelector('iframe').addEventListener('click', (e)=>{console.log(e.target)})
-                    document.querySelector('.edit-zone').style.display = 'none'
-                }, false)
+                if( editablePages != undefined && editablePages.includes(parsed.lien)){
+                    return
+                }else{
+                    editablePages.push(parsed.lien)
+                    var li = document.createElement('li');
+                    var a = document.createElement('a');
+                    a.href = '#'
+                    a.innerHTML = '/client-site/'+parsed.lien
+                    li.appendChild(a);
+                    a.addEventListener('click', (e)=>{
+                        e.preventDefault();
+                        myframe = document.querySelector('.maFrame')
+                        if(document.querySelector('iframe') !== null){
+                            document.querySelector('iframe').remove()
+                        }
+                        var theframe = document.createElement('iframe')
+                        if(e.target.innerText !== undefined){
+                            theframe.src = window.location.origin+e.target.innerText
+                        }
+                        myframe.appendChild(theframe)
+                        document.querySelector('iframe').addEventListener('click', (e)=>{console.log(e.target)})
+                        document.querySelector('.edit-zone').style.display = 'none'
+                    }, false)
+                }
                 document.querySelector('.editables').appendChild(li)
                 li = a = ""
-                li = document.createElement('li');
-                a = document.createElement('a');
-                a.href = '/client-site/'+parsed.lien 
-                a.innerText = parsed.lien.slice(0, -5);
-                li.classList.add('nav-item');
-                li.appendChild(a)
-                document.querySelector('.nav-menu').appendChild(li)
             }
         }
         /* 
