@@ -24,5 +24,10 @@ module.exports = {
             reecrit.write(JSON.stringify(temp))
             reecrit.end()
         })
+    },
+    update: (xdata)=>{
+        let stream = fs.createWriteStream('./xcmsDB/XData.db',{encoding:'utf8'})
+        stream.write(JSON.stringify(xdata))
+        stream.end()
     }
 }

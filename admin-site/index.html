@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Creative side</title>
     <link rel="stylesheet" href="./admin-site/xcms.css">
+    <link rel="stylesheet" href="./admin-site/tachyons.min.css">
 </head>
 <body>
     <div class="genesis-pop">
@@ -30,14 +31,23 @@
                 </ul>
             </div>
         </div>
-    <main>
-        <div class="first-class">
+    <main class="mw-100 center">
+        <div class="first-class fl ph3 pv5 w-70">
             <!--Master page maker-->
             <input type="file" accept="image" id="imgpiker">
-            <div class="edit-zone">
+            <div class="edit-zone" style="display:block;">
                 <link rel="stylesheet" href="./admin-site/onepage.css">
                 <link rel="stylesheet" href="./admin-site/multipage.css">
                 <style scoped>
+                    *{margin:0; padding:0; user-select: none;
+                        --rouge-brick-pale: #ef5350;
+                        --rouge-brique-eclatant: #ff5252;
+                        --bleu-indigo-leger: #5c6bc0;
+                        --bleu-indigo-eclatant: #536dfe;
+                        --orange-pale: #e64a19;
+                        --bleu-gris-clair: #cfd8dc;
+                        --teal-bleu-special: #1de9b6;
+                    }
                     .genesis-div, .genesis-img, .genesis-menu, .genesis-p, .genesis-titre{padding: 10px}
                     .genesis-menu{
                     list-style-type: none;
@@ -85,20 +95,43 @@
                 
             </div>
         </div>
-        <div class="first-class-editor">
-            <section id="nodemaker">
+        <div class="first-class-editor fl pa2 w-30">
+            <section>
+                <p><span>editor</span> - <span>designer</span></p>
+                <label class="switch">
+                <input class="changemod" type="checkbox">
+                <span class="slider"></span>
+            </label>
+            </section>
+            <section id="designmaker">
+                <label for="font-selector">Change font</label>
+                <select name="font-selector" id="font-selector">
+                    <option value="Avenir Next">Avenir Next</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="San Francisco">San Francisco</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="System Sans-Sherif">System Sans-Sherif</option>
+                    <option value="Athelas">Athelas</option>
+                    <option value="Baskerville">Baskerville</option>
+                    <option value="Garamond">Garamond</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="System Sherif">System Sherif</option>
+                </select>
+                <button class="linemaker">one line container</button>
+            </section>
+            <section id="nodemaker" class="mt5 tc">
                 <label><input type="radio" id="designer" name="designer" value="single" checked> Site une page </label><br>
                 <label><input type="radio" id="designer" name="designer" value="multiple"> Site multipage </label><br>
                 <input id="titrepage" type="text" placeholder="nom de la nouvelle page">
-                <ul>
-                    <li><a href="#" data-demande="header">header</a></li>
-                    <li><a href="#" data-demande="footer">footer</a></li>
-                    <li><a href="#" data-demande="div">section</a></li>
-                    <li><a href="#" data-demande="menu">menu</a></li>
-                    <li><a href="#" data-demande="texte">texte</a></li>
-                    <li><a href="#" data-demande="image">image</a></li>
-                    <li><a href="#" data-demande="titre">titre</a></li>
-                    <li><a href="#" data-demande="video">video</a></li>
+                <ul class="list">
+                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="header">header</a></li>
+                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="footer">footer</a></li>
+                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="div">section</a></li>
+                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="menu">menu</a></li>
+                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="texte">texte</a></li>
+                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="image">image</a></li>
+                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="titre">titre</a></li>
+                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="video">video</a></li>
                 </ul>
                 <div class="colors">
                     <label id="fond">
@@ -115,7 +148,7 @@
                     <p style="border: solid orange 3px">contiendra le prochain élément</p>
                 </div>
             </section>
-            <section>
+            <section class="boutons">
                 <button id="crepage">VALIDER</button>
                 <button id="crenew">Creer page</button>
                 <button id="efface">EFFACER</button>
@@ -125,8 +158,8 @@
                 <a data-demande="hypertxt">apply</a>
             </section>-->
             <section>
-                <p>editables.</p>
-                <ul class="editables">
+                <p>edit an old page</p>
+                <ul class="editables list">
                     
                 </ul>
             </section>
@@ -172,7 +205,6 @@
                         text.removeAttribute('contenteditable')
                     })
                 }
-                document.querySelectorAll('p')
                 e.preventDefault();
                 titre = document.querySelector('#titrepage').value;
                 contenu = `<!DOCTYPE html>
@@ -182,7 +214,8 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <title>${titre}</title>
-                    <script src='./designer.js'><\/script>
+                    <link rel="stylesheet" href="./client-site/tachyons.min.css">
+                    <script src='./client-site/designer.js'><\/script>
                     </head><body>${document.querySelector('.edit-zone').innerHTML}</body></html>`;
                 if(titre === "" || titre === undefined){
                     titre = prompt("comment s'appelera la page que vous souhaitez envoyé")
@@ -204,25 +237,106 @@
                 if( editablePages != undefined && editablePages.includes(parsed.lien)){
                     return
                 }else{
-                    editablePages.push(parsed.lien)
+                    editablePages.push({...parsed.lien, index: editablePages.length})
                     var li = document.createElement('li');
                     var a = document.createElement('a');
                     a.href = '#'
-                    a.innerHTML = '/client-site/'+parsed.lien
+                    a.innerText = parsed.lien.name
+                    a.dataset.index = editablePages.length - 1
+                    a.className += "black hover-blue link ph5"
                     li.appendChild(a);
+                    li.className += "b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
+                    //EDITION DES PAGES
                     a.addEventListener('click', (e)=>{
                         e.preventDefault();
                         myframe = document.querySelector('.maFrame')
-                        if(document.querySelector('iframe') !== null){
-                            document.querySelector('iframe').remove()
-                        }
-                        var theframe = document.createElement('iframe')
-                        if(e.target.innerText !== undefined){
-                            theframe.src = window.location.origin+e.target.innerText
-                        }
+                        var theframe = document.createElement('div')
+                        theframe.classList.add('re-edit-zone')
+                        theframe.innerHTML = editablePages[e.target.dataset.index].page
                         myframe.appendChild(theframe)
-                        document.querySelector('iframe').addEventListener('click', (e)=>{console.log(e.target)})
                         document.querySelector('.edit-zone').style.display = 'none'
+                        //PREPARATION AU CHANGEMENT
+                        theframe.childNodes.forEach(node=>{
+                            if(node instanceof HTMLElement){
+                                if(node.hasAttribute('class')){
+                                    if(node.className !== "genesis-img"){
+                                    node.setAttribute('contenteditable', true)
+                                    }
+                                }
+                            }
+                        })
+                        document.querySelector('.re-edit-zone').addEventListener('click', function(e){
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            if(e.target.getAttribute('contenteditable') === "false" || e.target.getAttribute('contenteditable') === null){
+                                if(e.target.id === "isActive"){
+                                    e.target.id = ""
+                                }else{
+                                    e.target.id = "isActive"
+                                }
+                            }else if(e.target.getAttribute('contenteditable') === "true"){
+                                return
+                            }
+                        }, false)
+                        document.querySelector('.re-edit-zone').addEventListener('dblclick', function(e){
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if(e.target.id === "isContainer"){
+                                e.target.id = ""
+                            }else{
+                                e.target.id = "isContainer"
+                            }
+                        })
+                        //ENREGISTREMENT DES CHANGEMENTS
+                        let button = document.createElement('button')
+                        button.innerText = 'Enregistrer et fermer'
+                        document.querySelector('.boutons').appendChild(button)
+                        button.addEventListener('click', ev=>{
+                            //MODIFIER LES LIENS
+                            var imgs = document.querySelectorAll('img');
+                                var i = j = 0
+                            while ( i<= imgs.length-1){
+                                if(/\/imgs\//.test(imgs[i].src)){
+                                    i++
+                                }else{
+                                    imgs[i].src = './imgs/'+titresImgs[j];
+                                    i++
+                                    j++
+                                }
+                            }
+                            //ENLEVER ATTRIBUT CONTENTEDITABLE
+                            theframe.childNodes.forEach(node=>{
+                                if(node instanceof HTMLElement){
+                                    if(node.hasAttribute('class')){
+                                        if(node.className !== "genesis-img"){
+                                        node.removeAttribute('contenteditable')
+                                        }
+                                    }
+                                }
+                            })
+                            if(document.querySelectorAll('p').length !== 0){
+                                document.querySelectorAll('p').forEach(text=>{
+                                    text.removeAttribute('contenteditable')
+                                })
+                            }
+                            let name = e.target.innerText
+                            let page = `<!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                    <title>${e.target.innerText}</title>
+                    <link rel="stylesheet" href="./client-site/tachyons.min.css">
+                    <script src='./client-site/designer.js'><\/script>
+                    </head><body>${theframe.innerHTML}</body></html>`;
+                            let changedPage = {name, page}
+                            mews.send(jss({update: changedPage}))
+                            editablePages[e.target.dataset.index].page = theframe.innerHTML
+                            theframe.remove()
+                            document.querySelector('.edit-zone').style.display = 'block'
+                            button.remove()
+                        })
                     }, false)
                 }
                 document.querySelector('.editables').appendChild(li)
@@ -241,16 +355,11 @@
             btn.addEventListener('click', (e)=>{
                 e.preventDefault();
                 e.stopPropagation();
-                
-                if(document.querySelector('iframe') !== null){
-                    document.querySelector('iframe').remove()
-                    document.querySelector('.edit-zone').style.display = 'block'
-                }
                 switch(e.target.dataset.demande){
                     case 'header':
                     desactive()
                         var header = document.createElement('header')
-                        header.id = 'isActive'
+                        header.id = 'isActive isContainer'
                         header.classList.add('genesis-header')
                         header.innerText = prompt('Valeur du titre:')
                         xAppend(header)
@@ -258,14 +367,14 @@
                     case 'footer':
                     desactive()
                         var footer = document.createElement('footer')
-                        footer.id = 'isActive'
+                        footer.id = 'isActive isContainer'
                         footer.classList.add('genesis-footer')
                         xAppend(footer)
                     break;
                     case 'div':
                     desactive()
                         var div = document.createElement('div')
-                        div.id = 'isActive'
+                        div.id = 'isActive isContainer'
                         div.classList.add('genesis-div')
                         xAppend(div)
                     break;
@@ -285,9 +394,6 @@
                             imgpicker.addEventListener('change', function(ev){
                                 ev.stopPropagation()
                                 pushCount++
-                                console.log(pushCount)
-                                console.log(ev.eventPhase)
-                                console.log(ev.target, ev.currentTarget, ev)
                                 var type = {type: imgpicker.files[0].type}
                                 var file0 = imgpicker.files[0];
                                 titresImgs.push(file0.name)
@@ -317,6 +423,7 @@
                                 document.execCommand('insertHTML', false, '<br><br>')
                                 return false
                             }
+                            //if echap enlever la class isActive
                         })
                     break;
                     case 'titre':
@@ -334,6 +441,7 @@
                                     titre.innerText = "Cliquer ici pour éditer le titre"
                                     titre.classList.add('genesis-titre');
                                     xAppend(titre)
+                                    titre.focus()
                                     document.querySelector('.genesis-pop').style.display = 'none'
                                     titre.onblur = e=>{
                                         titre.id = ""
@@ -398,6 +506,7 @@
                             })
                     break;
                     case 'hypertxt':
+                    //BLOCK A REVOIR
                             var isActive = document.querySelector('#isActive')
                             isActive.innerHTML = document.querySelector('textarea').value
                             isActive.id = ""
@@ -435,6 +544,7 @@
         document.querySelector('#crenew').addEventListener('click', (e)=>{
             e.preventDefault();
             document.querySelector('.edit-zone').innerHTML = ""
+            //IFRAME PLUS UTILISEE
             document.querySelector('iframe').remove()
             document.querySelector('.edit-zone').style.display = "block"
         })
@@ -453,7 +563,11 @@
                 document.querySelector('#isContainer').appendChild(item)
                 document.querySelector('#isContainer').classList.add('not-empty-container')
             }else{
-                document.querySelector('.edit-zone').appendChild(item)
+                if(document.querySelector('.edit-zone').style.display === "block"){
+                    document.querySelector('.edit-zone').appendChild(item)
+                }else{
+                    document.querySelector('.re-edit-zone').appendChild(item)
+                }
             }
         }
         //*************DEACTIVR
@@ -507,6 +621,18 @@
                 }
             }
         })
+    })
+    document.querySelector('.changemod').addEventListener('change', (e)=>{
+        if(document.querySelector('.changemod').checked){
+            document.querySelector('#designmaker').style.display = "block"
+            document.querySelector('#nodemaker').style.display = "none"
+            document.querySelector('.linemaker').addEventListener('click', e=>{
+                document.querySelector('#isActive').className += " flex flex-column flex-row-ns"
+            })
+        }else{
+            document.querySelector('#designmaker').style.display = "none"
+            document.querySelector('#nodemaker').style.display = "block"
+        }
     })
 </script>
 </body>

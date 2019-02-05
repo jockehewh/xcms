@@ -2,6 +2,8 @@ const koa = require('koa')
 const WS = require('ws')
 const fs = require('fs')
 const xcmsDB = require('./xdata.js');
+const bodyParser = require('koa-body')
+const user = require('./usercred')
 const xcmsWs = new WS.Server({port: 9898});
 const xcms = new koa();
 const jsp = JSON.parse;
@@ -18,53 +20,88 @@ dbpages.on('data', (data)=>{
         pagesCollection += data
     }
 })
+/* [{"db":"placeholder","size":"1"}] */
 dbpages.on('end', ()=>{
+    console.log(typeof pagesCollection)
 pagesCollection = JSON.parse(pagesCollection)
+console.log(typeof pagesCollection)
 })
+xcms.use(bodyParser())
 xcms.use(async (ctx, next) =>{
     var urlctl = fileCTL.exec(ctx.url)
-    console.log(ctx.url)
-    switch (ctx.url){
-        case '/' :
-            ctx.redirect('/admin')
-        break;
-        case '/client' :
-            ctx.type= "html"
-            if(/([a-z]{2,}).html/.test(ctx.url)){
-                paged = /([a-z]{2,}).html/.exec(ctx.url)[0]
-            }
-            pagesCollection.forEach(page=>{
-                if(paged === page.name){
-                    ctx.body = `${page.page}`
-                }
-            })
-        break;
-        case '/admin' :
-            ctx.type= "html"
-            ctx.body = fs.createReadStream('./admin-site/index.html',{autoClose: true})
-        break;
-        default:
-        break;
+    let page
+    if(/^.[a-z]{2,}(.html)/.exec(ctx.url) !== null){
+        page = /^.[a-z]{2,}(.html)/.exec(ctx.url)[0]
     }
+    if(page != undefined){
+        console.log('page', page)
+    }
+    if(ctx.method === "GET"){
+        switch (ctx.url){
+            case '/' :
+            try{
+                pagesCollection.forEach((page, i)=>{
+                    console.log(page.name, i)
+                    if(page.name == 'index.html'){
+                        ctx.type = "html"
+                        ctx.body = page.page
+                        return
+                    }
+                    if(i === pagesCollection.length){
+                        console.log('FIN')
+                        throw 'no index';
+                    }
+                })
+            }catch(e){
+                console.log(e)
+                ctx.redirect('/admin')
+            }
+            break;
+            //CASE LOGIN?
+            case '/admin' :
+                ctx.type= "html"
+                ctx.body = fs.createReadStream('./admin-site/login.html',{autoClose: true})
+            break;
+            default:
+            break;
+        }
+    }
+    if(ctx.method === "POST"){
+        switch (ctx.url){
+            case '/admin' :
+                const auth = ctx.request.body
+                if(auth.username === user.username){
+                    if(auth.password === user.password){
+                        ctx.type = "html"
+                        ctx.body = fs.createReadStream('./admin-site/index.html',{autoClose: true})
+                    }
+                }else{
+                    redirect('/admin')
+                }
+            break;
+            default:
+            break;
+        }
+    }
+    
     if(extensionCTL.test(ctx.url)){
-        if(/^\/imgs/.test(ctx.url)){
+        if(/^\/imgs\/([\D a-z 0-9]{2,})/.test(ctx.url)){
+            let imageName = ctx.url.split('/')
+            ctx.type = 'image/*'
+            ctx.body = fs.createReadStream('./client-site/imgs/'+imageName[2], {autoclose: true})
             return
         }
         var urlctl = fileCTL.exec(ctx.url)
         ctx.type = typeCTL.exec(ctx.url)[0]
-        if(/\/client-site\/imgs/.test(ctx.url)){
-            ctx.type = 'image/*'
-            ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
-        }
-        if(/\/client-site/.test(ctx.url) && urlctl[2] === 'html'){
-            ctx.type = 'html'
-            pagesCollection.forEach(page=>{
-                if(Object.values(page)[0] === urlctl[0]){
-                    ctx.body = Object.values(page)[1]
+        if(page != undefined){
+            pagesCollection.forEach(existingPage=>{
+                if('/'+existingPage.name == page){
+                    ctx.type = "html"
+                    ctx.body = existingPage.page
                 }
             })
         }else{
-            ctx.body = fs.createReadStream('./'+ctx.url, {autoClose: true})
+            ctx.body = fs.createReadStream('./'+ctx.url, {autoclose: true})
         }
     }
     await next();
@@ -81,18 +118,15 @@ xcms.listen(9899,()=>{
     xcmsWs.on('connection', (peer)=>{
         peer.isAlive = true;
         peer.on('pong', heartbeat)
-        pagesCollection.forEach(fi =>{
-            if(/\.html/.test(fi.name)){
-                peer.send(jss({lien:fi.name}))
-            }
-        })
-        fs.watch('./xcmsDB/Xdata.db', {encoding: "utf-8"}, (change, filename)=>{
+        console.log(pagesCollection.length)
+        console.log(typeof pagesCollection)
+        if(pagesCollection.length !== 0){
             pagesCollection.forEach(fi =>{
                 if(/\.html/.test(fi.name)){
-                    peer.send(jss({lien:fi.name}))
+                    peer.send(jss({lien:fi}))
                 }
             })
-        })
+        }
         peer.on('close', ()=>{
            console.log('connexion fermé')
            peer.terminate()
@@ -121,7 +155,6 @@ xcms.listen(9899,()=>{
                         }
                     })
                     if(count === 0){
-                        //console.log('creating page:', nouvellePage)
                         xcmsDB.set(nouvellePage)
                     }else{
                         console.log('erreur la page exist pour de vrai')
@@ -129,6 +162,14 @@ xcms.listen(9899,()=>{
                         return
                     }
                     pagesCollection.push(nouvellePage)
+                }
+                if(datainfo.update){
+                    pagesCollection.forEach(page =>{
+                        if(page.name === datainfo.update.name){
+                            page.page = datainfo.update.page
+                            xcmsDB.update(pagesCollection)
+                        }
+                    })
                 }
             }
             if(typeof data === 'object'){

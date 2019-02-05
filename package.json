@@ -13,7 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "koa": "^2.5.1",
-    "lokijs": "^1.5.5",
+    "koa-body": "^4.0.7",
+    "koa-bodyparser": "^4.2.1",
     "ws": "^5.1.1"
   }
 }
