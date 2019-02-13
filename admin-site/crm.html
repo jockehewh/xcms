@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Relation Management</title>
+  <link rel="stylesheet" href="../admin-site/quill.snow.css">
+  <script src="../admin-site/quill.js"></script>
+  <style>
+    *{margin:0}
+    .configuration{
+      display: flex;
+      flex-direction: column;
+      max-width: 200px;
+    }
+    .mail{
+      display: flex;
+    }
+    #titre-mail{
+      position: absolute;
+      left: 8px;
+    }
+    .ulist{
+      list-style: none;
+      padding: 6em 0 0 0;
+      min-width: 200px;
+    }
+    .nav{
+      background: #000;
+      color: #fff;
+      min-height: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav p{
+      cursor: pointer;
+      width: 150px;
+    }
+  </style>
+</head>
+<body>
+  <!--
+    DESIGN!!! IMPORTANT
+    liste des utilisateurs
+    envois de mail groupé
+    envois de mail simple
+    configuration de la boite mail
+  -->
+  <div class="nav"><span style="padding-left: 20px;">XCMS</span> <p>Go to CMS page</p> </div>
+    <div class="configuration-block">
+    <h1>Email configuration</h1>
+    <div class="configuration">
+      <label for="host">host:</label>
+      <input type="text" name="host" id="host">
+      <label for="user">user:</label>
+      <input type="text" name="user" id="user">
+      <label for="userpassword">user password</label>
+      <input type="password" name="userpassword" id="userpassword">
+      <br>
+      <button class="submit">Save configuration</button>
+    </div>
+  </div><br><br>
+  <div class="mail">
+    <!--USERS LIST-->
+    <ul class="ulist"></ul>
+    <div class="mail-editor">
+      <h1 id="titre-mail">Email</h1>
+      <!-- Create the editor container -->
+      <div id="editor">
+      </div>
+
+      <button class="sendbtn">send</button>
+    </div>
+  </div>
+  <script>
+    document.body.onload = ()=>{
+      document.querySelector('.nav p').addEventListener('click', (e)=>{
+        window.location.href = "/admin"
+      })
+      var toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike', 'link'],        // toggled buttons
+        ['blockquote', 'code-block'],           // custom button values
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],    // superscript/subscript
+        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+        [{ 'direction': 'rtl' }],                         // text direction
+
+        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+
+        ['clean']                                         // remove formatting button
+      ];
+      var editor = new Quill('#editor', {
+        modules: { toolbar: toolbarOptions },
+        theme: 'snow'
+      });
+      let mews;
+      if(window.location.hostname === "localhost"){
+        mews = new WebSocket('ws://localhost:9898')
+      }else{
+        mews = new WebSocket('wss://'+ window.location.hostname+'/ws')
+      }
+      //wss://xcms.fr
+      const jss = JSON.stringify
+      const jsp = JSON.parse
+      mews.onopen = ()=>{
+        //envoyer les infos
+        mews.send(jss({userslist: true}))
+        let sending = document.querySelector('.sendbtn')
+        sending.addEventListener('click', (e)=>{
+          let selectedContacts = []
+          document.querySelectorAll('.contactcheckbox').forEach(contact =>{
+            if(contact.checked === true){
+              selectedContacts.push({fullName: contact.nextElementSibling.innerText, email: contact.nextElementSibling.dataset.email})
+            }
+          })
+          //recuperer le message
+          if(selectedContacts.length === 0){
+            alert('You must select a receipent to send a message.')
+          }else{
+            let emaildata = {
+              selectedContacts: selectedContacts,
+              mailText: document.querySelector('.ql-editor').innerText,
+              htmlText: document.querySelector('.ql-editor').innerHTML
+            }
+            mews.send(jss(emaildata))
+          }
+        })
+        document.querySelector('.submit').addEventListener('click', ()=>{
+          let transporterData = {
+            host: document.querySelector('#host').value,
+            user: document.querySelector('#user').value,
+            userpassword: document.querySelector('#userpassword').value
+          }
+          mews.send(jss(transporterData))
+        })
+      }
+      mews.onmessage = (data)=>{
+        const datainfo = jsp(data.data)
+        if(datainfo.userslist){
+          const userslist = document.querySelector('.ulist')
+          datainfo.userslist.forEach(user=>{
+            let li = document.createElement('li')
+            let input = document.createElement('input')
+            let span = document.createElement("span")
+            input.type = 'checkbox'
+            input.classList.add('contactcheckbox')
+            li.appendChild(input)
+            span.innerText = user.fullName
+            span.dataset.email = user.email
+            li.appendChild(span)
+            userslist.appendChild(li)
+          })
+        }
+      }
+    }
+  </script>
+</body>
+</html>

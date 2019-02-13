@@ -3,7 +3,8 @@ const WS = require('ws')
 const fs = require('fs')
 const xcmsDB = require('./xdata.js');
 const bodyParser = require('koa-body')
-const user = require('./usercred')
+const user = require('./xcmsDB/usercred')
+const nodemailer = require('nodemailer')
 const xcmsWs = new WS.Server({port: 9898});
 const xcms = new koa();
 const jsp = JSON.parse;
@@ -11,8 +12,8 @@ const jss = JSON.stringify;
 var pagesCollection, paged;
 var dbpages = xcmsDB.get()
 const fileCTL = /([a-z]{2,}).(html|css|js|jpeg|PNG|jpg|png)/
-const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG|png)/
-const typeCTL = /(html|css|js|jpeg|jpg|PNG|png)/
+const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG|png|woff2|ttf)/
+const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf)/
 dbpages.on('data', (data)=>{
     if(pagesCollection === undefined){
         pagesCollection = data
@@ -22,9 +23,7 @@ dbpages.on('data', (data)=>{
 })
 /* [{"db":"placeholder","size":"1"}] */
 dbpages.on('end', ()=>{
-    console.log(typeof pagesCollection)
 pagesCollection = JSON.parse(pagesCollection)
-console.log(typeof pagesCollection)
 })
 xcms.use(bodyParser())
 xcms.use(async (ctx, next) =>{
@@ -47,7 +46,7 @@ xcms.use(async (ctx, next) =>{
                         ctx.body = page.page
                         return
                     }
-                    if(i === pagesCollection.length){
+                    if(i === pagesCollection.length - 1){
                         console.log('FIN')
                         throw 'no index';
                     }
@@ -61,6 +60,10 @@ xcms.use(async (ctx, next) =>{
             case '/admin' :
                 ctx.type= "html"
                 ctx.body = fs.createReadStream('./admin-site/login.html',{autoClose: true})
+            break;
+            case '/admin/crm':
+                ctx.type= "html"
+                ctx.body = fs.createReadStream('./admin-site/crm-login.html',{autoClose: true})
             break;
             default:
             break;
@@ -76,8 +79,57 @@ xcms.use(async (ctx, next) =>{
                         ctx.body = fs.createReadStream('./admin-site/index.html',{autoClose: true})
                     }
                 }else{
-                    redirect('/admin')
+                    ctx.redirect('/admin')
                 }
+            break;
+            case '/admin/crm' :
+                const crmauth = ctx.request.body
+                if(crmauth.username === user.username){
+                    if(crmauth.password === user.password){
+                        ctx.type = "html"
+                        ctx.body = fs.createReadStream('./admin-site/crm.html',{autoClose: true})
+                    }
+                }else{
+                    ctx.redirect('/admin/crm')
+                }
+            break;
+            case '/contact':
+                const contact = ctx.request.body
+                console.log(contact)
+                let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {autoClose: true})
+                let transporter = "";
+                transporterInfo.on('data', (data)=>{
+                    transporter += data
+                })
+                transporterInfo.on('end', ()=>{
+                    transporter = jsp(transporter)
+                    const mailTransporter = nodemailer.createTransport(transporter)
+                    const email = {
+                        from: contact.email,
+                        to: transporter.auth.user,
+                        subject: contact.firstname + " " + contact.lastname + " contacted you",
+                        text: contact.message
+                    }
+                    mailTransporter.sendMail(email)
+                })
+                
+                let crmFile = fs.createReadStream('./xcmsDB/Xcrmdata.db', {autoClose: true})
+                let crmdata = ""
+                crmFile.on('data', (data)=>{
+                    crmdata += data
+                })
+                crmFile.on('end', ()=>{
+                    crmdata = jsp(crmdata)
+                    let newContact = {
+                        fullName: contact.firstname + " " + contact.lastname,
+                        email: contact.email
+                    }
+                    crmdata.push(newContact)
+                    let updatecrm = fs.createWriteStream('./xcmsDB/Xcrmdata.db', {encoding: 'utf8'})
+                    updatecrm.write(jss(crmdata))
+                    updatecrm.end()
+                })
+                ctx.redirect('/')
             break;
             default:
             break;
@@ -88,11 +140,18 @@ xcms.use(async (ctx, next) =>{
         if(/^\/imgs\/([\D a-z 0-9]{2,})/.test(ctx.url)){
             let imageName = ctx.url.split('/')
             ctx.type = 'image/*'
-            ctx.body = fs.createReadStream('./client-site/imgs/'+imageName[2], {autoclose: true})
+            ctx.body = fs.createReadStream('./frontend-site/imgs/'+imageName[2], {autoclose: true})
             return
         }
         var urlctl = fileCTL.exec(ctx.url)
-        ctx.type = typeCTL.exec(ctx.url)[0]
+        if(typeCTL.exec(ctx.url)[0] === 'woff'){
+            ctx.type = "font/woff2"
+        }else if(typeCTL.exec(ctx.url)[0] === 'ttf'){
+            ctx.type = "application/font-sfnt"
+        }else{
+            ctx.type = typeCTL.exec(ctx.url)[0]
+        }
+        
         if(page != undefined){
             pagesCollection.forEach(existingPage=>{
                 if('/'+existingPage.name == page){
@@ -118,8 +177,6 @@ xcms.listen(9899,()=>{
     xcmsWs.on('connection', (peer)=>{
         peer.isAlive = true;
         peer.on('pong', heartbeat)
-        console.log(pagesCollection.length)
-        console.log(typeof pagesCollection)
         if(pagesCollection.length !== 0){
             pagesCollection.forEach(fi =>{
                 if(/\.html/.test(fi.name)){
@@ -136,6 +193,15 @@ xcms.listen(9899,()=>{
             if(e === "ERCONNRESET"){
                 throw e
             }
+        })
+        let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {autoClose: true})
+        let transporter = "";
+        transporterInfo.on('data', (data)=>{
+            transporter += data
+        })
+        transporterInfo.on('end', ()=>{
+            transporter = jsp(transporter)
+            if(transporter.host !== '') peer.send(jss({formfield: true}))
         })
         var image
         peer.on('message', (data)=>{
@@ -157,7 +223,7 @@ xcms.listen(9899,()=>{
                     if(count === 0){
                         xcmsDB.set(nouvellePage)
                     }else{
-                        console.log('erreur la page exist pour de vrai')
+                        console.log('erreur la page existe pour de vrai')
                         count = 0
                         return
                     }
@@ -171,9 +237,65 @@ xcms.listen(9899,()=>{
                         }
                     })
                 }
+                //PAGE CRM
+                if(datainfo.userslist){
+                    let crmFile = fs.createReadStream('./xcmsDB/Xcrmdata.db')
+                    let crmdata = ""
+                    crmFile.on('data', data =>{
+                        crmdata += data
+                    })
+                    crmFile.on('end', ()=>{
+                        crmdata = jsp(crmdata)
+                        crmUsers = crmdata.map(user=>{
+                            if(user.fullName){
+                                return user
+                            }
+                        }).filter(user=>{
+                            if(user !== null){
+                                return user
+                            }
+                        })
+                        peer.send(jss({userslist: crmUsers}))
+                    })
+                }
+                if(datainfo.selectedContacts){
+                    let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {autoClose: true})
+                    let transporter = "";
+                    transporterInfo.on('data', (data)=>{
+                        transporter += data
+                    })
+                    transporterInfo.on('end', ()=>{
+                        transporter = jsp(transporter)
+                        let mailTransporter = nodemailer.createTransport(transporter)
+                        datainfo.selectedContacts.forEach(contact =>{
+                            let mailOptions = {
+                                from: transporter.auth.user,
+                                to: contact.email,
+                                subject: "Hello " + contact.fullName,
+                                text: datainfo.mailText,
+                                html: datainfo.htmlText
+                                }
+                            mailTransporter.sendMail(mailOptions)
+                        })
+                    })
+                }
+                if(datainfo.host){
+                    let transporter = fs.createWriteStream('./xcmsDB/transporter', {encoding: 'utf8'})
+                    let transporterData = {
+                        host: datainfo.host,
+                        port: 587,
+                        secure: false,
+                        auth: {
+                            user: datainfo.user,
+                            pass: datainfo.userpassword
+                        }
+                    }
+                    transporter.write(jss(transporterData))
+                    transporter.end()
+                }
             }
             if(typeof data === 'object'){
-                var newImg = fs.createWriteStream('./client-site/imgs/'+image.name, {encoding:"binary"})
+                var newImg = fs.createWriteStream('./frontend-site/imgs/'+image.name, {encoding:"binary"})
                 newImg.write(data)
                 newImg.end()
             }

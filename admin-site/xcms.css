@@ -8,9 +8,7 @@
     #cfd8dc bleu gris clair
     #1de9b6 teal bleu special
 */
-#isActive{
-    border: solid 3px red;
-}
+
 *{margin:0; padding:0; user-select: none;
     --rouge-brick-pale: #ef5350;
     --rouge-brique-eclatant: #ff5252;
@@ -19,6 +17,9 @@
     --orange-pale: #e64a19;
     --bleu-gris-clair: #cfd8dc;
     --teal-bleu-special: #1de9b6;
+}
+#isActive{
+    border-right: solid 20px #536dfe;
 }
 body{
     height: 100vh;
@@ -39,7 +40,9 @@ main{
     padding: 90px 90px 0 90px; */
 }
 .edit-zone{
-    border: dotted var(--rouge-brick-pale) 14px;
+    border: solid #5c6bc0 20px;
+    min-height: 60px;
+    border-radius: 20px;
 }
 .first-class-editor{
     grid-column: 3;
@@ -66,11 +69,14 @@ main{
     top: 5.5px;
 }
 section{
-    width:75%;
     text-align: center;
 }
 section:nth-child(2), section:nth-child(3), section:nth-child(4){
     margin-top:0;
+}
+#nodemaker section:not(:nth-child(3)){
+    border: solid;
+    margin: 20px 0;
 }
 .genediv{
     height: 10vh;
@@ -145,10 +151,24 @@ iframe{
     width: 100%;
     overflow: scroll;
 }
-#isContainer{
-    border: solid 3px orange;
+.nav{
+    background: #000;
+    color: #fff;
+    min-height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-
+.nav p{
+    cursor: pointer;
+    width: 150px;
+}
+#isContainer{
+    border-right: solid 20px #1de9b6;
+    border-top: solid 10px #536dfe;
+    border-bottom: solid 10px #536dfe;
+    min-height: 60px;
+}
 .switch {
   position: relative;
   display: inline-block;
@@ -204,4 +224,9 @@ input:checked + .slider:before {
 
 #designmaker{
     display: none;
+}
+.classBox{
+    position: absolute;
+    background: #fff;
+    padding: 10px;    
 }

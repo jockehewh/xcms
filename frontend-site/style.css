@@ -1,3 +1,7 @@
+@font-face{
+  font-family: "Righteous";
+  src : url('./Righteous-Regular.ttf')
+}
 /* 
     couleurs:
     #ef5350 rouge brique pale
@@ -20,41 +24,25 @@
 body{
     display: flex;
     flex-direction: column;
+    font-family: "Righteous"
 }
-.genesis-div, .genesis-img, .genesis-menu, .genesis-p, .genesis-titre{padding: 0;}
-.genesis-menu{
+.xcms-div, .xcms-img, .xcms-menu{padding: 0;}
+.xcms-menu{
 list-style-type: none;
 color: black;
 }
-.genesis-menu li{
+.xcms-menu li{
     display: inline;
     margin: 5%;
 }
-.genesis-div{
+.xcms-div{
     width:100%;
     display:block;
 }
-.genesis-img{
+.xcms-img{
     display:block;
     height: 250px;
     width: 350px;
-}
-.genesis-p{
-    display:block;
-}
-.genesis-titre{
-    display:block;
-    color: var(--orange-pale)
-}
-.nav-menu{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-.nav-item{
-    list-style-type: none;
-    text-transform: uppercase;
 }
 .lien{
     color: rgb(15, 85, 235);

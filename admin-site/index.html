@@ -7,20 +7,11 @@
     <title>Creative side</title>
     <link rel="stylesheet" href="./admin-site/xcms.css">
     <link rel="stylesheet" href="./admin-site/tachyons.min.css">
+    <link rel="stylesheet" href="./admin-site/quill.snow.css">
+    <script src="./admin-site/quill.js"></script>
 </head>
 <body>
-    <div class="genesis-pop">
-        <!--Master titre maker-->
-        <div id="options-select">
-            <ul>
-                <li><a href="#" data-size="3">moyen (h3)</a></li>
-                <li><a href="#" data-size="4">casi cormal (h4)</a></li>
-                <li><a href="#" data-size="2">grand (h2)</a></li>
-                <li><a href="#" data-size="1">tres grand (h1)</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="genesis-popd">
+    <div class="xcms-popd">
         <!--Master menu maker-->
             <div id="options-selectd">
                 <ul>
@@ -28,16 +19,17 @@
                     <li><a href="#" data-size="4">4 options</a></li>
                     <li><a href="#" data-size="3">3 options</a></li>
                     <li><a href="#" data-size="2">2 options</a></li>
+                    <li><select id="menusize"></select></li>
                 </ul>
+                <button class="save">save</button>
             </div>
         </div>
+        <div class="nav"><span style="padding-left: 20px;">XCMS</span> <p>Go to CRM page</p> </div>
     <main class="mw-100 center">
         <div class="first-class fl ph3 pv5 w-70">
             <!--Master page maker-->
             <input type="file" accept="image" id="imgpiker">
             <div class="edit-zone" style="display:block;">
-                <link rel="stylesheet" href="./admin-site/onepage.css">
-                <link rel="stylesheet" href="./admin-site/multipage.css">
                 <style scoped>
                     *{margin:0; padding:0; user-select: none;
                         --rouge-brick-pale: #ef5350;
@@ -48,117 +40,79 @@
                         --bleu-gris-clair: #cfd8dc;
                         --teal-bleu-special: #1de9b6;
                     }
-                    .genesis-div, .genesis-img, .genesis-menu, .genesis-p, .genesis-titre{padding: 10px}
-                    .genesis-menu{
+                    .xcms-div, .xcms-img, .xcms-menu{padding: 10px}
+                    .xcms-menu{
                     list-style-type: none;
                     color: black;
                     }
-                    .genesis-menu li{
+                    .xcms-menu li{
                         display: inline;
                         margin: 5%;
                     }
-                    .genesis-header{
-                        min-height: 50px;
-                    }
-                    .genesis-div{
+                    .xcms-div{
                         width:100%;
                         display:block;
+                        min-height: 60px;
                     }
-                    .genesis-img{
+                    .xcms-img{
                         display:block;
                         height: 250px;
                         width: 350px;
                     }
-                    .genesis-p{
-                        display:block;
-                    }
-                    .genesis-titre{
-                        display:block;
-                        color: var(--orange-pale)
-                    }
-                    .nav-menu{
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-between;
-                        align-items: center;
-                    }
-                    .nav-item{
-                        list-style-type: none;
-                        text-transform: uppercase;
-                    }
                 </style>
-                <nav><ul class="nav-menu">
-
-                </ul></nav>
             </div>
             <div class="maFrame">
                 
             </div>
         </div>
         <div class="first-class-editor fl pa2 w-30">
-            <section>
-                <p><span>editor</span> - <span>designer</span></p>
-                <label class="switch">
-                <input class="changemod" type="checkbox">
-                <span class="slider"></span>
-            </label>
-            </section>
-            <section id="designmaker">
-                <label for="font-selector">Change font</label>
-                <select name="font-selector" id="font-selector">
-                    <option value="Avenir Next">Avenir Next</option>
-                    <option value="Helvetica">Helvetica</option>
-                    <option value="San Francisco">San Francisco</option>
-                    <option value="Roboto">Roboto</option>
-                    <option value="System Sans-Sherif">System Sans-Sherif</option>
-                    <option value="Athelas">Athelas</option>
-                    <option value="Baskerville">Baskerville</option>
-                    <option value="Garamond">Garamond</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="System Sherif">System Sherif</option>
-                </select>
-                <button class="linemaker">one line container</button>
-            </section>
-            <section id="nodemaker" class="mt5 tc">
-                <label><input type="radio" id="designer" name="designer" value="single" checked> Site une page </label><br>
-                <label><input type="radio" id="designer" name="designer" value="multiple"> Site multipage </label><br>
-                <input id="titrepage" type="text" placeholder="nom de la nouvelle page">
-                <ul class="list">
-                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="header">header</a></li>
-                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="footer">footer</a></li>
-                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="div">section</a></li>
-                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="menu">menu</a></li>
-                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="texte">texte</a></li>
-                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="image">image</a></li>
-                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="titre">titre</a></li>
-                    <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="video">video</a></li>
-                </ul>
-                <div class="colors">
-                    <label id="fond">
-                        <input type="radio" id="colorbox" name="color" value='back'> Couleur de fond: <br>
-                    </label>
-                    <label id="texte">
-                            <input type="radio" id="colorbox" name="color" value='text'> Couleur du text: <br>
+            <section id="nodemaker" class="tc">
+                <label for="titrepage"><h4>Page name:</h4></label>
+                <input name="titrepage" id="titrepage" type="text" placeholder="New page name">
+                <section class="boutons">
+                    <button id="crepage">Save page</button>
+                    <button id="crenew">New page</button>
+                    <button id="efface">Delete content</button>
+                </section>
+                <section>
+                    <h4 class="mt2">Edit content:</h4>
+                    <ul class="list">
+                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="texte">Open editor</a></li>
+                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="div">Add a container</a></li>
+                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="menu">Add a menu</a></li>
+                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="image">Add an image</a></li>
+                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="video">Add a video</a></li>
+                    </ul>
+                    <label class="mt2" for="cssinput">Custom CSS:</label><br>
+                    <textarea name="cssinput" id="cssinput" cols="25" rows="4"></textarea><br>
+                    <button class="applycss">apply css</button><br>
+                </section>
+                <section>
+                    <div class="colors">
+                        <label id="fond">
+                            <input type="radio" id="colorbox" name="color" value='back'>Background color: <br>
                         </label>
-                    <input type="color" name="color-picker" id="color-picker">
-                </div>
-                <div>
-                    légende: 
-                    <p style="border: solid red 3px">va être éditer</p>
-                    <p style="border: solid orange 3px">contiendra le prochain élément</p>
-                </div>
-            </section>
-            <section class="boutons">
-                <button id="crepage">VALIDER</button>
-                <button id="crenew">Creer page</button>
-                <button id="efface">EFFACER</button>
+                        <label id="texte">
+                                <input type="radio" id="colorbox" name="color" value='text'>Text color: <br>
+                            </label>
+                        <input type="color" name="color-picker" id="color-picker">
+                    </div>
+                </section>
+                <section>
+                    <div class="mt2">
+                        <h4>legend:</h4> 
+                        <p style="border-right: solid #536dfe 10px">is a selected element.</p>
+                        <p style="border-right: solid #1de9b6 10px">is a selected container element.</p>
+                    </div>
+                </section>
+                
             </section>
             <!--<section>
                 <textarea name="contenuText" id="contenuCouleur" cols="30" rows="10"></textarea>
                 <a data-demande="hypertxt">apply</a>
             </section>-->
-            <section>
-                <p>edit an old page</p>
+            <section class="mt2">
+                <h4>edit an old page</h4>
                 <ul class="editables list">
                     
                 </ul>
@@ -169,7 +123,15 @@
         /* 
             CONNEXION EN WEBSOCKET 0 REFERMER
         */
-        var mews = new WebSocket('ws://localhost:9898');
+        document.querySelector('.nav p').addEventListener('click', (e)=>{
+            window.location.href = "/admin/crm"
+        })
+        let mews;
+        if(window.location.hostname === "localhost"){
+            mews = new WebSocket('ws://localhost:9898')
+        }else{
+            mews = new WebSocket('wss://'+ window.location.hostname+'/ws')
+        }
         var crepage = document.querySelector('#crepage');
         var jss = JSON.stringify
         var jsp = JSON.parse
@@ -191,20 +153,6 @@
                 document.querySelector('.edit-zone').querySelectorAll('link').forEach(link=>{
                     link.remove()
                 })
-                var j = 1
-                while (j <= 6){
-                    if(document.querySelectorAll('h'+j) !== 0){
-                        document.querySelectorAll('h'+j).forEach(title=>{
-                            title.removeAttribute('contenteditable')
-                        })
-                    }
-                    j++
-                }
-                if(document.querySelectorAll('p').length !== 0){
-                    document.querySelectorAll('p').forEach(text=>{
-                        text.removeAttribute('contenteditable')
-                    })
-                }
                 e.preventDefault();
                 titre = document.querySelector('#titrepage').value;
                 contenu = `<!DOCTYPE html>
@@ -214,11 +162,13 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <title>${titre}</title>
-                    <link rel="stylesheet" href="./client-site/tachyons.min.css">
-                    <script src='./client-site/designer.js'><\/script>
-                    </head><body>${document.querySelector('.edit-zone').innerHTML}</body></html>`;
+                    <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
+                    <link rel="stylesheet" href="./frontend-site/style.css">
+                    <script src='./frontend-site/designer.js'><\/script>
+                    </head><body>${document.querySelector('.edit-zone').innerHTML}
+                    <script src='./frontend-site/xcms-custom.js'><\/script></body></html>`;
                 if(titre === "" || titre === undefined){
-                    titre = prompt("comment s'appelera la page que vous souhaitez envoyé")
+                    titre = prompt("Please enter a name for your new page.")
                 }
                 nouvellepage = {titre, contenu}
                 mews.send(jss(nouvellepage))
@@ -228,6 +178,7 @@
                     document.querySelector('.edit-zone').lastChild.remove()
                     j--
                 }
+                alert(`your new page is accessible at the following address: ${window.location.origin}/${titre}.html` )
             }, false)
         }
 
@@ -259,32 +210,13 @@
                         theframe.childNodes.forEach(node=>{
                             if(node instanceof HTMLElement){
                                 if(node.hasAttribute('class')){
-                                    if(node.className !== "genesis-img"){
-                                    node.setAttribute('contenteditable', true)
+                                    if(node.className !== "xcms-img"){
+                                        node.addEventListener('click',(e)=>{
+                                            node.id = 'isActive'
+                                            xEdit(node)
+                                        })
                                     }
                                 }
-                            }
-                        })
-                        document.querySelector('.re-edit-zone').addEventListener('click', function(e){
-                            e.preventDefault();
-                            e.stopImmediatePropagation();
-                            if(e.target.getAttribute('contenteditable') === "false" || e.target.getAttribute('contenteditable') === null){
-                                if(e.target.id === "isActive"){
-                                    e.target.id = ""
-                                }else{
-                                    e.target.id = "isActive"
-                                }
-                            }else if(e.target.getAttribute('contenteditable') === "true"){
-                                return
-                            }
-                        }, false)
-                        document.querySelector('.re-edit-zone').addEventListener('dblclick', function(e){
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if(e.target.id === "isContainer"){
-                                e.target.id = ""
-                            }else{
-                                e.target.id = "isContainer"
                             }
                         })
                         //ENREGISTREMENT DES CHANGEMENTS
@@ -296,6 +228,7 @@
                             var imgs = document.querySelectorAll('img');
                                 var i = j = 0
                             while ( i<= imgs.length-1){
+                                imgs[i].classList.add('xcms-img')
                                 if(/\/imgs\//.test(imgs[i].src)){
                                     i++
                                 }else{
@@ -308,17 +241,12 @@
                             theframe.childNodes.forEach(node=>{
                                 if(node instanceof HTMLElement){
                                     if(node.hasAttribute('class')){
-                                        if(node.className !== "genesis-img"){
+                                        if(node.className !== "xcms-img"){
                                         node.removeAttribute('contenteditable')
                                         }
                                     }
                                 }
                             })
-                            if(document.querySelectorAll('p').length !== 0){
-                                document.querySelectorAll('p').forEach(text=>{
-                                    text.removeAttribute('contenteditable')
-                                })
-                            }
                             let name = e.target.innerText
                             let page = `<!DOCTYPE html>
                 <html lang="en">
@@ -327,9 +255,11 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <title>${e.target.innerText}</title>
-                    <link rel="stylesheet" href="./client-site/tachyons.min.css">
-                    <script src='./client-site/designer.js'><\/script>
-                    </head><body>${theframe.innerHTML}</body></html>`;
+                    <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
+                    <link rel="stylesheet" href="./frontend-site/style.css">
+                    <script src='./frontend-site/designer.js'><\/script>
+                    </head><body>${theframe.innerHTML}
+                    <script src='./frontend-site/xcms-custom.js'><\/script></body></html>`;
                             let changedPage = {name, page}
                             mews.send(jss({update: changedPage}))
                             editablePages[e.target.dataset.index].page = theframe.innerHTML
@@ -341,6 +271,24 @@
                 }
                 document.querySelector('.editables').appendChild(li)
                 li = a = ""
+            }
+            if(parsed.formfield){
+                //formfield button with action
+                const nodemaker = document.querySelector('#nodemaker ul')
+                let li = document.createElement('li')
+                let a = document.createElement('a')
+                a.href = '#'
+                a.innerText = "Contact form"
+                a.className += "black hover-blue link "
+                li.className += "b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
+                li.appendChild(a)
+                nodemaker.appendChild(li)
+                a.addEventListener('click', (e)=>{
+                    let formblock = document.createElement("h1")
+                    formblock.innerText = "Contact form will be here..."
+                    formblock.dataset.form = "true"
+                    xAppend(formblock)
+                })
             }
         }
         /* 
@@ -356,26 +304,11 @@
                 e.preventDefault();
                 e.stopPropagation();
                 switch(e.target.dataset.demande){
-                    case 'header':
-                    desactive()
-                        var header = document.createElement('header')
-                        header.id = 'isActive isContainer'
-                        header.classList.add('genesis-header')
-                        header.innerText = prompt('Valeur du titre:')
-                        xAppend(header)
-                    break;
-                    case 'footer':
-                    desactive()
-                        var footer = document.createElement('footer')
-                        footer.id = 'isActive isContainer'
-                        footer.classList.add('genesis-footer')
-                        xAppend(footer)
-                    break;
                     case 'div':
                     desactive()
                         var div = document.createElement('div')
-                        div.id = 'isActive isContainer'
-                        div.classList.add('genesis-div')
+                        div.id = 'isContainer'
+                        div.classList.add('xcms-div')
                         xAppend(div)
                     break;
                     case 'image':
@@ -383,7 +316,7 @@
                         var imgpicker = document.querySelector('#imgpiker');
                         var img = document.createElement('img');
                         img.id ='isActive'
-                        img.classList.add('genesis-img')
+                        img.classList.add('xcms-img')
                         xAppend(img)
                         imgpicker.style.display = 'block'
                         var imgpicklone = document.createElement('input');
@@ -412,62 +345,10 @@
                     break;
                     case 'texte':
                     desactive()
-                        var pé = document.createElement('p');
+                        var pé = document.createElement('div');
                         pé.id = "isActive"
-                        pé.classList.add('genesis-p')
-                        pé.setAttribute('contenteditable', true)
                         xAppend(pé)
-                        pé.addEventListener('keydown', e=>{
-                            if(e.code === 'Enter' || e.code === 'NumpadEnter'){
-                                e.preventDefault();
-                                document.execCommand('insertHTML', false, '<br><br>')
-                                return false
-                            }
-                            //if echap enlever la class isActive
-                        })
-                    break;
-                    case 'titre':
-                    desactive()
-                    var headerVal;
-                        document.querySelector('.genesis-pop').style.display = 'flex'
-                        document.querySelectorAll('#options-select a').forEach(as =>{
-                            //defini la grandeur du Titre
-                                as.addEventListener('click', e =>{
-                                    e.stopImmediatePropagation()
-                                    headerVal = e.target.dataset.size
-                                    var titre = document.createElement(`h${headerVal}`)
-                                    titre.id = "isActive"
-                                    titre.setAttribute('contenteditable', true)
-                                    titre.innerText = "Cliquer ici pour éditer le titre"
-                                    titre.classList.add('genesis-titre');
-                                    xAppend(titre)
-                                    titre.focus()
-                                    document.querySelector('.genesis-pop').style.display = 'none'
-                                    titre.onblur = e=>{
-                                        titre.id = ""
-                                        if(e.target.hasAttribute('lien')){
-                                            return
-                                        }else{
-                                            var lien = e.target.innerText
-                                            var lienoulien = confirm(e.target.innerText+ ' sera-t-il la cible d\'un lien?')
-                                            if(lienoulien === true){
-                                                titre.setAttribute('lien', true)
-                                                titre.classList.add('lien')
-                                            }else{
-                                                titre.setAttribute('lien', false)
-                                            }
-                                        }
-                                        
-                                    }
-                                    titre.addEventListener('keydown', e=>{
-                                        if(e.code === 'Enter' || e.code === 'NumpadEnter'){
-                                            titre.blur()
-                                            e.preventDefault();
-                                            return false
-                                        }
-                                    })
-                                })
-                            })
+                        xEdit(pé)
                     break;
                     case 'video':
 
@@ -475,13 +356,17 @@
                     case 'menu':
                     desactive()
                     var menuSize;
-                        document.querySelector('.genesis-popd').style.display = 'flex'
+                        document.querySelector('.xcms-popd').style.display = 'flex'
+                        let i = 6
+                        while(i <= 10){
+                            let option = document.createElement('option')
+                            option.value = i
+                            option.innerText = i + " options"
+                            document.querySelector('#menusize').appendChild(option)
+                            i++
+                        }
                         document.querySelectorAll('#options-selectd a').forEach(as =>{
                             //defini la longueur du menu
-                            /* 
-                                documenter : sequence de création et l'édition 
-                                double click pour éditer une section
-                            */
                                 as.addEventListener('click', e =>{
                                     e.stopImmediatePropagation()
                                     var ul = document.createElement('ul');
@@ -489,21 +374,42 @@
                                     while(menuSize < Number(e.target.dataset.size)){
                                         var li = document.createElement('li');
                                         var alink = document.createElement('a');
-                                        var titrelien = prompt("choisissez la direction du lien n°"+(menuSize+1)+"/"+Number(e.target.dataset.size)+":")
+                                        var titrelien = prompt("Please enter the target element for the link n°"+(menuSize+1)+"/"+Number(e.target.dataset.size)+":")
                                         alink.href = "#" + titrelien
                                         alink.innerText = titrelien
                                         alink.id = "isActive"
                                         li.appendChild(alink);
                                         ul.appendChild(li);
-                                        ul.classList.add('genesis-menu')
+                                        ul.classList.add('xcms-menu')
                                         alink.id = ""
                                         menuSize++
                                     }
                                     menuSize = 0
                                     xAppend(ul)
-                                    document.querySelector('.genesis-popd').style.display = 'none'
+                                    document.querySelector('.xcms-popd').style.display = 'none'
                                 })
                             })
+                        document.querySelector('.xcms-popd .save').addEventListener('click', (e)=>{
+                            let desiredSize = document.querySelector('#menusize').options[document.querySelector('#menusize').selectedIndex].value
+                            var ul = document.createElement('ul');
+                            menuSize = 0
+                            while(menuSize <= desiredSize){
+                                var li = document.createElement('li');
+                                var alink = document.createElement('a');
+                                var titrelien = prompt("Please enter the target element for the link n°"+(menuSize+1)+"/"+desiredSize+":")
+                                alink.href = "#" + titrelien
+                                alink.innerText = titrelien
+                                alink.id = "isActive"
+                                li.appendChild(alink);
+                                ul.appendChild(li);
+                                ul.classList.add('xcms-menu')
+                                alink.id = ""
+                                menuSize++
+                            }
+                            menuSize = 0
+                            xAppend(ul)
+                            document.querySelector('.xcms-popd').style.display = 'none'
+                        })
                     break;
                     case 'hypertxt':
                     //BLOCK A REVOIR
@@ -518,26 +424,15 @@
             }, false)
         })
             //***************LIVE ON PAGE LIVE
-        document.querySelector('.edit-zone').addEventListener('click', function(e){
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            if(e.target.getAttribute('contenteditable') === "false" || e.target.getAttribute('contenteditable') === null){
-                if(e.target.id === "isActive"){
+        document.querySelector('.edit-zone').addEventListener('dblclick', function(e){
+            if(/xcms-/.test(e.target.classList.value)){
+                e.preventDefault();
+                e.stopPropagation();
+                if(e.target.id === "isContainer"){
                     e.target.id = ""
                 }else{
-                    e.target.id = "isActive"
+                    e.target.id = "isContainer"
                 }
-            }else if(e.target.getAttribute('contenteditable') === "true"){
-                return
-            }
-        }, false)
-        document.querySelector('.edit-zone').addEventListener('dblclick', function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            if(e.target.id === "isContainer"){
-                e.target.id = ""
-            }else{
-                e.target.id = "isContainer"
             }
         })
         //******************CREATION DE PAGE
@@ -570,6 +465,102 @@
                 }
             }
         }
+        //******************EDIT
+            let lastItem;
+        function xEdit(item){
+            if(document.querySelector('.ql-editor')) return
+            if(item.nodeName === "BUTTON"){
+                applyChanges(lastItem)
+            }
+            if(document.querySelector('#isActive')){
+                let toolbarOptions = [
+                    ['bold', 'italic', 'underline', 'strike',{ 'color': [] }, { 'background': [] }, 'link'],
+                    [{ 'font': [] }],
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],    // superscript/subscript
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+                    [{ 'direction': 'rtl' }],
+                    [{ 'align': [] }]
+                ]
+                let editor = new Quill('#isActive', {
+                    modules: { toolbar: toolbarOptions },
+                    theme: 'snow'
+                    });
+                    lastItem = item
+                applyChanges(item)
+            }else{
+                return
+            }
+        }
+        function applyChanges(node){
+            let editorbtn = document.createElement('button')
+            editorbtn.innerText = 'save'
+            let btn = document.createElement('button')
+            btn.innerHTML = `<svg viewBox="0 0 18 18" class="" style="
+    background: #444;
+"> <line class="ql-stroke" x1="7" x2="11" y1="7" y2="11" style="
+    stroke: #fff;
+"></line> <path class="ql-even ql-stroke" d="M8.9,4.577a3.476,3.476,0,0,1,.36,4.679A3.476,3.476,0,0,1,4.577,8.9C3.185,7.5,2.035,6.4,4.217,4.217S7.5,3.185,8.9,4.577Z" style="
+    stroke: #fff;
+"></path> <path class="ql-even ql-stroke" d="M13.423,9.1a3.476,3.476,0,0,0-4.679-.36,3.476,3.476,0,0,0,.36,4.679c1.392,1.392,2.5,2.542,4.679.36S14.815,10.5,13.423,9.1Z" style="
+    stroke: #fff;
+"></path> </svg>`
+            btn.className = 'btn-link'
+            document.querySelector('.ql-toolbar .ql-formats').appendChild(btn)
+            let addClassBtn = document.createElement('button')
+            addClassBtn.innerText = ".cls"
+            document.querySelector('.ql-toolbar .ql-formats').appendChild(addClassBtn)
+            addClassBtn.addEventListener('click', (e)=>{
+                let selectedItem = window.getSelection().focusNode.parentElement
+                let div = document.createElement('div')
+                let label = document.createElement('label')
+                let input = document.createElement('input')
+                let savebtn = document.createElement('button')
+                label.for = 'classBox'
+                label.innerText = 'Enter a class name: '
+                input.name = "classBox"
+                input.id = "classBox"
+                input.type = 'text'
+                savebtn.innerText = 'Save'
+                div.classList.add('classBox')
+                div.appendChild(label)
+                div.appendChild(input)
+                div.appendChild(savebtn)
+                document.body.appendChild(div)
+                div.style.top = e.clientY+'px'
+                div.style.left = e.clientX+'px'
+                savebtn.addEventListener('click', (e)=>{
+                    let newClassName= document.querySelector('#classBox').value
+                    selectedItem.className += ' '+ newClassName.toLowerCase()
+                    div.remove()
+                })
+            })
+            btn.addEventListener('click', (e)=>{
+                let selectedItem = window.getSelection().focusNode.parentElement
+                selectedItem.id = selectedItem.innerText.toLowerCase()
+                selectedItem.setAttribute('lien', true)
+                selectedItem.classList.add('lien')
+                selectedItem.dataset.lien = selectedItem.id
+            })
+            if(document.querySelector('#isActive')){
+                document.querySelector('#isActive').appendChild(editorbtn)
+            }else{
+                return
+            }
+            editorbtn.addEventListener('click',()=>{
+                editorbtn.remove()
+                let newData = document.querySelector('.ql-editor').innerHTML
+                let div = document.createElement('div')
+                div.innerHTML = newData
+                div.classList.add('xcms-custom')
+                node.parentElement.replaceChild(div, node)
+                document.querySelector('.ql-toolbar').remove()
+                div.addEventListener('click',(e)=>{
+                    div.id = 'isActive'
+                    xEdit(div)
+                })
+            })
+        }
         //*************DEACTIVR
         function desactive(){
             document.querySelectorAll('#isActive').forEach(active =>{active.id = ''})
@@ -577,29 +568,13 @@
 </script>
 <script>
     // AFFICHAGE
-    var singlecss = document.styleSheets[1].cssRules
-    var multiplecss = document.styleSheets[2].cssRules
-    document.querySelectorAll('#designer').forEach(designer =>{
-        designer.addEventListener('change', e=>{
-            var i =0
-            console.log(e.target)
-            if(e.target.value === 'single'){
-                var styleEmbarque = document.querySelector('.edit-zone style')
-                styleEmbarque.innerText = ''
-                while (i < document.styleSheets[1].cssRules.length){
-                    styleEmbarque.innerText += singlecss[i].cssText
-                    i++
-                }
-            }
-            if(e.target.value === 'multiple'){
-                var styleEmbarque = document.querySelector('.edit-zone style')
-                styleEmbarque.innerText = ''
-                while (i < document.styleSheets[2].cssRules.length){
-                    styleEmbarque.innerText += multiplecss[i].cssText
-                    i++
-                }
-            }
-        })
+    document.querySelector('.applycss').addEventListener('click', (e)=>{
+        let cssupdate = document.querySelector('#cssinput').value
+        if(document.querySelector('.edit-zone').style.display === "block"){
+            document.querySelector('.edit-zone style').innerText += cssupdate
+        }else{
+            document.querySelector('.re-edit-zone style').innerText += cssupdate
+        }
     })
     document.querySelector('#color-picker').addEventListener('change', (e)=>{
         console.log(e.target.value)
@@ -621,18 +596,6 @@
                 }
             }
         })
-    })
-    document.querySelector('.changemod').addEventListener('change', (e)=>{
-        if(document.querySelector('.changemod').checked){
-            document.querySelector('#designmaker').style.display = "block"
-            document.querySelector('#nodemaker').style.display = "none"
-            document.querySelector('.linemaker').addEventListener('click', e=>{
-                document.querySelector('#isActive').className += " flex flex-column flex-row-ns"
-            })
-        }else{
-            document.querySelector('#designmaker').style.display = "none"
-            document.querySelector('#nodemaker').style.display = "block"
-        }
     })
 </script>
 </body>
