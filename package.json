@@ -1,15 +1,15 @@
 {
-  "name": "bestisback",
+  "name": "xcms",
   "version": "1.0.0",
-  "description": "xcms",
+  "description": "a wysiwyg cms",
   "main": "xcms.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "js"
+    "js", "cms", "template"
   ],
-  "author": "X",
+  "author": "Xavier bélénus",
   "license": "ISC",
   "dependencies": {
     "koa": "^2.5.1",
