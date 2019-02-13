@@ -3,7 +3,6 @@ const WS = require('ws')
 const fs = require('fs')
 const xcmsDB = require('./xdata.js');
 const bodyParser = require('koa-body')
-const user = require('./xcmsDB/usercred')
 const nodemailer = require('nodemailer')
 const xcmsWs = new WS.Server({port: 9898});
 const xcms = new koa();
@@ -24,6 +23,14 @@ dbpages.on('data', (data)=>{
 /* [{"db":"placeholder","size":"1"}] */
 dbpages.on('end', ()=>{
 pagesCollection = JSON.parse(pagesCollection)
+})
+let authStream = fs.createReadStream('./xcmsDB/adminlist',{autoClose: true})
+let admins = ""
+authStream.on('data', data=>{
+    admins += data
+})
+authStream.on('end', ()=>{
+    admins = jsp(admins)
 })
 xcms.use(bodyParser())
 xcms.use(async (ctx, next) =>{
@@ -73,29 +80,46 @@ xcms.use(async (ctx, next) =>{
         switch (ctx.url){
             case '/admin' :
                 const auth = ctx.request.body
-                if(auth.username === user.username){
-                    if(auth.password === user.password){
-                        ctx.type = "html"
-                        ctx.body = fs.createReadStream('./admin-site/index.html',{autoClose: true})
+                for(let i = 0; i< admins.length; i++){
+                    if(auth.username == admins[i]["username"]){
+                        if(auth.password == admins[i]["password"]){
+                            ctx.type = "html"
+                            ctx.body = fs.createReadStream('./admin-site/index.html',{autoClose: true})
+                            break;
+                        }else{
+                            ctx.redirect('/admin')
+                            break;
+                        }
+                    }else{
+                        if(i+1 === admins.length){
+                            ctx.redirect('/admin')
+                            break;
+                        }
                     }
-                }else{
-                    ctx.redirect('/admin')
                 }
             break;
             case '/admin/crm' :
                 const crmauth = ctx.request.body
-                if(crmauth.username === user.username){
-                    if(crmauth.password === user.password){
-                        ctx.type = "html"
-                        ctx.body = fs.createReadStream('./admin-site/crm.html',{autoClose: true})
+                for(let i = 0; i< admins.length; i++){
+                    if(crmauth.username == admins[i]["username"]){
+                        if(crmauth.password == admins[i]["password"]){
+                            ctx.type = "html"
+                            ctx.body = fs.createReadStream('./admin-site/crm.html',{autoClose: true})
+                            break;
+                        }else{
+                            ctx.redirect('/admin/crm')
+                            break;
+                        }
+                    }else{
+                        if(i+1 === admins.length){
+                            ctx.redirect('/admin/crm')
+                            break;
+                        }
                     }
-                }else{
-                    ctx.redirect('/admin/crm')
                 }
             break;
             case '/contact':
                 const contact = ctx.request.body
-                console.log(contact)
                 let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {autoClose: true})
                 let transporter = "";
                 transporterInfo.on('data', (data)=>{
