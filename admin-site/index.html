@@ -77,23 +77,23 @@
                 <section>
                     <h4 class="mt2">Edit content:</h4>
                     <ul class="list">
-                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="texte">Open editor</a></li>
-                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="div">Add a container</a></li>
-                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="menu">Add a menu</a></li>
-                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="image">Add an image</a></li>
-                        <li class="b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="black hover-blue link ph5" href="#" data-demande="video">Add a video</a></li>
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="texte">Open editor</a></li>
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="div">Add a container</a></li>
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="menu">Add a menu</a></li>
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="image">Add an image</a></li>
+                        <!--<li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="video">Add a video</a></li>-->
                     </ul>
-                    <label class="mt2" for="cssinput">Custom CSS:</label><br>
+                    <label class="mt2" for="cssinput"><h4>Custom CSS:</h4></label>
                     <textarea name="cssinput" id="cssinput" cols="25" rows="4"></textarea><br>
                     <button class="applycss">apply css</button><br>
                 </section>
                 <section>
                     <div class="colors">
                         <label id="fond">
-                            <input type="radio" id="colorbox" name="color" value='back'>Background color: <br>
+                            <input class="orange" type="radio" id="colorbox" name="color" value='back'>Background color: <br>
                         </label>
                         <label id="texte">
-                                <input type="radio" id="colorbox" name="color" value='text'>Text color: <br>
+                                <input class="orange" type="radio" id="colorbox" name="color" value='text'>Text color: <br>
                             </label>
                         <input type="color" name="color-picker" id="color-picker">
                     </div>
@@ -101,8 +101,8 @@
                 <section>
                     <div class="mt2">
                         <h4>legend:</h4> 
-                        <p style="border-right: solid #536dfe 10px">is a selected element.</p>
-                        <p style="border-right: solid #1de9b6 10px">is a selected container element.</p>
+                        <p class="orange" style="border-right: solid #536dfe 10px">is a selected element.</p>
+                        <p class="orange" style="border-right: solid #1de9b6 10px">is a selected container element.</p>
                     </div>
                 </section>
                 
@@ -163,6 +163,7 @@
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <title>${titre}</title>
                     <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
+                    <link rel="stylesheet" href="./frontend-site/quill.snow.css">
                     <link rel="stylesheet" href="./frontend-site/style.css">
                     <script src='./frontend-site/designer.js'><\/script>
                     </head><body>${document.querySelector('.edit-zone').innerHTML}
@@ -194,9 +195,9 @@
                     a.href = '#'
                     a.innerText = parsed.lien.name
                     a.dataset.index = editablePages.length - 1
-                    a.className += "black hover-blue link ph5"
+                    a.className += "orange hover-blue link ph5"
                     li.appendChild(a);
-                    li.className += "b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
+                    li.className += "b--light-silver br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
                     //EDITION DES PAGES
                     a.addEventListener('click', (e)=>{
                         e.preventDefault();
@@ -248,18 +249,7 @@
                                 }
                             })
                             let name = e.target.innerText
-                            let page = `<!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-                    <title>${e.target.innerText}</title>
-                    <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
-                    <link rel="stylesheet" href="./frontend-site/style.css">
-                    <script src='./frontend-site/designer.js'><\/script>
-                    </head><body>${theframe.innerHTML}
-                    <script src='./frontend-site/xcms-custom.js'><\/script></body></html>`;
+                            let page = theframe.innerHTML
                             let changedPage = {name, page}
                             mews.send(jss({update: changedPage}))
                             editablePages[e.target.dataset.index].page = theframe.innerHTML
