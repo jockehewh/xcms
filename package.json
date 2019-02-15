@@ -9,7 +9,7 @@
   "keywords": [
     "js", "cms", "template"
   ],
-  "author": "Xavier bélénus",
+  "author": "Xavier bélénus <xavier.belenus@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "koa": "^2.5.1",
