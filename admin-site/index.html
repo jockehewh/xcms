@@ -28,7 +28,7 @@
     <main class="mw-100 center">
         <div class="first-class fl ph3 pv5 w-70">
             <!--Master page maker-->
-            <input type="file" accept="image" id="imgpiker">
+            <input type="file" accept="image; video/mp4" id="imgpiker">
             <div class="edit-zone" style="display:block;">
                 <style scoped>
                     *{margin:0; padding:0; user-select: none;
@@ -39,25 +39,6 @@
                         --orange-pale: #e64a19;
                         --bleu-gris-clair: #cfd8dc;
                         --teal-bleu-special: #1de9b6;
-                    }
-                    .xcms-div, .xcms-img, .xcms-menu{padding: 10px}
-                    .xcms-menu{
-                    list-style-type: none;
-                    color: black;
-                    }
-                    .xcms-menu li{
-                        display: inline;
-                        margin: 5%;
-                    }
-                    .xcms-div{
-                        width:100%;
-                        display:block;
-                        min-height: 60px;
-                    }
-                    .xcms-img{
-                        display:block;
-                        height: 250px;
-                        width: 350px;
                     }
                 </style>
             </div>
@@ -81,7 +62,7 @@
                         <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="div">Add a container</a></li>
                         <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="menu">Add a menu</a></li>
                         <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="image">Add an image</a></li>
-                        <!--<li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="video">Add a video</a></li>-->
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="video">Add a video</a></li>
                     </ul>
                     <label class="mt2" for="cssinput"><h4>Custom CSS:</h4></label>
                     <textarea name="cssinput" id="cssinput" cols="25" rows="4"></textarea><br>
@@ -143,11 +124,15 @@
             console.log('connected')
             crepage.addEventListener('click', e =>{
                 var imgs = document.querySelectorAll('img');
-                    console.log(imgs[0])
                     var i = 0
                 while ( i<= imgs.length-1){
-                    console.log(imgs[i])
                     imgs[i].src = './imgs/'+titresImgs[i];
+                    i++
+                }
+                var videos = document.querySelectorAll('video');
+                    var i = 0
+                while ( i<= videos.length-1){
+                    videos[i].src = './videos/'+titresVideos[i];
                     i++
                 }
                 document.querySelector('.edit-zone').querySelectorAll('link').forEach(link=>{
@@ -227,7 +212,7 @@
                         button.addEventListener('click', ev=>{
                             //MODIFIER LES LIENS
                             var imgs = document.querySelectorAll('img');
-                                var i = j = 0
+                            var i = j = 0
                             while ( i<= imgs.length-1){
                                 imgs[i].classList.add('xcms-img')
                                 if(/\/imgs\//.test(imgs[i].src)){
@@ -236,6 +221,18 @@
                                     imgs[i].src = './imgs/'+titresImgs[j];
                                     i++
                                     j++
+                                }
+                            }
+                            var videos = document.querySelectorAll('video');
+                            var k = l = 0
+                            while ( k<= videos.length-1){
+                                videos[k].classList.add('xcms-img')
+                                if(/\/videos\//.test(videos[k].src)){
+                                    k++
+                                }else{
+                                    videos[k].src = './videos/'+titresVideos[l];
+                                    k++
+                                    l++
                                 }
                             }
                             //ENLEVER ATTRIBUT CONTENTEDITABLE
@@ -288,6 +285,7 @@
             elements creation
         */
        var titresImgs = []
+       var titresVideos = []
        var pushCount = 0
         document.querySelectorAll('.first-class-editor a').forEach((btn)=>{
             btn.addEventListener('click', (e)=>{
@@ -311,7 +309,7 @@
                         imgpicker.style.display = 'block'
                         var imgpicklone = document.createElement('input');
                             imgpicklone.setAttribute('type', 'file')
-                            imgpicklone.setAttribute('accept', 'image')
+                            imgpicklone.setAttribute('accept', 'image; video/mp4')
                             imgpicklone.id = 'imgpiker'
                             imgpicklone.style.display = 'none'
                             imgpicker.addEventListener('change', function(ev){
@@ -341,7 +339,38 @@
                         xEdit(pé)
                     break;
                     case 'video':
-
+                        desactive()
+                        var videopicker = document.querySelector('#imgpiker');
+                        var video = document.createElement('video');
+                        video.id ='isActive'
+                        video.type = 'video/mp4'
+                        video.setAttribute('controls', 'true')
+                        video.classList.add('xcms-video')
+                        
+                        videopicker.style.display = 'block'
+                        var videopicklone = document.createElement('input');
+                            videopicklone.setAttribute('type', 'file')
+                            videopicklone.setAttribute('accept', 'image; video/mp4')
+                            videopicklone.id = 'imgpiker'
+                            videopicklone.style.display = 'none'
+                            videopicker.addEventListener('change', function(ev){
+                                ev.stopPropagation()
+                                pushCount++
+                                var type = {type: videopicker.files[0].type}
+                                var file0 = videopicker.files[0];
+                                titresVideos.push(file0.name)
+                                videopicker.replaceWith(imgpicklone);
+                                mews.send(jss({videoname: file0.name, type: type.type}))
+                                mews.send(file0)
+                                video.src = window.URL.createObjectURL(file0)
+                                xAppend(video)
+                                video.load()
+                                video.onload = function(eve){
+                                window.URL.revokeObjectURL(this.src)
+                                video = ""
+                                videopicker.style.display = 'none'
+                                }
+                            },false)
                     break;
                     case 'menu':
                     desactive()

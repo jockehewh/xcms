@@ -45,7 +45,14 @@ xcms.use(async (ctx, next) =>{
     if(ctx.method === "GET"){
         switch (ctx.url){
             case '/' :
-            try{
+            console.log(pagesCollection[1].name)
+            if(pagesCollection[1].name === 'index.html'){
+                ctx.type = "html"
+                ctx.body = pagesCollection[1].page
+            }else{
+                ctx.redirect('/admin')
+            }
+            /* try{
                 pagesCollection.forEach((page, i)=>{
                     console.log(page.name, i)
                     if(page.name == 'index.html'){
@@ -61,7 +68,7 @@ xcms.use(async (ctx, next) =>{
             }catch(e){
                 console.log(e)
                 ctx.redirect('/admin')
-            }
+            } */
             break;
             //CASE LOGIN?
             case '/admin' :
@@ -227,12 +234,15 @@ xcms.listen(9899,()=>{
             transporter = jsp(transporter)
             if(transporter.host !== '') peer.send(jss({formfield: true}))
         })
-        var image
+        var image, video
         peer.on('message', (data)=>{
             if(typeof data === 'string'){
                 var datainfo = jsp(data)
                 if(datainfo.name){
                     image = datainfo
+                }
+                if(datainfo.videoname){
+                    video = datainfo
                 }
                 if(datainfo.titre){
                     nouvellePage = {name: datainfo.titre+".html", page: datainfo.contenu}
@@ -319,10 +329,18 @@ xcms.listen(9899,()=>{
                 }
             }
             if(typeof data === 'object'){
-                var newImg = fs.createWriteStream('./frontend-site/imgs/'+image.name, {encoding:"binary"})
-                newImg.write(data)
-                newImg.end()
+                if(image){
+                    var newImg = fs.createWriteStream('./frontend-site/imgs/'+image.name, {encoding:"binary"})
+                    newImg.write(data)
+                    newImg.end()
+                }
+                if(video){
+                    var newImg = fs.createWriteStream('./frontend-site/videos/'+video.videoname, {encoding:"binary"})
+                    newImg.write(data)
+                    newImg.end()
+                }
             }
+
         })
     })
 })
