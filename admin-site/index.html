@@ -1,30 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Creative side</title>
+
     <link rel="stylesheet" href="./admin-site/xcms.css">
     <link rel="stylesheet" href="./admin-site/tachyons.min.css">
     <link rel="stylesheet" href="./admin-site/quill.snow.css">
     <script src="./admin-site/quill.js"></script>
+    <script src="./admin-site/socket.io.js"></script>
 </head>
+
 <body>
     <div class="xcms-popd">
         <!--Master menu maker-->
-            <div id="options-selectd">
-                <ul>
-                    <li><a href="#" data-size="5">5 options</a></li>
-                    <li><a href="#" data-size="4">4 options</a></li>
-                    <li><a href="#" data-size="3">3 options</a></li>
-                    <li><a href="#" data-size="2">2 options</a></li>
-                    <li><select id="menusize"></select></li>
-                </ul>
-                <button class="save">save</button>
-            </div>
+        <div id="options-selectd">
+            <ul>
+                <li><a href="#" data-size="5">5 options</a></li>
+                <li><a href="#" data-size="4">4 options</a></li>
+                <li><a href="#" data-size="3">3 options</a></li>
+                <li><a href="#" data-size="2">2 options</a></li>
+                <li><select id="menusize"></select></li>
+            </ul>
+            <button class="save">save</button>
         </div>
-        <div class="nav"><span style="padding-left: 20px;">XCMS</span> <p>Go to CRM page</p> </div>
+    </div>
+    <div class="nav"><span style="padding-left: 20px;">XCMS</span>
+        <p>Go to CRM page</p>
+    </div>
     <main class="mw-100 center">
         <div class="first-class fl ph3 pv5 w-70">
             <!--Master page maker-->
@@ -43,12 +49,14 @@
                 </style>
             </div>
             <div class="maFrame">
-                
+
             </div>
         </div>
         <div class="first-class-editor fl pa2 w-30">
             <section id="nodemaker" class="tc">
-                <label for="titrepage"><h4>Page name:</h4></label>
+                <label for="titrepage">
+                    <h4>Page name:</h4>
+                </label>
                 <input name="titrepage" id="titrepage" type="text" placeholder="New page name">
                 <section class="boutons">
                     <button id="crepage">Save page</button>
@@ -58,35 +66,43 @@
                 <section>
                     <h4 class="mt2">Edit content:</h4>
                     <ul class="list">
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="texte">Open editor</a></li>
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="div">Add a container</a></li>
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="menu">Add a menu</a></li>
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="image">Add an image</a></li>
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a class="orange smallbordur hover-blue link" href="#" data-demande="video">Add a video</a></li>
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
+                                class="orange smallbordur hover-blue link" href="#" data-demande="texte">Open editor</a></li>
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
+                                class="orange smallbordur hover-blue link" href="#" data-demande="div">Add a container</a></li>
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
+                                class="orange smallbordur hover-blue link" href="#" data-demande="menu">Add a menu</a></li>
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
+                                class="orange smallbordur hover-blue link" href="#" data-demande="image">Add an image</a></li>
+                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
+                                class="orange smallbordur hover-blue link" href="#" data-demande="video">Add a video</a></li>
                     </ul>
-                    <label class="mt2" for="cssinput"><h4>Custom CSS:</h4></label>
+                    <label class="mt2" for="cssinput">
+                        <h4>Custom CSS:</h4>
+                    </label>
                     <textarea name="cssinput" id="cssinput" cols="25" rows="4"></textarea><br>
                     <button class="applycss">apply css</button><br>
                 </section>
                 <section>
                     <div class="colors">
                         <label id="fond">
-                            <input class="orange" type="radio" id="colorbox" name="color" value='back'>Background color: <br>
+                            <input class="orange" type="radio" id="colorbox" name="color" value='back'>Background
+                            color: <br>
                         </label>
                         <label id="texte">
-                                <input class="orange" type="radio" id="colorbox" name="color" value='text'>Text color: <br>
-                            </label>
+                            <input class="orange" type="radio" id="colorbox" name="color" value='text'>Text color: <br>
+                        </label>
                         <input type="color" name="color-picker" id="color-picker">
                     </div>
                 </section>
                 <section>
                     <div class="mt2">
-                        <h4>legend:</h4> 
+                        <h4>legend:</h4>
                         <p class="orange" style="border-right: solid #536dfe 10px">is a selected element.</p>
                         <p class="orange" style="border-right: solid #1de9b6 10px">is a selected container element.</p>
                     </div>
                 </section>
-                
+
             </section>
             <!--<section>
                 <textarea name="contenuText" id="contenuCouleur" cols="30" rows="10"></textarea>
@@ -95,86 +111,96 @@
             <section class="mt2">
                 <h4>edit an old page</h4>
                 <ul class="editables list">
-                    
+
                 </ul>
             </section>
         </div>
     </main>
-<script>
-        /* 
-            CONNEXION EN WEBSOCKET 0 REFERMER
-        */
-        document.querySelector('.nav p').addEventListener('click', (e)=>{
-            window.location.href = "/admin/crm"
-        })
-        let mews;
-        if(window.location.hostname === "localhost"){
-            mews = new WebSocket('ws://localhost:9898')
-        }else{
-            mews = new WebSocket('wss://'+ window.location.hostname+'/ws')
-        }
+    <script>
+        let mews = io('/asocket')
         var crepage = document.querySelector('#crepage');
         var jss = JSON.stringify
         var jsp = JSON.parse
         const pushToDom = document.querySelector('.edit-zone').appendChild
         var titre, contenu, nouvellepage;
         var imgpicker = document.querySelector('#imgpiker');
-        let editablePages =[]
-        mews.onopen = ()=>{
-            console.log('connected')
-            crepage.addEventListener('click', e =>{
-                var imgs = document.querySelectorAll('img');
-                    var i = 0
-                while ( i<= imgs.length-1){
-                    imgs[i].src = './imgs/'+titresImgs[i];
-                    i++
-                }
-                var videos = document.querySelectorAll('video');
-                    var i = 0
-                while ( i<= videos.length-1){
-                    videos[i].src = './videos/'+titresVideos[i];
-                    i++
-                }
-                document.querySelector('.edit-zone').querySelectorAll('link').forEach(link=>{
-                    link.remove()
-                })
-                e.preventDefault();
-                titre = document.querySelector('#titrepage').value;
-                contenu = `<!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-                    <title>${titre}</title>
-                    <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
-                    <link rel="stylesheet" href="./frontend-site/quill.snow.css">
-                    <link rel="stylesheet" href="./frontend-site/style.css">
-                    <script src='./frontend-site/designer.js'><\/script>
-                    </head><body>${document.querySelector('.edit-zone').innerHTML}
-                    <script src='./frontend-site/xcms-custom.js'><\/script></body></html>`;
-                if(titre === "" || titre === undefined){
-                    titre = prompt("Please enter a name for your new page.")
-                }
-                nouvellepage = {titre, contenu}
-                mews.send(jss(nouvellepage))
-                var allnodes = document.querySelector('.edit-zone').childNodes
-                var j = allnodes.length
-                while( j>2 ){
-                    document.querySelector('.edit-zone').lastChild.remove()
-                    j--
-                }
-                alert(`your new page is accessible at the following address: ${window.location.origin}/${titre}.html` )
-            }, false)
-        }
+        let editablePages = []
 
-        mews.onmessage = (data)=>{
-            parsed = jsp(data.data)
-            if(parsed.lien && parsed.lien !== ""){
-                if( editablePages != undefined && editablePages.includes(parsed.lien)){
+        crepage.addEventListener('click', e => {
+            var imgs = document.querySelectorAll('img');
+            var i = 0
+            while (i <= imgs.length - 1) {
+                imgs[i].src = './imgs/' + titresImgs[i];
+                i++
+            }
+            var videos = document.querySelectorAll('video');
+            var i = 0
+            while (i <= videos.length - 1) {
+                videos[i].src = './videos/' + titresVideos[i];
+                i++
+            }
+            document.querySelector('.edit-zone').querySelectorAll('link').forEach(link => {
+                link.remove()
+            })
+            e.preventDefault();
+            titre = document.querySelector('#titrepage').value;
+            let googleTag = ''
+            let scriptTag
+            if (confirm('I have a Google analytics ID?')) {
+                googleTag = prompt('My Google Analytics ID is: ')
+                scriptTag =
+                    `<script async src="https://www.googletagmanager.com/gtag/js?id=${googleTag}"><\/script><script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '${googleTag}');
+        <\/script>`
+            }
+            contenu =
+                `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>${titre}</title>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        ${scriptTag}
+        <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
+        <link rel="stylesheet" href="./frontend-site/quill.snow.css">
+        <link rel="stylesheet" href="./frontend-site/style.css">
+        <script src='./frontend-site/designer.js'><\/script>
+        </head><body>${document.querySelector('.edit-zone').innerHTML}
+        <script src='./frontend-site/xcms-custom.js'><\/script></body></html>`;
+            if (titre === "" || titre === undefined) {
+                titre = prompt("Please enter a name for your new page.")
+            }
+            nouvellepage = {
+                titre,
+                contenu
+            }
+            mews.emit('message', jss(nouvellepage))
+            var allnodes = document.querySelector('.edit-zone').childNodes
+            var j = allnodes.length
+            while (j > 2) {
+                document.querySelector('.edit-zone').lastChild.remove()
+                j--
+            }
+            alert(
+                `your new page is accessible at the following address: ${window.location.origin}/${titre}.html`
+            )
+        }, false)
+        mews.on('normal', data => {
+            parsed = jsp(data)
+            if (parsed.lien && parsed.lien !== "") {
+                if (editablePages != undefined && editablePages.includes(parsed.lien)) {
                     return
-                }else{
-                    editablePages.push({...parsed.lien, index: editablePages.length})
+                } else {
+                    editablePages.push({
+                        ...parsed.lien,
+                        index: editablePages.length
+                    })
                     var li = document.createElement('li');
                     var a = document.createElement('a');
                     a.href = '#'
@@ -182,9 +208,10 @@
                     a.dataset.index = editablePages.length - 1
                     a.className += "orange hover-blue link ph5"
                     li.appendChild(a);
-                    li.className += "b--light-silver br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
+                    li.className +=
+                        "b--light-silver br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
                     //EDITION DES PAGES
-                    a.addEventListener('click', (e)=>{
+                    a.addEventListener('click', (e) => {
                         e.preventDefault();
                         myframe = document.querySelector('.maFrame')
                         var theframe = document.createElement('div')
@@ -193,11 +220,11 @@
                         myframe.appendChild(theframe)
                         document.querySelector('.edit-zone').style.display = 'none'
                         //PREPARATION AU CHANGEMENT
-                        theframe.childNodes.forEach(node=>{
-                            if(node instanceof HTMLElement){
-                                if(node.hasAttribute('class')){
-                                    if(node.className !== "xcms-img"){
-                                        node.addEventListener('click',(e)=>{
+                        theframe.childNodes.forEach(node => {
+                            if (node instanceof HTMLElement) {
+                                if (node.hasAttribute('class')) {
+                                    if (node.className !== "xcms-img") {
+                                        node.addEventListener('click', (e) => {
                                             node.id = 'isActive'
                                             xEdit(node)
                                         })
@@ -209,46 +236,51 @@
                         let button = document.createElement('button')
                         button.innerText = 'Enregistrer et fermer'
                         document.querySelector('.boutons').appendChild(button)
-                        button.addEventListener('click', ev=>{
+                        button.addEventListener('click', ev => {
                             //MODIFIER LES LIENS
                             var imgs = document.querySelectorAll('img');
                             var i = j = 0
-                            while ( i<= imgs.length-1){
+                            while (i <= imgs.length - 1) {
                                 imgs[i].classList.add('xcms-img')
-                                if(/\/imgs\//.test(imgs[i].src)){
+                                if (/\/imgs\//.test(imgs[i].src)) {
                                     i++
-                                }else{
-                                    imgs[i].src = './imgs/'+titresImgs[j];
+                                } else {
+                                    imgs[i].src = './imgs/' + titresImgs[j];
                                     i++
                                     j++
                                 }
                             }
                             var videos = document.querySelectorAll('video');
                             var k = l = 0
-                            while ( k<= videos.length-1){
+                            while (k <= videos.length - 1) {
                                 videos[k].classList.add('xcms-img')
-                                if(/\/videos\//.test(videos[k].src)){
+                                if (/\/videos\//.test(videos[k].src)) {
                                     k++
-                                }else{
-                                    videos[k].src = './videos/'+titresVideos[l];
+                                } else {
+                                    videos[k].src = './videos/' + titresVideos[l];
                                     k++
                                     l++
                                 }
                             }
                             //ENLEVER ATTRIBUT CONTENTEDITABLE
-                            theframe.childNodes.forEach(node=>{
-                                if(node instanceof HTMLElement){
-                                    if(node.hasAttribute('class')){
-                                        if(node.className !== "xcms-img"){
-                                        node.removeAttribute('contenteditable')
+                            theframe.childNodes.forEach(node => {
+                                if (node instanceof HTMLElement) {
+                                    if (node.hasAttribute('class')) {
+                                        if (node.className !== "xcms-img") {
+                                            node.removeAttribute('contenteditable')
                                         }
                                     }
                                 }
                             })
                             let name = e.target.innerText
                             let page = theframe.innerHTML
-                            let changedPage = {name, page}
-                            mews.send(jss({update: changedPage}))
+                            let changedPage = {
+                                name,
+                                page
+                            }
+                            mews.emit('message', jss({
+                                update: changedPage
+                            }))
                             editablePages[e.target.dataset.index].page = theframe.innerHTML
                             theframe.remove()
                             document.querySelector('.edit-zone').style.display = 'block'
@@ -259,163 +291,178 @@
                 document.querySelector('.editables').appendChild(li)
                 li = a = ""
             }
-            if(parsed.formfield){
-                //formfield button with action
+            if (parsed.formfield) {
                 const nodemaker = document.querySelector('#nodemaker ul')
                 let li = document.createElement('li')
                 let a = document.createElement('a')
                 a.href = '#'
                 a.innerText = "Contact form"
                 a.className += "black hover-blue link "
-                li.className += "b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
+                li.className +=
+                    "b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
                 li.appendChild(a)
                 nodemaker.appendChild(li)
-                a.addEventListener('click', (e)=>{
+                a.addEventListener('click', (e) => {
                     let formblock = document.createElement("h1")
                     formblock.innerText = "Contact form will be here..."
                     formblock.dataset.form = "true"
                     xAppend(formblock)
                 })
             }
-        }
+        })
+        document.querySelector('.nav p').addEventListener('click', (e) => {
+            window.location.href = "/admin/crm"
+        })
         /* 
-        CREATION DEZS ELEMENTS
+        CREATION DES ELEMENTS
         */
-        /* 
-            elements creation
-        */
-       var titresImgs = []
-       var titresVideos = []
-       var pushCount = 0
-        document.querySelectorAll('.first-class-editor a').forEach((btn)=>{
-            btn.addEventListener('click', (e)=>{
+        var titresImgs = []
+        var titresVideos = []
+        var pushCount = 0
+        document.querySelectorAll('.first-class-editor a').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                switch(e.target.dataset.demande){
+                switch (e.target.dataset.demande) {
                     case 'div':
-                    desactive()
+                        desactive()
                         var div = document.createElement('div')
                         div.id = 'isContainer'
                         div.classList.add('xcms-div')
                         xAppend(div)
-                    break;
+                        break;
                     case 'image':
-                    desactive()
+                        desactive()
                         var imgpicker = document.querySelector('#imgpiker');
                         var img = document.createElement('img');
-                        img.id ='isActive'
+                        img.id = 'isActive'
                         img.classList.add('xcms-img')
                         xAppend(img)
                         imgpicker.style.display = 'block'
                         var imgpicklone = document.createElement('input');
-                            imgpicklone.setAttribute('type', 'file')
-                            imgpicklone.setAttribute('accept', 'image; video/mp4')
-                            imgpicklone.id = 'imgpiker'
-                            imgpicklone.style.display = 'none'
-                            imgpicker.addEventListener('change', function(ev){
-                                ev.stopPropagation()
-                                pushCount++
-                                var type = {type: imgpicker.files[0].type}
-                                var file0 = imgpicker.files[0];
-                                titresImgs.push(file0.name)
-                                imgpicker.replaceWith(imgpicklone);
-                                mews.send(jss({name: file0.name, type: type.type}))
-                                mews.send(file0)
-                                img.src = window.URL.createObjectURL(file0)
-                                img.onload = function(eve){
+                        imgpicklone.setAttribute('type', 'file')
+                        imgpicklone.setAttribute('accept', 'image; video/mp4')
+                        imgpicklone.id = 'imgpiker'
+                        imgpicklone.style.display = 'none'
+                        imgpicker.addEventListener('change', function (ev) {
+                            ev.stopPropagation()
+                            pushCount++
+                            var type = {
+                                type: imgpicker.files[0].type
+                            }
+                            var file0 = imgpicker.files[0];
+                            titresImgs.push(file0.name)
+                            imgpicker.replaceWith(imgpicklone);
+                            mews.emit('image', {
+                                name: file0.name,
+                                image: file0
+                            })
+                            img.src = window.URL.createObjectURL(file0)
+                            img.onload = function (eve) {
                                 window.URL.revokeObjectURL(this.src)
                                 img = ""
                                 imgpicker.style.display = 'none'
-                                }
-                            },false)
-                            
+                            }
+                        }, false)
 
-                    break;
+
+                        break;
                     case 'texte':
-                    desactive()
+                        desactive()
                         var pé = document.createElement('div');
                         pé.id = "isActive"
                         xAppend(pé)
                         xEdit(pé)
-                    break;
+                        break;
                     case 'video':
                         desactive()
                         var videopicker = document.querySelector('#imgpiker');
                         var video = document.createElement('video');
-                        video.id ='isActive'
+                        video.id = 'isActive'
                         video.type = 'video/mp4'
                         video.setAttribute('controls', 'true')
                         video.classList.add('xcms-video')
-                        
+
                         videopicker.style.display = 'block'
                         var videopicklone = document.createElement('input');
-                            videopicklone.setAttribute('type', 'file')
-                            videopicklone.setAttribute('accept', 'image; video/mp4')
-                            videopicklone.id = 'imgpiker'
-                            videopicklone.style.display = 'none'
-                            videopicker.addEventListener('change', function(ev){
-                                ev.stopPropagation()
-                                pushCount++
-                                var type = {type: videopicker.files[0].type}
-                                var file0 = videopicker.files[0];
-                                titresVideos.push(file0.name)
-                                videopicker.replaceWith(imgpicklone);
-                                mews.send(jss({videoname: file0.name, type: type.type}))
-                                mews.send(file0)
-                                video.src = window.URL.createObjectURL(file0)
-                                xAppend(video)
-                                video.load()
-                                video.onload = function(eve){
+                        videopicklone.setAttribute('type', 'file')
+                        videopicklone.setAttribute('accept', 'image; video/mp4')
+                        videopicklone.id = 'imgpiker'
+                        videopicklone.style.display = 'none'
+                        videopicker.addEventListener('change', function (ev) {
+                            ev.stopPropagation()
+                            pushCount++
+                            var type = {
+                                type: videopicker.files[0].type
+                            }
+                            var file0 = videopicker.files[0];
+                            titresVideos.push(file0.name)
+                            videopicker.replaceWith(imgpicklone);
+                            mews.emit('video', {
+                                name: file0.name,
+                                video: file0
+                            })
+                            video.src = window.URL.createObjectURL(file0)
+                            xAppend(video)
+                            video.load()
+                            video.onload = function (eve) {
                                 window.URL.revokeObjectURL(this.src)
                                 video = ""
                                 videopicker.style.display = 'none'
-                                }
-                            },false)
-                    break;
+                            }
+                        }, false)
+                        break;
                     case 'menu':
-                    desactive()
-                    var menuSize;
+                        desactive()
+                        var menuSize;
                         document.querySelector('.xcms-popd').style.display = 'flex'
                         let i = 6
-                        while(i <= 10){
+                        while (i <= 10) {
                             let option = document.createElement('option')
                             option.value = i
                             option.innerText = i + " options"
                             document.querySelector('#menusize').appendChild(option)
                             i++
                         }
-                        document.querySelectorAll('#options-selectd a').forEach(as =>{
+                        document.querySelectorAll('#options-selectd a').forEach(as => {
                             //defini la longueur du menu
-                                as.addEventListener('click', e =>{
-                                    e.stopImmediatePropagation()
-                                    var ul = document.createElement('ul');
-                                    menuSize = 0
-                                    while(menuSize < Number(e.target.dataset.size)){
-                                        var li = document.createElement('li');
-                                        var alink = document.createElement('a');
-                                        var titrelien = prompt("Please enter the target element for the link n°"+(menuSize+1)+"/"+Number(e.target.dataset.size)+":")
-                                        alink.href = "#" + titrelien
-                                        alink.innerText = titrelien
-                                        alink.id = "isActive"
-                                        li.appendChild(alink);
-                                        ul.appendChild(li);
-                                        ul.classList.add('xcms-menu')
-                                        alink.id = ""
-                                        menuSize++
-                                    }
-                                    menuSize = 0
-                                    xAppend(ul)
-                                    document.querySelector('.xcms-popd').style.display = 'none'
-                                })
+                            as.addEventListener('click', e => {
+                                e.stopImmediatePropagation()
+                                var ul = document.createElement('ul');
+                                menuSize = 0
+                                while (menuSize < Number(e.target.dataset.size)) {
+                                    var li = document.createElement('li');
+                                    var alink = document.createElement('a');
+                                    var titrelien = prompt(
+                                        "Please enter the target element for the link n°" +
+                                        (menuSize + 1) + "/" + Number(e.target.dataset
+                                            .size) + ":")
+                                    alink.href = "#" + titrelien
+                                    alink.innerText = titrelien
+                                    alink.id = "isActive"
+                                    li.appendChild(alink);
+                                    ul.appendChild(li);
+                                    ul.classList.add('xcms-menu')
+                                    alink.id = ""
+                                    menuSize++
+                                }
+                                menuSize = 0
+                                xAppend(ul)
+                                document.querySelector('.xcms-popd').style.display =
+                                    'none'
                             })
-                        document.querySelector('.xcms-popd .save').addEventListener('click', (e)=>{
-                            let desiredSize = document.querySelector('#menusize').options[document.querySelector('#menusize').selectedIndex].value
+                        })
+                        document.querySelector('.xcms-popd .save').addEventListener('click', (e) => {
+                            let desiredSize = document.querySelector('#menusize').options[
+                                document.querySelector('#menusize').selectedIndex].value
                             var ul = document.createElement('ul');
                             menuSize = 0
-                            while(menuSize <= desiredSize){
+                            while (menuSize <= desiredSize) {
                                 var li = document.createElement('li');
                                 var alink = document.createElement('a');
-                                var titrelien = prompt("Please enter the target element for the link n°"+(menuSize+1)+"/"+desiredSize+":")
+                                var titrelien = prompt(
+                                    "Please enter the target element for the link n°" + (
+                                        menuSize + 1) + "/" + desiredSize + ":")
                                 alink.href = "#" + titrelien
                                 alink.innerText = titrelien
                                 alink.id = "isActive"
@@ -429,33 +476,33 @@
                             xAppend(ul)
                             document.querySelector('.xcms-popd').style.display = 'none'
                         })
-                    break;
+                        break;
                     case 'hypertxt':
-                    //BLOCK A REVOIR
-                            var isActive = document.querySelector('#isActive')
-                            isActive.innerHTML = document.querySelector('textarea').value
-                            isActive.id = ""
-                            isActive = ""
-                            document.querySelector('textarea').value = ""
-                    break;
+                        //BLOCK A REVOIR
+                        var isActive = document.querySelector('#isActive')
+                        isActive.innerHTML = document.querySelector('textarea').value
+                        isActive.id = ""
+                        isActive = ""
+                        document.querySelector('textarea').value = ""
+                        break;
                 }
-                
+
             }, false)
         })
-            //***************LIVE ON PAGE LIVE
-        document.querySelector('.edit-zone').addEventListener('dblclick', function(e){
-            if(/xcms-/.test(e.target.classList.value)){
+        //***************LIVE ON PAGE LIVE
+        document.querySelector('.edit-zone').addEventListener('dblclick', function (e) {
+            if (/xcms-/.test(e.target.classList.value)) {
                 e.preventDefault();
                 e.stopPropagation();
-                if(e.target.id === "isContainer"){
+                if (e.target.id === "isContainer") {
                     e.target.id = ""
-                }else{
+                } else {
                     e.target.id = "isContainer"
                 }
             }
         })
         //******************CREATION DE PAGE
-        document.querySelector('#crenew').addEventListener('click', (e)=>{
+        document.querySelector('#crenew').addEventListener('click', (e) => {
             e.preventDefault();
             document.querySelector('.edit-zone').innerHTML = ""
             //IFRAME PLUS UTILISEE
@@ -463,59 +510,84 @@
             document.querySelector('.edit-zone').style.display = "block"
         })
         //*****************RESET
-        document.querySelector('#efface').addEventListener('click', e=>{
+        document.querySelector('#efface').addEventListener('click', e => {
             var allnodes = document.querySelector('.edit-zone').childNodes
-                var j = allnodes.length
-                while( j>2 ){
-                    document.querySelector('.edit-zone').lastChild.remove()
-                    j--
-                }
+            var j = allnodes.length
+            while (j > 2) {
+                document.querySelector('.edit-zone').lastChild.remove()
+                j--
+            }
         })
         //******************APPEND
-        function xAppend(item){
-            if(document.querySelector('#isContainer') !== null){
+        function xAppend(item) {
+            if (document.querySelector('#isContainer') !== null) {
                 document.querySelector('#isContainer').appendChild(item)
                 document.querySelector('#isContainer').classList.add('not-empty-container')
-            }else{
-                if(document.querySelector('.edit-zone').style.display === "block"){
+            } else {
+                if (document.querySelector('.edit-zone').style.display === "block") {
                     document.querySelector('.edit-zone').appendChild(item)
-                }else{
+                } else {
                     document.querySelector('.re-edit-zone').appendChild(item)
                 }
             }
         }
         //******************EDIT
-            let lastItem;
-        function xEdit(item){
-            if(document.querySelector('.ql-editor')) return
-            if(item.nodeName === "BUTTON"){
+        let lastItem;
+
+        function xEdit(item) {
+            if (document.querySelector('.ql-editor')) return
+            if (item.nodeName === "BUTTON") {
                 applyChanges(lastItem)
             }
-            if(document.querySelector('#isActive')){
+            if (document.querySelector('#isActive')) {
                 let toolbarOptions = [
-                    ['bold', 'italic', 'underline', 'strike',{ 'color': [] }, { 'background': [] }, 'link'],
-                    [{ 'font': [] }],
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],    // superscript/subscript
-                    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-                    [{ 'direction': 'rtl' }],
-                    [{ 'align': [] }]
+                    ['bold', 'italic', 'underline', 'strike', {
+                        'color': []
+                    }, {
+                        'background': []
+                    }, 'link'],
+                    [{
+                        'font': []
+                    }],
+                    [{
+                        'header': [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    [{
+                        'list': 'ordered'
+                    }, {
+                        'list': 'bullet'
+                    }], // superscript/subscript
+                    [{
+                        'indent': '-1'
+                    }, {
+                        'indent': '+1'
+                    }], // outdent/indent
+                    [{
+                        'direction': 'rtl'
+                    }],
+                    [{
+                        'align': []
+                    }]
                 ]
                 let editor = new Quill('#isActive', {
-                    modules: { toolbar: toolbarOptions },
+                    modules: {
+                        toolbar: toolbarOptions
+                    },
                     theme: 'snow'
-                    });
-                    lastItem = item
+                });
+                lastItem = item
                 applyChanges(item)
-            }else{
+            } else {
                 return
             }
         }
-        function applyChanges(node){
+
+        function applyChanges(node) {
             let editorbtn = document.createElement('button')
             editorbtn.innerText = 'save'
             let btn = document.createElement('button')
-            btn.innerHTML = `<svg viewBox="0 0 18 18" class="" style="
+            btn.innerHTML =
+                `<svg viewBox="0 0 18 18" class="" style="
     background: #444;
 "> <line class="ql-stroke" x1="7" x2="11" y1="7" y2="11" style="
     stroke: #fff;
@@ -529,7 +601,7 @@
             let addClassBtn = document.createElement('button')
             addClassBtn.innerText = ".cls"
             document.querySelector('.ql-toolbar .ql-formats').appendChild(addClassBtn)
-            addClassBtn.addEventListener('click', (e)=>{
+            addClassBtn.addEventListener('click', (e) => {
                 let selectedItem = window.getSelection().focusNode.parentElement
                 let div = document.createElement('div')
                 let label = document.createElement('label')
@@ -546,27 +618,27 @@
                 div.appendChild(input)
                 div.appendChild(savebtn)
                 document.body.appendChild(div)
-                div.style.top = e.clientY+'px'
-                div.style.left = e.clientX+'px'
-                savebtn.addEventListener('click', (e)=>{
-                    let newClassName= document.querySelector('#classBox').value
-                    selectedItem.className += ' '+ newClassName.toLowerCase()
+                div.style.top = e.clientY + 'px'
+                div.style.left = e.clientX + 'px'
+                savebtn.addEventListener('click', (e) => {
+                    let newClassName = document.querySelector('#classBox').value
+                    selectedItem.className += ' ' + newClassName.toLowerCase()
                     div.remove()
                 })
             })
-            btn.addEventListener('click', (e)=>{
+            btn.addEventListener('click', (e) => {
                 let selectedItem = window.getSelection().focusNode.parentElement
                 selectedItem.id = selectedItem.innerText.toLowerCase()
                 selectedItem.setAttribute('lien', true)
                 selectedItem.classList.add('lien')
                 selectedItem.dataset.lien = selectedItem.id
             })
-            if(document.querySelector('#isActive')){
+            if (document.querySelector('#isActive')) {
                 document.querySelector('#isActive').appendChild(editorbtn)
-            }else{
+            } else {
                 return
             }
-            editorbtn.addEventListener('click',()=>{
+            editorbtn.addEventListener('click', () => {
                 editorbtn.remove()
                 let newData = document.querySelector('.ql-editor').innerHTML
                 let div = document.createElement('div')
@@ -574,48 +646,51 @@
                 div.classList.add('xcms-custom')
                 node.parentElement.replaceChild(div, node)
                 document.querySelector('.ql-toolbar').remove()
-                div.addEventListener('click',(e)=>{
+                div.addEventListener('click', (e) => {
                     div.id = 'isActive'
                     xEdit(div)
                 })
             })
         }
         //*************DEACTIVR
-        function desactive(){
-            document.querySelectorAll('#isActive').forEach(active =>{active.id = ''})
+        function desactive() {
+            document.querySelectorAll('#isActive').forEach(active => {
+                active.id = ''
+            })
         }
-</script>
-<script>
-    // AFFICHAGE
-    document.querySelector('.applycss').addEventListener('click', (e)=>{
-        let cssupdate = document.querySelector('#cssinput').value
-        if(document.querySelector('.edit-zone').style.display === "block"){
-            document.querySelector('.edit-zone style').innerText += cssupdate
-        }else{
-            document.querySelector('.re-edit-zone style').innerText += cssupdate
-        }
-    })
-    document.querySelector('#color-picker').addEventListener('change', (e)=>{
-        console.log(e.target.value)
-        document.querySelectorAll('#colorbox').forEach(colorBox=>{
-            if(colorBox.checked && colorBox.value === "back"){
-                if(document.querySelector('#isActive') !== null){
-                    document.querySelector('#isActive').style.backgroundColor = e.target.value
-                }
-                if(document.querySelector('#isContainer') !== null){
-                    document.querySelector('#isContainer').style.backgroundColor = e.target.value
-                }
-            }
-            if(colorBox.checked && colorBox.value === "text"){
-                if(document.querySelector('#isActive') !== null){
-                    document.querySelector('#isActive').style.color = e.target.value
-                }
-                if(document.querySelector('#isContainer') !== null){
-                    document.querySelector('#isContainer').style.color = e.target.value
-                }
+    </script>
+    <script>
+        // AFFICHAGE
+        document.querySelector('.applycss').addEventListener('click', (e) => {
+            let cssupdate = document.querySelector('#cssinput').value
+            if (document.querySelector('.edit-zone').style.display === "block") {
+                document.querySelector('.edit-zone style').innerText += cssupdate
+            } else {
+                document.querySelector('.re-edit-zone style').innerText += cssupdate
             }
         })
-    })
-</script>
+        document.querySelector('#color-picker').addEventListener('change', (e) => {
+            console.log(e.target.value)
+            document.querySelectorAll('#colorbox').forEach(colorBox => {
+                if (colorBox.checked && colorBox.value === "back") {
+                    if (document.querySelector('#isActive') !== null) {
+                        document.querySelector('#isActive').style.backgroundColor = e.target.value
+                    }
+                    if (document.querySelector('#isContainer') !== null) {
+                        document.querySelector('#isContainer').style.backgroundColor = e.target.value
+                    }
+                }
+                if (colorBox.checked && colorBox.value === "text") {
+                    if (document.querySelector('#isActive') !== null) {
+                        document.querySelector('#isActive').style.color = e.target.value
+                    }
+                    if (document.querySelector('#isContainer') !== null) {
+                        document.querySelector('#isContainer').style.color = e.target.value
+                    }
+                }
+            })
+        })
+    </script>
 </body>
+
 </html>

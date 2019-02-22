@@ -7,6 +7,7 @@
   <title>Relation Management</title>
   <link rel="stylesheet" href="../admin-site/quill.snow.css">
   <script src="../admin-site/quill.js"></script>
+  <script src="./admin-site/socket.io.js"></script>
   <style>
     *{margin:0}
     .configuration{
@@ -41,13 +42,6 @@
   </style>
 </head>
 <body>
-  <!--
-    DESIGN!!! IMPORTANT
-    liste des utilisateurs
-    envois de mail groupé
-    envois de mail simple
-    configuration de la boite mail
-  -->
   <div class="nav"><span style="padding-left: 20px;">XCMS</span> <p>Go to CMS page</p> </div>
     <div class="configuration-block">
     <h1>Email configuration</h1>
@@ -99,18 +93,10 @@
         modules: { toolbar: toolbarOptions },
         theme: 'snow'
       });
-      let mews;
-      if(window.location.hostname === "localhost"){
-        mews = new WebSocket('ws://localhost:9898')
-      }else{
-        mews = new WebSocket('wss://'+ window.location.hostname+'/ws')
-      }
-      //wss://xcms.fr
+      let mews = io('/asocket');
       const jss = JSON.stringify
       const jsp = JSON.parse
-      mews.onopen = ()=>{
-        //envoyer les infos
-        mews.send(jss({userslist: true}))
+        mews.emit('message', jss({userslist: true}))
         let sending = document.querySelector('.sendbtn')
         sending.addEventListener('click', (e)=>{
           let selectedContacts = []
@@ -128,7 +114,7 @@
               mailText: document.querySelector('.ql-editor').innerText,
               htmlText: document.querySelector('.ql-editor').innerHTML
             }
-            mews.send(jss(emaildata))
+            mews.emit('message', jss(emaildata))
           }
         })
         document.querySelector('.submit').addEventListener('click', ()=>{
@@ -137,10 +123,9 @@
             user: document.querySelector('#user').value,
             userpassword: document.querySelector('#userpassword').value
           }
-          mews.send(jss(transporterData))
+          mews.emit('message', jss(transporterData))
         })
-      }
-      mews.onmessage = (data)=>{
+      mews.on('normal', data =>{
         const datainfo = jsp(data.data)
         if(datainfo.userslist){
           const userslist = document.querySelector('.ulist')
@@ -157,7 +142,7 @@
             userslist.appendChild(li)
           })
         }
-      }
+      })
     }
   </script>
 </body>
