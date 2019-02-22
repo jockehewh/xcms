@@ -32,6 +32,7 @@
         <p>Go to CRM page</p>
     </div>
     <main class="mw-100 center">
+        <div class="first-class-editor-button"><p>Menu</p></div>
         <div class="first-class fl ph3 pv5 w-70">
             <!--Master page maker-->
             <input type="file" accept="image; video/mp4" id="imgpiker">
@@ -166,13 +167,14 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>${titre}</title>
         <!-- Global site tag (gtag.js) - Google Analytics -->
-        ${scriptTag}
+        ${scriptTag=== undefined? '\n' : scriptTag}
         <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
         <link rel="stylesheet" href="./frontend-site/quill.snow.css">
         <link rel="stylesheet" href="./frontend-site/style.css">
+        <link rel="stylesheet" href="./frontend-site/${titre}.css">
         <script src='./frontend-site/designer.js'><\/script>
         </head><body>${document.querySelector('.edit-zone').innerHTML}
-        <script src='./frontend-site/xcms-custom.js'><\/script></body></html>`;
+        <script src='./frontend-site/${titre}.js'><\/script></body></html>`;
             if (titre === "" || titre === undefined) {
                 titre = prompt("Please enter a name for your new page.")
             }
@@ -329,6 +331,10 @@
                         var div = document.createElement('div')
                         div.id = 'isContainer'
                         div.classList.add('xcms-div')
+                        div.setAttribute('draggable', true)
+                        div.addEventListener('drag', drag)
+                        div.addEventListener('dragover', allowDrop)
+                        div.addEventListener('drop', drop)
                         xAppend(div)
                         break;
                     case 'image':
@@ -358,14 +364,14 @@
                                 image: file0
                             })
                             img.src = window.URL.createObjectURL(file0)
+                            img.setAttribute('draggable', true)
+                            img.addEventListener('drag', drag)
                             img.onload = function (eve) {
                                 window.URL.revokeObjectURL(this.src)
                                 img = ""
                                 imgpicker.style.display = 'none'
                             }
                         }, false)
-
-
                         break;
                     case 'texte':
                         desactive()
@@ -405,6 +411,8 @@
                             video.src = window.URL.createObjectURL(file0)
                             xAppend(video)
                             video.load()
+                            div.setAttribute('draggable', true)
+                            div.addEventListener('drag', drag)
                             video.onload = function (eve) {
                                 window.URL.revokeObjectURL(this.src)
                                 video = ""
@@ -506,7 +514,6 @@
             e.preventDefault();
             document.querySelector('.edit-zone').innerHTML = ""
             //IFRAME PLUS UTILISEE
-            document.querySelector('iframe').remove()
             document.querySelector('.edit-zone').style.display = "block"
         })
         //*****************RESET
@@ -583,6 +590,7 @@
         }
 
         function applyChanges(node) {
+            document.querySelector('.ql-editor').focus()
             let editorbtn = document.createElement('button')
             editorbtn.innerText = 'save'
             let btn = document.createElement('button')
@@ -644,6 +652,10 @@
                 let div = document.createElement('div')
                 div.innerHTML = newData
                 div.classList.add('xcms-custom')
+                div.setAttribute('draggable', true)
+                div.addEventListener('drag', drag)
+                div.addEventListener('dragover', allowDrop)
+                div.addEventListener('drop', drop)
                 node.parentElement.replaceChild(div, node)
                 document.querySelector('.ql-toolbar').remove()
                 div.addEventListener('click', (e) => {
@@ -658,6 +670,43 @@
                 active.id = ''
             })
         }
+        //**************DRAG & DROP
+        function allowDrop(e){
+            e.preventDefault()
+        }
+        let draggedElement;
+        function drag(e){
+            e.dataTransfer.setData("text/html", e.target)
+            console.log(e)
+            draggedElement = e.target
+        }
+        function drop(e){
+            e.preventDefault()
+            console.log(draggedElement)
+            if(/(H[0-9])/.test(e.srcElement.nodeName)){
+                let data = e.dataTransfer.getData('text/html');
+                e.target.parentElement.parentElement.appendChild(draggedElement)
+            } else if(e.srcElement.nodeName === "P" || e.srcElement.nodeName === "SPAN"){
+                let data = e.dataTransfer.getData('text/html');
+                e.target.parentElement.parentElement.appendChild(draggedElement)
+            } else if(e.srcElement.classList.contains('xcms-div') &&  e.srcElement.childNodes.length > 0){
+                e.srcElement.style.display = "grid"
+                e.srcElement.style.gridTemplate = "auto / 1fr 1fr "
+                e.srcElement.style.gridGap = "20px"
+                let data = e.dataTransfer.getData('text/html');
+                e.target.appendChild(draggedElement)
+            } else if(e.srcElement.className === 'xcms-img'){
+                return
+            } else if(e.srcElement.className === 'xcms-video'){
+                return
+            }else{
+                let data = e.dataTransfer.getData('text/html');
+                e.target.appendChild(draggedElement)
+            }
+            
+        }
+        document.querySelector('.edit-zone').addEventListener('dragover', allowDrop)
+        document.querySelector('.edit-zone').addEventListener('drop', drop)
     </script>
     <script>
         // AFFICHAGE
@@ -689,6 +738,47 @@
                     }
                 }
             })
+        })
+    </script>
+    <script>
+        const menubtn = document.querySelector('.first-class-editor-button')
+        const editor = document.querySelector('.first-class')
+        const editorMenu = document.querySelector('.first-class-editor')
+        menubtn.addEventListener('touchend', (e)=>{
+            menubtn.style.display = 'none'
+            editor.style.display = 'none'
+            editorMenu.style.display = 'block'
+            editorMenu.querySelectorAll('a').forEach(a =>{
+                a.addEventListener('touchend', (e)=>{
+                    e.stopImmediatePropagation()
+                    e.target.click()
+                    menubtn.style.display = 'block'
+                    editor.style.display = 'block'
+                    editorMenu.style.display = 'none'
+                    return
+                }, false)
+            })
+        }, false)
+        document.querySelector('#crenew').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            document.querySelector('.edit-zone').innerHTML = ""
+            //IFRAME PLUS UTILISEE
+            document.querySelector('.edit-zone').style.display = "block"
+            menubtn.style.display = 'block'
+            editor.style.display = 'block'
+            editorMenu.style.display = 'none'
+        })
+        //*****************RESET
+        document.querySelector('#efface').addEventListener('touchend', e => {
+            var allnodes = document.querySelector('.edit-zone').childNodes
+            var j = allnodes.length
+            while (j > 2) {
+                document.querySelector('.edit-zone').lastChild.remove()
+                j--
+            }
+            menubtn.style.display = 'block'
+            editor.style.display = 'block'
+            editorMenu.style.display = 'none'
         })
     </script>
 </body>

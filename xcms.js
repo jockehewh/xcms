@@ -258,6 +258,12 @@ adminSocket.on('message', (ctx) => {
                 return
             }
             pagesCollection.push(nouvellePage)
+            let newcss = fs.createWriteStream('./frontend-site/' + datainfo.titre + '.css', {encoding: 'utf8', autoClose:true})
+            newcss.write(' ')
+            newcss.end()
+            let newjs = fs.createWriteStream('./frontend-site/' + datainfo.titre + '.js', {encoding: 'utf8', autoClose:true})
+            newjs.write(' ')
+            newjs.end()
         }
         if (datainfo.update) {
             pagesCollection.forEach(page => {

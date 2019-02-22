@@ -77,8 +77,9 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
     border: solid #536dfe;
     margin: 20px 0;
 }
-.genediv{
-    height: 10vh;
+.xcms-div{
+    min-height: 60px;
+    background-color: #1de9b6;
 }
 .xcms-popd{
     height: 100vh;
@@ -203,4 +204,31 @@ input:checked + .slider:before {
     position: absolute;
     background: #fff;
     padding: 10px;    
+}
+.first-class-editor-button{
+    display: none;
+    }
+
+@media only screen and (max-width: 411px){
+    .first-class-editor{
+        display: none;
+        margin-top: 0;
+        min-width:100%;
+    }
+    .first-class{
+        min-width: 100%;
+    }
+    .first-class-editor-button{
+        display:block;
+        position: absolute;
+        right: 20px;
+        top: 50px;
+        border: solid 2px #536dfe;
+        color: #536dfe;
+        padding: 10px;
+        cursor: pointer;
+    }
+    .first-class-editor-button p{
+        text-decoration: underline;
+    }
 }
