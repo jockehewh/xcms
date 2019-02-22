@@ -1,2 +1,6 @@
 node_modules*
 admin-site/brouillon.js
+xcmsDB/Xdata.db
+xcms.zip
+frontend-site/xcms-custom.js
+frontend-site/style.css
