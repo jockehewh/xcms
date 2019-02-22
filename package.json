@@ -12,7 +12,7 @@
     "template"
   ],
   "author": "Xavier bélénus <xavier.belenus@gmail.com>",
-  "license": "ISC",
+  "license": "GNU AGPL",
   "dependencies": {
     "koa": "^2.5.1",
     "koa-body": "^4.0.7",
