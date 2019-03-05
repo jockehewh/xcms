@@ -69,6 +69,12 @@ xcms.use(async (ctx, next) => {
                     autoClose: true
                 })
                 break;
+            case '/chat':
+                ctx.type = 'html'
+                ctx.body = fs.createReadStream('./extra_modules/instant-messaging.html/', {
+                    autoClose: true
+                })
+            break;
             default:
                 break;
         }
@@ -166,7 +172,7 @@ xcms.use(async (ctx, next) => {
                 break;
         }
     }
-
+    
     if (extensionCTL.test(ctx.url)) {
         if (/^\/imgs\/([ a-zA-Z0-9_-]{2,})/.test(ctx.url)) {
             let imageName = ctx.url.split('/')
@@ -201,9 +207,15 @@ xcms.use(async (ctx, next) => {
                 }
             })
         } else {
-            ctx.body = fs.createReadStream('./' + ctx.url, {
-                autoclose: true
-            })
+            if(/instant-messaging-scripts/.test(ctx.url)){
+                console.log('yo')
+                ctx.body = fs.createReadStream('./extra_modules'+ ctx.url, {autoClose: true})
+            }else{
+                ctx.body = fs.createReadStream('./' + ctx.url, {
+                        autoclose: true
+                    })
+            }
+            
         }
     }
     await next();
@@ -353,6 +365,9 @@ adminSocket.on('video', ctx =>{
 })
 /* FIN SOCKET IO */
 adminSocket.attach(xcms)
+
+let IM = require('./extra_modules/instant-messaging')
+IM.attach(xcms)
 
 xcms.listen(9899, () => {
     console.log("XCMS Listening port 9899")

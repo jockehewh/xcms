@@ -7,16 +7,21 @@
   <title>Relation Management</title>
   <link rel="stylesheet" href="../admin-site/quill.snow.css">
   <script src="../admin-site/quill.js"></script>
-  <script src="./admin-site/socket.io.js"></script>
+  <script src="../admin-site/socket.io.js"></script>
   <style>
     *{margin:0}
+    body{
+      display:flex;
+      flex-direction: column;
+    }
     .configuration{
       display: flex;
       flex-direction: column;
       max-width: 200px;
     }
     .mail{
-      display: flex;
+      display: none;
+      width:80%
     }
     #titre-mail{
       position: absolute;
@@ -39,10 +44,25 @@
       cursor: pointer;
       width: 150px;
     }
+    .minimenu{
+      width: 190px;
+      position: fixed;
+      right: 0;
+      top: 50px;
+    }
+    .minimenu ul{
+      list-style-type: none;
+    }
   </style>
 </head>
 <body>
   <div class="nav"><span style="padding-left: 20px;">XCMS</span> <p>Go to CMS page</p> </div>
+  <div class="minimenu">
+    <ul>
+      <li><a href="#" data-link="conf">Email configuration</a></li>
+      <li><a href="#" data-link="emails">Send emails</a></li>
+    </ul>
+  </div>
     <div class="configuration-block">
     <h1>Email configuration</h1>
     <div class="configuration">
@@ -55,7 +75,7 @@
       <br>
       <button class="submit">Save configuration</button>
     </div>
-  </div><br><br>
+  </div>
   <div class="mail">
     <!--USERS LIST-->
     <ul class="ulist"></ul>
@@ -72,6 +92,17 @@
     document.body.onload = ()=>{
       document.querySelector('.nav p').addEventListener('click', (e)=>{
         window.location.href = "/admin"
+      })
+      document.querySelectorAll('a').forEach(link=>{
+        link.addEventListener('click', e=>{
+          if(e.target.dataset.link === 'conf'){
+            document.querySelector('.mail').style.display = 'none'
+            document.querySelector('.configuration-block').style.display = 'block'
+          }else if(e.target.dataset.link === 'emails'){
+            document.querySelector('.mail').style.display = 'flex'
+            document.querySelector('.configuration-block').style.display = 'none'
+          }
+        })
       })
       var toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike', 'link'],        // toggled buttons

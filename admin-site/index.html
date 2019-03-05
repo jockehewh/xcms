@@ -28,12 +28,12 @@
             <button class="save">save</button>
         </div>
     </div>
-    <div class="nav"><span style="padding-left: 20px;">XCMS</span>
+    <div class="nav"><span style="padding-left: 17px;">XCMS</span>
         <p>Go to CRM page</p>
     </div>
     <main class="mw-100 center">
         <div class="first-class-editor-button"><p>Menu</p></div>
-        <div class="first-class fl ph3 pv5 w-70">
+        <div class="first-class fl ph3 pv5 w-80">
             <!--Master page maker-->
             <input type="file" accept="image; video/mp4" id="imgpiker">
             <div class="edit-zone" style="display:block;">
@@ -53,68 +53,65 @@
 
             </div>
         </div>
-        <div class="first-class-editor fl pa2 w-30">
-            <section id="nodemaker" class="tc">
+        <div class="first-class-editor fl pr2 ">
+            <section id="nodemaker" class="">
                 <label for="titrepage">
                     <h4>Page name:</h4>
                 </label>
-                <input name="titrepage" id="titrepage" type="text" placeholder="New page name">
+                <input name="titrepage" id="titrepage" type="text" placeholder="New page name"><br><br> 
                 <section class="boutons">
-                    <button id="crepage">Save page</button>
-                    <button id="crenew">New page</button>
-                    <button id="efface">Delete content</button>
-                </section>
+                    <a id="crepage">Save page</a><br><br>
+                    <a id="crenew">New page</a><br><br>
+                    <a id="efface">Delete content</a><br><br>
+                </section><br>
                 <section>
-                    <h4 class="mt2">Edit content:</h4>
+                    <h4 class="mt2" style="margin-bottom: 3px;">Edit content:</h4><br>
                     <ul class="list">
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
-                                class="orange smallbordur hover-blue link" href="#" data-demande="texte">Open editor</a></li>
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
-                                class="orange smallbordur hover-blue link" href="#" data-demande="div">Add a container</a></li>
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
-                                class="orange smallbordur hover-blue link" href="#" data-demande="menu">Add a menu</a></li>
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
-                                class="orange smallbordur hover-blue link" href="#" data-demande="image">Add an image</a></li>
-                        <li class="b--light-silver mt1 br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"><a
-                                class="orange smallbordur hover-blue link" href="#" data-demande="video">Add a video</a></li>
-                    </ul>
+                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                                class="link" href="#" data-demande="texte">Open editor</a><br class="mybr"><br class="mybr"></li>
+                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                                class="link" href="#" data-demande="div">Add a container</a><br class="mybr"><br class="mybr"></li>
+                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                                class="link" href="#" data-demande="menu">Add a menu</a><br class="mybr"><br class="mybr"></li>
+                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                                class="link" href="#" data-demande="image">Add an image</a><br class="mybr"><br class="mybr"></li>
+                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                                class="link" href="#" data-demande="video">Add a video</a><br class="mybr"><br class="mybr"></li>
+                        <li class="b--light-silver mt1 br3 br--top  w-100">
+                            <div class="backcolor" style="grid-row:1;">
+                                <label id="fond">
+                                    Background color:
+                                </label>
+                                <input type="color" name="backcolor-picker" id="backcolor-picker"><br>
+                            </div><br>
+                        </li>
+                        <li class="b--light-silver mt1 br3 br--top  w-100">
+                            <div class="textcolor" style="grid-row:2;">
+                                <label id="texte">
+                                Text color:
+                                </label>
+                                <input type="color" name="textcolor-picker" id="textcolor-picker">
+                            </div><br>
+                        </li>
+                    </ul><br>
                     <label class="mt2" for="cssinput">
-                        <h4>Custom CSS:</h4>
+                        <h4>Custom CSS:</h4><br> 
                     </label>
                     <textarea name="cssinput" id="cssinput" cols="25" rows="4"></textarea><br>
-                    <button class="applycss">apply css</button><br>
-                </section>
-                <section>
-                    <div class="colors">
-                        <label id="fond">
-                            <input class="orange" type="radio" id="colorbox" name="color" value='back'>Background
-                            color: <br>
-                        </label>
-                        <label id="texte">
-                            <input class="orange" type="radio" id="colorbox" name="color" value='text'>Text color: <br>
-                        </label>
-                        <input type="color" name="color-picker" id="color-picker">
-                    </div>
-                </section>
-                <section>
-                    <div class="mt2">
-                        <h4>legend:</h4>
-                        <p class="orange" style="border-right: solid #536dfe 10px">is a selected element.</p>
-                        <p class="orange" style="border-right: solid #1de9b6 10px">is a selected container element.</p>
-                    </div>
-                </section>
+                    <a class="applycss">apply css</a><br>
+                </section><br><br>
+                <section class="mt2">
+                <h4>Edit an old page:</h4><br> 
+                <ul class="editables list">
 
-            </section>
+                </ul>
+                </section> 
+            </section><br><br> 
             <!--<section>
                 <textarea name="contenuText" id="contenuCouleur" cols="30" rows="10"></textarea>
                 <a data-demande="hypertxt">apply</a>
             </section>-->
-            <section class="mt2">
-                <h4>edit an old page</h4>
-                <ul class="editables list">
-
-                </ul>
-            </section>
+            
         </div>
     </main>
     <script>
@@ -208,10 +205,10 @@
                     a.href = '#'
                     a.innerText = parsed.lien.name
                     a.dataset.index = editablePages.length - 1
-                    a.className += "orange hover-blue link ph5"
+                    a.className += "link"
                     li.appendChild(a);
                     li.className +=
-                        "b--light-silver br3 br--top bg-animate orange hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
+                        "b--light-silver br3 br--top  hover-bg-dark-gray pv1-ns w-100"
                     //EDITION DES PAGES
                     a.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -225,7 +222,7 @@
                         theframe.childNodes.forEach(node => {
                             if (node instanceof HTMLElement) {
                                 if (node.hasAttribute('class')) {
-                                    if (node.className !== "xcms-img") {
+                                    if (node.className !== "xcms-img" && node.className !== "xcms-video") {
                                         node.addEventListener('click', (e) => {
                                             node.id = 'isActive'
                                             xEdit(node)
@@ -235,8 +232,9 @@
                             }
                         })
                         //ENREGISTREMENT DES CHANGEMENTS
-                        let button = document.createElement('button')
+                        let button = document.createElement('a')
                         button.innerText = 'Enregistrer et fermer'
+                        button.href = "#"
                         document.querySelector('.boutons').appendChild(button)
                         button.addEventListener('click', ev => {
                             //MODIFIER LES LIENS
@@ -255,7 +253,7 @@
                             var videos = document.querySelectorAll('video');
                             var k = l = 0
                             while (k <= videos.length - 1) {
-                                videos[k].classList.add('xcms-img')
+                                videos[k].classList.add('xcms-video')
                                 if (/\/videos\//.test(videos[k].src)) {
                                     k++
                                 } else {
@@ -268,7 +266,7 @@
                             theframe.childNodes.forEach(node => {
                                 if (node instanceof HTMLElement) {
                                     if (node.hasAttribute('class')) {
-                                        if (node.className !== "xcms-img") {
+                                        if (node.className !== "xcms-img" && node.className !== "xcms-video") {
                                             node.removeAttribute('contenteditable')
                                         }
                                     }
@@ -299,9 +297,9 @@
                 let a = document.createElement('a')
                 a.href = '#'
                 a.innerText = "Contact form"
-                a.className += "black hover-blue link "
+                a.className += "black link "
                 li.className +=
-                    "b--light-silver br3 br--top bg-animate black hover-bg-dark-gray hover-blue ph3 pv1-ns w-100"
+                    "b--light-silver br3 br--top  black hover-bg-dark-gray ph3 pv1-ns w-100"
                 li.appendChild(a)
                 nodemaker.appendChild(li)
                 a.addEventListener('click', (e) => {
@@ -718,26 +716,24 @@
                 document.querySelector('.re-edit-zone style').innerText += cssupdate
             }
         })
-        document.querySelector('#color-picker').addEventListener('change', (e) => {
+        document.querySelector('#backcolor-picker').addEventListener('change', (e) => {
             console.log(e.target.value)
-            document.querySelectorAll('#colorbox').forEach(colorBox => {
-                if (colorBox.checked && colorBox.value === "back") {
-                    if (document.querySelector('#isActive') !== null) {
-                        document.querySelector('#isActive').style.backgroundColor = e.target.value
-                    }
-                    if (document.querySelector('#isContainer') !== null) {
-                        document.querySelector('#isContainer').style.backgroundColor = e.target.value
-                    }
-                }
-                if (colorBox.checked && colorBox.value === "text") {
-                    if (document.querySelector('#isActive') !== null) {
-                        document.querySelector('#isActive').style.color = e.target.value
-                    }
-                    if (document.querySelector('#isContainer') !== null) {
-                        document.querySelector('#isContainer').style.color = e.target.value
-                    }
-                }
-            })
+            if (document.querySelector('#isActive') !== null) {
+                document.querySelector('#isActive').style.backgroundColor = e.target.value
+            }
+            if (document.querySelector('#isContainer') !== null) {
+                document.querySelector('#isContainer').style.backgroundColor = e.target.value
+            }
+        })
+
+        document.querySelector('#textcolor-picker').addEventListener('change', (e) => {
+            console.log(e.target.value)
+            if (document.querySelector('#isActive') !== null) {
+                document.querySelector('#isActive').style.color = e.target.value
+            }
+            if (document.querySelector('#isContainer') !== null) {
+                document.querySelector('#isContainer').style.color = e.target.value
+            }
         })
     </script>
     <script>
