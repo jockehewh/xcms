@@ -10,22 +10,47 @@ const adminSocket = new IO({
 const xcms = new koa();
 const jsp = JSON.parse;
 const jss = JSON.stringify;
-var pagesCollection, paged;
-var dbpages = xcmsDB.get()
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const connection = mongoose.connect('mongodb://localhost:27017/xcms')
+const db = mongoose.connection
+var pagesCollection, page, pages, isIndex, user, users;
+db.on('error', (err)=>{
+  console.log("cannot connect", err)
+})
+db.on('open', ()=>{
+    page = new Schema({
+        name: String,
+        page: String,
+        js: String,
+        css: String
+    })
+    user = new Schema({
+        firstname: String,
+        lastname: String,
+        email: String,
+        firstMessage: String,
+        messagesHistory: Array
+    })
+    pages = mongoose.model('pages', page)
+    users = mongoose.model('users', user)
+    pages.find({}, (err, data)=>{
+        pagesCollection = data
+        console.log(pagesCollection)
+    })
+  pages.find({name: "index.html"}, (err, data)=>{
+       if(err)console.log(err)
+        if(data.length === 1){
+            console.log("found", data)
+            isIndex = data[0]
+        }
+  })
+})
 const fileCTL = /([a-z]{2,}).(html|css|js|jpeg|PNG|jpg|png|mp4)/
 const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
 const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
-dbpages.on('data', (data) => {
-    if (pagesCollection === undefined) {
-        pagesCollection = data
-    } else {
-        pagesCollection += data
-    }
-})
 /* [{"db":"placeholder","size":"1"}] */
-dbpages.on('end', () => {
-    pagesCollection = JSON.parse(pagesCollection)
-})
+
 let authStream = fs.createReadStream('./xcmsDB/adminlist', {
     autoClose: true
 })
@@ -49,10 +74,9 @@ xcms.use(async (ctx, next) => {
     if (ctx.method === "GET") {
         switch (ctx.url) {
             case '/':
-                console.log(pagesCollection[1].name)
-                if (pagesCollection[1].name === 'index.html') {
-                    ctx.type = "html"
-                    ctx.body = pagesCollection[1].page
+                if(isIndex != undefined){
+                    ctx.type = 'html'
+                    ctx.body = isIndex.page
                 } else {
                     ctx.redirect('/admin')
                 }
@@ -127,38 +151,45 @@ xcms.use(async (ctx, next) => {
                 break;
             case '/contact':
                 const contact = ctx.request.body
-                let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {
-                    autoClose: true
-                })
-                let transporter = "";
-                transporterInfo.on('data', (data) => {
-                    transporter += data
-                })
-                transporterInfo.on('end', () => {
-                    transporter = jsp(transporter)
-                    const mailTransporter = nodemailer.createTransport(transporter)
-                    const email = {
-                        from: contact.email,
-                        to: transporter.auth.user,
-                        subject: contact.firstname + " " + contact.lastname + " contacted you",
-                        text: contact.message
+                users.find({email: contact.email},(err, data)=>{
+                    if(data.length > 0){
+                        console.log('user exist')
+                    } else {
+                        let newContact = new users({
+                            firstname: contact.firstname,
+                            lastname: contact.lastname,
+                            email: contact.email,
+                            firstMessage: contact.message,
+                            messagesHistory: []
+                        })
+                        newContact.save((err, user)=>{
+                            console.log(user)
+                        })
+                        let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {
+                            autoClose: true
+                        })
+                        let transporter = "";
+                        transporterInfo.on('data', (data) => {
+                            transporter += data
+                        })
+                        transporterInfo.on('end', () => {
+                            transporter = jsp(transporter)
+                            const mailTransporter = nodemailer.createTransport(transporter)
+                            const email = {
+                                from: contact.email,
+                                to: transporter.auth.user,
+                                subject: contact.firstname + " " + contact.lastname + " contacted you",
+                                text: contact.message
+                            }
+                            mailTransporter.sendMail(email)
+                        })
                     }
-                    mailTransporter.sendMail(email)
                 })
+                
 
-                let crmFile = fs.createReadStream('./xcmsDB/Xcrmdata.db', {
-                    autoClose: true
-                })
-                let crmdata = ""
-                crmFile.on('data', (data) => {
-                    crmdata += data
-                })
                 crmFile.on('end', () => {
                     crmdata = jsp(crmdata)
-                    let newContact = {
-                        fullName: contact.firstname + " " + contact.lastname,
-                        email: contact.email
-                    }
+                    
                     crmdata.push(newContact)
                     let updatecrm = fs.createWriteStream('./xcmsDB/Xcrmdata.db', {
                         encoding: 'utf8'
@@ -167,6 +198,7 @@ xcms.use(async (ctx, next) => {
                     updatecrm.end()
                 })
                 ctx.redirect('/')
+                //update CRM Page with firstname lastname instead of fullname
                 break;
             default:
                 break;
