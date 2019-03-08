@@ -282,62 +282,56 @@ adminSocket.on('message', (ctx) => {
     if (typeof ctx.data === 'string') {
         var datainfo = jsp(ctx.data)
         if (datainfo.titre) {
-            nouvellePage = {
-                name: datainfo.titre + ".html",
-                page: datainfo.contenu
-            }
-            count = 0
-            pagesCollection.forEach(page => {
-                if (Object.values(page)[0] === nouvellePage.name) {
-                    console.log('erreur la page exist')
-                    count++
-                    return
+            pages.find({name: datainfo.titre+'html'}, (err, data)=>{
+                if(data.length > 0){
+                    adminSocket.send('error', 'a page with the same name already exist')
+                }else{
+                    let newPage = new pages({
+                        name: datainfo.titre+"html",
+                        page: datainfo.contenu,
+                        js: datainfo.jsContent,
+                        css: datainfo.cssContent
+                    })
+                    newPage.save((err,data)=>{
+                        if(err){ 
+                            console.log('error saving a new page', err)
+                            return
+                        } else {
+                            pagesCollection.push(data)
+                        }
+                    })
                 }
             })
-            if (count === 0) {
-                xcmsDB.set(nouvellePage)
-            } else {
-                console.log('erreur la page existe pour de vrai')
-                count = 0
-                return
-            }
-            pagesCollection.push(nouvellePage)
-            let newcss = fs.createWriteStream('./frontend-site/' + datainfo.titre + '.css', {encoding: 'utf8', autoClose:true})
-            newcss.write(' ')
-            newcss.end()
-            let newjs = fs.createWriteStream('./frontend-site/' + datainfo.titre + '.js', {encoding: 'utf8', autoClose:true})
-            newjs.write(' ')
-            newjs.end()
         }
         if (datainfo.update) {
+            pages.findOneAndUpdate({name: datainfo.update.name},
+            {page: datainfo.update.page, js: datainfo.update.js, css: datainfo.update.css},
+            {new: true},
+                (err, data)=>{
+                    if(err) console.log('error updating the page', err)
+                    console.log(data)
+                })
             pagesCollection.forEach(page => {
                 if (page.name === datainfo.update.name) {
                     page.page = datainfo.update.page
-                    xcmsDB.update(pagesCollection)
+                    page.js = datainfo.update.js
+                    page.css = datainfo.update.css
                 }
             })
         }
         //PAGE CRM
         if (datainfo.userslist) {
-            let crmFile = fs.createReadStream('./xcmsDB/Xcrmdata.db')
-            let crmdata = ""
-            crmFile.on('data', data => {
-                crmdata += data
-            })
-            crmFile.on('end', () => {
-                crmdata = jsp(crmdata)
-                crmUsers = crmdata.map(user => {
-                    if (user.fullName) {
-                        return user
+            userContacts = []
+            const crmUsers = users.find({}, (err, data)=>{
+                if(err) console.log(err)
+                if(data.length > 0){
+                    for(user in data){
+                        userContacts.push({fullName: user.fullName, email: user.email})
                     }
-                }).filter(user => {
-                    if (user !== null) {
-                        return user
-                    }
-                })
-                ctx.socket.emit('normal', jss({
-                    userslist: crmUsers
-                }))
+                    ctx.socket.emit('normal', jss({
+                    userslist: userContacts
+                    }))
+                }
             })
         }
         if (datainfo.selectedContacts) {

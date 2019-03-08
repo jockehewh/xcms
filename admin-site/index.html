@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./admin-site/quill.snow.css">
     <script src="./admin-site/quill.js"></script>
     <script src="./admin-site/socket.io.js"></script>
+    <script src="./admin-site/ace-editor/ace.js"></script>
 </head>
 
 <body>
@@ -51,6 +52,11 @@
             </div>
             <div class="maFrame">
 
+            </div>
+            <div class="ace-editor-block">
+                <button>Editcss</button>
+                <div id="css-editor"></div>
+                <div id="js-editor"></div>
             </div>
         </div>
         <div class="first-class-editor fl pr2 ">
@@ -179,6 +185,7 @@
                 titre,
                 contenu
             }
+            //CSS et JS
             mews.emit('message', jss(nouvellepage))
             var allnodes = document.querySelector('.edit-zone').childNodes
             var j = allnodes.length
@@ -705,6 +712,17 @@
         }
         document.querySelector('.edit-zone').addEventListener('dragover', allowDrop)
         document.querySelector('.edit-zone').addEventListener('drop', drop)
+        //ACE EDITORS
+        let csseditor = ace.edit('css-editor')
+        csseditor.setTheme("ace/theme/xcode")
+        csseditor.session.setMode("ace.mode/css")
+        csseditor.scrollToLine(0, true, true, function () {});
+        csseditor.gotoLine(0, 0, true);
+        let jseditor = ace.edit('js-editor')
+        jseditor.setTheme("ace/theme/xcode")
+        jseditor.session.setMode("ace.mode/javascript")
+        jseditor.scrollToLine(0, true, true, function () {});
+        jseditor.gotoLine(0, 0, true);
     </script>
     <script>
         // AFFICHAGE

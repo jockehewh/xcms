@@ -37,6 +37,10 @@ body{
     font-family: "Roboto";
     font-size: 13px;
 }
+#css-editor, #js-editor{
+    top:50px;
+    height: 500px;
+}
 #imgpiker{
     display:none;
 }
