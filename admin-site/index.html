@@ -54,7 +54,7 @@
 
             </div>
             <div class="ace-editor-block">
-                <button>Editcss</button>
+                <a data-editor="js">Edit your javascript</a>  <a data-editor="css">Edit your css</a>
                 <div id="css-editor"></div>
                 <div id="js-editor"></div>
             </div>
@@ -150,40 +150,61 @@
             titre = document.querySelector('#titrepage').value;
             let googleTag = ''
             let scriptTag
-            if (confirm('I have a Google analytics ID?')) {
-                googleTag = prompt('My Google Analytics ID is: ')
-                scriptTag =
-                    `<script async src="https://www.googletagmanager.com/gtag/js?id=${googleTag}"><\/script><script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', '${googleTag}');
-        <\/script>`
-            }
-            contenu =
-                `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>${titre}</title>
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        ${scriptTag=== undefined? '\n' : scriptTag}
-        <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
-        <link rel="stylesheet" href="./frontend-site/quill.snow.css">
-        <link rel="stylesheet" href="./frontend-site/style.css">
-        <link rel="stylesheet" href="./frontend-site/${titre}.css">
-        <script src='./frontend-site/designer.js'><\/script>
-        </head><body>${document.querySelector('.edit-zone').innerHTML}
-        <script src='./frontend-site/${titre}.js'><\/script></body></html>`;
             if (titre === "" || titre === undefined) {
                 titre = prompt("Please enter a name for your new page.")
             }
+
+            if (confirm('I have a Google analytics ID?')) {
+                googleTag = prompt('My Google Analytics ID is: ')
+                contenu =
+                `<!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                    <title>${titre}</title>
+                    <!-- Global site tag (gtag.js) - Google Analytics -->
+                    <script async src="https://www.googletagmanager.com/gtag/js?id=${googleTag}"><\/script><script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+
+                    gtag('config', '${googleTag}');
+                    <\/script>
+                    <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
+                    <link rel="stylesheet" href="./frontend-site/quill.snow.css">
+                    <link rel="stylesheet" href="./frontend-site/style.css">
+                    <link rel="stylesheet" href="./frontend-site/onthefly/${titre}.css">
+                    <script src='./frontend-site/designer.js'><\/script>
+                    </head><body>${document.querySelector('.edit-zone').innerHTML}
+                    <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
+            }else{
+                contenu =
+                `<!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                    <title>${titre}</title>
+                    <!-- Global site tag (gtag.js) - Google Analytics -->
+                    <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
+                    <link rel="stylesheet" href="./frontend-site/quill.snow.css">
+                    <link rel="stylesheet" href="./frontend-site/style.css">
+                    <link rel="stylesheet" href="./frontend-site/onthefly/${titre}.css">
+                    <script src='./frontend-site/designer.js'><\/script>
+                    </head><body>${document.querySelector('.edit-zone').innerHTML}
+                    <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
+            }
+            const pageJS = jseditor.getValue()
+            const pageCSS = csseditor.getValue()
+
             nouvellepage = {
                 titre,
-                contenu
+                contenu,
+                js: pageJS,
+                css: pageCSS
             }
             //CSS et JS
             mews.emit('message', jss(nouvellepage))
@@ -215,7 +236,7 @@
                     a.className += "link"
                     li.appendChild(a);
                     li.className +=
-                        "b--light-silver br3 br--top  hover-bg-dark-gray pv1-ns w-100"
+                        "b--light-silver br3 br--top w-100"
                     //EDITION DES PAGES
                     a.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -304,9 +325,9 @@
                 let a = document.createElement('a')
                 a.href = '#'
                 a.innerText = "Contact form"
-                a.className += "black link "
+                a.className += "link "
                 li.className +=
-                    "b--light-silver br3 br--top  black hover-bg-dark-gray ph3 pv1-ns w-100"
+                    "b--light-silver mt1 br3 br--top  w-100"
                 li.appendChild(a)
                 nodemaker.appendChild(li)
                 a.addEventListener('click', (e) => {
@@ -723,6 +744,18 @@
         jseditor.session.setMode("ace.mode/javascript")
         jseditor.scrollToLine(0, true, true, function () {});
         jseditor.gotoLine(0, 0, true);
+        document.querySelectorAll('.ace-editor-block a').forEach(btn=>{
+            btn.addEventListener('click', e=>{
+                if(e.target.dataset.editor === 'js'){
+                    document.querySelector('#js-editor').style.display = "block"
+                    document.querySelector('#css-editor').style.display = "none"
+                }
+                if(e.target.dataset.editor === 'css'){
+                    document.querySelector('#js-editor').style.display = "none"
+                    document.querySelector('#css-editor').style.display = "block"
+                }
+            })
+        })
     </script>
     <script>
         // AFFICHAGE

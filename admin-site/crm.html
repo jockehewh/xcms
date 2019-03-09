@@ -9,19 +9,43 @@
   <script src="../admin-site/quill.js"></script>
   <script src="../admin-site/socket.io.js"></script>
   <style>
+    @font-face{
+      font-family: "Roboto";
+      src : url('../admin-site/fonts/Roboto-Regular.ttf')
+    }
     *{margin:0}
     body{
       display:flex;
       flex-direction: column;
+      font-family: "Roboto";
+      font-size: 13px;
     }
-    .configuration{
+    a{
+      text-decoration: none;
+      color: #448aff;
+    }
+    button{
+      background: transparent;
+      border: none;
+      color: #448aff;
+      cursor: pointer;
+    }
+    .configuration, .admin-configuration, .password-configuration{
       display: flex;
       flex-direction: column;
       max-width: 200px;
+      margin: 20px auto;
+    }
+    .configuration-block h1, .add-admin h1, .change-password h1{
+      text-align: center;
+      padding-top: 68px;
     }
     .mail{
       display: none;
       width:80%
+    }
+    .add-admin, .change-password{
+      display: none;
     }
     #titre-mail{
       position: absolute;
@@ -33,8 +57,9 @@
       min-width: 200px;
     }
     .nav{
-      background: #000;
-      color: #fff;
+      background: #82b1ff;;
+      color: #000;
+      font-weight: bold;
       min-height: 40px;
       display: flex;
       justify-content: space-between;
@@ -48,7 +73,7 @@
       width: 190px;
       position: fixed;
       right: 0;
-      top: 50px;
+      top: 108px;
     }
     .minimenu ul{
       list-style-type: none;
@@ -59,11 +84,13 @@
   <div class="nav"><span style="padding-left: 20px;">XCMS</span> <p>Go to CMS page</p> </div>
   <div class="minimenu">
     <ul>
-      <li><a href="#" data-link="conf">Email configuration</a></li>
-      <li><a href="#" data-link="emails">Send emails</a></li>
+      <li><a href="#" data-link="conf">Email configuration</a></li><br>
+      <li><a href="#" data-link="emails">Send emails</a></li><br>
+      <li><a href="#" data-link="addAdmin">Add an admin</a></li><br>
+      <li><a href="#" data-link="changePassword">Change an admin's password</a></li>
     </ul>
   </div>
-    <div class="configuration-block">
+  <div class="configuration-block">
     <h1>Email configuration</h1>
     <div class="configuration">
       <label for="host">host:</label>
@@ -88,6 +115,32 @@
       <button class="sendbtn">send</button>
     </div>
   </div>
+  <div class='add-admin'>
+    <h1>Add an admin</h1>
+    <div class="admin-configuration">
+      <label for="host">Admin name:</label>
+      <input type="text" name="new-admin" id="new-admin">
+      <label for="password">password:</label>
+      <input type="password" name="password" id="password">
+      <label for="verify-password">verify password</label>
+      <input type="password" name="verify-password" id="verify-password">
+      <br>
+      <button class="submit">Save admin</button>
+    </div>
+  </div>
+  <div class='change-password'>
+    <h1>Change Password</h1>
+    <div class="password-configuration">
+      <label for="admin">Admin name:</label>
+      <input type="text" name="admin" id="admin">
+      <label for="new-password">password:</label>
+      <input type="password" name="new-password" id="new-password">
+      <label for="verify-password">verify password</label>
+      <input type="password" name="verify-new-password" id="verify-new-password">
+      <br>
+      <button class="submit">Update password</button>
+    </div>
+  </div>
   <script>
     document.body.onload = ()=>{
       document.querySelector('.nav p').addEventListener('click', (e)=>{
@@ -98,9 +151,23 @@
           if(e.target.dataset.link === 'conf'){
             document.querySelector('.mail').style.display = 'none'
             document.querySelector('.configuration-block').style.display = 'block'
+            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.change-password').style.display = 'none'
           }else if(e.target.dataset.link === 'emails'){
             document.querySelector('.mail').style.display = 'flex'
             document.querySelector('.configuration-block').style.display = 'none'
+            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.change-password').style.display = 'none'
+          }else if(e.target.dataset.link === 'addAdmin'){
+            document.querySelector('.mail').style.display = 'none'
+            document.querySelector('.configuration-block').style.display = 'none'
+            document.querySelector('.add-admin').style.display = 'block'
+            document.querySelector('.change-password').style.display = 'none'
+          }else if(e.target.dataset.link === 'changePassword'){
+            document.querySelector('.mail').style.display = 'none'
+            document.querySelector('.configuration-block').style.display = 'none'
+            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.change-password').style.display = 'block'
           }
         })
       })
@@ -157,7 +224,7 @@
           mews.emit('message', jss(transporterData))
         })
       mews.on('normal', data =>{
-        const datainfo = jsp(data.data)
+        const datainfo = jsp(data)
         if(datainfo.userslist){
           const userslist = document.querySelector('.ulist')
           datainfo.userslist.forEach(user=>{
@@ -173,6 +240,57 @@
             userslist.appendChild(li)
           })
         }
+      })
+      document.querySelector('.add-admin button').addEventListener('click', e =>{
+        const username = document.querySelector('.add-admin #new-admin').value
+        const password = document.querySelector('.add-admin #password').value
+        const verifyPassword = document.querySelector('.add-admin #verify-password').value
+        if(password === verifyPassword){
+          const addAdmin = {
+            username, 
+            password
+          }
+          mews.emit('message', jss({addAdmin: addAdmin}))
+        }else{
+          //AFFICHER LE MESSAGE D'ERREUR
+        }
+        document.querySelector('.add-admin #new-admin').value = ""
+        document.querySelector('.add-admin #password').value = ""
+        document.querySelector('.add-admin #verify-password').value =""
+      })
+      document.querySelector('.change-password button').addEventListener('click', e =>{
+        const username = document.querySelector('.change-password #admin').value
+        const password = document.querySelector('.change-password #new-password').value
+        const verifyPassword = document.querySelector('.change-password #verify-new-password').value
+        //revoyer une validation ou une infirmation si l'admin n'existe pas
+        if(password === verifyPassword){
+          const updateAdmin = {
+            username, 
+            password
+          }
+          mews.emit('message', jss({updateAdmin: updateAdmin}))
+          document.querySelector('.change-password #admin').value = ""
+          document.querySelector('.change-password #new-password').value = ""
+          document.querySelector('.change-password #verify-new-password').value = ""
+        }else{
+          //AFFICHER LE MESSAGE D'ERREUR
+        }
+      })
+      mews.on('success', data =>{
+        let p = document.createElement('p')
+        p.innerText = data
+        document.body.appendChild(p)
+        setTimeout(function(){
+          p.remove()
+        }, 3000)
+      })
+      mews.on('errorr', data =>{
+        let p = document.createElement('p')
+        p.innerText = data
+        document.body.appendChild(p)
+        setTimeout(function(){
+          p.remove()
+        }, 3000)
       })
     }
   </script>

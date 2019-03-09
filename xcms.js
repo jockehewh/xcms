@@ -36,12 +36,10 @@ db.on('open', ()=>{
     users = mongoose.model('users', user)
     pages.find({}, (err, data)=>{
         pagesCollection = data
-        console.log(pagesCollection)
     })
   pages.find({name: "index.html"}, (err, data)=>{
        if(err)console.log(err)
         if(data.length === 1){
-            console.log("found", data)
             isIndex = data[0]
         }
   })
@@ -69,7 +67,7 @@ xcms.use(async (ctx, next) => {
         page = /^.[a-zA-Z0-9_-]{2,}(.html)/.exec(ctx.url)[0]
     }
     if (page != undefined) {
-        console.log('page', page)
+        console.log('someone is visiting', page)
     }
     if (ctx.method === "GET") {
         switch (ctx.url) {
@@ -96,6 +94,12 @@ xcms.use(async (ctx, next) => {
             case '/chat':
                 ctx.type = 'html'
                 ctx.body = fs.createReadStream('./extra_modules/instant-messaging.html/', {
+                    autoClose: true
+                })
+            break;
+            case '/favicon.ico':
+                ctx.type = 'image/png'
+                ctx.body = fs.createReadStream('./favicon.ico/', {
                     autoClose: true
                 })
             break;
@@ -153,18 +157,16 @@ xcms.use(async (ctx, next) => {
                 const contact = ctx.request.body
                 users.find({email: contact.email},(err, data)=>{
                     if(data.length > 0){
-                        console.log('user exist')
+                        ctx.socket.emit('errorr', 'You already sent an email, please wait, we will contact you very soon')
                     } else {
                         let newContact = new users({
                             firstname: contact.firstname,
                             lastname: contact.lastname,
                             email: contact.email,
                             firstMessage: contact.message,
-                            messagesHistory: []
+                            messagesHistory: [contact.message]
                         })
-                        newContact.save((err, user)=>{
-                            console.log(user)
-                        })
+                        newContact.save((err, user)=>{})
                         let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {
                             autoClose: true
                         })
@@ -183,19 +185,8 @@ xcms.use(async (ctx, next) => {
                             }
                             mailTransporter.sendMail(email)
                         })
+                        ctx.socket.emit('success', `Thank you ${contact.firstname} ${contact.lastname}, we will read your email soon.`)
                     }
-                })
-                
-
-                crmFile.on('end', () => {
-                    crmdata = jsp(crmdata)
-                    
-                    crmdata.push(newContact)
-                    let updatecrm = fs.createWriteStream('./xcmsDB/Xcrmdata.db', {
-                        encoding: 'utf8'
-                    })
-                    updatecrm.write(jss(crmdata))
-                    updatecrm.end()
                 })
                 ctx.redirect('/')
                 //update CRM Page with firstname lastname instead of fullname
@@ -222,6 +213,7 @@ xcms.use(async (ctx, next) => {
             })
             return
         }
+        
         var urlctl = fileCTL.exec(ctx.url)
         if (typeCTL.exec(ctx.url)[0] === 'woff') {
             ctx.type = "font/woff2"
@@ -240,12 +232,36 @@ xcms.use(async (ctx, next) => {
             })
         } else {
             if(/instant-messaging-scripts/.test(ctx.url)){
-                console.log('yo')
                 ctx.body = fs.createReadStream('./extra_modules'+ ctx.url, {autoClose: true})
             }else{
-                ctx.body = fs.createReadStream('./' + ctx.url, {
+                if(/onthefly/.test(ctx.url)){
+                    if(typeCTL.exec(ctx.url)[0] === 'css'){
+                        cssFileName = /\/([a-zA-Z0-9]{2,})\.css/.exec(ctx.url)[1]
+                        pagesCollection.forEach(page=>{
+                            if(page.name === cssFileName+'.html'){
+                                ctx.type = 'text/css'
+                                ctx.body = page.css
+                            }
+                        })
+                    }
+                    if(typeCTL.exec(ctx.url)[0] === 'js'){
+                        console.log('entering')
+                        console.log(/\/([a-zA-Z0-9]{2,})\.js/.exec(ctx.url))
+                        jsFileName = /\/([a-zA-Z0-9]{2,})\.js/.exec(ctx.url)[1]
+                        console.log(jsFileName)
+                        pagesCollection.forEach(page=>{
+                            if(page.name === jsFileName+'.html'){
+                                ctx.type = 'application/javascript'
+                                ctx.body = page.js
+                            }
+                        })
+                    }
+                }else{
+                    ctx.body = fs.createReadStream('./' + ctx.url, {
                         autoclose: true
                     })
+                }
+                
             }
             
         }
@@ -255,15 +271,18 @@ xcms.use(async (ctx, next) => {
 
 /* SOCKET IO */
 adminSocket.on('connection', ctx => {
-    if (pagesCollection.length !== 0) {
-        pagesCollection.forEach(fi => {
-            if (/\.html/.test(fi.name)) {
-                ctx.socket.emit('normal', jss({
-                    lien: fi
-                }))
-            }
-        })
+    if(pagesCollection != undefined){
+        if (pagesCollection.length !== 0) {
+            pagesCollection.forEach(fi => {
+                if (/\.html/.test(fi.name)) {
+                    ctx.socket.emit('normal', jss({
+                        lien: fi
+                    }))
+                }
+            })
+        }
     }
+    
     let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {
         autoClose: true
     })
@@ -279,22 +298,24 @@ adminSocket.on('connection', ctx => {
     })
 })
 adminSocket.on('message', (ctx) => {
+    console.log(ctx.data)
     if (typeof ctx.data === 'string') {
         var datainfo = jsp(ctx.data)
         if (datainfo.titre) {
-            pages.find({name: datainfo.titre+'html'}, (err, data)=>{
+            pages.find({name: datainfo.titre+'.html'}, (err, data)=>{
                 if(data.length > 0){
-                    adminSocket.send('error', 'a page with the same name already exist')
+                    ctx.socket.emit('errorr', 'a page with the same name already exist')
                 }else{
                     let newPage = new pages({
-                        name: datainfo.titre+"html",
+                        name: datainfo.titre+".html",
                         page: datainfo.contenu,
-                        js: datainfo.jsContent,
-                        css: datainfo.cssContent
+                        js: datainfo.js,
+                        css: datainfo.css
                     })
                     newPage.save((err,data)=>{
                         if(err){ 
                             console.log('error saving a new page', err)
+                            ctx.socket.emit('errorr', 'A problem happened: '+err)
                             return
                         } else {
                             pagesCollection.push(data)
@@ -308,8 +329,11 @@ adminSocket.on('message', (ctx) => {
             {page: datainfo.update.page, js: datainfo.update.js, css: datainfo.update.css},
             {new: true},
                 (err, data)=>{
-                    if(err) console.log('error updating the page', err)
-                    console.log(data)
+                    if(err) {
+                        console.log('error updating the page', err)
+                        ctx.socket.emit('errorr', 'error updating the page, please retry.')
+                    }
+                    ctx.socket.emit('success', `the page |------| was sucesfully updated`)//get page name
                 })
             pagesCollection.forEach(page => {
                 if (page.name === datainfo.update.name) {
@@ -322,15 +346,18 @@ adminSocket.on('message', (ctx) => {
         //PAGE CRM
         if (datainfo.userslist) {
             userContacts = []
-            const crmUsers = users.find({}, (err, data)=>{
+            users.find({}, (err, data)=>{
                 if(err) console.log(err)
                 if(data.length > 0){
-                    for(user in data){
-                        userContacts.push({fullName: user.fullName, email: user.email})
-                    }
+                    data.forEach(user=>{
+                        userContacts.push({fullName: user.firstname+' '+user.lastname, email: user.email})
+                    })
                     ctx.socket.emit('normal', jss({
                     userslist: userContacts
                     }))
+                }else{
+                    console.log('no contacts')
+                    return
                 }
             })
         }
@@ -373,6 +400,32 @@ adminSocket.on('message', (ctx) => {
             transporter.write(jss(transporterData))
             transporter.end()
         }
+        if(datainfo.addAdmin){
+            console.log(datainfo.addAdmin)
+            admins.push(datainfo.addAdmin)
+            let addAnAdmin = fs.createWriteStream('./xcmsDB/adminlist', {encoding: 'utf8'})
+            addAnAdmin.write(jss(admins))
+            addAnAdmin.end()
+            ctx.socket.emit('success', 'the admin was successfully created')
+        }
+        if(datainfo.updateAdmin){
+            let wasFound = 0
+            const toUpdate = datainfo.updateAdmin
+            admins.forEach(admin=>{
+                if(admin.username === toUpdate.username){
+                    admin.password = toUpdate.password
+                    let updateAccount = fs.createWriteStream('./xcmsDB/adminlist', {encoding: 'utf8'})
+                    updateAccount.write(jss(admins))
+                    updateAccount.end()
+                    wasFound++
+                }
+            })
+            if(wasFound !== 0){
+                ctx.socket.emit('success', 'the admin was successfully updated')
+            }else{
+                ctx.socket.emit('errorr', 'the admin does not exist')
+            }
+        }
     }
 })
 adminSocket.on('image', ctx =>{
@@ -398,3 +451,6 @@ IM.attach(xcms)
 xcms.listen(9899, () => {
     console.log("XCMS Listening port 9899")
 })
+
+
+//COMMUNIQUER LES ERREURS A LA FRONTEND
