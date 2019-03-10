@@ -32,7 +32,7 @@
     <div class="nav"><span style="padding-left: 17px;">XCMS</span>
         <p>Go to CRM page</p>
     </div>
-    <main class="mw-100 center">
+    <main class="mw-100">
         <div class="first-class-editor-button"><p>Menu</p></div>
         <div class="first-class fl ph3 pv5 w-80">
             <!--Master page maker-->
@@ -134,13 +134,13 @@
             var imgs = document.querySelectorAll('img');
             var i = 0
             while (i <= imgs.length - 1) {
-                imgs[i].src = './imgs/' + titresImgs[i];
+                imgs[i].src = './frontend-site/imgs/' + titresImgs[i];
                 i++
             }
             var videos = document.querySelectorAll('video');
             var i = 0
             while (i <= videos.length - 1) {
-                videos[i].src = './videos/' + titresVideos[i];
+                videos[i].src = './frontend-site/videos/' + titresVideos[i];
                 i++
             }
             document.querySelector('.edit-zone').querySelectorAll('link').forEach(link => {
@@ -244,6 +244,8 @@
                         var theframe = document.createElement('div')
                         theframe.classList.add('re-edit-zone')
                         theframe.innerHTML = editablePages[e.target.dataset.index].page
+                        jseditor.setValue(editablePages[e.target.dataset.index].js)
+                        csseditor.setValue(editablePages[e.target.dataset.index].css)
                         myframe.appendChild(theframe)
                         document.querySelector('.edit-zone').style.display = 'none'
                         //PREPARATION AU CHANGEMENT
@@ -273,7 +275,7 @@
                                 if (/\/imgs\//.test(imgs[i].src)) {
                                     i++
                                 } else {
-                                    imgs[i].src = './imgs/' + titresImgs[j];
+                                    imgs[i].src = './frontend-site/imgs/' + titresImgs[j];
                                     i++
                                     j++
                                 }
@@ -285,7 +287,7 @@
                                 if (/\/videos\//.test(videos[k].src)) {
                                     k++
                                 } else {
-                                    videos[k].src = './videos/' + titresVideos[l];
+                                    videos[k].src = './frontend-site/videos/' + titresVideos[l];
                                     k++
                                     l++
                                 }
@@ -302,9 +304,13 @@
                             })
                             let name = e.target.innerText
                             let page = theframe.innerHTML
+                            let js = jseditor.getValue()
+                            let css = csseditor.getValue()
                             let changedPage = {
                                 name,
-                                page
+                                page,
+                                css,
+                                js
                             }
                             mews.emit('message', jss({
                                 update: changedPage
@@ -526,12 +532,14 @@
         //***************LIVE ON PAGE LIVE
         document.querySelector('.edit-zone').addEventListener('dblclick', function (e) {
             if (/xcms-/.test(e.target.classList.value)) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (e.target.id === "isContainer") {
-                    e.target.id = ""
-                } else {
-                    e.target.id = "isContainer"
+                if(!e.target.classList.contains('xcms-img') || !e.target.classList.contains('xcms-video')){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.target.id === "isContainer") {
+                        e.target.id = ""
+                    } else {
+                        e.target.id = "isContainer"
+                    }
                 }
             }
         })

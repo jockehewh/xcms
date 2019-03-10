@@ -298,7 +298,6 @@ adminSocket.on('connection', ctx => {
     })
 })
 adminSocket.on('message', (ctx) => {
-    console.log(ctx.data)
     if (typeof ctx.data === 'string') {
         var datainfo = jsp(ctx.data)
         if (datainfo.titre) {
