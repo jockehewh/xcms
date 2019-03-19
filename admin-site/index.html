@@ -131,6 +131,18 @@
         let editablePages = []
 
         crepage.addEventListener('click', e => {
+            document.querySelector('.edit-zone').childNodes.forEach(node => {
+                if (node instanceof HTMLElement) {
+                    if (node.hasAttribute('class')) {
+                        if (node.className !== "xcms-img" && node.className !== "xcms-video") {
+                            node.removeAttribute('contenteditable')
+                        }
+                        if(node.hasAttribute('draggable')){
+                            node.removeAttribute('draggable')
+                        }
+                    }
+                }
+            })
             var imgs = document.querySelectorAll('img');
             var i = 0
             while (i <= imgs.length - 1) {
@@ -299,6 +311,9 @@
                                         if (node.className !== "xcms-img" && node.className !== "xcms-video") {
                                             node.removeAttribute('contenteditable')
                                         }
+                                        if(node.hasAttribute('draggable')){
+                                            node.removeAttribute('draggable')
+                                        }
                                     }
                                 }
                             })
@@ -404,6 +419,9 @@
                                 imgpicker.style.display = 'none'
                             }
                         }, false)
+                        img.setAttribute('draggable', true)
+                        img.addEventListener('drag', drag)
+                        img.id = ''
                         break;
                     case 'texte':
                         desactive()
@@ -451,6 +469,9 @@
                                 videopicker.style.display = 'none'
                             }
                         }, false)
+                        video.setAttribute('draggable', true)
+                        video.addEventListener('drag', drag)
+                        video.id = ''
                         break;
                     case 'menu':
                         desactive()
@@ -547,7 +568,6 @@
         document.querySelector('#crenew').addEventListener('click', (e) => {
             e.preventDefault();
             document.querySelector('.edit-zone').innerHTML = ""
-            //IFRAME PLUS UTILISEE
             document.querySelector('.edit-zone').style.display = "block"
         })
         //*****************RESET
