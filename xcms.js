@@ -93,13 +93,13 @@ xcms.use(async (ctx, next) => {
                 break;
             case '/chat':
                 ctx.type = 'html'
-                ctx.body = fs.createReadStream('./extra_modules/instant-messaging.html/', {
+                ctx.body = fs.createReadStream('./extra_modules/instant-messaging.html', {
                     autoClose: true
                 })
             break;
             case '/favicon.ico':
                 ctx.type = 'image/png'
-                ctx.body = fs.createReadStream('./favicon.ico/', {
+                ctx.body = fs.createReadStream('./favicon.ico', {
                     autoClose: true
                 })
             break;
