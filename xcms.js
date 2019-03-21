@@ -245,10 +245,7 @@ xcms.use(async (ctx, next) => {
                         })
                     }
                     if(typeCTL.exec(ctx.url)[0] === 'js'){
-                        console.log('entering')
-                        console.log(/\/([a-zA-Z0-9]{2,})\.js/.exec(ctx.url))
                         jsFileName = /\/([a-zA-Z0-9]{2,})\.js/.exec(ctx.url)[1]
-                        console.log(jsFileName)
                         pagesCollection.forEach(page=>{
                             if(page.name === jsFileName+'.html'){
                                 ctx.type = 'application/javascript'

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./admin-site/xcms.css">
     <link rel="stylesheet" href="./admin-site/tachyons.min.css">
     <link rel="stylesheet" href="./admin-site/quill.snow.css">
+    <link rel="stylesheet" href="./admin-site/dragula.min.css">
     <script src="./admin-site/quill.js"></script>
     <script src="./admin-site/socket.io.js"></script>
     <script src="./admin-site/ace-editor/ace.js"></script>
@@ -119,6 +120,7 @@
             
         </div>
     </main>
+    <script src="./admin-site/dragula.min.js"></script>
     <script>
         let mews = io('/asocket')
         var crepage = document.querySelector('#crepage');
@@ -135,9 +137,6 @@
                     if (node.hasAttribute('class')) {
                         if (node.className !== "xcms-img" && node.className !== "xcms-video") {
                             node.removeAttribute('contenteditable')
-                        }
-                        if(node.hasAttribute('draggable')){
-                            node.removeAttribute('draggable')
                         }
                     }
                 }
@@ -258,6 +257,8 @@
                         jseditor.setValue(editablePages[e.target.dataset.index].js)
                         csseditor.setValue(editablePages[e.target.dataset.index].css)
                         myframe.appendChild(theframe)
+                        drake.destroy();
+                        drake = dragula([document.querySelector('.re-edit-zone')])
                         document.querySelector('.edit-zone').style.display = 'none'
                         //PREPARATION AU CHANGEMENT
                         theframe.childNodes.forEach(node => {
@@ -310,9 +311,6 @@
                                         if (node.className !== "xcms-img" && node.className !== "xcms-video") {
                                             node.removeAttribute('contenteditable')
                                         }
-                                        if(node.hasAttribute('draggable')){
-                                            node.removeAttribute('draggable')
-                                        }
                                     }
                                 }
                             })
@@ -332,6 +330,8 @@
                             editablePages[e.target.dataset.index].page = theframe.innerHTML
                             theframe.remove()
                             document.querySelector('.edit-zone').style.display = 'block'
+                            drake.destroy()
+                            drake = dragula([document.querySelector('.edit-zone')])
                             button.remove()
                         })
                     }, false)
@@ -377,10 +377,6 @@
                         var div = document.createElement('div')
                         div.id = 'isContainer'
                         div.classList.add('xcms-div')
-                        div.setAttribute('draggable', true)
-                        div.addEventListener('drag', drag)
-                        div.addEventListener('dragover', allowDrop)
-                        div.addEventListener('drop', drop)
                         xAppend(div)
                         break;
                     case 'image':
@@ -410,16 +406,12 @@
                                 image: file0
                             })
                             img.src = window.URL.createObjectURL(file0)
-                            img.setAttribute('draggable', true)
-                            img.addEventListener('drag', drag)
                             img.onload = function (eve) {
                                 window.URL.revokeObjectURL(this.src)
                                 img = ""
                                 imgpicker.style.display = 'none'
                             }
                         }, false)
-                        img.setAttribute('draggable', true)
-                        img.addEventListener('drag', drag)
                         img.id = ''
                         break;
                     case 'texte':
@@ -460,16 +452,12 @@
                             video.src = window.URL.createObjectURL(file0)
                             xAppend(video)
                             video.load()
-                            div.setAttribute('draggable', true)
-                            div.addEventListener('drag', drag)
                             video.onload = function (eve) {
                                 window.URL.revokeObjectURL(this.src)
                                 video = ""
                                 videopicker.style.display = 'none'
                             }
                         }, false)
-                        video.setAttribute('draggable', true)
-                        video.addEventListener('drag', drag)
                         video.id = ''
                         break;
                     case 'menu':
@@ -705,10 +693,6 @@
                 let div = document.createElement('div')
                 div.innerHTML = newData
                 div.classList.add('xcms-custom')
-                div.setAttribute('draggable', true)
-                div.addEventListener('drag', drag)
-                div.addEventListener('dragover', allowDrop)
-                div.addEventListener('drop', drop)
                 node.parentElement.replaceChild(div, node)
                 document.querySelector('.ql-toolbar').remove()
                 div.addEventListener('click', (e) => {
@@ -724,42 +708,7 @@
             })
         }
         //**************DRAG & DROP
-        function allowDrop(e){
-            e.preventDefault()
-        }
-        let draggedElement;
-        function drag(e){
-            e.dataTransfer.setData("text/html", e.target)
-            console.log(e)
-            draggedElement = e.target
-        }
-        function drop(e){
-            e.preventDefault()
-            console.log(draggedElement)
-            if(/(H[0-9])/.test(e.srcElement.nodeName)){
-                let data = e.dataTransfer.getData('text/html');
-                e.target.parentElement.parentElement.appendChild(draggedElement)
-            } else if(e.srcElement.nodeName === "P" || e.srcElement.nodeName === "SPAN"){
-                let data = e.dataTransfer.getData('text/html');
-                e.target.parentElement.parentElement.appendChild(draggedElement)
-            } else if(e.srcElement.classList.contains('xcms-div') &&  e.srcElement.childNodes.length > 0){
-                e.srcElement.style.display = "grid"
-                e.srcElement.style.gridTemplate = "auto / 1fr 1fr "
-                e.srcElement.style.gridGap = "20px"
-                let data = e.dataTransfer.getData('text/html');
-                e.target.appendChild(draggedElement)
-            } else if(e.srcElement.className === 'xcms-img'){
-                return
-            } else if(e.srcElement.className === 'xcms-video'){
-                return
-            }else{
-                let data = e.dataTransfer.getData('text/html');
-                e.target.appendChild(draggedElement)
-            }
-            
-        }
-        document.querySelector('.edit-zone').addEventListener('dragover', allowDrop)
-        document.querySelector('.edit-zone').addEventListener('drop', drop)
+        let drake = dragula([document.querySelector('.edit-zone')])
         //ACE EDITORS
         let csseditor = ace.edit('css-editor')
         csseditor.setTheme("ace/theme/xcode")
