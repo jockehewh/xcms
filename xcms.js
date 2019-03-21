@@ -44,6 +44,9 @@ db.on('open', ()=>{
         }
   })
 })
+/* 
+pages.deleteOne({name: 'selectedPage.html})
+ */
 const fileCTL = /([a-z]{2,}).(html|css|js|jpeg|PNG|jpg|png|mp4)/
 const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
 const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
@@ -213,7 +216,10 @@ xcms.use(async (ctx, next) => {
             })
             return
         }
-        
+        if(/dltcursor\.png/.test(ctx.url)){
+            ctx.type = 'image/png'
+            ctx.body = fs.createReadStream('./admin-site/dltcursor.png', {autoclose: true})
+        }
         var urlctl = fileCTL.exec(ctx.url)
         if (typeCTL.exec(ctx.url)[0] === 'woff') {
             ctx.type = "font/woff2"
@@ -335,6 +341,12 @@ adminSocket.on('message', (ctx) => {
                     page.js = datainfo.update.js
                     page.css = datainfo.update.css
                 }
+            })
+        }
+        if(datainfo.deletePage){
+            pages.deleteOne({name: datainfo.deletePage}, (err, success)=>{
+                if(err) console.log(err)//envoyer l'erreur
+                if(success) console.log(success)//envoyer success
             })
         }
         //PAGE CRM

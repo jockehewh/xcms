@@ -20,13 +20,12 @@
     <div class="xcms-popd">
         <!--Master menu maker-->
         <div id="options-selectd">
+            <h3>how many links would you like to create?</h3>
+            <br>
             <ul>
-                <li><a href="#" data-size="5">5 options</a></li>
-                <li><a href="#" data-size="4">4 options</a></li>
-                <li><a href="#" data-size="3">3 options</a></li>
-                <li><a href="#" data-size="2">2 options</a></li>
                 <li><select id="menusize"></select></li>
             </ul>
+            <br>
             <button class="save">save</button>
         </div>
     </div>
@@ -240,13 +239,14 @@
                     })
                     var li = document.createElement('li');
                     var a = document.createElement('a');
+                    let span = document.createElement('span');
                     a.href = '#'
                     a.innerText = parsed.lien.name
                     a.dataset.index = editablePages.length - 1
                     a.className += "link"
+                    span.innerText = "delete page"
                     li.appendChild(a);
-                    li.className +=
-                        "b--light-silver br3 br--top w-100"
+                    li.appendChild(span)
                     //EDITION DES PAGES
                     a.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -335,9 +335,14 @@
                             button.remove()
                         })
                     }, false)
+                    span.addEventListener("click", (e)=>{
+                        let pagename = e.target.parentElement.querySelector('a').innerText
+                        mews.emit('message', jss({deletePage: pagename}))
+                        e.target.parentElement.remove()
+                    })
                 }
                 document.querySelector('.editables').appendChild(li)
-                li = a = ""
+                li = a = span = ""
             }
             if (parsed.formfield) {
                 const nodemaker = document.querySelector('#nodemaker ul')
@@ -346,8 +351,6 @@
                 a.href = '#'
                 a.innerText = "Contact form"
                 a.className += "link "
-                li.className +=
-                    "b--light-silver mt1 br3 br--top  w-100"
                 li.appendChild(a)
                 nodemaker.appendChild(li)
                 a.addEventListener('click', (e) => {
@@ -464,56 +467,34 @@
                         desactive()
                         var menuSize;
                         document.querySelector('.xcms-popd').style.display = 'flex'
-                        let i = 6
+                        let i = 0
                         while (i <= 10) {
                             let option = document.createElement('option')
                             option.value = i
-                            option.innerText = i + " options"
+                            if(i === 1){
+                                option.innerText = i + " link"
+                            }else{
+                                option.innerText = i + " links"
+                            }
                             document.querySelector('#menusize').appendChild(option)
                             i++
                         }
-                        document.querySelectorAll('#options-selectd a').forEach(as => {
-                            //defini la longueur du menu
-                            as.addEventListener('click', e => {
-                                e.stopImmediatePropagation()
-                                var ul = document.createElement('ul');
-                                menuSize = 0
-                                while (menuSize < Number(e.target.dataset.size)) {
-                                    var li = document.createElement('li');
-                                    var alink = document.createElement('a');
-                                    var titrelien = prompt(
-                                        "Please enter the target element for the link n°" +
-                                        (menuSize + 1) + "/" + Number(e.target.dataset
-                                            .size) + ":")
-                                    alink.href = "#" + titrelien
-                                    alink.innerText = titrelien
-                                    alink.id = "isActive"
-                                    li.appendChild(alink);
-                                    ul.appendChild(li);
-                                    ul.classList.add('xcms-menu')
-                                    alink.id = ""
-                                    menuSize++
-                                }
-                                menuSize = 0
-                                xAppend(ul)
-                                document.querySelector('.xcms-popd').style.display =
-                                    'none'
-                            })
-                        })
                         document.querySelector('.xcms-popd .save').addEventListener('click', (e) => {
                             let desiredSize = document.querySelector('#menusize').options[
                                 document.querySelector('#menusize').selectedIndex].value
                             var ul = document.createElement('ul');
                             menuSize = 0
-                            while (menuSize <= desiredSize) {
+                            while (menuSize < desiredSize) {
                                 var li = document.createElement('li');
                                 var alink = document.createElement('a');
                                 var titrelien = prompt(
                                     "Please enter the target element for the link n°" + (
-                                        menuSize + 1) + "/" + desiredSize + ":")
+                                        menuSize +1) + "/" + desiredSize + ":")
                                 alink.href = "#" + titrelien
                                 alink.innerText = titrelien
                                 alink.id = "isActive"
+                                li.style.margin = "5px 10px"
+                                li.style.display = 'inline'
                                 li.appendChild(alink);
                                 ul.appendChild(li);
                                 ul.classList.add('xcms-menu')
@@ -521,7 +502,14 @@
                                 menuSize++
                             }
                             menuSize = 0
-                            xAppend(ul)
+                            console.log(desiredSize)
+                            if(desiredSize === '0'){
+                                ul = ""
+                                document.querySelector('.xcms-popd').style.display = 'none'
+                                return
+                            }else{
+                                xAppend(ul)
+                            }
                             document.querySelector('.xcms-popd').style.display = 'none'
                         })
                         break;
