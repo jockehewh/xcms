@@ -258,9 +258,7 @@ xcms.use(async (ctx, next) => {
                         autoclose: true
                     })
                 }
-                
             }
-            
         }
     }
     await next();
