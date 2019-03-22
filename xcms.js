@@ -64,6 +64,13 @@ authStream.on('end', () => {
 })
 xcms.proxy = true
 xcms.use(bodyParser())
+const logUser = async (user, ctx)=>{
+  usersList.forEach(u=>{
+    if(user.username === u.username && user.password === u.password){
+      xcms.currentUser = {address: ctx.ip, connected: user.username}
+    }
+  })
+}
 xcms.use(async (ctx, next) => {
     var urlctl = fileCTL.exec(ctx.url)
     let page
@@ -84,18 +91,30 @@ xcms.use(async (ctx, next) => {
                 }
                 break;
             case '/admin':
-                console.log(ctx.ip)
-                console.log(ctx.ips)
-                ctx.type = "html"
-                ctx.body = fs.createReadStream('./admin-site/login.html', {
-                    autoClose: true
-                })
+                if(xcms.currentUser !== undefined && xcms.currentUser.address === ctx.ip){
+                    ctx.type = "html"
+                    ctx.body = fs.createReadStream('./admin-site/index.html', {
+                        autoClose: true
+                    })
+                }else{
+                    ctx.type = "html"
+                    ctx.body = fs.createReadStream('./admin-site/login.html', {
+                        autoClose: true
+                    })
+                }
                 break;
             case '/admin/crm':
-                ctx.type = "html"
-                ctx.body = fs.createReadStream('./admin-site/crm-login.html', {
-                    autoClose: true
-                })
+                if(xcms.currentUser !== undefined && xcms.currentUser.address === ctx.ip){
+                    ctx.type = "html"
+                    ctx.body = fs.createReadStream('./admin-site/crm.html', {
+                        autoClose: true
+                    })
+                }else{
+                    ctx.type = "html"
+                    ctx.body = fs.createReadStream('./admin-site/crm-login.html', {
+                        autoClose: true
+                    })
+                }
                 break;
             case '/chat':
                 ctx.type = 'html'
@@ -120,10 +139,11 @@ xcms.use(async (ctx, next) => {
                 for (let i = 0; i < admins.length; i++) {
                     if (auth.username == admins[i]["username"]) {
                         if (auth.password == admins[i]["password"]) {
-                            ctx.type = "html"
-                            ctx.body = fs.createReadStream('./admin-site/index.html', {
-                                autoClose: true
-                            })
+                            xcms.currentUser = {address: ctx.ip, connected: auth.username}
+                            setTimeout(()=>{
+                                xcms.currentUser = undefined
+                            },3600000)
+                            ctx.redirect('/admin')
                             break;
                         } else {
                             ctx.redirect('/admin')
@@ -142,10 +162,11 @@ xcms.use(async (ctx, next) => {
                 for (let i = 0; i < admins.length; i++) {
                     if (crmauth.username == admins[i]["username"]) {
                         if (crmauth.password == admins[i]["password"]) {
-                            ctx.type = "html"
-                            ctx.body = fs.createReadStream('./admin-site/crm.html', {
-                                autoClose: true
-                            })
+                            xcms.currentUser = {address: ctx.ip, connected: crmauth.username}
+                            setTimeout(()=>{
+                                xcms.currentUser = undefined
+                            },3600000)
+                            ctx.redirect('/admin/crm')
                             break;
                         } else {
                             ctx.redirect('/admin/crm')
