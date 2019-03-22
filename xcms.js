@@ -62,6 +62,7 @@ authStream.on('data', data => {
 authStream.on('end', () => {
     admins = jsp(admins)
 })
+xcms.proxy = true
 xcms.use(bodyParser())
 xcms.use(async (ctx, next) => {
     var urlctl = fileCTL.exec(ctx.url)
@@ -83,6 +84,8 @@ xcms.use(async (ctx, next) => {
                 }
                 break;
             case '/admin':
+                console.log(ctx.ip)
+                console.log(ctx.ips)
                 ctx.type = "html"
                 ctx.body = fs.createReadStream('./admin-site/login.html', {
                     autoClose: true
