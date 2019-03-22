@@ -83,6 +83,7 @@ xcms.use(async (ctx, next) => {
                 }
                 break;
             case '/admin':
+                console.log(ctx.req)
                 ctx.type = "html"
                 ctx.body = fs.createReadStream('./admin-site/login.html', {
                     autoClose: true
@@ -346,7 +347,7 @@ adminSocket.on('message', (ctx) => {
         if(datainfo.deletePage){
             pages.deleteOne({name: datainfo.deletePage}, (err, success)=>{
                 if(err) console.log(err)//envoyer l'erreur
-                if(success) console.log(success)//envoyer success
+                if(success) console.log(datainfo.deletePage, 'was successfully deleted')//envoyer success
             })
         }
         //PAGE CRM
