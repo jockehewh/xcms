@@ -81,13 +81,18 @@ main{
     border: none;
     line-height: 2;
 }
-.list li{
+hr{
+    width: 87%;
+    margin: 0 auto;
+    border-top: solid 1px;
+}
+.editables li{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin: 10px 0;
 }
-.list li a{
+.editables li a{
     max-width: 50%;
     overflow-x: hidden;
 }
@@ -125,6 +130,9 @@ main{
     transform: translateY(-5px);
 }
 section{
+}
+section h4{
+    text-align: center;
 }
 section:nth-child(2), section:nth-child(3), section:nth-child(4){
     margin-top:0;

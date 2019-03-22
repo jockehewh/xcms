@@ -69,43 +69,38 @@
                     <a id="crepage">Save page</a><br><br>
                     <a id="crenew">New page</a><br><br>
                     <a id="efface">Delete content</a><br><br>
-                </section><br>
+                </section><br><hr>
                 <section>
                     <h4 class="mt2" style="margin-bottom: 3px;">Edit content:</h4><br>
                     <ul class="list">
-                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                        <li><a
                                 class="link" href="#" data-demande="texte">Open editor</a><br class="mybr"><br class="mybr"></li>
-                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                        <li><a
                                 class="link" href="#" data-demande="div">Add a container</a><br class="mybr"><br class="mybr"></li>
-                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                        <li><a
                                 class="link" href="#" data-demande="menu">Add a menu</a><br class="mybr"><br class="mybr"></li>
-                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                        <li><a
                                 class="link" href="#" data-demande="image">Add an image</a><br class="mybr"><br class="mybr"></li>
-                        <li class="b--light-silver mt1 br3 br--top  w-100"><a
+                        <li><a
                                 class="link" href="#" data-demande="video">Add a video</a><br class="mybr"><br class="mybr"></li>
-                        <li class="b--light-silver mt1 br3 br--top  w-100">
+                        <li>
                             <div class="backcolor" style="grid-row:1;">
                                 <label id="fond">
                                     Background color:
                                 </label>
-                                <input type="color" name="backcolor-picker" id="backcolor-picker"><br>
-                            </div><br>
+                                <input type="color" name="backcolor-picker" id="backcolor-picker">
+                            </div><br class="mybr">
                         </li>
-                        <li class="b--light-silver mt1 br3 br--top  w-100">
+                        <li>
                             <div class="textcolor" style="grid-row:2;">
                                 <label id="texte">
                                 Text color:
                                 </label>
                                 <input type="color" name="textcolor-picker" id="textcolor-picker">
-                            </div><br>
+                            </div><br class="mybr">
                         </li>
-                    </ul><br>
-                    <label class="mt2" for="cssinput">
-                        <h4>Custom CSS:</h4><br> 
-                    </label>
-                    <textarea name="cssinput" id="cssinput" cols="25" rows="4"></textarea><br>
-                    <a class="applycss">apply css</a><br>
-                </section><br><br>
+                    </ul>
+                </section><br><hr>
                 <section class="mt2">
                 <h4>Edit an old page:</h4><br> 
                 <ul class="editables list">
@@ -348,10 +343,12 @@
                 const nodemaker = document.querySelector('#nodemaker ul')
                 let li = document.createElement('li')
                 let a = document.createElement('a')
+                let br = document.createElement('br')
                 a.href = '#'
                 a.innerText = "Contact form"
                 a.className += "link "
                 li.appendChild(a)
+                li.appendChild(br)
                 nodemaker.appendChild(li)
                 a.addEventListener('click', (e) => {
                     let formblock = document.createElement("h1")
@@ -723,14 +720,6 @@
     </script>
     <script>
         // AFFICHAGE
-        document.querySelector('.applycss').addEventListener('click', (e) => {
-            let cssupdate = document.querySelector('#cssinput').value
-            if (document.querySelector('.edit-zone').style.display === "block") {
-                document.querySelector('.edit-zone style').innerText += cssupdate
-            } else {
-                document.querySelector('.re-edit-zone style').innerText += cssupdate
-            }
-        })
         document.querySelector('#backcolor-picker').addEventListener('change', (e) => {
             console.log(e.target.value)
             if (document.querySelector('#isActive') !== null) {
