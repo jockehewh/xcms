@@ -83,7 +83,6 @@ xcms.use(async (ctx, next) => {
                 }
                 break;
             case '/admin':
-                console.log(ctx.req)
                 ctx.type = "html"
                 ctx.body = fs.createReadStream('./admin-site/login.html', {
                     autoClose: true
