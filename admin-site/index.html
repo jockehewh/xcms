@@ -36,7 +36,7 @@
         <div class="first-class-editor-button"><p>Menu</p></div>
         <div class="first-class fl ph3 pv5 w-80">
             <!--Master page maker-->
-            <input type="file" accept="image; video/mp4" id="imgpiker">
+            <input type="file" accept="image; video/mp4" multiple id="imgpiker">
             <div class="edit-zone" style="display:block;">
                 <style scoped>
                     *{margin:0; padding:0; user-select: none;
@@ -287,35 +287,36 @@
                     case 'image':
                         desactive()
                         var imgpicker = document.querySelector('#imgpiker');
-                        var img = document.createElement('img');
-                        img.id = 'isActive'
-                        img.classList.add('xcms-img')
-                        xAppend(img)
                         imgpicker.style.display = 'block'
                         imgpicker.click()
                         var imgpicklone = document.createElement('input');
                         imgpicklone.setAttribute('type', 'file')
                         imgpicklone.setAttribute('accept', 'image; video/mp4')
+                        imgpicklone.setAttribute('multiple', true)
                         imgpicklone.id = 'imgpiker'
                         imgpicklone.style.display = 'none'
                         imgpicker.addEventListener('change', function (ev) {
                             ev.stopPropagation()
-                            var file0 = imgpicker.files[0];
-                            let imageName = file0.name.split(' ').join('_')
-                            titresImgs.push(imageName)
-                            imgpicker.replaceWith(imgpicklone);
-                            mews.emit('image', {
-                                name: imageName,
-                                image: file0
-                            })
-                            img.src = window.URL.createObjectURL(file0)
-                            img.onload = function (eve) {
-                                window.URL.revokeObjectURL(this.src)
-                                img = ""
-                                imgpicker.style.display = 'none'
+                            for (let file of imgpicker.files){
+                                var img = document.createElement('img');
+                                img.classList.add('xcms-img')
+                                xAppend(img)
+                                let imageName = file.name.split(' ').join('_')
+                                titresImgs.push(imageName)
+                                mews.emit('image', {
+                                    name: imageName,
+                                    image: file
+                                })
+                                img.src = window.URL.createObjectURL(file)
+                                img.onload = function (eve) {
+                                    window.URL.revokeObjectURL(this.src)
+                                    img.id = ""
+                                    img = ''
+                                }
                             }
+                            imgpicker.replaceWith(imgpicklone);
+                            imgpicker.style.display = 'none'
                         }, false)
-                        img.id = ''
                         break;
                     case 'texte':
                         desactive()
@@ -327,37 +328,38 @@
                     case 'video':
                         desactive()
                         var videopicker = document.querySelector('#imgpiker');
-                        var video = document.createElement('video');
-                        video.id = 'isActive'
-                        video.type = 'video/mp4'
-                        video.setAttribute('controls', 'true')
-                        video.classList.add('xcms-video')
                         videopicker.style.display = 'block'
+                        videopicker.click()
                         var videopicklone = document.createElement('input');
                         videopicklone.setAttribute('type', 'file')
                         videopicklone.setAttribute('accept', 'image; video/mp4')
+                        videopicklone.setAttribute('multiple', true)
                         videopicklone.id = 'imgpiker'
                         videopicklone.style.display = 'none'
                         videopicker.addEventListener('change', function (ev) {
                             ev.stopPropagation()
-                            var file0 = videopicker.files[0];
-                            let videoName = file0.name.split(' ').join('_')
-                            titresVideos.push(videoName)
-                            videopicker.replaceWith(imgpicklone);
-                            mews.emit('video', {
-                                name: videoName,
-                                video: file0
-                            })
-                            video.src = window.URL.createObjectURL(file0)
-                            xAppend(video)
-                            video.load()
-                            video.onload = function (eve) {
-                                window.URL.revokeObjectURL(this.src)
-                                video = ""
-                                videopicker.style.display = 'none'
+                            for (let file of videopicker.files){
+                                var video = document.createElement('video');
+                                video.type = 'video/mp4'
+                                video.setAttribute('controls', 'true')
+                                video.classList.add('xcms-video')
+                                let videoName = file.name.split(' ').join('_')
+                                titresVideos.push(videoName)
+                                mews.emit('video', {
+                                    name: videoName,
+                                    video: file
+                                })
+                                video.src = window.URL.createObjectURL(file)
+                                xAppend(video)
+                                video.load()
+                                video.onload = function (eve) {
+                                    window.URL.revokeObjectURL(this.src)
+                                    video = ""
+                                }
                             }
+                        videopicker.replaceWith(imgpicklone);
+                        videopicker.style.display = 'none'
                         }, false)
-                        video.id = ''
                         break;
                     case 'menu':
                         desactive()
