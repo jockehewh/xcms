@@ -54,7 +54,9 @@
 
             </div>
             <div class="ace-editor-block">
-                <a data-editor="js">Edit your javascript</a>  <a data-editor="css">Edit your css</a>
+                <div class="editor-btn-flexbox">
+                    <a data-editor="js">Edit your javascript</a>  <a data-editor="css">Edit your css</a>
+                </div>
                 <div id="css-editor"></div>
                 <div id="js-editor"></div>
             </div>
@@ -205,8 +207,8 @@
             const pageCSS = csseditor.getValue()
 
             nouvellepage = {
-                titre,
-                contenu,
+                name: titre,
+                page: contenu,
                 js: pageJS,
                 css: pageCSS
             }
@@ -218,9 +220,17 @@
                 document.querySelector('.edit-zone').lastChild.remove()
                 j--
             }
+            nouvellepage.index = editablePages.length
+            nouvellepage.name = nouvellepage.name+'.html'
+            editablePages.push(nouvellepage)
+            createEditablesPageLinks(nouvellepage)
+            nouvellepage = {}
+            jseditor.setValue('', 0)
+            csseditor.setValue('', 0)
             alert(
                 `your new page is accessible at the following address: ${window.location.origin}/${titre}.html`
             )
+            window.location.href = `${window.location.origin}/admin`
         }, false)
         mews.on('normal', data => {
             parsed = jsp(data)
@@ -232,112 +242,8 @@
                         ...parsed.lien,
                         index: editablePages.length
                     })
-                    var li = document.createElement('li');
-                    var a = document.createElement('a');
-                    let span = document.createElement('span');
-                    a.href = '#'
-                    a.innerText = parsed.lien.name
-                    a.dataset.index = editablePages.length - 1
-                    a.className += "link"
-                    span.innerText = "delete page"
-                    li.appendChild(a);
-                    li.appendChild(span)
-                    //EDITION DES PAGES
-                    a.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        myframe = document.querySelector('.maFrame')
-                        var theframe = document.createElement('div')
-                        theframe.classList.add('re-edit-zone')
-                        theframe.innerHTML = editablePages[e.target.dataset.index].page
-                        jseditor.setValue(editablePages[e.target.dataset.index].js)
-                        csseditor.setValue(editablePages[e.target.dataset.index].css)
-                        myframe.appendChild(theframe)
-                        drake.destroy();
-                        drake = dragula([document.querySelector('.re-edit-zone')])
-                        document.querySelector('.edit-zone').style.display = 'none'
-                        //PREPARATION AU CHANGEMENT
-                        theframe.childNodes.forEach(node => {
-                            if (node instanceof HTMLElement) {
-                                if (node.hasAttribute('class')) {
-                                    if (node.className !== "xcms-img" && node.className !== "xcms-video") {
-                                        node.addEventListener('click', (e) => {
-                                            node.id = 'isActive'
-                                            xEdit(node)
-                                        })
-                                    }
-                                }
-                            }
-                        })
-                        //ENREGISTREMENT DES CHANGEMENTS
-                        let button = document.createElement('a')
-                        button.innerText = 'Enregistrer et fermer'
-                        button.href = "#"
-                        document.querySelector('.boutons').appendChild(button)
-                        button.addEventListener('click', ev => {
-                            //MODIFIER LES LIENS
-                            var imgs = document.querySelectorAll('img');
-                            var i = j = 0
-                            while (i <= imgs.length - 1) {
-                                imgs[i].classList.add('xcms-img')
-                                if (/\/imgs\//.test(imgs[i].src)) {
-                                    i++
-                                } else {
-                                    imgs[i].src = './frontend-site/imgs/' + titresImgs[j];
-                                    i++
-                                    j++
-                                }
-                            }
-                            var videos = document.querySelectorAll('video');
-                            var k = l = 0
-                            while (k <= videos.length - 1) {
-                                videos[k].classList.add('xcms-video')
-                                if (/\/videos\//.test(videos[k].src)) {
-                                    k++
-                                } else {
-                                    videos[k].src = './frontend-site/videos/' + titresVideos[l];
-                                    k++
-                                    l++
-                                }
-                            }
-                            //ENLEVER ATTRIBUT CONTENTEDITABLE
-                            theframe.childNodes.forEach(node => {
-                                if (node instanceof HTMLElement) {
-                                    if (node.hasAttribute('class')) {
-                                        if (node.className !== "xcms-img" && node.className !== "xcms-video") {
-                                            node.removeAttribute('contenteditable')
-                                        }
-                                    }
-                                }
-                            })
-                            let name = e.target.innerText
-                            let page = theframe.innerHTML
-                            let js = jseditor.getValue()
-                            let css = csseditor.getValue()
-                            let changedPage = {
-                                name,
-                                page,
-                                css,
-                                js
-                            }
-                            mews.emit('message', jss({
-                                update: changedPage
-                            }))
-                            editablePages[e.target.dataset.index].page = theframe.innerHTML
-                            theframe.remove()
-                            document.querySelector('.edit-zone').style.display = 'block'
-                            drake.destroy()
-                            drake = dragula([document.querySelector('.edit-zone')])
-                            button.remove()
-                        })
-                    }, false)
-                    span.addEventListener("click", (e)=>{
-                        let pagename = e.target.parentElement.querySelector('a').innerText
-                        mews.emit('message', jss({deletePage: pagename}))
-                        e.target.parentElement.remove()
-                    })
+                    createEditablesPageLinks(parsed.lien)
                 }
-                document.querySelector('.editables').appendChild(li)
-                li = a = span = ""
             }
             if (parsed.formfield) {
                 const nodemaker = document.querySelector('#nodemaker ul')
@@ -366,7 +272,6 @@
         */
         var titresImgs = []
         var titresVideos = []
-        var pushCount = 0
         document.querySelectorAll('.first-class-editor a').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -387,6 +292,7 @@
                         img.classList.add('xcms-img')
                         xAppend(img)
                         imgpicker.style.display = 'block'
+                        imgpicker.click()
                         var imgpicklone = document.createElement('input');
                         imgpicklone.setAttribute('type', 'file')
                         imgpicklone.setAttribute('accept', 'image; video/mp4')
@@ -394,15 +300,12 @@
                         imgpicklone.style.display = 'none'
                         imgpicker.addEventListener('change', function (ev) {
                             ev.stopPropagation()
-                            pushCount++
-                            var type = {
-                                type: imgpicker.files[0].type
-                            }
                             var file0 = imgpicker.files[0];
-                            titresImgs.push(file0.name)
+                            let imageName = file0.name.split(' ').join('_')
+                            titresImgs.push(imageName)
                             imgpicker.replaceWith(imgpicklone);
                             mews.emit('image', {
-                                name: file0.name,
+                                name: imageName,
                                 image: file0
                             })
                             img.src = window.URL.createObjectURL(file0)
@@ -429,7 +332,6 @@
                         video.type = 'video/mp4'
                         video.setAttribute('controls', 'true')
                         video.classList.add('xcms-video')
-
                         videopicker.style.display = 'block'
                         var videopicklone = document.createElement('input');
                         videopicklone.setAttribute('type', 'file')
@@ -438,15 +340,12 @@
                         videopicklone.style.display = 'none'
                         videopicker.addEventListener('change', function (ev) {
                             ev.stopPropagation()
-                            pushCount++
-                            var type = {
-                                type: videopicker.files[0].type
-                            }
                             var file0 = videopicker.files[0];
-                            titresVideos.push(file0.name)
+                            let videoName = file0.name.split(' ').join('_')
+                            titresVideos.push(videoName)
                             videopicker.replaceWith(imgpicklone);
                             mews.emit('video', {
-                                name: file0.name,
+                                name: videoName,
                                 video: file0
                             })
                             video.src = window.URL.createObjectURL(file0)
@@ -717,6 +616,125 @@
                 }
             })
         })
+        document.querySelectorAll('.ace-editor-block a').forEach(btn=>{
+            btn.addEventListener('dblclick', e=>{
+                if(e.target.dataset.editor === 'js'){
+                    document.querySelector('#js-editor').style.display = "none"
+                }
+                if(e.target.dataset.editor === 'css'){
+                    document.querySelector('#css-editor').style.display = "none"
+                }
+            })
+        })
+        //******************CREATE EDITABLE PAGES LINKS
+        function createEditablesPageLinks(onePage){
+            var li = document.createElement('li');
+            var a = document.createElement('a');
+            let span = document.createElement('span');
+            a.href = '#'
+            a.innerText = onePage.name
+            a.dataset.index = editablePages.length - 1
+            a.className += "link"
+            span.innerText = "delete page"
+            li.appendChild(a);
+            li.appendChild(span)
+            //EDITION DES PAGES
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                myframe = document.querySelector('.maFrame')
+                var theframe = document.createElement('div')
+                theframe.classList.add('re-edit-zone')
+                theframe.innerHTML = editablePages[e.target.dataset.index].page
+                jseditor.setValue(editablePages[e.target.dataset.index].js)
+                csseditor.setValue(editablePages[e.target.dataset.index].css)
+                myframe.appendChild(theframe)
+                drake.destroy();
+                drake = dragula([document.querySelector('.re-edit-zone')])
+                document.querySelector('.edit-zone').style.display = 'none'
+                //PREPARATION AU CHANGEMENT
+                theframe.childNodes.forEach(node => {
+                    if (node instanceof HTMLElement) {
+                        if (node.hasAttribute('class')) {
+                            if (node.className !== "xcms-img" && node.className !== "xcms-video") {
+                                node.addEventListener('click', (e) => {
+                                    node.id = 'isActive'
+                                    xEdit(node)
+                                })
+                            }
+                        }
+                    }
+                })
+                //ENREGISTREMENT DES CHANGEMENTS
+                let button = document.createElement('a')
+                button.innerText = 'Enregistrer et fermer'
+                button.href = "#"
+                document.querySelector('.boutons').appendChild(button)
+                button.addEventListener('click', ev => {
+                    //MODIFIER LES LIENS
+                    var imgs = document.querySelectorAll('img');
+                    var i = j = 0
+                    while (i <= imgs.length - 1) {
+                        imgs[i].classList.add('xcms-img')
+                        if (/\/imgs\//.test(imgs[i].src)) {
+                            i++
+                        } else {
+                            imgs[i].src = './frontend-site/imgs/' + titresImgs[j];
+                            i++
+                            j++
+                        }
+                    }
+                    var videos = document.querySelectorAll('video');
+                    var k = l = 0
+                    while (k <= videos.length - 1) {
+                        videos[k].classList.add('xcms-video')
+                        if (/\/videos\//.test(videos[k].src)) {
+                            k++
+                        } else {
+                            videos[k].src = './frontend-site/videos/' + titresVideos[l];
+                            k++
+                            l++
+                        }
+                    }
+                    //ENLEVER ATTRIBUT CONTENTEDITABLE
+                    theframe.childNodes.forEach(node => {
+                        if (node instanceof HTMLElement) {
+                            if (node.hasAttribute('class')) {
+                                if (node.className !== "xcms-img" && node.className !== "xcms-video") {
+                                    node.removeAttribute('contenteditable')
+                                }
+                            }
+                        }
+                    })
+                    let name = e.target.innerText
+                    let page = theframe.innerHTML
+                    let js = jseditor.getValue()
+                    let css = csseditor.getValue()
+                    let changedPage = {
+                        name,
+                        page,
+                        css,
+                        js
+                    }
+                    mews.emit('message', jss({
+                        update: changedPage
+                    }))
+                    editablePages[e.target.dataset.index].page = theframe.innerHTML
+                    theframe.remove()
+                    document.querySelector('.edit-zone').style.display = 'block'
+                    drake.destroy()
+                    drake = dragula([document.querySelector('.edit-zone')])
+                    button.remove()
+                })
+            }, false)
+            span.addEventListener("click", (e)=>{
+                let pagename = e.target.parentElement.querySelector('a').innerText
+                mews.emit('message', jss({deletePage: pagename}))
+                e.target.parentElement.remove()
+                editablePages = editablePages.filter(pageData =>{if(pageData.name !== pagename) return pageData})
+            })
+            document.querySelector('.editables').appendChild(li)
+            li = a = span = ""
+        }
     </script>
     <script>
         // AFFICHAGE

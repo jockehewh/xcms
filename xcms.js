@@ -325,14 +325,14 @@ adminSocket.on('connection', ctx => {
 adminSocket.on('message', (ctx) => {
     if (typeof ctx.data === 'string') {
         var datainfo = jsp(ctx.data)
-        if (datainfo.titre) {
-            pages.find({name: datainfo.titre+'.html'}, (err, data)=>{
+        if (datainfo.name) {
+            pages.find({name: datainfo.name+'.html'}, (err, data)=>{
                 if(data.length > 0){
                     ctx.socket.emit('errorr', 'a page with the same name already exist')
                 }else{
                     let newPage = new pages({
-                        name: datainfo.titre+".html",
-                        page: datainfo.contenu,
+                        name: datainfo.name+".html",
+                        page: datainfo.page,
                         js: datainfo.js,
                         css: datainfo.css
                     })
@@ -372,6 +372,7 @@ adminSocket.on('message', (ctx) => {
                 if(err) console.log(err)//envoyer l'erreur
                 if(success) console.log(datainfo.deletePage, 'was successfully deleted')//envoyer success
             })
+            pagesCollection = pagesCollection.filter(pageData=>{if(pageData.name !== datainfo.deletePage) return pageData})
         }
         //PAGE CRM
         if (datainfo.userslist) {
@@ -481,6 +482,5 @@ IM.attach(xcms)
 xcms.listen(9899, () => {
     console.log("XCMS Listening port 9899")
 })
-
 
 //COMMUNIQUER LES ERREURS A LA FRONTEND
