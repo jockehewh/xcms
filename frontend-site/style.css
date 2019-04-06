@@ -1,6 +1,6 @@
 @font-face{
-  font-family: "Righteous";
-  src : url('./Righteous-Regular.ttf')
+  font-family: "Roboto";
+  src : url('./fonts/Roboto-Regular.ttf')
 }
 /* 
     couleurs:
@@ -24,7 +24,7 @@
 body{
     display: flex;
     flex-direction: column;
-    font-family: "Righteous"
+    font-family: "Roboto"
 }
 .xcms-div, .xcms-img, .xcms-menu{padding: 0;}
 .xcms-menu{

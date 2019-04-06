@@ -308,6 +308,31 @@
                                     image: file
                                 })
                                 img.src = window.URL.createObjectURL(file)
+                                img.addEventListener('click', event=>{
+                                    let div = document.createElement('div')
+                                    let label = document.createElement('label')
+                                    label.innerText = 'Scale'
+                                    let button = document.createElement('button')
+                                    button.innerText = 'save scaling'
+                                    let scaler = document.createElement('input')
+                                    scaler.setAttribute('type', 'range')
+                                    scaler.setAttribute('min', 1)
+                                    scaler.setAttribute('max', 10)
+                                    scaler.setAttribute('step', 0.1)
+                                    scaler.style.width = '350px'
+                                    div.appendChild(label)
+                                    div.appendChild(scaler)
+                                    div.appendChild(button)
+                                    event.target.parentElement.insertBefore(div, event.target)
+                                    button.addEventListener('click', ()=>{
+                                        event.target.style.width = event.target.getBoundingClientRect().width+'px'
+                                        event.target.style.transform = `scale(${1})`
+                                        div.remove()
+                                    })
+                                    scaler.addEventListener('change', (ev)=>{
+                                        event.target.style.transform = `scale(${ev.target.value/10})`
+                                    })
+                                })
                                 img.onload = function (eve) {
                                     window.URL.revokeObjectURL(this.src)
                                     img.id = ""
