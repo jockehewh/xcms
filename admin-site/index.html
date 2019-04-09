@@ -27,6 +27,7 @@
             </ul>
             <br>
             <button class="save">save</button>
+        <div id="mymenus"></div>
         </div>
     </div>
     <div class="nav"><span style="padding-left: 17px;">XCMS</span>
@@ -389,32 +390,72 @@
                     case 'menu':
                         desactive()
                         var menuSize;
+                        let mymenus = []
                         document.querySelector('.xcms-popd').style.display = 'flex'
-                        let i = 0
-                        while (i <= 10) {
-                            let option = document.createElement('option')
-                            option.value = i
-                            if(i === 1){
-                                option.innerText = i + " link"
-                            }else{
-                                option.innerText = i + " links"
+                        if(!document.querySelector('#menusize').hasChildNodes()){
+                            let i = 0
+                            while (i <= 10) {
+                                let option = document.createElement('option')
+                                option.value = i
+                                if(i === 1){
+                                    option.innerText = i + " link"
+                                }else{
+                                    option.innerText = i + " links"
+                                }
+                                document.querySelector('#menusize').appendChild(option)
+                                i++
                             }
-                            document.querySelector('#menusize').appendChild(option)
-                            i++
+                        }
+                        if(!document.querySelector('#mymenus').hasChildNodes()){
+                            if(localStorage.mymenus){
+                                mymenus = jsp(localStorage.mymenus)
+                                mymenus.forEach((menu, i)=>{
+                                    let menulink = document.createElement('a')
+                                    menulink.innerText = 'menu '+i
+                                    menulink.href = '#'
+                                    menulink.addEventListener('click', (menuevent)=>{
+                                        let div = document.createElement('div')
+                                        div.innerHTML = menu.menu
+                                        console.log(menu)
+                                        xAppend(div)
+                                        document.querySelector('.xcms-popd').style.display = 'none'
+                                    })
+                                    document.querySelector('#mymenus').appendChild(menulink)
+                                    let br = document.createElement('br')
+                                    document.querySelector('#mymenus').appendChild(br)
+                                })
+                            }else{
+                                mymenus = []
+                            }
                         }
                         document.querySelector('.xcms-popd .save').addEventListener('click', (e) => {
                             let desiredSize = document.querySelector('#menusize').options[
                                 document.querySelector('#menusize').selectedIndex].value
                             var ul = document.createElement('ul');
                             menuSize = 0
+                            e.stopImmediatePropagation()
                             while (menuSize < desiredSize) {
+                                menuSize++
                                 var li = document.createElement('li');
                                 var alink = document.createElement('a');
                                 var titrelien = prompt(
                                     "Please enter the target element for the link n°" + (
-                                        menuSize +1) + "/" + desiredSize + ":")
-                                alink.href = "#" + titrelien
-                                alink.innerText = titrelien
+                                        menuSize ) + "/" + desiredSize + ":\n please start with the '#' sign to target a link inside of the page, \n start with the '/' sign to link to another page. \n")
+                                if(titrelien.charAt(0) === '#'){
+                                    alink.href = titrelien
+                                    alink.innerText = titrelien.split('#').join('')
+                                }else if(titrelien.charAt(0) === '/'){
+                                    if(!/$.html/.test(titrelien)){
+                                        alink.href = titrelien + '.html'
+                                        alink.innerText = titrelien.split('/').join('')
+                                    }else{
+                                        alink.href = titrelien
+                                        alink.innerText = titrelien.split('/').join('').split('.html').join('')
+                                    }
+                                }else{
+                                    alink.href = '#' + titrelien
+                                    alink.innerText = titrelien
+                                }
                                 alink.id = "isActive"
                                 li.style.margin = "5px 10px"
                                 li.style.display = 'inline'
@@ -422,7 +463,6 @@
                                 ul.appendChild(li);
                                 ul.classList.add('xcms-menu')
                                 alink.id = ""
-                                menuSize++
                             }
                             menuSize = 0
                             console.log(desiredSize)
@@ -432,6 +472,22 @@
                                 return
                             }else{
                                 xAppend(ul)
+                                if(confirm("do you want to save this menu for later use?")){
+                                    mymenus.push({menu: ul.outerHTML})
+                                    let menulink = document.createElement('a')
+                                    menulink.innerText = 'menu '+ mymenus.length
+                                    menulink.href = '#'
+                                    menulink.addEventListener('click', (menuevent)=>{
+                                        let div = document.createElement('div')
+                                        div.innerHTML = ul.outerHTML
+                                        xAppend(div)
+                                        document.querySelector('.xcms-popd').style.display = 'none'
+                                    })
+                                    document.querySelector('#mymenus').appendChild(menulink)
+                                    let br = document.createElement('br')
+                                    document.querySelector('#mymenus').appendChild(br)
+                                    localStorage.mymenus = jss(mymenus)
+                                }
                             }
                             document.querySelector('.xcms-popd').style.display = 'none'
                         })

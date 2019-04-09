@@ -172,6 +172,12 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
     list-style-type: none;
     background-color: #fff;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+#mymenus{
+    display: flex;
+    flex-direction: column;
 }
 .save{
     font-weight: bold;
