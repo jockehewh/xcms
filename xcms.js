@@ -343,6 +343,9 @@ adminSocket.on('message', (ctx) => {
                             return
                         } else {
                             pagesCollection.push(data)
+                            if(data.name === "index.html"){
+                                isIndex = data
+                            }
                         }
                     })
                 }

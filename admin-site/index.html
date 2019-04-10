@@ -247,22 +247,25 @@
                 }
             }
             if (parsed.formfield) {
-                const nodemaker = document.querySelector('#nodemaker ul')
-                let li = document.createElement('li')
-                let a = document.createElement('a')
-                let br = document.createElement('br')
-                a.href = '#'
-                a.innerText = "Contact form"
-                a.className += "link "
-                li.appendChild(a)
-                li.appendChild(br)
-                nodemaker.appendChild(li)
-                a.addEventListener('click', (e) => {
-                    let formblock = document.createElement("h1")
-                    formblock.innerText = "Contact form will be here..."
-                    formblock.dataset.form = "true"
-                    xAppend(formblock)
-                })
+                if(document.querySelector('#formbtn') === null){
+                    const nodemaker = document.querySelector('#nodemaker ul')
+                    let li = document.createElement('li')
+                    let a = document.createElement('a')
+                    let br = document.createElement('br')
+                    a.href = '#'
+                    a.innerText = "Contact form"
+                    a.className += "link "
+                    a.id = "formbtn"
+                    li.appendChild(a)
+                    li.appendChild(br)
+                    nodemaker.appendChild(li)
+                    a.addEventListener('click', (e) => {
+                        let formblock = document.createElement("h1")
+                        formblock.innerText = "Contact form will be here..."
+                        formblock.dataset.form = "true"
+                        xAppend(formblock)
+                    })
+                }
             }
         })
         document.querySelector('.nav p').addEventListener('click', (e) => {

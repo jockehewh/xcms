@@ -213,6 +213,7 @@
               htmlText: document.querySelector('.ql-editor').innerHTML
             }
             mews.emit('message', jss(emaildata))
+            editor.setText("")
           }
         })
         document.querySelector('.submit').addEventListener('click', ()=>{
@@ -222,6 +223,9 @@
             userpassword: document.querySelector('#userpassword').value
           }
           mews.emit('message', jss(transporterData))
+          document.querySelector('#host').value = ""
+          document.querySelector('#user').value = ""
+          document.querySelector('#userpassword').value = ""
         })
       mews.on('normal', data =>{
         const datainfo = jsp(data)

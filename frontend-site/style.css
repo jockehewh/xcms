@@ -26,14 +26,17 @@ body{
     flex-direction: column;
     font-family: "Roboto"
 }
-.xcms-div, .xcms-img, .xcms-menu{padding: 0;}
+.xcms-div, .xcms-img{padding: 0;}
 .xcms-menu{
-list-style-type: none;
-color: black;
+    list-style-type: none;
 }
 .xcms-menu li{
     display: inline;
     margin: 5%;
+}
+.xcms-menu li a{
+    color: white;
+    text-decoration: none;
 }
 .xcms-div{
     width:100%;

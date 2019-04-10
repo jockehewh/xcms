@@ -86,7 +86,7 @@ window.onload = ()=>{
     })
 
     if(document.querySelector('.xcms-menu') !== null){
-        document.querySelector('.xcms-menu').className += " bg-black-90 w-100"
+        document.querySelector('.xcms-menu').className += " bg-green w-100 pb2 pt2 tc"
         //document.querySelector('.xcms-menu').nextElementSibling.style.marginTop = window.getComputedStyle(document.querySelector('.xcms-menu')).height.split('px').join('') *2 +'px'
 
         document.querySelectorAll('.xcms-titre').forEach(titre=>{
