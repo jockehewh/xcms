@@ -28,27 +28,36 @@ window.onload = ()=>{
                     let lastNameLabel = document.createElement('label')
                     let emailLabel = document.createElement('label')
                     let messageLabel = document.createElement('label')
+                    let br = document.createElement('br')
                     nameLabel.for = "firstname"
                     nameLabel.innerText = "first name:"
                     firstName.name = "firstname"
                     form.appendChild(nameLabel)
                     form.appendChild(firstName)
+                    form.appendChild(br)
+                    form.appendChild(br.cloneNode(true))
                     lastNameLabel.for = "lastname"
-                    lastNameLabel.innerText = "last name"
+                    lastNameLabel.innerText = "last name:"
                     lastName.name = "lastname"
                     form.appendChild(lastNameLabel)
                     form.appendChild(lastName)
+                    form.appendChild(br.cloneNode(true))
+                    form.appendChild(br.cloneNode(true))
                     emailLabel.for = "email"
                     emailLabel.type = "email"
-                    emailLabel.innerText = "email"
+                    emailLabel.innerText = "email:"
                     email.name = "email"
                     form.appendChild(emailLabel)
                     form.appendChild(email)
+                    form.appendChild(br.cloneNode(true))
+                    form.appendChild(br.cloneNode(true))
                     messageLabel.for = "message"
-                    messageLabel.innerText = "your message"
+                    messageLabel.innerText = "your message:"
                     message.name = "message"
                     form.appendChild(messageLabel)
                     form.appendChild(message)
+                    form.appendChild(br.cloneNode(true))
+                    form.appendChild(br.cloneNode(true))
                     submit.type = "submit"
                     submit.value = "submit"
                     form.appendChild(submit)

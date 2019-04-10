@@ -1,6 +1,5 @@
 const koa = require('koa')
 const fs = require('fs')
-const xcmsDB = require('./xdata.js');
 const bodyParser = require('koa-body')
 const nodemailer = require('nodemailer')
 const IO = require('koa-socket-2')

@@ -152,7 +152,7 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
     min-height: 60px;
 }
 .xcms-menu li a{
-    color: #448aff;
+    color: #448aff !important;
     text-decoration: none;
 }
 .xcms-popd{
