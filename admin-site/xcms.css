@@ -27,9 +27,7 @@
     --bleu-gris-clair: #cfd8dc;
     --teal-bleu-special: #1de9b6;
 }
-#isActive{
-    border-right: solid 20px #536dfe;
-}
+#isActive{}
 a{
     cursor:pointer;
 }
@@ -152,6 +150,10 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
 }
 .xcms-div{
     min-height: 60px;
+}
+.xcms-menu li a{
+    color: #448aff;
+    text-decoration: none;
 }
 .xcms-popd{
     height: 100vh;
