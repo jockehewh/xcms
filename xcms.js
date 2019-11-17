@@ -3,6 +3,9 @@ const fs = require('fs')
 const bodyParser = require('koa-body')
 const nodemailer = require('nodemailer')
 const IO = require('koa-socket-2')
+const passport = require('koa-passport')
+const r = require('koa-route')
+const session = require('koa-session')
 const adminSocket = new IO({
     namespace: 'asocket'
 })
@@ -10,41 +13,32 @@ const xcms = new koa();
 const jsp = JSON.parse;
 const jss = JSON.stringify;
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
-const connection = mongoose.connect('mongodb://localhost:27017/xcms')
-const db = mongoose.connection
+mongoose.connect('mongodb://localhost:27017/xcms', { useNewUrlParser: true, useFindAndModify: false })
+
 var pagesCollection, page, pages, isIndex, user, users;
-db.on('error', (err)=>{
-  console.log("cannot connect", err)
-})
-db.on('open', ()=>{
-    page = new Schema({
-        name: String,
-        page: String,
-        js: String,
-        css: String
-    })
-    user = new Schema({
-        firstname: String,
-        lastname: String,
-        email: String,
-        firstMessage: String,
-        messagesHistory: Array
-    })
-    pages = mongoose.model('pages', page)
-    users = mongoose.model('users', user)
-    pages.find({}, (err, data)=>{
-        pagesCollection = data
-    })
-  pages.find({name: "index.html"}, (err, data)=>{
-       if(err)console.log(err)
-        if(data.length === 1){
-            isIndex = data[0]
+const {pagedb, userdb, admindb} = require('./cmsModels.js')
+
+xcms.proxy = true
+xcms.keys = ['xavier-cms-key']
+xcms.use(session({}, xcms))
+xcms.use(bodyParser())
+xcms.use(passport.initialize())
+xcms.use(passport.session())
+require('./adminAuth.js')
+
+pagedb.find({}, (err, data)=>{
+    if(err) {console.log('fetch page error', err)}
+    pagesCollection = data
+    pagesCollection.forEach(page=>{
+        if(page.name === "index.html"){
+            isIndex = page
         }
-  })
+    })
 })
+
+
 /* 
-pages.deleteOne({name: 'selectedPage.html})
+pagedb.deleteOne({name: 'selectedPage.html})
  */
 const fileCTL = /([a-z]{2,}).(html|css|js|jpeg|PNG|jpg|png|mp4)/
 const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
@@ -61,17 +55,76 @@ authStream.on('data', data => {
 authStream.on('end', () => {
     admins = jsp(admins)
 })
-xcms.proxy = true
-xcms.use(bodyParser())
-const logUser = async (user, ctx)=>{
-  usersList.forEach(u=>{
-    if(user.username === u.username && user.password === u.password){
-      xcms.currentUser = {address: ctx.ip, connected: user.username}
+
+xcms.use(r.get('/', ctx =>{
+    if(isIndex != undefined){
+        ctx.type = 'html'
+        ctx.body = isIndex.page
+    } else {
+        ctx.redirect('/connect')
     }
-  })
-}
+}))
+
+xcms.use(r.get('/connect', ctx =>{
+    ctx.type = "html"
+    ctx.body = fs.createReadStream('./admin-site/login.html', {
+        autoClose: true
+    })
+}))
+
+xcms.use(r.post('/contact', ctx=>{
+    const contact = ctx.request.body
+    userdb.find({email: contact.email},(err, data)=>{
+        if(data.length > 0){
+            ctx.socket.emit('errorr', 'You already sent an email, please wait, we will contact you very soon')
+        } else {
+            let newContact = new userdb({
+                firstname: contact.firstname,
+                lastname: contact.lastname,
+                email: contact.email,
+                firstMessage: contact.message,
+                messagesHistory: [contact.message]
+            })
+            newContact.save((err, user)=>{})
+            let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {
+                autoClose: true
+            })
+            let transporter = "";
+            transporterInfo.on('data', (data) => {
+                transporter += data
+            })
+            transporterInfo.on('end', () => {
+                transporter = jsp(transporter)
+                const mailTransporter = nodemailer.createTransport(transporter)
+                const email = {
+                    from: contact.email,
+                    to: transporter.auth.user,
+                    subject: contact.firstname + " " + contact.lastname + " contacted you",
+                    text: contact.message
+                }
+                mailTransporter.sendMail(email)
+            })
+            ctx.socket.emit('success', `Thank you ${contact.firstname} ${contact.lastname}, we will read your email soon.`)
+        }
+    })
+    ctx.redirect('/')
+}))
+
+xcms.use(r.get('/chat', ctx =>{
+    ctx.type = 'html'
+    ctx.body = fs.createReadStream('./extra_modules/instant-messaging.html', {
+        autoClose: true
+    })
+}))
+
+xcms.use(r.get('/favicon.ico', ctx=>{
+    ctx.type = 'image/png'
+    ctx.body = fs.createReadStream('./favicon.ico', {
+        autoClose: true
+    })
+}))
+
 xcms.use(async (ctx, next) => {
-    var urlctl = fileCTL.exec(ctx.url)
     let page
     if (/^.[a-zA-Z0-9_-]{2,}(.html)/.exec(ctx.url) !== null) {
         page = /^.[a-zA-Z0-9_-]{2,}(.html)/.exec(ctx.url)[0]
@@ -79,149 +132,7 @@ xcms.use(async (ctx, next) => {
     if (page != undefined) {
         console.log('someone is visiting', page)
     }
-    if (ctx.method === "GET") {
-        switch (ctx.url) {
-            case '/':
-                if(isIndex != undefined){
-                    ctx.type = 'html'
-                    ctx.body = isIndex.page
-                } else {
-                    ctx.redirect('/admin')
-                }
-                break;
-            case '/admin':
-                if(xcms.currentUser !== undefined && xcms.currentUser.address === ctx.ip){
-                    ctx.type = "html"
-                    ctx.body = fs.createReadStream('./admin-site/index.html', {
-                        autoClose: true
-                    })
-                }else{
-                    ctx.type = "html"
-                    ctx.body = fs.createReadStream('./admin-site/login.html', {
-                        autoClose: true
-                    })
-                }
-                break;
-            case '/admin/crm':
-                if(xcms.currentUser !== undefined && xcms.currentUser.address === ctx.ip){
-                    ctx.type = "html"
-                    ctx.body = fs.createReadStream('./admin-site/crm.html', {
-                        autoClose: true
-                    })
-                }else{
-                    ctx.type = "html"
-                    ctx.body = fs.createReadStream('./admin-site/crm-login.html', {
-                        autoClose: true
-                    })
-                }
-                break;
-            case '/chat':
-                ctx.type = 'html'
-                ctx.body = fs.createReadStream('./extra_modules/instant-messaging.html', {
-                    autoClose: true
-                })
-            break;
-            case '/favicon.ico':
-                ctx.type = 'image/png'
-                ctx.body = fs.createReadStream('./favicon.ico', {
-                    autoClose: true
-                })
-            break;
-            default:
-                break;
-        }
-    }
-    if (ctx.method === "POST") {
-        switch (ctx.url) {
-            case '/admin':
-                const auth = ctx.request.body
-                for (let i = 0; i < admins.length; i++) {
-                    if (auth.username == admins[i]["username"]) {
-                        if (auth.password == admins[i]["password"]) {
-                            xcms.currentUser = {address: ctx.ip, connected: auth.username}
-                            setTimeout(()=>{
-                                xcms.currentUser = undefined
-                            },3600000)
-                            ctx.redirect('/admin')
-                            break;
-                        } else {
-                            ctx.redirect('/admin')
-                            break;
-                        }
-                    } else {
-                        if (i + 1 === admins.length) {
-                            ctx.redirect('/admin')
-                            break;
-                        }
-                    }
-                }
-                break;
-            case '/admin/crm':
-                const crmauth = ctx.request.body
-                for (let i = 0; i < admins.length; i++) {
-                    if (crmauth.username == admins[i]["username"]) {
-                        if (crmauth.password == admins[i]["password"]) {
-                            xcms.currentUser = {address: ctx.ip, connected: crmauth.username}
-                            setTimeout(()=>{
-                                xcms.currentUser = undefined
-                            },3600000)
-                            ctx.redirect('/admin/crm')
-                            break;
-                        } else {
-                            ctx.redirect('/admin/crm')
-                            break;
-                        }
-                    } else {
-                        if (i + 1 === admins.length) {
-                            ctx.redirect('/admin/crm')
-                            break;
-                        }
-                    }
-                }
-                break;
-            case '/contact':
-                const contact = ctx.request.body
-                users.find({email: contact.email},(err, data)=>{
-                    if(data.length > 0){
-                        ctx.socket.emit('errorr', 'You already sent an email, please wait, we will contact you very soon')
-                    } else {
-                        let newContact = new users({
-                            firstname: contact.firstname,
-                            lastname: contact.lastname,
-                            email: contact.email,
-                            firstMessage: contact.message,
-                            messagesHistory: [contact.message]
-                        })
-                        newContact.save((err, user)=>{})
-                        let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {
-                            autoClose: true
-                        })
-                        let transporter = "";
-                        transporterInfo.on('data', (data) => {
-                            transporter += data
-                        })
-                        transporterInfo.on('end', () => {
-                            transporter = jsp(transporter)
-                            const mailTransporter = nodemailer.createTransport(transporter)
-                            const email = {
-                                from: contact.email,
-                                to: transporter.auth.user,
-                                subject: contact.firstname + " " + contact.lastname + " contacted you",
-                                text: contact.message
-                            }
-                            mailTransporter.sendMail(email)
-                        })
-                        ctx.socket.emit('success', `Thank you ${contact.firstname} ${contact.lastname}, we will read your email soon.`)
-                    }
-                })
-                ctx.redirect('/')
-                //update CRM Page with firstname lastname instead of fullname
-                break;
-            default:
-                break;
-        }
-    }
-    
+
     if (extensionCTL.test(ctx.url)) {
         if (/^\/imgs\/([ a-zA-Z0-9_-]{2,})/.test(ctx.url)) {
             let imageName = ctx.url.split('/')
@@ -293,14 +204,44 @@ xcms.use(async (ctx, next) => {
     await next();
 })
 
+xcms.use(r.post('/admin', 
+    passport.authenticate('local', {
+        successRedirect: '/admin',
+        failureRedirect: '/'
+    })
+))
+
+xcms.use((ctx, next)=>{
+    if(ctx.isAuthenticated()){
+        return next()
+    }else{
+        ctx.redirect('/')
+    }
+})
+
+xcms.use(r.get('/admin', (ctx)=>{
+    ctx.type = "html"
+    ctx.body = fs.createReadStream('./admin-site/index.html', {
+        autoClose: true
+    })
+}))
+
+xcms.use(r.get('/admin/crm', (ctx)=>{
+    ctx.type = "html"
+    ctx.body = fs.createReadStream('./admin-site/crm.html', {
+        autoClose: true
+    })
+}))
+
+adminSocket.attach(xcms)
 /* SOCKET IO */
-adminSocket.on('connection', ctx => {
+adminSocket.on('connection', (ctx) => {
     if(pagesCollection != undefined){
         if (pagesCollection.length !== 0) {
-            pagesCollection.forEach(fi => {
-                if (/\.html/.test(fi.name)) {
-                    ctx.socket.emit('normal', jss({
-                        lien: fi
+            pagesCollection.forEach(file => {
+                if (/\.html/.test(file.name)) {
+                    ctx.emit('normal', jss({
+                        lien: file
                     }))
                 }
             })
@@ -325,11 +266,11 @@ adminSocket.on('message', (ctx) => {
     if (typeof ctx.data === 'string') {
         var datainfo = jsp(ctx.data)
         if (datainfo.name) {
-            pages.find({name: datainfo.name+'.html'}, (err, data)=>{
+            pagedb.find({name: datainfo.name+'.html'}, (err, data)=>{
                 if(data.length > 0){
                     ctx.socket.emit('errorr', 'a page with the same name already exist')
                 }else{
-                    let newPage = new pages({
+                    let newPage = new pagedb({
                         name: datainfo.name+".html",
                         page: datainfo.page,
                         js: datainfo.js,
@@ -351,7 +292,7 @@ adminSocket.on('message', (ctx) => {
             })
         }
         if (datainfo.update) {
-            pages.findOneAndUpdate({name: datainfo.update.name},
+            pagedb.findOneAndUpdate({name: datainfo.update.name},
             {page: datainfo.update.page, js: datainfo.update.js, css: datainfo.update.css},
             {new: true},
                 (err, data)=>{
@@ -359,7 +300,7 @@ adminSocket.on('message', (ctx) => {
                         console.log('error updating the page', err)
                         ctx.socket.emit('errorr', 'error updating the page, please retry.')
                     }
-                    ctx.socket.emit('success', `the page |------| was sucesfully updated`)//get page name
+                    ctx.socket.emit('success', `the page ${datainfo.update.name} was sucesfully updated`)
                 })
             pagesCollection.forEach(page => {
                 if (page.name === datainfo.update.name) {
@@ -370,7 +311,7 @@ adminSocket.on('message', (ctx) => {
             })
         }
         if(datainfo.deletePage){
-            pages.deleteOne({name: datainfo.deletePage}, (err, success)=>{
+            pagedb.deleteOne({name: datainfo.deletePage}, (err, success)=>{
                 if(err) console.log(err)//envoyer l'erreur
                 if(success) console.log(datainfo.deletePage, 'was successfully deleted')//envoyer success
             })
@@ -379,7 +320,7 @@ adminSocket.on('message', (ctx) => {
         //PAGE CRM
         if (datainfo.userslist) {
             userContacts = []
-            users.find({}, (err, data)=>{
+            userdb.find({}, (err, data)=>{
                 if(err) console.log(err)
                 if(data.length > 0){
                     data.forEach(user=>{
@@ -434,30 +375,34 @@ adminSocket.on('message', (ctx) => {
             transporter.end()
         }
         if(datainfo.addAdmin){
-            console.log(datainfo.addAdmin)
-            admins.push(datainfo.addAdmin)
-            let addAnAdmin = fs.createWriteStream('./xcmsDB/adminlist', {encoding: 'utf8'})
-            addAnAdmin.write(jss(admins))
-            addAnAdmin.end()
-            ctx.socket.emit('success', 'the admin was successfully created')
-        }
-        if(datainfo.updateAdmin){
-            let wasFound = 0
-            const toUpdate = datainfo.updateAdmin
-            admins.forEach(admin=>{
-                if(admin.username === toUpdate.username){
-                    admin.password = toUpdate.password
-                    let updateAccount = fs.createWriteStream('./xcmsDB/adminlist', {encoding: 'utf8'})
-                    updateAccount.write(jss(admins))
-                    updateAccount.end()
-                    wasFound++
+            newAdmin = datainfo.addAdmin
+            admindb.find({xcmsAdmin: newAdmin.username}, (err, res)=>{
+                if(err)console.log(err)
+                if(res.length === 0){
+                    const addAnAdmin = new admindb({
+                        xcmsAdmin: newAdmin.username,
+                        password: newAdmin.password
+                    })
+                    addAnAdmin.save()
+                    ctx.socket.emit('success', 'the admin was successfully created')
+                }else{
+                    ctx.socket.emit('errorr', `the admin ${newAdmin.username} already exist`)
                 }
             })
-            if(wasFound !== 0){
-                ctx.socket.emit('success', 'the admin was successfully updated')
-            }else{
-                ctx.socket.emit('errorr', 'the admin does not exist')
-            }
+        }
+        if(datainfo.updateAdmin){
+            const toUpdate = datainfo.updateAdmin
+            admindb.findOne({xcmsAdmin: toUpdate.username}, (err,res)=>{
+                if(err) console.log("err",err)
+                if(res){
+                    console.log(res)
+                    res.password = toUpdate.password
+                    res.save()
+                    ctx.socket.emit('success', 'the admin was successfully updated')
+                }else{
+                    ctx.socket.emit('errorr', 'the admin does not exist')
+                }
+            })
         }
     }
 })
@@ -476,10 +421,10 @@ adminSocket.on('video', ctx =>{
     newImg.end()
 })
 /* FIN SOCKET IO */
-adminSocket.attach(xcms)
+//adminSocket.attach(xcms)
 
-let IM = require('./extra_modules/instant-messaging')
-IM.attach(xcms)
+/* let IM = require('./extra_modules/instant-messaging')
+IM.attach(xcms) */
 
 xcms.listen(9899, () => {
     console.log("XCMS Listening port 9899")

@@ -665,9 +665,22 @@
                 div.classList.add('xcms-custom')
                 node.parentElement.replaceChild(div, node)
                 document.querySelector('.ql-toolbar').remove()
+                let x =0
                 div.addEventListener('click', (e) => {
+                    //TODO select events
+                    if(x==0){
+                        for(let action in div){
+                            if(/^on/.test(action))
+                            console.log(div, action)
+                        }
+                        x++
+                    }
+                    
+                })
+                div.addEventListener('dblclick', (e) => {
                     div.id = 'isActive'
                     xEdit(div)
+                    
                 })
             })
         }
@@ -884,6 +897,9 @@
             editor.style.display = 'block'
             editorMenu.style.display = 'none'
         })
+    </script>
+    <script>
+        
     </script>
 </body>
 
