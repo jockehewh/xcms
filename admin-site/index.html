@@ -235,6 +235,7 @@
         }, false)
         mews.on('normal', data => {
             parsed = jsp(data)
+            console.log(parsed)
             if (parsed.lien && parsed.lien !== "") {
                 if (editablePages != undefined && editablePages.includes(parsed.lien)) {
                     return
@@ -291,11 +292,12 @@
                     case 'image':
                         desactive()
                         var imgpicker = document.querySelector('#imgpiker');
+                        imgpicker.setAttribute('accept', 'image')
                         imgpicker.style.display = 'block'
                         imgpicker.click()
                         var imgpicklone = document.createElement('input');
                         imgpicklone.setAttribute('type', 'file')
-                        imgpicklone.setAttribute('accept', 'image; video/mp4')
+                        imgpicklone.setAttribute('accept', 'image')
                         imgpicklone.setAttribute('multiple', true)
                         imgpicklone.id = 'imgpiker'
                         imgpicklone.style.display = 'none'
@@ -358,10 +360,11 @@
                         desactive()
                         var videopicker = document.querySelector('#imgpiker');
                         videopicker.style.display = 'block'
+                        videopicker.setAttribute('accept', 'video/mp4')
                         videopicker.click()
                         var videopicklone = document.createElement('input');
                         videopicklone.setAttribute('type', 'file')
-                        videopicklone.setAttribute('accept', 'image; video/mp4')
+                        videopicklone.setAttribute('accept', 'video/mp4')
                         videopicklone.setAttribute('multiple', true)
                         videopicklone.id = 'imgpiker'
                         videopicklone.style.display = 'none'
@@ -386,7 +389,7 @@
                                     video = ""
                                 }
                             }
-                        videopicker.replaceWith(imgpicklone);
+                        videopicker.replaceWith(videopicklone);
                         videopicker.style.display = 'none'
                         }, false)
                         break;
@@ -823,6 +826,7 @@
                     drake.destroy()
                     drake = dragula([document.querySelector('.edit-zone')])
                     button.remove()
+                    window.location.href = `${window.location.origin}/admin`
                 })
             }, false)
             span.addEventListener("click", (e)=>{

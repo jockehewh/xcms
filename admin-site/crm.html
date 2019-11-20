@@ -191,7 +191,7 @@
         modules: { toolbar: toolbarOptions },
         theme: 'snow'
       });
-      let mews = io('/asocket');
+      let mews = io('/crm-socket');
       const jss = JSON.stringify
       const jsp = JSON.parse
         mews.emit('message', jss({userslist: true}))
