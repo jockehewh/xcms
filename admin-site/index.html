@@ -195,7 +195,6 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <title>${titre}</title>
-                    <!-- Global site tag (gtag.js) - Google Analytics -->
                     <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
                     <link rel="stylesheet" href="./frontend-site/quill.snow.css">
                     <link rel="stylesheet" href="./frontend-site/style.css">
@@ -807,8 +806,22 @@
                             }
                         }
                     })
+                    let rebuiltPage = document.implementation.createHTMLDocument(theframe.querySelector('title').innerText)
+                    for(var nde of theframe.children){
+                        rebuiltPage.head.appendChild(nde.cloneNode(true))
+                        if(nde.getAttribute('src') === "./frontend-site/designer.js"){
+                            break
+                        }
+                    }
+                    theframe.querySelectorAll('[class^="xcms-"]').forEach(element=>{
+                        rebuiltPage.body.appendChild(element.cloneNode(true))
+                    })
+                    rebuiltPage.body.appendChild(theframe.querySelector('script:last-of-type').cloneNode(true))
+                    var gluedPage = `<!DOCTYPE html>
+                    <html lang="en">
+                    ${rebuiltPage.head.outerHTML} ${rebuiltPage.body.outerHTML}</html>`
                     let name = e.target.innerText
-                    let page = theframe.innerHTML
+                    let page = gluedPage
                     let js = jseditor.getValue()
                     let css = csseditor.getValue()
                     let changedPage = {

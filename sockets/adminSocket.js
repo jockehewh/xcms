@@ -6,34 +6,7 @@ var pagesCollection = require('../xcmsDB/pageCollection.js')
 const adminSocket = new IO({
   namespace: 'asocket'
 })
-/* adminSocket.on('connection', (ctx) => {
-  pagedb.find({}, (err, res) => {
-    if (err) console.log(err)
-    if (res) {
-      res.forEach(file => {
-        ctx.emit('normal', JSON.stringify({
-          lien: file
-        }))
-      })
-    }
-  })
-
-  let transporterInfo = fs.createReadStream('../xcmsDB/transporter', {
-    autoClose: true
-  })
-  let transporter = "";
-  transporterInfo.on('data', (data) => {
-    transporter += data
-  })
-  transporterInfo.on('end', () => {
-    transporter = JSON.parse(transporter)
-    if (transporter.host !== '') ctx.socket.emit('normal', JSON.stringify({
-      formfield: true
-    }))
-  })
-}) */
-
-adminSocket.on('message', (ctx) => {
+adminSocket.on('message', async (ctx) => {
   if (typeof ctx.data === 'string') {
     var datainfo = JSON.parse(ctx.data)
     if (datainfo.name) {
@@ -91,7 +64,6 @@ adminSocket.on('message', (ctx) => {
   }
 
 })
-
 
 adminSocket.on('image', ctx => {
   var newImg = fs.createWriteStream('./frontend-site/imgs/' + ctx.data.name, {
