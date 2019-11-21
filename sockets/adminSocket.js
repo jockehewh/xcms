@@ -2,6 +2,7 @@ const IO = require('koa-socket-2')
 const fs = require('fs')
 const {pagedb} = require('../cmsModels.js')
 var pagesCollection = require('../xcmsDB/pageCollection.js')
+var isIndex = require('../xcmsDB/isIndex.js')
 
 const adminSocket = new IO({
   namespace: 'asocket'
@@ -60,9 +61,11 @@ adminSocket.on('message', async (ctx) => {
         if (success) console.log(datainfo.deletePage, 'was successfully deleted')//envoyer success
       })
       pagesCollection = pagesCollection.filter(pageData => { if (pageData.name !== datainfo.deletePage) return pageData })
+      if(datainfo.deletePage === 'index.html'){
+        isIndex.length = 0
+      }
     }
   }
-
 })
 
 adminSocket.on('image', ctx => {

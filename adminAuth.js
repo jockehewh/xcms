@@ -18,10 +18,8 @@ passport.use(new LocalStrategy(function(username, password, done) {
     }else{
       res.comparePassword(password, (err, isMatch)=>{
         if(isMatch){
-          console.log('valid', res.xcmsAdmin)
           done(null, res)
         }else{
-          console.log('invalid')
           done(null, false)
         }
       })

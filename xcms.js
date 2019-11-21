@@ -13,7 +13,7 @@ mongoose.connect('mongodb://localhost:27017/xcms', { useNewUrlParser: true, useF
 
 var pagesCollection = require('./xcmsDB/pageCollection.js')
 
-var isIndex;
+var isIndex = require('./xcmsDB/isIndex.js')
 const { pagedb, userdb } = require('./cmsModels.js')
 
 xcms.proxy = true
@@ -29,26 +29,24 @@ pagedb.find({}, (err, data) => {
     pagesCollection.push(...data)
     pagesCollection.forEach(page => {
         if (page.name === "index.html") {
-            isIndex = page
+            isIndex.push(page)
         }
     })
 })
 
-const fileCTL = /([a-z]{2,}).(html|css|js|jpeg|PNG|jpg|png|mp4)/
-const extensionCTL = /\.(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
 const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
 
 xcms.use(r.get('/', ctx => {
     if (isIndex != undefined) {
-        ctx.type = 'html'
-        ctx.body = isIndex.page
+        ctx.type = 'text/html'
+        ctx.body = isIndex[0].page
     } else {
         ctx.redirect('/connect')
     }
 }))
 
 xcms.use(r.get('/connect', ctx => {
-    ctx.type = "html"
+    ctx.type = "text/html"
     ctx.body = fs.createReadStream('./admin-site/login.html', {
         autoClose: true
     })
@@ -106,81 +104,77 @@ xcms.use(r.get('/favicon.ico', ctx => {
     })
 }))
 
-xcms.use(async (ctx, next) => {
-    let page
-    if (/^.[a-zA-Z0-9_-]{2,}(.html)/.exec(ctx.url) !== null) {
-        page = /^.[a-zA-Z0-9_-]{2,}(.html)/.exec(ctx.url)[0]
-    }
-    if (extensionCTL.test(ctx.url)) {
-        if (/^\/imgs\/([ a-zA-Z0-9_-]{2,})/.test(ctx.url)) {
-            let imageName = ctx.url.split('/')
-            ctx.type = 'image/*'
-            ctx.body = fs.createReadStream('./frontend-site/imgs/' + imageName[2], {
-                autoclose: true
-            })
-            return
-        }
-        if (/^\/videos\/([a-zA-Z0-9_-]{2,})/.test(ctx.url)) {
-            let imageName = ctx.url.split('/')
-            ctx.type = 'video/*'
-            ctx.body = fs.createReadStream('./frontend-site/videos/' + imageName[2], {
-                autoclose: true
-            })
-            return
-        }
-        if (/dltcursor\.png/.test(ctx.url)) {
-            ctx.type = 'image/png'
-            ctx.body = fs.createReadStream('./admin-site/dltcursor.png', { autoclose: true })
-        }
-        
-        if (typeCTL.exec(ctx.url)[0] === 'woff') {
-            ctx.type = "font/woff2"
-        } else if (typeCTL.exec(ctx.url)[0] === 'ttf') {
-            ctx.type = "application/font-sfnt"
-        } else {
-            ctx.type = typeCTL.exec(ctx.url)[0]
-        }
+xcms.use(r.get('/admin-site/dltcursor.png', ctx=>{
+    ctx.type = 'image/png'
+    ctx.body = fs.createReadStream('./admin-site/dltcursor.png', {
+        autoClose: true
+    })
+}))
 
-        if (page != undefined) {
-            pagesCollection.forEach(existingPage => {
-                if ('/' + existingPage.name == page) {
-                    ctx.type = "html"
-                    ctx.body = existingPage.page
+xcms.use(r.get(/\/[a-zA-Z0-9_-]{2,}.html/, ctx=>{
+    ctx.type = 'text/html'
+    pagesCollection.forEach(page => {
+        if ('/' + page.name === ctx.url) {
+            ctx.body = page.page
+        }
+    })
+}))
+
+xcms.use(r.get(/\/frontend-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css/, ctx=>{
+    ctx.type = 'text/css'
+    if(/onthefly/.test(ctx.url)){
+        if (typeCTL.exec(ctx.url)[0] === 'css') {
+            cssFileName = /\/([a-zA-Z0-9]{2,})\.css/.exec(ctx.url)[1]
+            pagesCollection.forEach(page => {
+                if (page.name === cssFileName + '.html') {
+                    ctx.body = page.css
                 }
             })
-        } else {
-            if (/instant-messaging-scripts/.test(ctx.url)) {
-                ctx.body = fs.createReadStream('./extra_modules' + ctx.url, { autoClose: true })
-            } else {
-                if (/onthefly/.test(ctx.url)) {
-                    if (typeCTL.exec(ctx.url)[0] === 'css') {
-                        cssFileName = /\/([a-zA-Z0-9]{2,})\.css/.exec(ctx.url)[1]
-                        pagesCollection.forEach(page => {
-                            if (page.name === cssFileName + '.html') {
-                                ctx.type = 'text/css'
-                                ctx.body = page.css
-                            }
-                        })
-                    }
-                    if (typeCTL.exec(ctx.url)[0] === 'js') {
-                        jsFileName = /\/([a-zA-Z0-9]{2,})\.js/.exec(ctx.url)[1]
-                        pagesCollection.forEach(page => {
-                            if (page.name === jsFileName + '.html') {
-                                ctx.type = 'application/javascript'
-                                ctx.body = page.js
-                            }
-                        })
-                    }
-                } else {
-                    ctx.body = fs.createReadStream('./' + ctx.url, {
-                        autoclose: true
-                    })
-                }
-            }
         }
+    }else{
+        ctx.body = fs.createReadStream('.'+ ctx.url)
     }
-    await next();
-})
+}))
+
+xcms.use(r.get(/\/frontend-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ctx=>{
+    ctx.type = 'text/javascript'
+    if(/onthefly/.test(ctx.url)){
+        jsFileName = /\/([a-zA-Z0-9]{2,})\.js/.exec(ctx.url)[1]
+        pagesCollection.forEach(page => {
+            if (page.name === jsFileName + '.html') {
+                ctx.body = page.js
+            }
+        })
+    }else{
+        ctx.body = fs.createReadStream('.'+ ctx.url)
+    }
+}))
+
+xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx=>{
+    let videoName = ctx.url.split('/')
+    ctx.type = 'video/*'
+    ctx.body = fs.createReadStream('./frontend-site/videos/' + videoName[2], {
+        autoclose: true
+    })
+}))
+
+xcms.use(r.get(/^\/imgs\/([a-zA-Z0-9_-]{2,})/, ctx=>{
+    let imageName = ctx.url.split('/')
+    ctx.type = 'image/*'
+    ctx.body = fs.createReadStream('./frontend-site/imgs/' + imageName[2], {
+        autoclose: true
+    })
+}))
+
+xcms.use(r.get(/\/[a-zA-Z0-9_-]{2,}.woff/, ctx=>{
+    ctx.type = 'font/woff2'
+    ctx.body = fs.createReadStream('.'+ ctx.url)
+}))
+
+xcms.use(r.get(/\/[a-zA-Z0-9_-]{2,}.ttf/, ctx=>{
+    ctx.type = 'application/font-sfnt'
+    ctx.body = fs.createReadStream('.'+ ctx.url)
+}))
 
 xcms.use(r.post('/admin',
     passport.authenticate('local', {
@@ -204,12 +198,28 @@ xcms.use(r.get('/admin', (ctx) => {
     })
 }))
 
+xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css/, ctx=>{
+    ctx.type = 'text/css'
+    ctx.body = fs.createReadStream('.'+ ctx.url)
+}))
+
+xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ctx=>{
+    ctx.type = 'text/javascript'
+    ctx.body = fs.createReadStream('.'+ ctx.url)
+}))
+
 xcms.use(r.get('/admin/crm', (ctx) => {
     ctx.type = "html"
     ctx.body = fs.createReadStream('./admin-site/crm.html', {
         autoClose: true
     })
 }))
+
+xcms.use(r.get('/logout', (ctx, next)=>{
+    ctx.logout();
+    ctx.redirect('/')
+}))
+
 
 /* SOCKET IO */
 adminSocket.attach(xcms)
