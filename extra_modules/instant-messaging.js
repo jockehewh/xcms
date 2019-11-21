@@ -3,9 +3,6 @@ const instantMessageing = new IO({
     namespace: 'instant-messaging'
 })
 
-instantMessageing.on('connection', ctx=>{
-  console.log(ctx.socket.handshake.query['name'])
-})
 
 /* 
 public message = {

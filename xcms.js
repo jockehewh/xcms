@@ -36,6 +36,10 @@ pagedb.find({}, (err, data) => {
 
 const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
 
+
+
+/* ROUTER START */
+
 xcms.use(r.get('/', ctx => {
     if (isIndex != undefined) {
         ctx.type = 'text/html'
@@ -150,6 +154,15 @@ xcms.use(r.get(/\/frontend-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ct
     }
 }))
 
+xcms.use(r.get('/instant-messaging-scripts/socket.io.js', ctx=>{
+    ctx.type = 'text/javascript'
+    ctx.body = fs.createReadStream('./extra_modules'+ ctx.url)
+}))
+xcms.use(r.get('/instant-messaging-scripts/socket.io.js.map', ctx=>{
+    ctx.type = 'text/javascript'
+    ctx.body = fs.createReadStream('./extra_modules'+ ctx.url)
+}))
+
 xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx=>{
     let videoName = ctx.url.split('/')
     ctx.type = 'video/*'
@@ -182,6 +195,8 @@ xcms.use(r.post('/admin',
         failureRedirect: '/'
     })
 ))
+
+/* AUTHENTICATED ROUTES END */
 
 xcms.use((ctx, next) => {
     if (ctx.isAuthenticated()) {
@@ -219,10 +234,12 @@ xcms.use(r.get('/logout', (ctx, next)=>{
     ctx.logout();
     ctx.redirect('/')
 }))
+/* AUTHENTICATED ROUTES END */
 
+/* ROUTER END */
 
 /* SOCKET IO */
-adminSocket.attach(xcms)
+adminSocket.attach(xcms) //main socket handler
 adminSocket.on('connection', (ctx) => {
     pagedb.find({}, (err, res) => {
         if (err) console.log(err)
@@ -248,15 +265,19 @@ adminSocket.on('connection', (ctx) => {
         }))
     })
 })
+
 require('./sockets/CRMSocket.js').attach(xcms)
-/* FIN SOCKET IO */
 
-
-/* let IM = require('./extra_modules/instant-messaging')
-IM.attach(xcms) */
-
-xcms.listen(9899, () => {
-    console.log("XCMS Listening port 9899")
+let IM = require('./extra_modules/instant-messaging')
+IM.attach(xcms)
+IM.on('connection', ctx=>{
+  console.log(ctx.socket.handshake.query['name'])
 })
+
+/* SOCKET IO END */
+
+
+
+module.exports = xcms
 
 //COMMUNIQUER LES ERREURS A LA FRONTEND

@@ -1,7 +1,3 @@
 node_modules*
-admin-site/brouillon.js
-xcmsDB/Xdata.db
-xcms.zip
 frontend-site/imgs*
 frontend-site/videos*
-xcmsDB*

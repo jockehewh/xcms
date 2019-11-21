@@ -1,6 +1,6 @@
 {
-  "name": "xcms",
-  "version": "1.0.0",
+  "name": "@mrcosmic/x-cms",
+  "version": "1.0.2",
   "description": "a wysiwyg cms",
   "main": "xcms.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "templating"
   ],
   "author": "Xavier bélénus <xavier.belenus@gmail.com>",
-  "license": "GNU AGPL",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "bcrypt": "^3.0.6",
     "koa": "^2.11.0",
@@ -26,5 +26,14 @@
     "mongoose": "^5.7.11",
     "nodemailer": "^5.1.1",
     "passport-local": "^1.0.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jockehewh/xcms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jockehewh/xcms/issues"
+  },
+  "homepage": "https://github.com/jockehewh/xcms#readme"
 }
