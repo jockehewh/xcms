@@ -9,7 +9,11 @@ const adminSocket = require('./sockets/adminSocket.js')
 const xcms = new koa();
 const jsp = JSON.parse;
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/xcms', { useNewUrlParser: true, useFindAndModify: false })
+mongoose.connect('mongodb://localhost:27017/xcms', {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true
+     })
 
 var pagesCollection = require('./xcmsDB/pageCollection.js')
 
@@ -23,6 +27,7 @@ xcms.use(bodyParser())
 xcms.use(passport.initialize())
 xcms.use(passport.session())
 require('./adminAuth.js')
+
 
 pagedb.find({}, (err, data) => {
     if (err) { console.log('fetch page error', err) }
@@ -41,7 +46,7 @@ const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
 /* ROUTER START */
 
 xcms.use(r.get('/', ctx => {
-    if (isIndex != undefined) {
+    if (isIndex[0] != undefined) {
         ctx.type = 'text/html'
         ctx.body = isIndex[0].page
     } else {
@@ -51,7 +56,7 @@ xcms.use(r.get('/', ctx => {
 
 xcms.use(r.get('/connect', ctx => {
     ctx.type = "text/html"
-    ctx.body = fs.createReadStream('./admin-site/login.html', {
+    ctx.body = fs.createReadStream(__dirname + '/admin-site/login.html', {
         autoClose: true
     })
 }))
@@ -70,7 +75,7 @@ xcms.use(r.post('/contact', ctx => {
                 messagesHistory: [contact.message]
             })
             newContact.save((err, user) => { })
-            let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {
+            let transporterInfo = fs.createReadStream(__dirname + '/xcmsDB/transporter', {
                 autoClose: true
             })
             let transporter = "";
@@ -96,21 +101,21 @@ xcms.use(r.post('/contact', ctx => {
 
 xcms.use(r.get('/chat', ctx => {
     ctx.type = 'html'
-    ctx.body = fs.createReadStream('./extra_modules/instant-messaging.html', {
+    ctx.body = fs.createReadStream(__dirname + '/extra_modules/instant-messaging.html', {
         autoClose: true
     })
 }))
 
 xcms.use(r.get('/favicon.ico', ctx => {
     ctx.type = 'image/png'
-    ctx.body = fs.createReadStream('./favicon.ico', {
+    ctx.body = fs.createReadStream(__dirname + '/favicon.ico', {
         autoClose: true
     })
 }))
 
 xcms.use(r.get('/admin-site/dltcursor.png', ctx=>{
     ctx.type = 'image/png'
-    ctx.body = fs.createReadStream('./admin-site/dltcursor.png', {
+    ctx.body = fs.createReadStream(__dirname + '/admin-site/dltcursor.png', {
         autoClose: true
     })
 }))
@@ -156,17 +161,17 @@ xcms.use(r.get(/\/frontend-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ct
 
 xcms.use(r.get('/instant-messaging-scripts/socket.io.js', ctx=>{
     ctx.type = 'text/javascript'
-    ctx.body = fs.createReadStream('./extra_modules'+ ctx.url)
+    ctx.body = fs.createReadStream(__dirname + '/extra_modules'+ ctx.url)
 }))
 xcms.use(r.get('/instant-messaging-scripts/socket.io.js.map', ctx=>{
     ctx.type = 'text/javascript'
-    ctx.body = fs.createReadStream('./extra_modules'+ ctx.url)
+    ctx.body = fs.createReadStream(__dirname + '/extra_modules'+ ctx.url)
 }))
 
 xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx=>{
     let videoName = ctx.url.split('/')
     ctx.type = 'video/*'
-    ctx.body = fs.createReadStream('./frontend-site/videos/' + videoName[2], {
+    ctx.body = fs.createReadStream(__dirname + '/frontend-site/videos/' + videoName[2], {
         autoclose: true
     })
 }))
@@ -174,7 +179,7 @@ xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx=>{
 xcms.use(r.get(/^\/imgs\/([a-zA-Z0-9_-]{2,})/, ctx=>{
     let imageName = ctx.url.split('/')
     ctx.type = 'image/*'
-    ctx.body = fs.createReadStream('./frontend-site/imgs/' + imageName[2], {
+    ctx.body = fs.createReadStream(__dirname + '/frontend-site/imgs/' + imageName[2], {
         autoclose: true
     })
 }))
@@ -208,24 +213,24 @@ xcms.use((ctx, next) => {
 
 xcms.use(r.get('/admin', (ctx) => {
     ctx.type = "html"
-    ctx.body = fs.createReadStream('./admin-site/index.html', {
+    ctx.body = fs.createReadStream(__dirname + '/admin-site/index.html', {
         autoClose: true
     })
 }))
 
 xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css/, ctx=>{
     ctx.type = 'text/css'
-    ctx.body = fs.createReadStream('.'+ ctx.url)
+    ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
 
 xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ctx=>{
     ctx.type = 'text/javascript'
-    ctx.body = fs.createReadStream('.'+ ctx.url)
+    ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
 
 xcms.use(r.get('/admin/crm', (ctx) => {
     ctx.type = "html"
-    ctx.body = fs.createReadStream('./admin-site/crm.html', {
+    ctx.body = fs.createReadStream(__dirname + '/admin-site/crm.html', {
         autoClose: true
     })
 }))
@@ -251,7 +256,7 @@ adminSocket.on('connection', (ctx) => {
             })
         }
     })
-    let transporterInfo = fs.createReadStream('./xcmsDB/transporter', {
+    let transporterInfo = fs.createReadStream(__dirname + '/xcmsDB/transporter', {
         autoClose: true
     })
     let transporter = "";
@@ -275,7 +280,6 @@ IM.on('connection', ctx=>{
 })
 
 /* SOCKET IO END */
-
 
 
 module.exports = xcms
