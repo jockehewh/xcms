@@ -53,39 +53,39 @@ __Open editor:__
 Clicking __Open editor__ opens the WYSIWYG editor in the workspace.
 
 * ###### Editors options
-  * ![Adding a class](https://github/jockehewh/readme-imgs/btncls.PNG) 
+  * ![Adding a class](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btncls.PNG) 
   With the editor open, select the text of the element you want to name and click on the ‘.cls’ button. In the floating text bar, enter the class name for your element(s).
   Click save to apply.
-  * ![Adding an ID](https://github/jockehewh/readme-imgs/btnid.PNG)
+  * ![Adding an ID](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnid.PNG)
   With the editor open, select the text of the element you want to add and ID to and click on the ‘reverse-link’ button. In the floating text bar, enter the ID for your element(s) .
   Click save to apply.
-  * ![Creating a link](https://github/jockehewh/readme-imgs/btnlien.PNG)
+  * ![Creating a link](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnlien.PNG)
   Select the text of the element you want to use as link and click on the ‘link’ button. In the floating text bar, enter the address to link to
   Click save to apply.
-  * ![Setting background color](https://github/jockehewh/readme-imgs/btnbackground.PNG)
+  * ![Setting background color](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnbackground.PNG)
   Select the text of the element for wich you want to change the background color and click on the ‘grayed-A’ button. 
   Click on a color to apply.
-  * ![Setting text color](https://github/jockehewh/readme-imgs/btntextcolor.PNG)
+  * ![Setting text color](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btntextcolor.PNG)
   Select the text of the element for wich you want to change the font color and click on the ‘underlined-A’ button. 
   Click on a color to apply.
-  * ![Changing fonts](https://github/jockehewh/readme-imgs/btnfont.PNG)
+  * ![Changing fonts](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnfont.PNG)
   Open the fonts menu and select a font.
   Or
   Select the text of the element for wich you want to change the font and open the fonts menu.
   Select a font to apply.
-  * ![Change font size](https://github/jockehewh/readme-imgs/btnheading.PNG)
+  * ![Change font size](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnheading.PNG)
   Open the heading menu and select a font size.
   Or
   Select the text of the element for wich you want to change the font size and open the heading menu.
   Select a font size to apply.
-  * ![Creating a list](https://github/jockehewh/readme-imgs/btnlist.PNG)
+  * ![Creating a list](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnlist.PNG)
   To create a list choose from the ‘ordered-list’ button and the ‘unordered-list’ button press enter to create a new element.
   Click on the button again to stop the list
 
-  * ![Aligning the text](https://github/jockehewh/readme-imgs/btnalign.PNG)
+  * ![Aligning the text](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnalign.PNG)
   To align your text right or left you can click the ‘align’ button and select the way the text will be displayed
 
-  * ![Remove all formating](https://github/jockehewh/readme-imgs/btnremovestyle.PNG)
+  * ![Remove all formating](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnremovestyle.PNG)
   To remove all formating click on the ‘paragraph’ button
 
 __closing the editor:__
