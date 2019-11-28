@@ -9,11 +9,18 @@ const adminSocket = require('./sockets/adminSocket.js')
 const xcms = new koa();
 const jsp = JSON.parse;
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/xcms', {
-    useNewUrlParser: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true
-     })
+
+let the = ''
+
+try{
+    const env = fs.readFileSync('./config.xcms.json')
+    the = jsp(env)
+}catch{
+    const defaultConfig = fs.readFileSync(__dirname + '/config.xcms.json')
+    the = jsp(defaultConfig)
+}
+
+mongoose.connect(the.mongoURI + '/xcms', the.mongoOptions)
 
 var pagesCollection = require('./xcmsDB/pageCollection.js')
 
@@ -281,6 +288,9 @@ IM.on('connection', ctx=>{
 
 /* SOCKET IO END */
 
+xcms.listen(the.port, ()=>{
+    console.log("listenning on port:",the.port)
+})
 
 module.exports = xcms
 

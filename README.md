@@ -9,12 +9,27 @@ or clone the git `git clone https://github.com/jockehewh/xcms && cd xcms && npm 
 
 ### First start
 
-XCMS is preconfigured but you have to choose the port you want it to listen too.
+XCMS is preconfigured, to start the program just import it.
 
 in your `index.js` file:
 ```
 const xcms = require('@mrcosmic/x-cms')
-xcms.listen($PORT)
+//this will run with the default settings
+```
+
+if you want to customize your environement to use a Mongodb Atlas, or to run on a diferrent port,
+create a `config.xcms.json` file at the root of your project and follow this model:
+
+```
+{
+  "port": 1337,
+  "mongoURI": "your mongodb URI",
+  "mongoOptions": {
+    "useNewUrlParser": true,
+    "useFindAndModify": false,
+    "useUnifiedTopology": true
+     }
+}
 ```
 
 open your browser and visit the following address `localhost:$PORT` you will be redirected to the connexion page:

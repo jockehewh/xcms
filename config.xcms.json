@@ -1,0 +1,9 @@
+{
+  "port": 9899,
+  "mongoURI": "mongodb://localhost:27017",
+  "mongoOptions": {
+    "useNewUrlParser": true,
+    "useFindAndModify": false,
+    "useUnifiedTopology": true
+     }
+}

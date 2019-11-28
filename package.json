@@ -1,6 +1,6 @@
 {
   "name": "@mrcosmic/x-cms",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "a wysiwyg cms",
   "main": "xcms.js",
   "scripts": {
