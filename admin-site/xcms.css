@@ -28,6 +28,9 @@
     --teal-bleu-special: #1de9b6;
 }
 #isActive{}
+#isHover{
+    border: solid var(--bleu-indigo-eclatant) 2px;
+}
 a{
     cursor:pointer;
 }
@@ -77,6 +80,9 @@ main{
     padding: 0 22px;
     border-left: solid 1px;
     border-color: #82b1ff;
+}
+input[type="range"] {
+  -webkit-appearance: slider-vertical;
 }
 .editor-btn-flexbox{
     display:flex;
@@ -230,8 +236,7 @@ iframe{
     padding: 5px;
     text-align: center;
 }
-#isContainer{
-    border: solid .5px black;
+#isContainer, #isContained{
     min-height: 60px;
 }
 .switch {
@@ -298,6 +303,47 @@ input:checked + .slider:before {
 .first-class-editor-button{
     display: none;
     }
+.cc-outer{
+    position: absolute;
+    top:0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cc-inner{
+    border-radius: 25px;
+    background-color: #ccc;
+    display: flex;
+    flex-direction: column;
+    max-width: 700px;
+    height: 300px;
+    padding: 10px;
+    align-items: center;
+}
+.cc-title{
+    border-bottom: solid 1px gray;
+}
+.cc-body{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: auto;
+    flex-wrap: wrap;
+}
+.cc-body div{
+    flex: 1 0 30%;
+    text-align: center;
+    margin: 15px 15px 0 15px;
+}
+.cc-body button{
+    border-radius: 10px;
+    border: none;
+    padding: 8px;
+}
 
 @media only screen and (max-width: 411px){
     .first-class-editor{

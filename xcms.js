@@ -126,6 +126,12 @@ xcms.use(r.get('/admin-site/dltcursor.png', ctx=>{
         autoClose: true
     })
 }))
+xcms.use(r.get(/column/, ctx=>{
+    ctx.type = 'image/png'
+    ctx.body = fs.createReadStream(__dirname + ctx.url, {
+        autoClose: true
+    })
+}))
 
 xcms.use(r.get(/\/[a-zA-Z0-9_-]{2,}.html/, ctx=>{
     ctx.type = 'text/html'

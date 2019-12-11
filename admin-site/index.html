@@ -27,20 +27,25 @@
             </ul>
             <br>
             <button class="save">save</button>
-        <div id="mymenus"></div>
+            <div id="mymenus"></div>
         </div>
     </div>
     <div class="nav"><span style="padding-left: 17px;">XCMS</span>
         <p>Go to CRM page</p>
     </div>
     <main class="mw-100">
-        <div class="first-class-editor-button"><p>Menu</p></div>
+        <div class="first-class-editor-button">
+            <p>Menu</p>
+        </div>
         <div class="first-class fl ph3 pv5 w-80">
             <!--Master page maker-->
             <input type="file" accept="image; video/mp4" multiple id="imgpiker">
             <div class="edit-zone" style="display:block;">
                 <style scoped>
-                    *{margin:0; padding:0; user-select: none;
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        user-select: none;
                         --rouge-brick-pale: #ef5350;
                         --rouge-brique-eclatant: #ff5252;
                         --bleu-indigo-leger: #5c6bc0;
@@ -56,7 +61,7 @@
             </div>
             <div class="ace-editor-block">
                 <div class="editor-btn-flexbox">
-                    <a data-editor="js">Edit your javascript</a>  <a data-editor="css">Edit your css</a>
+                    <a data-editor="js">Edit your javascript</a> <a data-editor="css">Edit your css</a>
                 </div>
                 <div id="css-editor"></div>
                 <div id="js-editor"></div>
@@ -67,25 +72,26 @@
                 <label for="titrepage">
                     <h4>Page name:</h4>
                 </label>
-                <input name="titrepage" id="titrepage" type="text" placeholder="New page name"><br><br> 
+                <input name="titrepage" id="titrepage" type="text" placeholder="New page name"><br><br>
                 <section class="boutons">
                     <a id="crepage">Save page</a><br><br>
                     <a id="crenew">New page</a><br><br>
                     <a id="efface">Delete content</a><br><br>
-                </section><br><hr>
+                </section><br>
+                <hr>
                 <section>
                     <h4 class="mt2" style="margin-bottom: 3px;">Edit content:</h4><br>
                     <ul class="list">
-                        <li><a
-                                class="link" href="#" data-demande="texte">Open editor</a><br class="mybr"><br class="mybr"></li>
-                        <li><a
-                                class="link" href="#" data-demande="div">Add a container</a><br class="mybr"><br class="mybr"></li>
-                        <li><a
-                                class="link" href="#" data-demande="menu">Add a menu</a><br class="mybr"><br class="mybr"></li>
-                        <li><a
-                                class="link" href="#" data-demande="image">Add image(s)</a><br class="mybr"><br class="mybr"></li>
-                        <li><a
-                                class="link" href="#" data-demande="video">Add video(s)</a><br class="mybr"><br class="mybr"></li>
+                        <li><a class="link" href="#" data-demande="texte">Open editor</a><br class="mybr"><br
+                                class="mybr"></li>
+                        <li><a class="link" href="#" data-demande="div">Add a container</a><br class="mybr"><br
+                                class="mybr"></li>
+                        <li><a class="link" href="#" data-demande="menu">Add a menu</a><br class="mybr"><br
+                                class="mybr"></li>
+                        <li><a class="link" href="#" data-demande="image">Add image(s)</a><br class="mybr"><br
+                                class="mybr"></li>
+                        <li><a class="link" href="#" data-demande="video">Add video(s)</a><br class="mybr"><br
+                                class="mybr"></li>
                         <li>
                             <div class="backcolor" style="grid-row:1;">
                                 <label id="fond">
@@ -97,26 +103,73 @@
                         <li>
                             <div class="textcolor" style="grid-row:2;">
                                 <label id="texte">
-                                Text color:
+                                    Text color:
                                 </label>
                                 <input type="color" name="textcolor-picker" id="textcolor-picker">
                             </div><br class="mybr">
                         </li>
                     </ul>
-                </section><br><hr>
+                </section><br>
+                <hr>
                 <section class="mt2">
-                <h4>Edit an old page:</h4><br> 
-                <ul class="editables list">
+                    <h4>Edit an old page:</h4><br>
+                    <ul class="editables list">
 
-                </ul>
-                </section> 
-            </section><br><br> 
+                    </ul>
+                </section>
+            </section><br><br>
             <!--<section>
                 <a data-demande="hypertxt">apply</a>
             </section>-->
-            
+
         </div>
     </main>
+    <template id="custom-container">
+        <div class="cc-outer">
+            <div class="cc-inner">
+                <div class="cc-title">
+                    <h2>Select a template for your container</h2>
+                </div>
+                <div class="cc-body">
+                    <div>
+                        <button data-preset="100">
+                            <p>1 column</p>
+                            <img src="/admin-site/1-column.png" alt="">
+                        </button>
+                    </div>
+
+                    <div>
+                        <button data-preset="50/50">
+                            <p>2 columns</p>
+                            <img src="/admin-site/2-columns-center.png" alt="">
+                        </button>
+                    </div>
+
+                    <div>
+                        <button data-preset="35/65">
+                            <p>2 columns</p>
+                            <img src="/admin-site/2-columns-35-65.png" alt="">
+                        </button>
+                    </div>
+
+                    <div>
+                        <button data-preset="65/35">
+                            <p>2 columns</p>
+                            <img src="/admin-site/2-columns-65-35.png" alt="">
+                        </button>
+                    </div>
+
+                    <div>
+                        <button data-preset="30/30/30">
+                            <p>3 columns</p>
+                            <img src="/admin-site/3-columns.png" alt="">
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </template>
     <script src="./admin-site/dragula.min.js"></script>
     <script>
         let mews = io('/asocket')
@@ -164,7 +217,7 @@
             if (confirm('I have a Google analytics ID?')) {
                 googleTag = prompt('My Google Analytics ID is: ')
                 contenu =
-                `<!DOCTYPE html>
+                    `<!DOCTYPE html>
                     <html lang="en">
                     <head>
                     <meta charset="UTF-8">
@@ -186,9 +239,9 @@
                     <script src='./frontend-site/designer.js'><\/script>
                     </head><body>${document.querySelector('.edit-zone').innerHTML}
                     <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
-            }else{
+            } else {
                 contenu =
-                `<!DOCTYPE html>
+                    `<!DOCTYPE html>
                     <html lang="en">
                     <head>
                     <meta charset="UTF-8">
@@ -221,7 +274,7 @@
                 j--
             }
             nouvellepage.index = editablePages.length
-            nouvellepage.name = nouvellepage.name+'.html'
+            nouvellepage.name = nouvellepage.name + '.html'
             editablePages.push(nouvellepage)
             createEditablesPageLinks(nouvellepage)
             nouvellepage = {}
@@ -247,7 +300,7 @@
                 }
             }
             if (parsed.formfield) {
-                if(document.querySelector('#formbtn') === null){
+                if (document.querySelector('#formbtn') === null) {
                     const nodemaker = document.querySelector('#nodemaker ul')
                     let li = document.createElement('li')
                     let a = document.createElement('a')
@@ -283,10 +336,13 @@
                 switch (e.target.dataset.demande) {
                     case 'div':
                         desactive()
-                        var div = document.createElement('div')
+                        customContainer()
+                        /* var div = document.createElement('div')
                         div.id = 'isContainer'
                         div.classList.add('xcms-div')
                         xAppend(div)
+                        showBorder(div) */
+                        // RECREER LA DIV DANS UN POP UP
                         break;
                     case 'image':
                         desactive()
@@ -302,7 +358,7 @@
                         imgpicklone.style.display = 'none'
                         imgpicker.addEventListener('change', function (ev) {
                             ev.stopPropagation()
-                            for (let file of imgpicker.files){
+                            for (let file of imgpicker.files) {
                                 var img = document.createElement('img');
                                 img.classList.add('xcms-img')
                                 xAppend(img)
@@ -313,36 +369,15 @@
                                     image: file
                                 })
                                 img.src = window.URL.createObjectURL(file)
-                                img.addEventListener('click', event=>{
-                                    let div = document.createElement('div')
-                                    let label = document.createElement('label')
-                                    label.innerText = 'Scale'
-                                    let button = document.createElement('button')
-                                    button.innerText = 'save scaling'
-                                    let scaler = document.createElement('input')
-                                    scaler.setAttribute('type', 'range')
-                                    scaler.setAttribute('min', 1)
-                                    scaler.setAttribute('max', 10)
-                                    scaler.setAttribute('step', 0.1)
-                                    scaler.style.width = '350px'
-                                    div.appendChild(label)
-                                    div.appendChild(scaler)
-                                    div.appendChild(button)
-                                    event.target.parentElement.insertBefore(div, event.target)
-                                    button.addEventListener('click', ()=>{
-                                        event.target.style.width = event.target.getBoundingClientRect().width+'px'
-                                        event.target.style.transform = `scale(${1})`
-                                        div.remove()
-                                    })
-                                    scaler.addEventListener('change', (ev)=>{
-                                        event.target.style.transform = `scale(${ev.target.value/10})`
-                                    })
+                                img.addEventListener('click', event => {
+                                    scaleImage(event)
                                 })
                                 img.onload = function (eve) {
                                     window.URL.revokeObjectURL(this.src)
                                     img.id = ""
                                     img = ''
                                 }
+                                showBorder(img)
                             }
                             imgpicker.replaceWith(imgpicklone);
                             imgpicker.style.display = 'none'
@@ -369,7 +404,7 @@
                         videopicklone.style.display = 'none'
                         videopicker.addEventListener('change', function (ev) {
                             ev.stopPropagation()
-                            for (let file of videopicker.files){
+                            for (let file of videopicker.files) {
                                 var video = document.createElement('video');
                                 video.type = 'video/mp4'
                                 video.setAttribute('controls', 'true')
@@ -387,9 +422,13 @@
                                     window.URL.revokeObjectURL(this.src)
                                     video = ""
                                 }
+                                video.addEventListener('click', e=>{
+                                    e.preventDefault()
+                                    scaleImage(e)
+                                })
                             }
-                        videopicker.replaceWith(videopicklone);
-                        videopicker.style.display = 'none'
+                            videopicker.replaceWith(videopicklone);
+                            videopicker.style.display = 'none'
                         }, false)
                         break;
                     case 'menu':
@@ -397,28 +436,28 @@
                         var menuSize;
                         let mymenus = []
                         document.querySelector('.xcms-popd').style.display = 'flex'
-                        if(!document.querySelector('#menusize').hasChildNodes()){
+                        if (!document.querySelector('#menusize').hasChildNodes()) {
                             let i = 0
                             while (i <= 10) {
                                 let option = document.createElement('option')
                                 option.value = i
-                                if(i === 1){
+                                if (i === 1) {
                                     option.innerText = i + " link"
-                                }else{
+                                } else {
                                     option.innerText = i + " links"
                                 }
                                 document.querySelector('#menusize').appendChild(option)
                                 i++
                             }
                         }
-                        if(!document.querySelector('#mymenus').hasChildNodes()){
-                            if(localStorage.mymenus){
+                        if (!document.querySelector('#mymenus').hasChildNodes()) {
+                            if (localStorage.mymenus) {
                                 mymenus = jsp(localStorage.mymenus)
-                                mymenus.forEach((menu, i)=>{
+                                mymenus.forEach((menu, i) => {
                                     let menulink = document.createElement('a')
-                                    menulink.innerText = 'menu '+i
+                                    menulink.innerText = 'menu ' + i
                                     menulink.href = '#'
-                                    menulink.addEventListener('click', (menuevent)=>{
+                                    menulink.addEventListener('click', (menuevent) => {
                                         let div = document.createElement('div')
                                         div.innerHTML = menu.menu
                                         console.log(menu)
@@ -429,7 +468,7 @@
                                     let br = document.createElement('br')
                                     document.querySelector('#mymenus').appendChild(br)
                                 })
-                            }else{
+                            } else {
                                 mymenus = []
                             }
                         }
@@ -445,19 +484,19 @@
                                 var alink = document.createElement('a');
                                 var titrelien = prompt(
                                     "Please enter the target element for the link n°" + (
-                                        menuSize ) + "/" + desiredSize + ":\n please start with the '#' sign to target a link inside of the page, \n start with the '/' sign to link to another page. \n")
-                                if(titrelien.charAt(0) === '#'){
+                                        menuSize) + "/" + desiredSize + ":\n please start with the '#' sign to target a link inside of the page, \n start with the '/' sign to link to another page. \n")
+                                if (titrelien.charAt(0) === '#') {
                                     alink.href = titrelien
                                     alink.innerText = titrelien.split('#').join('')
-                                }else if(titrelien.charAt(0) === '/'){
-                                    if(!/$.html/.test(titrelien)){
+                                } else if (titrelien.charAt(0) === '/') {
+                                    if (!/$.html/.test(titrelien)) {
                                         alink.href = titrelien + '.html'
                                         alink.innerText = titrelien.split('/').join('')
-                                    }else{
+                                    } else {
                                         alink.href = titrelien
                                         alink.innerText = titrelien.split('/').join('').split('.html').join('')
                                     }
-                                }else{
+                                } else {
                                     alink.href = '#' + titrelien
                                     alink.innerText = titrelien
                                 }
@@ -471,18 +510,18 @@
                             }
                             menuSize = 0
                             console.log(desiredSize)
-                            if(desiredSize === '0'){
+                            if (desiredSize === '0') {
                                 ul = ""
                                 document.querySelector('.xcms-popd').style.display = 'none'
                                 return
-                            }else{
+                            } else {
                                 xAppend(ul)
-                                if(confirm("do you want to save this menu for later use?")){
-                                    mymenus.push({menu: ul.outerHTML})
+                                if (confirm("do you want to save this menu for later use?")) {
+                                    mymenus.push({ menu: ul.outerHTML })
                                     let menulink = document.createElement('a')
-                                    menulink.innerText = 'menu '+ mymenus.length
+                                    menulink.innerText = 'menu ' + mymenus.length
                                     menulink.href = '#'
-                                    menulink.addEventListener('click', (menuevent)=>{
+                                    menulink.addEventListener('click', (menuevent) => {
                                         let div = document.createElement('div')
                                         div.innerHTML = ul.outerHTML
                                         xAppend(div)
@@ -512,7 +551,7 @@
         //***************LIVE ON PAGE LIVE
         document.querySelector('.edit-zone').addEventListener('dblclick', function (e) {
             if (/xcms-/.test(e.target.classList.value)) {
-                if(!e.target.classList.contains('xcms-img') || !e.target.classList.contains('xcms-video')){
+                if (!e.target.classList.contains('xcms-img') || !e.target.classList.contains('xcms-video')) {
                     e.preventDefault();
                     e.stopPropagation();
                     if (e.target.id === "isContainer") {
@@ -540,16 +579,66 @@
         })
         //******************APPEND
         function xAppend(item) {
-            if (document.querySelector('#isContainer') !== null) {
-                document.querySelector('#isContainer').appendChild(item)
-                document.querySelector('#isContainer').classList.add('not-empty-container')
+            if (document.querySelector('.isSelected')) {
+                document.querySelector('.isSelected').appendChild(item)
+                document.querySelector('.isSelected').classList.remove('isSelected')
             } else {
-                if (document.querySelector('.edit-zone').style.display === "block") {
-                    document.querySelector('.edit-zone').appendChild(item)
+                if (document.querySelector('#isContainer') !== null) {
+                    document.querySelector('#isContainer').appendChild(item)
+                    document.querySelector('#isContainer').classList.add('not-empty-container')
                 } else {
-                    document.querySelector('.re-edit-zone').appendChild(item)
+                    if (document.querySelector('.edit-zone').style.display === "block") {
+                        document.querySelector('.edit-zone').appendChild(item)
+                    } else {
+                        document.querySelector('.re-edit-zone').appendChild(item)
+                    }
                 }
             }
+
+        }
+        //******************SCALE IMAGE
+        function scaleImage(event){
+            let div = document.createElement('div')
+            let label = document.createElement('label')
+            label.innerText = 'Scale'
+            let button = document.createElement('button')
+            button.innerText = 'save scaling'
+            button.style.width = "min-content"
+            let scaler = document.createElement('input')
+            scaler.setAttribute('type', 'range')
+            scaler.setAttribute('min', 1)
+            scaler.setAttribute('max', 20)
+            scaler.setAttribute('step', 0.1)
+            scaler.setAttribute('value', 10)
+            scaler.style.height = '100%'
+            div.appendChild(label)
+            div.appendChild(scaler)
+            div.appendChild(button)
+            div.style.display = 'flex'
+            div.style.flexDirection = 'column'
+            div.style.height = '350px'
+            div.style.width = '45px'
+            div.style.justifyContent = 'space-between'
+            div.style.alignItems = "center"
+            div.style.position = 'absolute'
+            div.style.left = document.querySelector('.re-edit-zone') ? 
+            document.querySelector('.re-edit-zone').getBoundingClientRect().right+'px' :
+            document.querySelector('.edit-zone').getBoundingClientRect().right +'px'
+            div.style.top = document.querySelector('.re-edit-zone') ? 
+            document.querySelector('.re-edit-zone').getBoundingClientRect().top+50+'px' :
+            document.querySelector('.edit-zone').getBoundingClientRect().top+50+'px'
+            document.body.appendChild(div)
+            button.addEventListener('click', () => {
+                event.target.style.width = event.target.getBoundingClientRect().width + 'px'
+                event.target.style.transform = `scale(${1})`
+                div.remove()
+                if(document.body.querySelector('.remove')){
+                    document.body.querySelector('.remove').remove()
+                }
+            })
+            scaler.addEventListener('change', (ev) => {
+                event.target.style.transform = `scale(${ev.target.value / 10})`
+            })
         }
         //******************EDIT
         let lastItem;
@@ -564,8 +653,8 @@
                     ['bold', 'italic', 'underline', 'strike', {
                         'color': []
                     }, {
-                        'background': []
-                    }, 'link'],
+                            'background': []
+                        }, 'link'],
                     [{
                         'font': []
                     }],
@@ -603,6 +692,7 @@
         }
 
         function applyChanges(node) {
+            let tempStyle = node.getAttribute('style') === null ? '' : node.getAttribute('style')
             document.querySelector('.ql-editor').focus()
             let editorbtn = document.createElement('button')
             editorbtn.innerText = 'save'
@@ -660,31 +750,199 @@
                 return
             }
             editorbtn.addEventListener('click', () => {
+                if(document.body.querySelector('.remove')) document.body.querySelector('.remove').remove()
                 editorbtn.remove()
                 let newData = document.querySelector('.ql-editor').innerHTML
                 let div = document.createElement('div')
                 div.innerHTML = newData
+                div.setAttribute('style', tempStyle)
                 div.classList.add('xcms-custom')
                 node.parentElement.replaceChild(div, node)
                 document.querySelector('.ql-toolbar').remove()
-                /* let x =0
-                div.addEventListener('click', (e) => {
-                    //TODO select events
-                    if(x==0){
-                        for(let action in div){
-                            if(/^on/.test(action))
-                            console.log(div, action)
-                        }
-                        x++
-                    }
-                }) */
+
+                showBorder(div)
+
                 div.addEventListener('dblclick', (e) => {
                     div.id = 'isActive'
                     xEdit(div)
-                    
+
                 })
             })
         }
+        //*************SHOW BORDER
+        function showBorder(node) {
+            node.addEventListener('mouseover', () => {
+                node.id = "isHover"
+            })
+            node.addEventListener('mouseleave', () => {
+                node.id = ""
+            })
+            node.addEventListener('dblclick', (e) => {
+                node.id = 'isActive'
+                xEdit(node)
+            })
+            node.addEventListener('click', () => {
+                console.log(node)
+                if ( node.querySelector('.ql-editor')) return
+                node.classList.add('isSelected')
+                if(document.body.querySelector('.remove')){
+                    document.body.querySelector('.remove').remove()
+                }
+                if(!document.body.querySelector('.remove')){
+                    let div = document.createElement('div')
+                    let btnEdit = document.createElement('button')
+                    let btnRemove = document.createElement('button')
+                    btnEdit.innerText = 'edit'
+                    btnRemove.innerText = 'remove'
+                    div.classList.add('remove')
+                    document.body.appendChild(div)
+                    div.style.display = 'flex'
+                    div.style.flexDirection = "column"
+                    div.style.position = 'absolute'
+                    div.style.left = document.querySelector('.re-edit-zone') ? 
+                    document.querySelector('.re-edit-zone').getBoundingClientRect().right+'px' :
+                    document.querySelector('.edit-zone').getBoundingClientRect().right +'px'
+                    div.style.top = document.querySelector('.re-edit-zone') ? 
+                    document.querySelector('.re-edit-zone').getBoundingClientRect().top+'px' :
+                    document.querySelector('.edit-zone').getBoundingClientRect().top+'px'
+                    btnRemove.style.marginTop = '16px'
+                    div.appendChild(btnEdit)
+                    div.appendChild(btnRemove)
+                    btnEdit.addEventListener('click', ()=>{
+                        div.remove()
+                        node.id = 'isActive'
+                        xEdit(node)
+                    })
+                    btnRemove.addEventListener('click', ()=>{
+                        node.remove()
+                        div.remove()
+                    })
+                    if (node.classList.contains("xcms-img") || node.classList.contains("xcms-video")){
+                        btnEdit.remove()
+                    }
+                }
+                
+            })
+        }
+        //*************CREATE CUSTOM CONTAINER
+        function customContainer() {
+            var div = document.createElement('div')
+            div.classList.add('xcms-div')
+            div.id = "isContained"
+            let menu = document.importNode(document.querySelector('#custom-container').content, true)
+            document.body.appendChild(menu)
+            document.querySelector('.cc-body').querySelectorAll('button').forEach(btn => {
+                console.log(btn)
+                btn.addEventListener('click', e => {
+                    let preset = btn.dataset.preset
+                    if (preset === "100") {
+                        console.log(div)
+                        xAppend(div)
+                        showBorder(div)
+                        drake.containers.push(div)
+                    }
+                    if (preset === "50/50") {
+                        div.style.display = "flex";
+                        div.style.flexDirection = 'row'
+                        let leftDiv = document.createElement('div')
+                        let rightDiv = document.createElement('div')
+                        leftDiv.style.flex = "1"
+                        rightDiv.style.flex = "1"
+                        leftDiv.style.display = "flex"
+                        rightDiv.style.display = "flex"
+                        leftDiv.style.flexDirection = 'column'
+                        rightDiv.style.flexDirection = 'column'
+                        leftDiv.style.alignItems = 'center'
+                        rightDiv.style.alignItems = 'center'
+                        div.appendChild(leftDiv)
+                        div.appendChild(rightDiv)
+                        xAppend(div)
+                        showBorder(leftDiv)
+                        showBorder(rightDiv)
+                        drake.containers.push(div)
+                        drake.containers.push(leftDiv)
+                        drake.containers.push(rightDiv)
+                    }
+                    if (preset === "35/65") {
+                        div.style.display = "flex";
+                        div.style.flexDirection = 'row'
+                        let leftDiv = document.createElement('div')
+                        let rightDiv = document.createElement('div')
+                        leftDiv.style.flex = "1"
+                        rightDiv.style.flex = "2"
+                        leftDiv.style.display = "flex"
+                        rightDiv.style.display = "flex"
+                        leftDiv.style.flexDirection = 'column'
+                        rightDiv.style.flexDirection = 'column'
+                        leftDiv.style.alignItems = 'center'
+                        rightDiv.style.alignItems = 'center'
+                        div.appendChild(leftDiv)
+                        div.appendChild(rightDiv)
+                        xAppend(div)
+                        showBorder(leftDiv)
+                        showBorder(rightDiv)
+                        drake.containers.push(div)
+                        drake.containers.push(leftDiv)
+                        drake.containers.push(rightDiv)
+                    }
+                    if (preset === "65/35") {
+                        div.style.display = "flex";
+                        div.style.flexDirection = 'row'
+                        let leftDiv = document.createElement('div')
+                        let rightDiv = document.createElement('div')
+                        leftDiv.style.flex = "2"
+                        rightDiv.style.flex = "1"
+                        leftDiv.style.display = "flex"
+                        rightDiv.style.display = "flex"
+                        leftDiv.style.flexDirection = 'column'
+                        rightDiv.style.flexDirection = 'column'
+                        leftDiv.style.alignItems = 'center'
+                        rightDiv.style.alignItems = 'center'
+                        div.appendChild(leftDiv)
+                        div.appendChild(rightDiv)
+                        xAppend(div)
+                        showBorder(leftDiv)
+                        showBorder(rightDiv)
+                        drake.containers.push(div)
+                        drake.containers.push(leftDiv)
+                        drake.containers.push(rightDiv)
+                    }
+                    if (preset === "30/30/30") {
+                        div.style.display = "flex";
+                        div.style.flexDirection = 'row'
+                        let leftDiv = document.createElement('div')
+                        let middleDiv = document.createElement('div')
+                        let rightDiv = document.createElement('div')
+                        leftDiv.style.flex = "1"
+                        middleDiv.style.flex = "1"
+                        rightDiv.style.flex = "1"
+                        leftDiv.style.display = "flex"
+                        middleDiv.style.display = "flex"
+                        rightDiv.style.display = "flex"
+                        leftDiv.style.flexDirection = 'column'
+                        middleDiv.style.flexDirection = 'column'
+                        rightDiv.style.flexDirection = 'column'
+                        middleDiv.style.alignItems = 'center'
+                        leftDiv.style.alignItems = 'center'
+                        rightDiv.style.alignItems = 'center'
+                        div.appendChild(leftDiv)
+                        div.appendChild(middleDiv)
+                        div.appendChild(rightDiv)
+                        xAppend(div)
+                        showBorder(leftDiv)
+                        showBorder(middleDiv)
+                        showBorder(rightDiv)
+                        drake.containers.push(div)
+                        drake.containers.push(leftDiv)
+                        drake.containers.push(rightDiv)
+                        drake.containers.push(middleDiv)
+                    }
+                    document.querySelector('.cc-outer').remove()
+                })
+            })
+
+        }
+
         //*************DEACTIVR
         function desactive() {
             document.querySelectorAll('#isActive').forEach(active => {
@@ -697,37 +955,37 @@
         let csseditor = ace.edit('css-editor')
         csseditor.setTheme("ace/theme/xcode")
         csseditor.session.setMode("ace.mode/css")
-        csseditor.scrollToLine(0, true, true, function () {});
+        csseditor.scrollToLine(0, true, true, function () { });
         csseditor.gotoLine(0, 0, true);
         let jseditor = ace.edit('js-editor')
         jseditor.setTheme("ace/theme/xcode")
         jseditor.session.setMode("ace.mode/javascript")
-        jseditor.scrollToLine(0, true, true, function () {});
+        jseditor.scrollToLine(0, true, true, function () { });
         jseditor.gotoLine(0, 0, true);
-        document.querySelectorAll('.ace-editor-block a').forEach(btn=>{
-            btn.addEventListener('click', e=>{
-                if(e.target.dataset.editor === 'js'){
+        document.querySelectorAll('.ace-editor-block a').forEach(btn => {
+            btn.addEventListener('click', e => {
+                if (e.target.dataset.editor === 'js') {
                     document.querySelector('#js-editor').style.display = "block"
                     document.querySelector('#css-editor').style.display = "none"
                 }
-                if(e.target.dataset.editor === 'css'){
+                if (e.target.dataset.editor === 'css') {
                     document.querySelector('#js-editor').style.display = "none"
                     document.querySelector('#css-editor').style.display = "block"
                 }
             })
         })
-        document.querySelectorAll('.ace-editor-block a').forEach(btn=>{
-            btn.addEventListener('dblclick', e=>{
-                if(e.target.dataset.editor === 'js'){
+        document.querySelectorAll('.ace-editor-block a').forEach(btn => {
+            btn.addEventListener('dblclick', e => {
+                if (e.target.dataset.editor === 'js') {
                     document.querySelector('#js-editor').style.display = "none"
                 }
-                if(e.target.dataset.editor === 'css'){
+                if (e.target.dataset.editor === 'css') {
                     document.querySelector('#css-editor').style.display = "none"
                 }
             })
         })
         //******************CREATE EDITABLE PAGES LINKS
-        function createEditablesPageLinks(onePage){
+        function createEditablesPageLinks(onePage) {
             var li = document.createElement('li');
             var a = document.createElement('a');
             let span = document.createElement('span');
@@ -756,10 +1014,28 @@
                     if (node instanceof HTMLElement) {
                         if (node.hasAttribute('class')) {
                             if (node.className !== "xcms-img" && node.className !== "xcms-video") {
-                                node.addEventListener('click', (e) => {
-                                    node.id = 'isActive'
-                                    xEdit(node)
-                                })
+                                if(node.hasChildNodes){
+                                    drake.containers.push(node)
+                                }
+                                try{
+                                    node.childNodes.forEach(n=>{
+                                        if(n!= undefined){
+                                            showBorder(n)
+                                            n.addEventListener('dblclick', (e) => {
+                                                n.id = 'isActive'
+                                                xEdit(n)
+                                            })
+                                        }
+                                    })
+                                }catch{
+                                    showBorder(node)
+                                    node.addEventListener('dblclick', (e) => {
+                                        node.id = 'isActive'
+                                        xEdit(node)
+                                    })
+                                }
+                            }else{
+                                showBorder(node)
                             }
                         }
                     }
@@ -805,14 +1081,15 @@
                             }
                         }
                     })
-                    let rebuiltPage = document.implementation.createHTMLDocument(theframe.querySelector('title').innerText)
-                    for(var nde of theframe.children){
+                    let rebuiltPage = document.implementation.createHTMLDocument(/* theframe.querySelector('title').innerText */)
+                    for (var nde of theframe.children) {
                         rebuiltPage.head.appendChild(nde.cloneNode(true))
-                        if(nde.getAttribute('src') === "./frontend-site/designer.js"){
+                        if (nde.getAttribute('src') === "./frontend-site/designer.js") {
                             break
                         }
                     }
-                    theframe.querySelectorAll('[class^="xcms-"]').forEach(element=>{
+                    theframe.querySelectorAll('.re-edit-zone > [class^="xcms-"]').forEach(element => {
+                        console.log('°°°', element, '°°°')
                         rebuiltPage.body.appendChild(element.cloneNode(true))
                     })
                     rebuiltPage.body.appendChild(theframe.querySelector('script:last-of-type').cloneNode(true))
@@ -841,11 +1118,11 @@
                     window.location.href = `${window.location.origin}/admin`
                 })
             }, false)
-            span.addEventListener("click", (e)=>{
+            span.addEventListener("click", (e) => {
                 let pagename = e.target.parentElement.querySelector('a').innerText
-                mews.emit('message', jss({deletePage: pagename}))
+                mews.emit('message', jss({ deletePage: pagename }))
                 e.target.parentElement.remove()
-                editablePages = editablePages.filter(pageData =>{if(pageData.name !== pagename) return pageData})
+                editablePages = editablePages.filter(pageData => { if (pageData.name !== pagename) return pageData })
             })
             document.querySelector('.editables').appendChild(li)
             li = a = span = ""
@@ -877,12 +1154,12 @@
         const menubtn = document.querySelector('.first-class-editor-button')
         const editor = document.querySelector('.first-class')
         const editorMenu = document.querySelector('.first-class-editor')
-        menubtn.addEventListener('touchend', (e)=>{
+        menubtn.addEventListener('touchend', (e) => {
             menubtn.style.display = 'none'
             editor.style.display = 'none'
             editorMenu.style.display = 'block'
-            editorMenu.querySelectorAll('a').forEach(a =>{
-                a.addEventListener('touchend', (e)=>{
+            editorMenu.querySelectorAll('a').forEach(a => {
+                a.addEventListener('touchend', (e) => {
                     e.stopImmediatePropagation()
                     e.target.click()
                     menubtn.style.display = 'block'
@@ -915,7 +1192,7 @@
         })
     </script>
     <script>
-        
+
     </script>
 </body>
 
