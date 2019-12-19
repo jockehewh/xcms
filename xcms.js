@@ -231,7 +231,7 @@ xcms.use(r.get('/admin', (ctx) => {
     })
 }))
 
-xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css/, ctx=>{
+xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css$/, ctx=>{
     ctx.type = 'text/css'
     ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
