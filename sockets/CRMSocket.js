@@ -1,11 +1,11 @@
 const IO = require('koa-socket-2')
 const fs = require('fs')
 const {userdb, admindb} = require('../cmsModels.js')
+const nodemailer = require('nodemailer')
 
 const crmSocket = new IO({
     namespace: 'crm-socket'
 })
-
 crmSocket.on('message', (ctx)=>{
   var datainfo = JSON.parse(ctx.data)
   if (datainfo.userslist) {
@@ -26,7 +26,7 @@ crmSocket.on('message', (ctx)=>{
     })
   }
   if (datainfo.selectedContacts) {
-    let transporterInfo = fs.createReadStream('../xcmsDB/transporter', {
+    let transporterInfo = fs.createReadStream(__dirname+'/../xcmsDB/transporter', {
         autoClose: true
     })
     let transporter = "";
@@ -34,7 +34,7 @@ crmSocket.on('message', (ctx)=>{
         transporter += data
     })
     transporterInfo.on('end', () => {
-        transporter = jsp(transporter)
+        transporter = JSON.parse(transporter)
         let mailTransporter = nodemailer.createTransport(transporter)
         datainfo.selectedContacts.forEach(contact => {
             let mailOptions = {
@@ -49,7 +49,7 @@ crmSocket.on('message', (ctx)=>{
     })
   }
   if (datainfo.host) {
-    let transporter = fs.createWriteStream('../xcmsDB/transporter', {
+    let transporter = fs.createWriteStream(__dirname+'/../xcmsDB/transporter', {
         encoding: 'utf8'
     })
     let transporterData = {

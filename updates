@@ -1,0 +1,9 @@
+latest update:
+
+Adds:
+  -nothing new in this version.
+Changes:
+  -moved the CRM into the main application
+BugFixes:
+  -fixed the transporter path to properly edit the file
+  

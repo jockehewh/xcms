@@ -106,13 +106,6 @@ xcms.use(r.post('/contact', ctx => {
     ctx.redirect('/')
 }))
 
-xcms.use(r.get('/chat', ctx => {
-    ctx.type = 'html'
-    ctx.body = fs.createReadStream(__dirname + '/extra_modules/instant-messaging.html', {
-        autoClose: true
-    })
-}))
-
 xcms.use(r.get('/favicon.ico', ctx => {
     ctx.type = 'image/png'
     ctx.body = fs.createReadStream(__dirname + '/favicon.ico', {
@@ -241,12 +234,6 @@ xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ctx=>
     ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
 
-xcms.use(r.get('/admin/crm', (ctx) => {
-    ctx.type = "html"
-    ctx.body = fs.createReadStream(__dirname + '/admin-site/crm.html', {
-        autoClose: true
-    })
-}))
 
 xcms.use(r.get('/logout', (ctx, next)=>{
     ctx.logout();
@@ -285,12 +272,6 @@ adminSocket.on('connection', (ctx) => {
 })
 
 require('./sockets/CRMSocket.js').attach(xcms)
-
-let IM = require('./extra_modules/instant-messaging')
-IM.attach(xcms)
-IM.on('connection', ctx=>{
-  console.log(ctx.socket.handshake.query['name'])
-})
 
 /* SOCKET IO END */
 
