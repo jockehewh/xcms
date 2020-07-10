@@ -69,14 +69,14 @@ adminSocket.on('message', async (ctx) => {
 })
 
 adminSocket.on('image', ctx => {
-  var newImg = fs.createWriteStream(__dirname + '/frontend-site/imgs/' + ctx.data.name, {
+  var newImg = fs.createWriteStream(__dirname + '/../frontend-site/imgs/' + ctx.data.name, {
     encoding: "binary"
   })
   newImg.write(ctx.data.image)
   newImg.end()
 })
 adminSocket.on('video', ctx => {
-  var newImg = fs.createWriteStream(__dirname + '/frontend-site/videos/' + ctx.data.name, {
+  var newImg = fs.createWriteStream(__dirname + '/../frontend-site/videos/' + ctx.data.name, {
     encoding: "binary"
   })
   newImg.write(ctx.data.video)

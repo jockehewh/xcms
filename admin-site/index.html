@@ -580,6 +580,15 @@
         })
         //******************APPEND
         function xAppend(item) {
+            if(item.childElementCount > 1){
+                if (document.querySelector('.edit-zone').style.display === "block") {
+                    document.querySelector('.edit-zone').appendChild(item)
+                    return true
+                } else {
+                    document.querySelector('.re-edit-zone').appendChild(item)
+                    return true
+                }
+            }
             if (document.querySelector('.isSelected')) {
                 document.querySelector('.isSelected').appendChild(item)
                 document.querySelector('.isSelected').classList.remove('isSelected')
@@ -595,7 +604,14 @@
                     }
                 }
             }
-
+            if(item.nodeName === 'IMG'){
+                document.querySelectorAll('.isSelected').forEach(opt=>{
+                    opt.classList.remove('isSelected')
+                })
+                document.querySelectorAll('#isContainer').forEach(opt=>{
+                    opt.id = ''
+                })
+            }
         }
         //******************SCALE IMAGE
         function scaleImage(event){
@@ -802,6 +818,9 @@
                 node.id = ""
             })
             node.addEventListener('click', () => {
+                document.querySelectorAll('.isSelected').forEach(opt=>{
+                    opt.classList.remove('isSelected')
+                })
                 node.id = 'isActive'
                if ( node.querySelector('.ql-editor')) return
                 node.classList.add('isSelected')
