@@ -22,10 +22,10 @@ try{
 
 mongoose.connect(the.mongoURI + '/xcms', the.mongoOptions)
 
-var pagesCollection = require('./xcmsDB/pageCollection.js')
+var pagesCollection = require(__dirname + '/xcmsDB/pageCollection.js')
 
-var isIndex = require('./xcmsDB/isIndex.js')
-const { pagedb, userdb } = require('./cmsModels.js')
+var isIndex = require(__dirname + '/xcmsDB/isIndex.js')
+const { pagedb, userdb } = require(__dirname + '/cmsModels.js')
 
 xcms.proxy = true
 xcms.keys = ['xavier-cms-key']
@@ -33,7 +33,7 @@ xcms.use(session({}, xcms))
 xcms.use(bodyParser())
 xcms.use(passport.initialize())
 xcms.use(passport.session())
-require('./adminAuth.js')
+require(__dirname + '/adminAuth.js')
 
 
 pagedb.find({}, (err, data) => {
@@ -147,7 +147,7 @@ xcms.use(r.get(/\/frontend-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css/, c
             })
         }
     }else{
-        ctx.body = fs.createReadStream('.'+ ctx.url)
+        ctx.body = fs.createReadStream(__dirname + ctx.url)
     }
 }))
 
@@ -161,7 +161,7 @@ xcms.use(r.get(/\/frontend-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ct
             }
         })
     }else{
-        ctx.body = fs.createReadStream('.'+ ctx.url)
+        ctx.body = fs.createReadStream(__dirname + ctx.url)
     }
 }))
 
@@ -184,6 +184,7 @@ xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx=>{
 
 xcms.use(r.get(/^\/imgs\/([a-zA-Z0-9_-]{2,})/, ctx=>{
     let imageName = ctx.url.split('/')
+    console.log(imageName)
     ctx.type = 'image/*'
     ctx.body = fs.createReadStream(__dirname + '/frontend-site/imgs/' + imageName[2], {
         autoclose: true
@@ -192,12 +193,12 @@ xcms.use(r.get(/^\/imgs\/([a-zA-Z0-9_-]{2,})/, ctx=>{
 
 xcms.use(r.get(/\/[a-zA-Z0-9_-]{2,}.woff/, ctx=>{
     ctx.type = 'font/woff2'
-    ctx.body = fs.createReadStream('.'+ ctx.url)
+    ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
 
 xcms.use(r.get(/\/[a-zA-Z0-9_-]{2,}.ttf/, ctx=>{
     ctx.type = 'application/font-sfnt'
-    ctx.body = fs.createReadStream('.'+ ctx.url)
+    ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
 
 xcms.use(r.post('/admin',
@@ -271,7 +272,7 @@ adminSocket.on('connection', (ctx) => {
     })
 })
 
-require('./sockets/CRMSocket.js').attach(xcms)
+require(__dirname + '/sockets/CRMSocket.js').attach(xcms)
 
 /* SOCKET IO END */
 

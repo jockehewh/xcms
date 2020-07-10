@@ -3,7 +3,8 @@ latest update:
 Adds:
   -nothing new in this version.
 Changes:
-  -moved the CRM into the main application
+  -moved the CRM into the main application.
+  -removed the chat part of the applications.
 BugFixes:
-  -fixed the transporter path to properly edit the file
+  -fixed the transporter path to properly edit the file.
   

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="./admin-site/quill.snow.css">
     <script src="./admin-site/socket.io.js"></script>
     <script src="./admin-site/ace-editor/ace.js"></script>
+    <script src="./admin-site/ace-editor/theme-monokai.js"></script>
     <script src="./admin-site/beautifier.js"></script>
     <script src="./admin-site/ace-editor/ext-language_tools.js"></script>
     <script src="./admin-site/quill.js"></script>
@@ -223,6 +224,7 @@
             }
 
             if (confirm('I have a Google analytics ID?')) {
+                //TODO workerjs
                 googleTag = prompt('My Google Analytics ID is: ')
                 contenu =
                     `<!DOCTYPE html>

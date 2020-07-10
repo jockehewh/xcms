@@ -98,31 +98,6 @@ window.onload = ()=>{
         document.querySelector('.xcms-menu').className += " bg-green w-100 pb2 pt2 tc"
         //document.querySelector('.xcms-menu').nextElementSibling.style.marginTop = window.getComputedStyle(document.querySelector('.xcms-menu')).height.split('px').join('') *2 +'px'
 
-        document.querySelectorAll('.xcms-titre').forEach(titre=>{
-            titre.style.color = "unset"
-            titre.classList.add('washed-red')
-            if(titre.nextElementSibling.nextElementSibling !== null && !titre.nextElementSibling.nextElementSibling.classList.contains('.xcms-titre')){
-                if(/(xcms-[a-z]{2,5})/.test(titre.nextElementSibling.className) && /(xcms-titre)/.test(titre.nextElementSibling.nextElementSibling.className)){
-                    return
-                }
-                let newdiv = document.createElement('div')
-                let cloneA = titre.nextElementSibling.cloneNode(true)
-                let cloneB = titre.nextElementSibling.nextElementSibling.cloneNode(true)
-                console.log(cloneA, cloneB)
-                newdiv.appendChild(cloneA)
-                newdiv.appendChild(cloneB)
-                
-                if(!titre.parentElement.classList.contains('.xcms-div')){
-                    titre.parentElement.replaceChild(newdiv, titre.nextElementSibling.nextElementSibling)
-                    titre.nextElementSibling.remove()
-                }else{
-                    titre.parentElement.appendChild(newdiv)
-                    titre.nextElementSibling.remove()
-                    titre.nextElementSibling.remove()
-                }
-                newdiv.style.display = "flex"
-            }
-        })
         document.querySelectorAll('.xcms-div').forEach(div=>{
             div.className += " washed-red bg-blue"
         })
