@@ -72,7 +72,7 @@ Clicking __Open editor__ opens the WYSIWYG editor in the workspace.
   With the editor open, select the text of the element you want to name and click on the ‘.cls’ button. In the floating text bar, enter the class name for your element(s).
   Click save to apply.
   * ![Adding an ID](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnid.PNG)
-  With the editor open, select the text of the element you want to add and ID to and click on the ‘reverse-link’ button. In the floating text bar, enter the ID for your element(s) .
+  With the editor open, select the text of the element you want to add an ID to and click on the ‘reverse-link’ button. In the floating text bar, enter the ID for your element(s) .
   Click save to apply.
   * ![Creating a link](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnlien.PNG)
   Select the text of the element you want to use as link and click on the ‘link’ button. In the floating text bar, enter the address to link to

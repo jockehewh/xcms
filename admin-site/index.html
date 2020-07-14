@@ -2,232 +2,289 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Creative side</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Creative side</title>
 
-    <link rel="stylesheet" href="./admin-site/xcms.css">
-    <link rel="stylesheet" href="./admin-site/tachyons.min.css">
-    <link rel="stylesheet" href="./admin-site/dragula.min.css">
-    <link rel="stylesheet" href="./admin-site/quill.snow.css">
-    <script src="./admin-site/socket.io.js"></script>
-    <script src="./admin-site/ace-editor/ace.js"></script>
-    <script src="./admin-site/ace-editor/theme-monokai.js"></script>
-    <script src="./admin-site/beautifier.js"></script>
-    <script src="./admin-site/ace-editor/ext-language_tools.js"></script>
-    <script src="./admin-site/quill.js"></script>
+  <link rel="stylesheet" href="./admin-site/xcms.css">
+  <link rel="stylesheet" href="./admin-site/tachyons.min.css">
+  <link rel="stylesheet" href="./admin-site/dragula.min.css">
+  <link rel="stylesheet" href="./admin-site/quill.snow.css">
+  <script src="./admin-site/socket.io.js"></script>
+  <script src="./admin-site/ace-editor/ace.js"></script>
+  <script src="./admin-site/ace-editor/theme-monokai.js"></script>
+  <script src="./admin-site/beautifier.js"></script>
+  <script src="./admin-site/ace-editor/ext-language_tools.js"></script>
+  <script src="./admin-site/quill.js"></script>
+  <script src="./admin-site/css.min.js"></script>
 </head>
 
 <body>
-    <div class="xcms-popd">
-        <!--Master menu maker-->
-        <div id="options-selectd" class="cc-inner">
-            <h4>Menus:</h4>
-            <br>
-            <ul>
-                <li><select id="menusize"></select></li>
-            </ul>
-            <br>
-            <button class="save">save</button>
-            <div id="mymenus"></div>
-        </div>
+  <div class="xcms-popd">
+    <!--Master menu maker-->
+    <div id="options-selectd" class="cc-inner">
+      <h4>Menus:</h4>
+      <br>
+      <ul>
+        <li><select id="menusize"></select></li>
+      </ul>
+      <br>
+      <button class="save">save</button>
+      <div id="mymenus"></div>
     </div>
-    <div class="nav"><span style="padding-left: 17px;">XCMS</span>
-        <p>Go to CRM page</p>
+  </div>
+  <div class="nav"><span style="padding-left: 17px;">XCMS</span>
+    <p>Go to CRM page</p>
+  </div>
+  <main class="mw-100">
+    <div class="first-class-editor-button">
+      <p>Menu</p>
     </div>
-    <main class="mw-100">
-        <div class="first-class-editor-button">
-            <p>Menu</p>
-        </div>
-        <div class="first-class fl ph3 pv5 w-80">
-            <!--Master page maker-->
-            <input type="file" accept="image; video/mp4" multiple id="imgpiker">
-            <div class="edit-zone" style="display:block;">
-                <style scoped>
-                    * {
-                        margin: 0;
-                        padding: 0;
-                        user-select: none;
-                        --rouge-brick-pale: #ef5350;
-                        --rouge-brique-eclatant: #ff5252;
-                        --bleu-indigo-leger: #5c6bc0;
-                        --bleu-indigo-eclatant: #536dfe;
-                        --orange-pale: #e64a19;
-                        --bleu-gris-clair: #cfd8dc;
-                        --teal-bleu-special: #1de9b6;
-                    }
-                </style>
-            </div>
-            <div class="maFrame">
+    <div class="first-class fl ph3 pv5 w-80">
+      <!--Master page maker-->
+      <input type="file" accept="image; video/mp4" multiple id="imgpiker">
+      <div class="edit-zone" style="display:block;">
+        <style scoped>
+          * {
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            --rouge-brick-pale: #ef5350;
+            --rouge-brique-eclatant: #ff5252;
+            --bleu-indigo-leger: #5c6bc0;
+            --bleu-indigo-eclatant: #536dfe;
+            --orange-pale: #e64a19;
+            --bleu-gris-clair: #cfd8dc;
+            --teal-bleu-special: #1de9b6;
+          }
+        </style>
+      </div>
+      <div class="maFrame">
 
-            </div>
-            <div class="ace-editor-block">
-                <div class="editor-btn-flexbox">
-                    <a data-editor="js">Edit your javascript</a> <a data-editor="css">Edit your css</a>
-                </div>
-                <div id="css-editor"></div>
-                <div id="js-editor"></div>
-                <div id="text-editor"></div>
-            </div>
+      </div>
+      <div class="ace-editor-block">
+        <div class="editor-btn-flexbox">
+          <a data-editor="js">Edit your javascript</a> <a data-editor="css">Edit your css</a>
         </div>
-        <div class="first-class-editor fl pr2 ">
-            <section id="nodemaker" class="">
-                <label for="titrepage">
-                    <h4>Page name:</h4>
+        <div id="css-editor"></div>
+        <div id="js-editor"></div>
+        <div id="text-editor"></div>
+      </div>
+    </div>
+    <div class="first-class-editor fl pr2 ">
+      <section id="nodemaker" class="">
+        <label for="titrepage">
+          <h4>Page name:</h4>
+        </label>
+        <input name="titrepage" id="titrepage" type="text" placeholder="New page name"><br><br>
+        <section class="boutons">
+          <a id="crepage">Save page</a><br><br>
+          <a id="crenew">New page</a><br><br>
+          <a id="efface">Delete content</a><br><br>
+        </section><br>
+        <hr>
+        <section>
+          <h4 class="mt2" style="margin-bottom: 3px;">Edit content:</h4><br>
+          <ul class="list">
+            <li><a class="link" href="#" data-demande="texte">Open editor</a><br class="mybr"><br class="mybr"></li>
+            <li><a class="link" href="#" data-demande="div">Add a container</a><br class="mybr"><br class="mybr"></li>
+            <li><a class="link" href="#" data-demande="menu">Add a menu</a><br class="mybr"><br class="mybr"></li>
+            <li><a class="link" href="#" data-demande="image">Add image(s)</a><br class="mybr"><br class="mybr"></li>
+            <li><a class="link" href="#" data-demande="video">Add video(s)</a><br class="mybr"><br class="mybr"></li>
+            <li>
+              <div class="backcolor" style="grid-row:1;">
+                <label id="fond">
+                  Background color:
                 </label>
-                <input name="titrepage" id="titrepage" type="text" placeholder="New page name"><br><br>
-                <section class="boutons">
-                    <a id="crepage">Save page</a><br><br>
-                    <a id="crenew">New page</a><br><br>
-                    <a id="efface">Delete content</a><br><br>
-                </section><br>
-                <hr>
-                <section>
-                    <h4 class="mt2" style="margin-bottom: 3px;">Edit content:</h4><br>
-                    <ul class="list">
-                        <li><a class="link" href="#" data-demande="texte">Open editor</a><br class="mybr"><br
-                                class="mybr"></li>
-                        <li><a class="link" href="#" data-demande="div">Add a container</a><br class="mybr"><br
-                                class="mybr"></li>
-                        <li><a class="link" href="#" data-demande="menu">Add a menu</a><br class="mybr"><br
-                                class="mybr"></li>
-                        <li><a class="link" href="#" data-demande="image">Add image(s)</a><br class="mybr"><br
-                                class="mybr"></li>
-                        <li><a class="link" href="#" data-demande="video">Add video(s)</a><br class="mybr"><br
-                                class="mybr"></li>
-                        <li>
-                            <div class="backcolor" style="grid-row:1;">
-                                <label id="fond">
-                                    Background color:
-                                </label>
-                                <input type="color" name="backcolor-picker" id="backcolor-picker">
-                            </div><br class="mybr">
-                        </li>
-                        <li>
-                            <div class="textcolor" style="grid-row:2;">
-                                <label id="texte">
-                                    Text color:
-                                </label>
-                                <input type="color" name="textcolor-picker" id="textcolor-picker">
-                            </div><br class="mybr">
-                        </li>
-                    </ul>
-                </section><br>
-                <hr>
-                <section class="mt2">
-                    <h4>Edit an old page:</h4><br>
-                    <ul class="editables list">
+                <input type="color" name="backcolor-picker" id="backcolor-picker">
+              </div><br class="mybr">
+            </li>
+            <li>
+              <div class="textcolor" style="grid-row:2;">
+                <label id="texte">
+                  Text color:
+                </label>
+                <input type="color" name="textcolor-picker" id="textcolor-picker">
+              </div><br class="mybr">
+            </li>
+          </ul>
+        </section><br>
+        <hr>
+        <section class="mt2">
+          <h4>Edit an old page:</h4><br>
+          <ul class="editables list">
 
-                    </ul>
-                </section>
-            </section><br><br>
-            <!--<section>
+          </ul>
+        </section>
+      </section><br><br>
+      <!--<section>
                 <a data-demande="hypertxt">apply</a>
             </section>-->
+    </div>
+  </main>
+  <div class="xcms-custom-menu">
+    <style>
+      .xcms-custom-menu {
+        width: 232px;
+      }
 
+      dt {
+        font-weight: bold;
+      }
+
+      dd {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+      }
+
+      hr {
+        margin: 0;
+      }
+
+      dd:hover {
+        background-color: #82b1ff;
+      }
+    </style>
+    <dl class="xcms-custom-menu-options">
+      <hr>
+      <dt>Quick CSS</dt>
+      <hr>
+      <dd data-cssopt="display: flex;">display: flex;</dd>
+      <hr>
+      <dd data-cssopt="flex-direction: row;">flex-direction: row;</dd>
+      <hr>
+      <dd data-cssopt="flex-direction: column;">flex-direction: column;</dd>
+      <hr>
+      <dd data-cssopt='display: grid;'>display: grid;</dd>
+      <hr>
+      <dd data-cssopt='grid-template-rows: repeat(2, 1fr); grid-template-columns: repeat(2, 1fr);'>grid-template: 2x2</dd>
+      <hr>
+      <dd data-cssopt='grid-template-rows: repeat(3, 1fr); grid-template-columns: repeat(3, 1fr);'>grid-template: 3x3</dd>
+      <hr>
+      <dd data-cssopt='text-align:left;'>text-align: left;</dd>
+      <hr>
+      <dd data-cssopt='text-align:center;'>text-align: center;</dd>
+      <hr>
+      <dd data-cssopt='text-align:right;'>text-align: right;</dd>
+      <hr>
+      <dt>Quick Action</dt>
+      <hr>
+      <dd data-cssopt='duplicate'>duplicate node</dd>
+    </dl>
+  </div>
+  <template id="custom-container">
+    <div class="cc-outer">
+      <div class="cc-inner">
+        <div class="cc-title">
+          <h4>Containers:</h4>
         </div>
-    </main>
-    <template id="custom-container">
-        <div class="cc-outer">
-            <div class="cc-inner">
-                <div class="cc-title">
-                    <h4>Containers:</h4>
-                </div>
-                <div class="cc-body">
-                    <div>
-                        <button data-preset="100">
-                            <p>1 column</p>
-                            <img src="/admin-site/1-column.png" alt="">
-                        </button>
-                    </div>
+        <div class="cc-body">
+          <div>
+            <button data-preset="100">
+              <p>1 column</p>
+              <img src="/admin-site/1-column.png" alt="">
+            </button>
+          </div>
 
-                    <div>
-                        <button data-preset="50/50">
-                            <p>2 columns</p>
-                            <img src="/admin-site/2-columns-center.png" alt="">
-                        </button>
-                    </div>
+          <div>
+            <button data-preset="50/50">
+              <p>2 columns</p>
+              <img src="/admin-site/2-columns-center.png" alt="">
+            </button>
+          </div>
 
-                    <div>
-                        <button data-preset="35/65">
-                            <p>2 columns</p>
-                            <img src="/admin-site/2-columns-35-65.png" alt="">
-                        </button>
-                    </div>
+          <div>
+            <button data-preset="35/65">
+              <p>2 columns</p>
+              <img src="/admin-site/2-columns-35-65.png" alt="">
+            </button>
+          </div>
 
-                    <div>
-                        <button data-preset="65/35">
-                            <p>2 columns</p>
-                            <img src="/admin-site/2-columns-65-35.png" alt="">
-                        </button>
-                    </div>
+          <div>
+            <button data-preset="65/35">
+              <p>2 columns</p>
+              <img src="/admin-site/2-columns-65-35.png" alt="">
+            </button>
+          </div>
 
-                    <div>
-                        <button data-preset="30/30/30">
-                            <p>3 columns</p>
-                            <img src="/admin-site/3-columns.png" alt="">
-                        </button>
-                    </div>
-                    <div>
-                        <button data-preset="cancel">
-                            <p>close</p>
-                            <p>X</p>
-                        </button>
-                    </div>
-                </div>
-            </div>
+          <div>
+            <button data-preset="30/30/30">
+              <p>3 columns</p>
+              <img src="/admin-site/3-columns.png" alt="">
+            </button>
+          </div>
+          <div>
+            <button data-preset="cancel">
+              <p>close</p>
+              <p>X</p>
+            </button>
+          </div>
         </div>
-    </template>
-    <script src="./admin-site/dragula.min.js"></script>
-    <script>
-        let mews = io('/asocket')
-        var crepage = document.querySelector('#crepage');
-        var jss = JSON.stringify
-        var jsp = JSON.parse
-        const pushToDom = document.querySelector('.edit-zone').appendChild
-        var titre, contenu, nouvellepage;
-        var imgpicker = document.querySelector('#imgpiker');
-        let editablePages = []
+      </div>
+    </div>
+  </template>
+  <script src="./admin-site/dragula.min.js"></script>
+  <script>
+    let mews = io('/asocket')
+    var crepage = document.querySelector('#crepage');
+    var jss = JSON.stringify
+    var jsp = JSON.parse
+    const pushToDom = document.querySelector('.edit-zone').appendChild
+    var titre, contenu, nouvellepage;
+    var imgpicker = document.querySelector('#imgpiker');
+    let editablePages = []
 
-        crepage.addEventListener('click', e => {
-            document.querySelector('.edit-zone').childNodes.forEach(node => {
-                if (node instanceof HTMLElement) {
-                    if (node.hasAttribute('class')) {
-                        if (node.className !== "xcms-img" && node.className !== "xcms-video") {
-                            node.removeAttribute('contenteditable')
-                        }
-                    }
-                }
-            })
-            var imgs = document.querySelectorAll('img');
-            var i = 0
-            while (i <= imgs.length - 1) {
-                imgs[i].src = './frontend-site/imgs/' + titresImgs[i];
-                i++
+    crepage.addEventListener('click', e => {
+      //AJOUTER L'OPTION DUPLICATA
+      let parser = new cssjs()
+      const pageCSS = csseditor.getValue()
+      let parsed = parser.parseCSS(pageCSS)
+      parsed.forEach(cssSelector => {
+        let selectedStyle = cssSelector.rules.map(rule => {
+          return `${rule.directive}:${rule.value};`
+        })
+        document.querySelector('.edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+          existent.setAttribute('style', selectedStyle.join(''))
+        })
+      })
+      document.querySelector('.edit-zone').childNodes.forEach(node => {
+        if (node instanceof HTMLElement) {
+          if (node.hasAttribute('class')) {
+            if (node.className !== "xcms-img" && node.className !== "xcms-video") {
+              node.removeAttribute('contenteditable')
             }
-            var videos = document.querySelectorAll('video');
-            var i = 0
-            while (i <= videos.length - 1) {
-                videos[i].src = './frontend-site/videos/' + titresVideos[i];
-                i++
-            }
-            document.querySelector('.edit-zone').querySelectorAll('link').forEach(link => {
-                link.remove()
-            })
-            e.preventDefault();
-            titre = document.querySelector('#titrepage').value;
-            let googleTag = ''
-            let scriptTag
-            if (titre === "" || titre === undefined) {
-                titre = prompt("Please enter a name for your new page.")
-            }
+          }
+        }
+      })
+      var imgs = document.querySelectorAll('img');
+      var i = 0
+      while (i <= imgs.length - 1) {
+        imgs[i].src = '/imgs/' + titresImgs[i];
+        i++
+      }
+      var videos = document.querySelectorAll('video');
+      var i = 0
+      while (i <= videos.length - 1) {
+        videos[i].src = '/videos/' + titresVideos[i];
+        i++
+      }
+      document.querySelector('.edit-zone').querySelectorAll('link').forEach(link => {
+        link.remove()
+      })
+      e.preventDefault();
+      titre = document.querySelector('#titrepage').value;
+      let googleTag = ''
+      let scriptTag
+      if (titre === "" || titre === undefined) {
+        titre = prompt("Please enter a name for your new page.")
+      }
 
-            if (confirm('I have a Google analytics ID?')) {
-                //TODO workerjs
-                googleTag = prompt('My Google Analytics ID is: ')
-                contenu =
-                    `<!DOCTYPE html>
+      if (confirm('I have a Google analytics ID?')) {
+        //TODO workerjs
+        googleTag = prompt('My Google Analytics ID is: ')
+        contenu =
+          `<!DOCTYPE html>
                     <html lang="en">
                     <head>
                     <meta charset="UTF-8">
@@ -243,14 +300,17 @@
                     gtag('config', '${googleTag}');
                     <\/script>
                     <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
-                    <link rel="stylesheet" href="./frontend-site/style.css">
                     <link rel="stylesheet" href="./frontend-site/onthefly/${titre}.css">
                     <script src='./frontend-site/designer.js'><\/script>
-                    </head><body>${document.querySelector('.edit-zone').innerHTML}
+                    </head><body>
+                    <style scoped>
+                    @import "./frontend-site/style.css";
+                    </style>
+                    ${document.querySelector('.edit-zone').innerHTML}
                     <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
-            } else {
-                contenu =
-                    `<!DOCTYPE html>
+      } else {
+        contenu =
+          `<!DOCTYPE html>
                     <html lang="en">
                     <head>
                     <meta charset="UTF-8">
@@ -258,485 +318,486 @@
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <title>${titre}</title>
                     <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
-                    <link rel="stylesheet" href="./frontend-site/quill.snow.css">
-                    <link rel="stylesheet" href="./frontend-site/style.css">
                     <link rel="stylesheet" href="./frontend-site/onthefly/${titre}.css">
                     <script src='./frontend-site/designer.js'><\/script>
-                    </head><body>${document.querySelector('.edit-zone').innerHTML}
+                    </head><body>
+                    <style scoped>
+                    @import "./frontend-site/style.css";
+                    </style>
+                    ${document.querySelector('.edit-zone').innerHTML}
                     <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
-            }
-            const pageJS = jseditor.getValue()
-            const pageCSS = csseditor.getValue()
+      }
+      const pageJS = jseditor.getValue()
 
-            nouvellepage = {
-                name: titre,
-                page: contenu,
-                js: pageJS,
-                css: pageCSS
-            }
-            //CSS et JS
-            mews.emit('message', jss(nouvellepage))
-            var allnodes = document.querySelector('.edit-zone').childNodes
-            var j = allnodes.length
-            while (j > 2) {
-                document.querySelector('.edit-zone').lastChild.remove()
-                j--
-            }
-            nouvellepage.index = editablePages.length
-            nouvellepage.name = nouvellepage.name + '.html'
-            editablePages.push(nouvellepage)
-            createEditablesPageLinks(nouvellepage)
-            nouvellepage = {}
-            jseditor.setValue('', 0)
-            csseditor.setValue('', 0)
-            alert(
-                `your new page is accessible at the following address: ${window.location.origin}/${titre}.html`
-            )
-            window.location.href = `${window.location.origin}/admin`
-        }, false)
-        mews.on('normal', data => {
-            parsed = jsp(data)
-            if (parsed.lien && parsed.lien !== "") {
-                if (editablePages != undefined && editablePages.includes(parsed.lien)) {
-                    return
-                } else {
-                    editablePages.push({
-                        ...parsed.lien,
-                        index: editablePages.length
-                    })
-                    createEditablesPageLinks(parsed.lien)
+      nouvellepage = {
+        name: titre,
+        page: contenu,
+        js: pageJS,
+        css: pageCSS
+      }
+      //CSS et JS
+      mews.emit('message', jss(nouvellepage))
+      var allnodes = document.querySelector('.edit-zone').childNodes
+      var j = allnodes.length
+      while (j > 2) {
+        document.querySelector('.edit-zone').lastChild.remove()
+        j--
+      }
+      nouvellepage.index = editablePages.length
+      nouvellepage.name = nouvellepage.name + '.html'
+      editablePages.push(nouvellepage)
+      createEditablesPageLinks(nouvellepage)
+      nouvellepage = {}
+      jseditor.setValue('', 0)
+      csseditor.setValue('', 0)
+      alert(
+        `your new page is accessible at the following address: ${window.location.origin}/${titre}.html`
+      )
+      window.location.href = `${window.location.origin}/admin`
+    }, false)
+    mews.on('normal', data => {
+      parsed = jsp(data)
+      if (parsed.lien && parsed.lien !== "") {
+        if (editablePages != undefined && editablePages.includes(parsed.lien)) {
+          return
+        } else {
+          editablePages.push({
+            ...parsed.lien,
+            index: editablePages.length
+          })
+          createEditablesPageLinks(parsed.lien)
+        }
+      }
+      if (parsed.formfield) {
+        if (document.querySelector('#formbtn') === null) {
+          const nodemaker = document.querySelector('#nodemaker ul')
+          let li = document.createElement('li')
+          let a = document.createElement('a')
+          let br = document.createElement('br')
+          a.href = '#'
+          a.innerText = "Contact form"
+          a.className += "link "
+          a.id = "formbtn"
+          li.appendChild(a)
+          li.appendChild(br)
+          nodemaker.appendChild(li)
+          a.addEventListener('click', (e) => {
+            let formblock = document.createElement("h1")
+            formblock.innerText = "Contact form will be here..."
+            formblock.dataset.form = "true"
+            xAppend(formblock)
+          })
+        }
+      }
+    })
+    /* document.querySelector('.nav p').addEventListener('click', (e) => {
+        window.location.href = "/admin/crm"
+    }) */
+    /* 
+    CREATION DES ELEMENTS
+    */
+    var titresImgs = []
+    var titresVideos = []
+    document.querySelectorAll('.first-class-editor a').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        switch (e.target.dataset.demande) {
+          case 'div':
+            desactive()
+            customContainer()
+            break;
+          case 'image':
+            desactive()
+            var imgpicker = document.querySelector('#imgpiker');
+            imgpicker.setAttribute('accept', 'image')
+            imgpicker.style.display = 'block'
+            imgpicker.click()
+            var imgpicklone = document.createElement('input');
+            imgpicklone.setAttribute('type', 'file')
+            imgpicklone.setAttribute('accept', 'image')
+            imgpicklone.setAttribute('multiple', true)
+            imgpicklone.id = 'imgpiker'
+            imgpicklone.style.display = 'none'
+            imgpicker.addEventListener('change', function (ev) {
+              ev.stopPropagation()
+              for (let file of imgpicker.files) {
+                var img = document.createElement('img');
+                img.classList.add('xcms-img')
+                xAppend(img)
+                let imageName = file.name.split(' ').join('_')
+                titresImgs.push(imageName)
+                mews.emit('image', {
+                  name: imageName,
+                  image: file
+                })
+                img.src = window.URL.createObjectURL(file)
+                img.addEventListener('click', event => {
+                  scaleImage(event)
+                })
+                img.onload = function (eve) {
+                  window.URL.revokeObjectURL(this.src)
+                  img.id = ""
+                  img = ''
                 }
-            }
-            if (parsed.formfield) {
-                if (document.querySelector('#formbtn') === null) {
-                    const nodemaker = document.querySelector('#nodemaker ul')
-                    let li = document.createElement('li')
-                    let a = document.createElement('a')
-                    let br = document.createElement('br')
-                    a.href = '#'
-                    a.innerText = "Contact form"
-                    a.className += "link "
-                    a.id = "formbtn"
-                    li.appendChild(a)
-                    li.appendChild(br)
-                    nodemaker.appendChild(li)
-                    a.addEventListener('click', (e) => {
-                        let formblock = document.createElement("h1")
-                        formblock.innerText = "Contact form will be here..."
-                        formblock.dataset.form = "true"
-                        xAppend(formblock)
-                    })
-                }
-            }
-        })
-        /* document.querySelector('.nav p').addEventListener('click', (e) => {
-            window.location.href = "/admin/crm"
-        }) */
-        /* 
-        CREATION DES ELEMENTS
-        */
-        var titresImgs = []
-        var titresVideos = []
-        document.querySelectorAll('.first-class-editor a').forEach((btn) => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                switch (e.target.dataset.demande) {
-                    case 'div':
-                        desactive()
-                        customContainer()
-                        break;
-                    case 'image':
-                        desactive()
-                        var imgpicker = document.querySelector('#imgpiker');
-                        imgpicker.setAttribute('accept', 'image')
-                        imgpicker.style.display = 'block'
-                        imgpicker.click()
-                        var imgpicklone = document.createElement('input');
-                        imgpicklone.setAttribute('type', 'file')
-                        imgpicklone.setAttribute('accept', 'image')
-                        imgpicklone.setAttribute('multiple', true)
-                        imgpicklone.id = 'imgpiker'
-                        imgpicklone.style.display = 'none'
-                        imgpicker.addEventListener('change', function (ev) {
-                            ev.stopPropagation()
-                            for (let file of imgpicker.files) {
-                                var img = document.createElement('img');
-                                img.classList.add('xcms-img')
-                                xAppend(img)
-                                let imageName = file.name.split(' ').join('_')
-                                titresImgs.push(imageName)
-                                mews.emit('image', {
-                                    name: imageName,
-                                    image: file
-                                })
-                                img.src = window.URL.createObjectURL(file)
-                                img.addEventListener('click', event => {
-                                    scaleImage(event)
-                                })
-                                img.onload = function (eve) {
-                                    window.URL.revokeObjectURL(this.src)
-                                    img.id = ""
-                                    img = ''
-                                }
-                                showBorder(img)
-                            }
-                            imgpicker.replaceWith(imgpicklone);
-                            imgpicker.style.display = 'none'
-                        }, false)
-                        break;
-                    case 'texte':
-                        desactive()
-                        var pé = document.createElement('div');
-                        pé.id = "isActive"
-                        xAppend(pé)
-                        xEdit(pé)
-                        break;
-                    case 'video':
-                        desactive()
-                        var videopicker = document.querySelector('#imgpiker');
-                        videopicker.style.display = 'block'
-                        videopicker.setAttribute('accept', 'video/mp4')
-                        videopicker.click()
-                        var videopicklone = document.createElement('input');
-                        videopicklone.setAttribute('type', 'file')
-                        videopicklone.setAttribute('accept', 'video/mp4')
-                        videopicklone.setAttribute('multiple', true)
-                        videopicklone.id = 'imgpiker'
-                        videopicklone.style.display = 'none'
-                        videopicker.addEventListener('change', function (ev) {
-                            ev.stopPropagation()
-                            for (let file of videopicker.files) {
-                                var video = document.createElement('video');
-                                video.type = 'video/mp4'
-                                video.setAttribute('controls', 'true')
-                                video.classList.add('xcms-video')
-                                let videoName = file.name.split(' ').join('_')
-                                titresVideos.push(videoName)
-                                mews.emit('video', {
-                                    name: videoName,
-                                    video: file
-                                })
-                                video.src = window.URL.createObjectURL(file)
-                                xAppend(video)
-                                video.load()
-                                video.onload = function (eve) {
-                                    window.URL.revokeObjectURL(this.src)
-                                    video = ""
-                                }
-                                video.addEventListener('click', e=>{
-                                    e.preventDefault()
-                                    scaleImage(e)
-                                })
-                            }
-                            videopicker.replaceWith(videopicklone);
-                            videopicker.style.display = 'none'
-                        }, false)
-                        break;
-                    case 'menu':
-                        desactive()
-                        var menuSize;
-                        let mymenus = []
-                        document.querySelector('.xcms-popd').style.display = 'flex'
-                        if (!document.querySelector('#menusize').hasChildNodes()) {
-                            let i = 0
-                            while (i <= 10) {
-                                let option = document.createElement('option')
-                                option.value = i
-                                if (i === 1) {
-                                    option.innerText = i + " link"
-                                } else {
-                                    option.innerText = i + " links"
-                                }
-                                document.querySelector('#menusize').appendChild(option)
-                                i++
-                            }
-                        }
-                        if (!document.querySelector('#mymenus').hasChildNodes()) {
-                            if (localStorage.mymenus) {
-                                mymenus = jsp(localStorage.mymenus)
-                                mymenus.forEach((menu, i) => {
-                                    let menulink = document.createElement('a')
-                                    menulink.innerText = 'menu ' + i
-                                    menulink.href = '#'
-                                    menulink.addEventListener('click', (menuevent) => {
-                                        let div = document.createElement('div')
-                                        div.innerHTML = menu.menu
-                                        console.log(menu)
-                                        xAppend(div)
-                                        document.querySelector('.xcms-popd').style.display = 'none'
-                                    })
-                                    document.querySelector('#mymenus').appendChild(menulink)
-                                    let br = document.createElement('br')
-                                    document.querySelector('#mymenus').appendChild(br)
-                                })
-                            } else {
-                                mymenus = []
-                            }
-                        }
-                        document.querySelector('.xcms-popd .save').addEventListener('click', (e) => {
-                            let desiredSize = document.querySelector('#menusize').options[
-                                document.querySelector('#menusize').selectedIndex].value
-                            var ul = document.createElement('ul');
-                            menuSize = 0
-                            e.stopImmediatePropagation()
-                            while (menuSize < desiredSize) {
-                                menuSize++
-                                var li = document.createElement('li');
-                                var alink = document.createElement('a');
-                                var titrelien = prompt(
-                                    "Please enter the target element for the link n°" + (
-                                        menuSize) + "/" + desiredSize + ":\n please start with the '#' sign to target a link inside of the page, \n start with the '/' sign to link to another page. \n")
-                                if (titrelien.charAt(0) === '#') {
-                                    alink.href = titrelien
-                                    alink.innerText = titrelien.split('#').join('')
-                                } else if (titrelien.charAt(0) === '/') {
-                                    if (!/.html$/.test(titrelien)) {
-                                        alink.href = titrelien + '.html'
-                                        alink.innerText = titrelien.split('/').join('')
-                                    } else {
-                                        alink.href = titrelien
-                                        alink.innerText = titrelien.split('/').join('').split('.html').join('')
-                                    }
-                                } else {
-                                    alink.href = '#' + titrelien
-                                    alink.innerText = titrelien
-                                }
-                                alink.id = "isActive"
-                                li.style.margin = "5px 10px"
-                                li.style.display = 'inline'
-                                li.appendChild(alink);
-                                ul.appendChild(li);
-                                ul.classList.add('xcms-menu')
-                                alink.id = ""
-                            }
-                            menuSize = 0
-                            if (desiredSize === '0') {
-                                ul = ""
-                                document.querySelector('.xcms-popd').style.display = 'none'
-                                return
-                            } else {
-                                xAppend(ul)
-                                if (confirm("do you want to save this menu for later use?")) {
-                                    mymenus.push({ menu: ul.outerHTML })
-                                    let menulink = document.createElement('a')
-                                    menulink.innerText = 'menu ' + mymenus.length
-                                    menulink.href = '#'
-                                    menulink.addEventListener('click', (menuevent) => {
-                                        let div = document.createElement('div')
-                                        div.innerHTML = ul.outerHTML
-                                        xAppend(div)
-                                        document.querySelector('.xcms-popd').style.display = 'none'
-                                    })
-                                    document.querySelector('#mymenus').appendChild(menulink)
-                                    let br = document.createElement('br')
-                                    document.querySelector('#mymenus').appendChild(br)
-                                    localStorage.mymenus = jss(mymenus)
-                                }
-                            }
-                            document.querySelector('.xcms-popd').style.display = 'none'
-                        })
-                        break;
-                    case 'hypertxt':
-                        //BLOCK A REVOIR
-                        var isActive = document.querySelector('#isActive')
-                        isActive.innerHTML = document.querySelector('textarea').value
-                        isActive.id = ""
-                        isActive = ""
-                        document.querySelector('textarea').value = ""
-                        break;
-                }
-
+                showBorder(img)
+              }
+              imgpicker.replaceWith(imgpicklone);
+              imgpicker.style.display = 'none'
             }, false)
-        })
-        //***************LIVE ON PAGE LIVE
-        document.querySelector('.edit-zone').addEventListener('dblclick', function (e) {
-            if (/xcms-/.test(e.target.classList.value)) {
-                if (!e.target.classList.contains('xcms-img') || !e.target.classList.contains('xcms-video')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (e.target.id === "isContainer") {
-                        e.target.id = ""
-                    } else {
-                        e.target.id = "isContainer"
-                    }
-                }
-            }
-        })
-        //******************CREATION DE PAGE
-        document.querySelector('#crenew').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelector('.edit-zone').innerHTML = ""
-            document.querySelector('.edit-zone').style.display = "block"
-        })
-        //*****************RESET
-        document.querySelector('#efface').addEventListener('click', e => {
-            var allnodes = document.querySelector('.edit-zone').childNodes
-            var j = allnodes.length
-            while (j > 2) {
-                document.querySelector('.edit-zone').lastChild.remove()
-                j--
-            }
-        })
-        //******************APPEND
-        function xAppend(item) {
-            if(item.childElementCount > 1){
-                if (document.querySelector('.edit-zone').style.display === "block") {
-                    document.querySelector('.edit-zone').appendChild(item)
-                    return true
-                } else {
-                    document.querySelector('.re-edit-zone').appendChild(item)
-                    return true
-                }
-            }
-            if (document.querySelector('.isSelected')) {
-                document.querySelector('.isSelected').appendChild(item)
-                document.querySelector('.isSelected').classList.remove('isSelected')
-            } else {
-                if (document.querySelector('#isContainer') !== null) {
-                    document.querySelector('#isContainer').appendChild(item)
-                    document.querySelector('#isContainer').classList.add('not-empty-container')
-                } else {
-                    if (document.querySelector('.edit-zone').style.display === "block") {
-                        document.querySelector('.edit-zone').appendChild(item)
-                    } else {
-                        document.querySelector('.re-edit-zone').appendChild(item)
-                    }
-                }
-            }
-            if(item.nodeName === 'IMG'){
-                document.querySelectorAll('.isSelected').forEach(opt=>{
-                    opt.classList.remove('isSelected')
+            break;
+          case 'texte':
+            desactive()
+            var pé = document.createElement('div');
+            pé.id = "isActive"
+            xAppend(pé)
+            xEdit(pé)
+            break;
+          case 'video':
+            desactive()
+            var videopicker = document.querySelector('#imgpiker');
+            videopicker.style.display = 'block'
+            videopicker.setAttribute('accept', 'video/mp4')
+            videopicker.click()
+            var videopicklone = document.createElement('input');
+            videopicklone.setAttribute('type', 'file')
+            videopicklone.setAttribute('accept', 'video/mp4')
+            videopicklone.setAttribute('multiple', true)
+            videopicklone.id = 'imgpiker'
+            videopicklone.style.display = 'none'
+            videopicker.addEventListener('change', function (ev) {
+              ev.stopPropagation()
+              for (let file of videopicker.files) {
+                var video = document.createElement('video');
+                video.type = 'video/mp4'
+                video.setAttribute('controls', 'true')
+                video.classList.add('xcms-video')
+                let videoName = file.name.split(' ').join('_')
+                titresVideos.push(videoName)
+                mews.emit('video', {
+                  name: videoName,
+                  video: file
                 })
-                document.querySelectorAll('#isContainer').forEach(opt=>{
-                    opt.id = ''
-                })
-            }
-        }
-        //******************SCALE IMAGE
-        function scaleImage(event){
-            let div = document.createElement('div')
-            let label = document.createElement('label')
-            label.innerText = 'Scale'
-            let button = document.createElement('button')
-            button.innerText = 'save scaling'
-            button.style.width = "min-content"
-            let scaler = document.createElement('input')
-            scaler.setAttribute('type', 'range')
-            scaler.setAttribute('min', 1)
-            scaler.setAttribute('max', 20)
-            scaler.setAttribute('step', 0.1)
-            scaler.setAttribute('value', 10)
-            scaler.style.height = '100%'
-            div.appendChild(label)
-            div.appendChild(scaler)
-            div.appendChild(button)
-            div.style.display = 'flex'
-            div.style.flexDirection = 'column'
-            div.style.height = '350px'
-            div.style.width = '45px'
-            div.style.justifyContent = 'space-between'
-            div.style.alignItems = "center"
-            div.style.position = 'absolute'
-            div.style.left = document.querySelector('.re-edit-zone') ? 
-            document.querySelector('.re-edit-zone').getBoundingClientRect().right+'px' :
-            document.querySelector('.edit-zone').getBoundingClientRect().right +'px'
-            div.style.top = document.querySelector('.re-edit-zone') ? 
-            document.querySelector('.re-edit-zone').getBoundingClientRect().top+50+'px' :
-            document.querySelector('.edit-zone').getBoundingClientRect().top+50+'px'
-            document.body.appendChild(div)
-            button.addEventListener('click', () => {
-                event.target.style.width = event.target.getBoundingClientRect().width + 'px'
-                event.target.style.transform = `scale(${1})`
-                div.remove()
-                if(document.body.querySelector('.remove')){
-                    document.body.querySelector('.remove').remove()
+                video.src = window.URL.createObjectURL(file)
+                xAppend(video)
+                video.load()
+                video.onload = function (eve) {
+                  window.URL.revokeObjectURL(this.src)
+                  video = ""
                 }
-            })
-            scaler.addEventListener('change', (ev) => {
-                event.target.style.transform = `scale(${ev.target.value / 10})`
-            })
-        }
-        //******************EDIT
-        let lastItem;
-
-        function xEdit(item) {
-            if (document.querySelector('.ql-editor')) return
-            if (item.nodeName === "BUTTON") {
-                applyChanges(lastItem)
+                video.addEventListener('click', e => {
+                  e.preventDefault()
+                  scaleImage(e)
+                })
+              }
+              videopicker.replaceWith(videopicklone);
+              videopicker.style.display = 'none'
+            }, false)
+            break;
+          case 'menu':
+            desactive()
+            var menuSize;
+            let mymenus = []
+            document.querySelector('.xcms-popd').style.display = 'flex'
+            if (!document.querySelector('#menusize').hasChildNodes()) {
+              let i = 0
+              while (i <= 10) {
+                let option = document.createElement('option')
+                option.value = i
+                if (i === 1) {
+                  option.innerText = i + " link"
+                } else {
+                  option.innerText = i + " links"
+                }
+                document.querySelector('#menusize').appendChild(option)
+                i++
+              }
             }
-            let toolbarOptions = {
-                container: [
-                    {'header': [1, 2, 3, 4, 5, 6, false]},
-                    'bold', 'italic', 'underline', 'strike', 'link',
-                    {'color': [] }, {'background': []}, {'align': []},
-                    {'list': 'ordered'}, {'list': 'bullet'},
-                    {'direction': 'rtl'},
-                        ],
-                    handlers: {
-                        header: function(value){
-                            this.quill.format('header', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            },
-                        color: function(value){
-                            this.quill.format('color', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            },
-                        background: function(value){
-                            this.quill.format('background', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            },
-                        bold: function(value){
-                            this.quill.format('bold', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            },
-                        italic: function(value){
-                            this.quill.format('italic', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            },
-                        underline: function(value){
-                            this.quill.format('underline', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            },
-                        strike: function(value){
-                            this.quill.format('strike', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            },
-                        align: function(value){
-                            this.quill.format('align', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            },
-                        list: function(value){
-                            this.quill.format('list', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            },
-                        direction: function(value){
-                            this.quill.format('direction', value)
-                            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-                            }
-                    }
+            if (!document.querySelector('#mymenus').hasChildNodes()) {
+              if (localStorage.mymenus) {
+                mymenus = jsp(localStorage.mymenus)
+                mymenus.forEach((menu, i) => {
+                  let menulink = document.createElement('a')
+                  menulink.innerText = 'menu ' + i
+                  menulink.href = '#'
+                  menulink.addEventListener('click', (menuevent) => {
+                    let div = document.createElement('div')
+                    div.innerHTML = menu.menu
+                    console.log(menu)
+                    xAppend(div)
+                    document.querySelector('.xcms-popd').style.display = 'none'
+                  })
+                  document.querySelector('#mymenus').appendChild(menulink)
+                  let br = document.createElement('br')
+                  document.querySelector('#mymenus').appendChild(br)
+                })
+              } else {
+                mymenus = []
+              }
             }
-            let editor = new Quill("#text-editor", {
-                modules: {
-                    toolbar: toolbarOptions
-                },
-                theme: 'snow'
-            });
-            lastItem = item
-            applyChanges(item)
+            document.querySelector('.xcms-popd .save').addEventListener('click', (e) => {
+              let desiredSize = document.querySelector('#menusize').options[
+                document.querySelector('#menusize').selectedIndex].value
+              var ul = document.createElement('ul');
+              menuSize = 0
+              e.stopImmediatePropagation()
+              while (menuSize < desiredSize) {
+                menuSize++
+                var li = document.createElement('li');
+                var alink = document.createElement('a');
+                var titrelien = prompt(
+                  "Please enter the target element for the link n°" + (
+                    menuSize) + "/" + desiredSize + ":\n please start with the '#' sign to target a link inside of the page, \n start with the '/' sign to link to another page. \n")
+                if (titrelien.charAt(0) === '#') {
+                  alink.href = titrelien
+                  alink.innerText = titrelien.split('#').join('')
+                } else if (titrelien.charAt(0) === '/') {
+                  if (!/.html$/.test(titrelien)) {
+                    alink.href = titrelien + '.html'
+                    alink.innerText = titrelien.split('/').join('')
+                  } else {
+                    alink.href = titrelien
+                    alink.innerText = titrelien.split('/').join('').split('.html').join('')
+                  }
+                } else {
+                  alink.href = '#' + titrelien
+                  alink.innerText = titrelien
+                }
+                alink.id = "isActive"
+                li.style.margin = "5px 10px"
+                li.style.display = 'inline'
+                li.appendChild(alink);
+                ul.appendChild(li);
+                ul.classList.add('xcms-menu')
+                alink.id = ""
+              }
+              menuSize = 0
+              if (desiredSize === '0') {
+                ul = ""
+                document.querySelector('.xcms-popd').style.display = 'none'
+                return
+              } else {
+                xAppend(ul)
+                if (confirm("do you want to save this menu for later use?")) {
+                  mymenus.push({ menu: ul.outerHTML })
+                  let menulink = document.createElement('a')
+                  menulink.innerText = 'menu ' + mymenus.length
+                  menulink.href = '#'
+                  menulink.addEventListener('click', (menuevent) => {
+                    let div = document.createElement('div')
+                    div.innerHTML = ul.outerHTML
+                    xAppend(div)
+                    document.querySelector('.xcms-popd').style.display = 'none'
+                  })
+                  document.querySelector('#mymenus').appendChild(menulink)
+                  let br = document.createElement('br')
+                  document.querySelector('#mymenus').appendChild(br)
+                  localStorage.mymenus = jss(mymenus)
+                }
+              }
+              document.querySelector('.xcms-popd').style.display = 'none'
+            })
+            break;
+          case 'hypertxt':
+            //BLOCK A REVOIR
+            var isActive = document.querySelector('#isActive')
+            isActive.innerHTML = document.querySelector('textarea').value
+            isActive.id = ""
+            isActive = ""
+            document.querySelector('textarea').value = ""
+            break;
         }
 
-        function applyChanges(node) {
-            let tempStyle = node.getAttribute('style') === null ? '' : node.getAttribute('style')
-            if(node.hasChildNodes){
-                document.querySelector('.ql-editor').innerHTML = node.innerHTML
-            }
-            document.querySelector('.ql-editor').focus()
-            let editorbtn = document.createElement('button')
-            editorbtn.innerText = 'save'
-            let btn = document.createElement('button')
-            btn.innerHTML =
-                `<svg viewBox="0 0 18 18" class="" style="
+      }, false)
+    })
+    //***************LIVE ON PAGE LIVE
+    document.querySelector('.edit-zone').addEventListener('dblclick', function (e) {
+      if (/xcms-/.test(e.target.classList.value)) {
+        if (!e.target.classList.contains('xcms-img') || !e.target.classList.contains('xcms-video')) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (e.target.id === "isContainer") {
+            e.target.id = ""
+          } else {
+            e.target.id = "isContainer"
+          }
+        }
+      }
+    })
+    //******************CREATION DE PAGE
+    document.querySelector('#crenew').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelector('.edit-zone').innerHTML = ""
+      document.querySelector('.edit-zone').style.display = "block"
+    })
+    //*****************RESET
+    document.querySelector('#efface').addEventListener('click', e => {
+      var allnodes = document.querySelector('.edit-zone').childNodes
+      var j = allnodes.length
+      while (j > 2) {
+        document.querySelector('.edit-zone').lastChild.remove()
+        j--
+      }
+    })
+    //******************APPEND
+    function xAppend(item) {
+      if (item.childElementCount > 1) {
+        if (document.querySelector('.edit-zone').style.display === "block") {
+          document.querySelector('.edit-zone').appendChild(item)
+          return true
+        } else {
+          document.querySelector('.re-edit-zone').appendChild(item)
+          return true
+        }
+      }
+      if (document.querySelector('.isSelected')) {
+        document.querySelector('.isSelected').appendChild(item)
+        document.querySelector('.isSelected').classList.remove('isSelected')
+      } else {
+        if (document.querySelector('#isContainer') !== null) {
+          document.querySelector('#isContainer').appendChild(item)
+          document.querySelector('#isContainer').classList.add('not-empty-container')
+        } else {
+          if (document.querySelector('.edit-zone').style.display === "block") {
+            document.querySelector('.edit-zone').appendChild(item)
+          } else {
+            document.querySelector('.re-edit-zone').appendChild(item)
+          }
+        }
+      }
+      if (item.nodeName === 'IMG') {
+        document.querySelectorAll('.isSelected').forEach(opt => {
+          opt.classList.remove('isSelected')
+        })
+        document.querySelectorAll('#isContainer').forEach(opt => {
+          opt.id = ''
+        })
+      }
+    }
+    //******************SCALE IMAGE
+    function scaleImage(event) {
+      let div = document.createElement('div')
+      let label = document.createElement('label')
+      label.innerText = 'Scale'
+      let button = document.createElement('button')
+      button.innerText = 'save scaling'
+      button.style.width = "min-content"
+      let scaler = document.createElement('input')
+      scaler.setAttribute('type', 'range')
+      scaler.setAttribute('min', 1)
+      scaler.setAttribute('max', 20)
+      scaler.setAttribute('step', 0.1)
+      scaler.setAttribute('value', 10)
+      scaler.style.height = '100%'
+      div.appendChild(label)
+      div.appendChild(scaler)
+      div.appendChild(button)
+      div.style.display = 'flex'
+      div.style.flexDirection = 'column'
+      div.style.height = '350px'
+      div.style.width = '45px'
+      div.style.justifyContent = 'space-between'
+      div.style.alignItems = "center"
+      div.style.position = 'absolute'
+      div.style.left = document.querySelector('.re-edit-zone') ?
+        document.querySelector('.re-edit-zone').getBoundingClientRect().right + 'px' :
+        document.querySelector('.edit-zone').getBoundingClientRect().right + 'px'
+      div.style.top = document.querySelector('.re-edit-zone') ?
+        document.querySelector('.re-edit-zone').getBoundingClientRect().top + 50 + 'px' :
+        document.querySelector('.edit-zone').getBoundingClientRect().top + 50 + 'px'
+      document.body.appendChild(div)
+      button.addEventListener('click', () => {
+        event.target.style.width = event.target.getBoundingClientRect().width + 'px'
+        event.target.style.transform = `scale(${1})`
+        div.remove()
+        if (document.body.querySelector('.remove')) {
+          document.body.querySelector('.remove').remove()
+        }
+      })
+      scaler.addEventListener('change', (ev) => {
+        event.target.style.transform = `scale(${ev.target.value / 10})`
+      })
+    }
+    //******************EDIT
+    let lastItem;
+
+    function xEdit(item) {
+      if (document.querySelector('.ql-editor')) return
+      if (item.nodeName === "BUTTON") {
+        applyChanges(lastItem)
+      }
+      let toolbarOptions = {
+        container: [
+          { 'header': [1, 2, 3, 4, 5, 6, false] },
+          'bold', 'italic', 'underline', 'strike', 'link',
+          { 'color': [] }, { 'background': [] }, { 'align': [] },
+          { 'list': 'ordered' }, { 'list': 'bullet' },
+          { 'direction': 'rtl' },
+        ],
+        handlers: {
+          header: function (value) {
+            this.quill.format('header', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          },
+          color: function (value) {
+            this.quill.format('color', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          },
+          background: function (value) {
+            this.quill.format('background', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          },
+          bold: function (value) {
+            this.quill.format('bold', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          },
+          italic: function (value) {
+            this.quill.format('italic', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          },
+          underline: function (value) {
+            this.quill.format('underline', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          },
+          strike: function (value) {
+            this.quill.format('strike', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          },
+          align: function (value) {
+            this.quill.format('align', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          },
+          list: function (value) {
+            this.quill.format('list', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          },
+          direction: function (value) {
+            this.quill.format('direction', value)
+            item.innerHTML = document.querySelector('.ql-editor').innerHTML
+          }
+        }
+      }
+      let editor = new Quill("#text-editor", {
+        modules: {
+          toolbar: toolbarOptions
+        },
+        theme: 'snow'
+      });
+      lastItem = item
+      applyChanges(item)
+    }
+
+    function applyChanges(node) {
+      let tempStyle = node.getAttribute('style') === null ? '' : node.getAttribute('style')
+      if (node.hasChildNodes) {
+        document.querySelector('.ql-editor').innerHTML = node.innerHTML
+      }
+      document.querySelector('.ql-editor').focus()
+      let editorbtn = document.createElement('button')
+      editorbtn.innerText = 'save'
+      let btn = document.createElement('button')
+      btn.innerHTML =
+        `<svg viewBox="0 0 18 18" class="" style="
     background: #444;
 "> <line class="ql-stroke" x1="7" x2="11" y1="7" y2="11" style="
     stroke: #fff;
@@ -745,697 +806,795 @@
 "></path> <path class="ql-even ql-stroke" d="M13.423,9.1a3.476,3.476,0,0,0-4.679-.36,3.476,3.476,0,0,0,.36,4.679c1.392,1.392,2.5,2.542,4.679.36S14.815,10.5,13.423,9.1Z" style="
     stroke: #fff;
 "></path> </svg>`
-            btn.className = 'btn-link'
-            document.querySelector('.ql-toolbar .ql-formats').appendChild(btn)
-            let addClassBtn = document.createElement('button')
-            addClassBtn.innerText = ".cls"
-            document.querySelector('.ql-toolbar .ql-formats').appendChild(addClassBtn)
-            addClassBtn.addEventListener('click', (e) => {
-                let selectedItem = window.getSelection().focusNode.parentElement
-                let div = document.createElement('div')
-                let label = document.createElement('label')
-                let input = document.createElement('input')
-                let savebtn = document.createElement('button')
-                label.for = 'classBox'
-                label.innerText = 'Enter a class name: '
-                input.name = "classBox"
-                input.id = "classBox"
-                input.type = 'text'
-                savebtn.innerText = 'Save'
-                div.classList.add('classBox')
-                div.appendChild(label)
-                div.appendChild(input)
-                div.appendChild(savebtn)
-                document.body.appendChild(div)
-                div.style.top = e.clientY + 'px'
-                div.style.left = e.clientX + 'px'
-                savebtn.addEventListener('click', (e) => {
-                    let newClassName = document.querySelector('#classBox').value
-                    selectedItem.className += ' ' + newClassName.toLowerCase()
-                    div.remove()
-                })
-            })
-            btn.addEventListener('click', (e) => {
-                let selectedItem = window.getSelection().focusNode.parentElement
-                selectedItem.id = selectedItem.innerText.toLowerCase()
-                selectedItem.setAttribute('lien', true)
-                selectedItem.classList.add('lien')
-                selectedItem.dataset.lien = selectedItem.id
-            })
-            if (document.querySelector('#isActive')) {
-                document.querySelector('#text-editor').appendChild(editorbtn)
-            } else {
-                return
-            }
-            editorbtn.addEventListener('click', () => {
-                if(document.body.querySelector('.remove')) document.body.querySelector('.remove').remove()
-                editorbtn.remove()
-                let newData = document.querySelector('.ql-editor').innerHTML
-                let div = document.createElement('div')
-                div.innerHTML = newData
-                div.setAttribute('style', tempStyle)
-                div.classList.add('xcms-custom')
-                node.parentElement.replaceChild(div, node)
-                document.querySelector('.ql-toolbar').remove()
-                document.querySelector('.ql-clipboard').remove()
-                document.querySelector('.ql-tooltip.ql-hidden').remove()
-                document.querySelector('.ql-editor').remove()
-                document.querySelector('#text-editor').setAttribute('class', '')
-                showBorder(div)
-            })
-            document.querySelector('.ql-editor').addEventListener('keyup', ev=>{
-                node.innerHTML = document.querySelector('.ql-editor').innerHTML
-            })
-        }
-        //*************SHOW BORDER
-        function showBorder(node) {
-            node.addEventListener('mouseover', () => {
-                if ( node.querySelector('.ql-editor')) return
-                node.id = "isHover"
-            })
-            node.addEventListener('mouseleave', () => {
-                if ( node.querySelector('.ql-editor')) return
-                node.id = ""
-            })
-            node.addEventListener('click', () => {
-                document.querySelectorAll('.isSelected').forEach(opt=>{
-                    opt.classList.remove('isSelected')
-                })
-                node.id = 'isActive'
-               if ( node.querySelector('.ql-editor')) return
-                node.classList.add('isSelected')
-                if(document.body.querySelector('.remove')){
-                    document.body.querySelector('.remove').remove()
-                }
-                if(!document.body.querySelector('.remove')){
-                    let div = document.createElement('div')
-                    let btnEdit = document.createElement('button')
-                    let btnRemove = document.createElement('button')
-                    btnEdit.innerText = 'edit'
-                    btnRemove.innerText = 'remove'
-                    div.classList.add('remove')
-                    document.body.appendChild(div)
-                    div.style.display = 'flex'
-                    div.style.flexDirection = "column"
-                    div.style.position = 'absolute'
-                    div.style.left = document.querySelector('.re-edit-zone') ? 
-                    document.querySelector('.re-edit-zone').getBoundingClientRect().right+'px' :
-                    document.querySelector('.edit-zone').getBoundingClientRect().right +'px'
-                    div.style.top = document.querySelector('.re-edit-zone') ? 
-                    document.querySelector('.re-edit-zone').getBoundingClientRect().top+'px' :
-                    document.querySelector('.edit-zone').getBoundingClientRect().top+'px'
-                    btnRemove.style.marginTop = '16px'
-                    div.appendChild(btnEdit)
-                    div.appendChild(btnRemove)
-                    btnEdit.addEventListener('click', ()=>{
-                        div.remove()
-                        node.id = 'isActive'
-                        xEdit(node)
-                    })
-                    btnRemove.addEventListener('click', ()=>{
-                        node.remove()
-                        div.remove()
-                    })
-                    if (node.classList.contains("xcms-img") || node.classList.contains("xcms-video")){
-                        btnEdit.remove()
-                    }
-                }
-                
-            })
-        }
-        //*************CREATE CUSTOM CONTAINER
-        function customContainer() {
-            var div = document.createElement('div')
-            div.classList.add('xcms-div')
-            div.id = "isContained"
-            let menu = document.importNode(document.querySelector('#custom-container').content, true)
-            document.body.appendChild(menu)
-            document.querySelector('.cc-body').querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('click', e => {
-                    let preset = btn.dataset.preset
-                    if (preset === "100") {
-                        xAppend(div)
-                        showBorder(div)
-                        drake.containers.push(div)
-                    }
-                    if (preset === "50/50") {
-                        div.style.display = "flex";
-                        div.style.flexDirection = 'row'
-                        let leftDiv = document.createElement('div')
-                        let rightDiv = document.createElement('div')
-                        leftDiv.style.flex = "1"
-                        rightDiv.style.flex = "1"
-                        leftDiv.style.display = "flex"
-                        rightDiv.style.display = "flex"
-                        leftDiv.style.flexDirection = 'column'
-                        rightDiv.style.flexDirection = 'column'
-                        leftDiv.style.alignItems = 'center'
-                        rightDiv.style.alignItems = 'center'
-                        div.appendChild(leftDiv)
-                        div.appendChild(rightDiv)
-                        xAppend(div)
-                        showBorder(leftDiv)
-                        showBorder(rightDiv)
-                        drake.containers.push(div)
-                        drake.containers.push(leftDiv)
-                        drake.containers.push(rightDiv)
-                    }
-                    if (preset === "35/65") {
-                        div.style.display = "flex";
-                        div.style.flexDirection = 'row'
-                        let leftDiv = document.createElement('div')
-                        let rightDiv = document.createElement('div')
-                        leftDiv.style.flex = "1"
-                        rightDiv.style.flex = "2"
-                        leftDiv.style.display = "flex"
-                        rightDiv.style.display = "flex"
-                        leftDiv.style.flexDirection = 'column'
-                        rightDiv.style.flexDirection = 'column'
-                        leftDiv.style.alignItems = 'center'
-                        rightDiv.style.alignItems = 'center'
-                        div.appendChild(leftDiv)
-                        div.appendChild(rightDiv)
-                        xAppend(div)
-                        showBorder(leftDiv)
-                        showBorder(rightDiv)
-                        drake.containers.push(div)
-                        drake.containers.push(leftDiv)
-                        drake.containers.push(rightDiv)
-                    }
-                    if (preset === "65/35") {
-                        div.style.display = "flex";
-                        div.style.flexDirection = 'row'
-                        let leftDiv = document.createElement('div')
-                        let rightDiv = document.createElement('div')
-                        leftDiv.style.flex = "2"
-                        rightDiv.style.flex = "1"
-                        leftDiv.style.display = "flex"
-                        rightDiv.style.display = "flex"
-                        leftDiv.style.flexDirection = 'column'
-                        rightDiv.style.flexDirection = 'column'
-                        leftDiv.style.alignItems = 'center'
-                        rightDiv.style.alignItems = 'center'
-                        div.appendChild(leftDiv)
-                        div.appendChild(rightDiv)
-                        xAppend(div)
-                        showBorder(leftDiv)
-                        showBorder(rightDiv)
-                        drake.containers.push(div)
-                        drake.containers.push(leftDiv)
-                        drake.containers.push(rightDiv)
-                    }
-                    if (preset === "30/30/30") {
-                        div.style.display = "flex";
-                        div.style.flexDirection = 'row'
-                        let leftDiv = document.createElement('div')
-                        let middleDiv = document.createElement('div')
-                        let rightDiv = document.createElement('div')
-                        leftDiv.style.flex = "1"
-                        middleDiv.style.flex = "1"
-                        rightDiv.style.flex = "1"
-                        leftDiv.style.display = "flex"
-                        middleDiv.style.display = "flex"
-                        rightDiv.style.display = "flex"
-                        leftDiv.style.flexDirection = 'column'
-                        middleDiv.style.flexDirection = 'column'
-                        rightDiv.style.flexDirection = 'column'
-                        middleDiv.style.alignItems = 'center'
-                        leftDiv.style.alignItems = 'center'
-                        rightDiv.style.alignItems = 'center'
-                        div.appendChild(leftDiv)
-                        div.appendChild(middleDiv)
-                        div.appendChild(rightDiv)
-                        xAppend(div)
-                        showBorder(leftDiv)
-                        showBorder(middleDiv)
-                        showBorder(rightDiv)
-                        drake.containers.push(div)
-                        drake.containers.push(leftDiv)
-                        drake.containers.push(rightDiv)
-                        drake.containers.push(middleDiv)
-                    }
-                    if(preset === 'cancel'){
-                        document.querySelector('.cc-outer').remove()
-                        return
-                    }
-                    document.querySelector('.cc-outer').remove()
-                })
-            })
-
-        }
-
-        //*************DEACTIVR
-        function desactive() {
-            document.querySelectorAll('#isActive').forEach(active => {
-                active.id = ''
-            })
-        }
-        //**************DRAG & DROP
-        let drake = dragula([document.querySelector('.edit-zone')])
-        //ACE EDITORS
-        ace.require("ace/ext/language_tools")
-        let csseditor = ace.edit('css-editor')
-        csseditor.setTheme("ace/theme/monokai")
-        csseditor.session.setMode("ace/mode/css")
-        csseditor.scrollToLine(0, true, true, function () { });
-        csseditor.gotoLine(0, 0, true);
-        csseditor.session.setTabSize(2);
-        csseditor.setOptions({
-            enableBasicAutocompletion: true,
-            enableSnippets: true,
-            enableLiveAutocompletion: false
+      btn.className = 'btn-link'
+      document.querySelector('.ql-toolbar .ql-formats').appendChild(btn)
+      let addClassBtn = document.createElement('button')
+      addClassBtn.innerText = ".cls"
+      document.querySelector('.ql-toolbar .ql-formats').appendChild(addClassBtn)
+      addClassBtn.addEventListener('click', (e) => {
+        let selectedItem = window.getSelection().focusNode.parentElement
+        let div = document.createElement('div')
+        let label = document.createElement('label')
+        let input = document.createElement('input')
+        let savebtn = document.createElement('button')
+        label.for = 'classBox'
+        label.innerText = 'Enter a class name: '
+        input.name = "classBox"
+        input.id = "classBox"
+        input.type = 'text'
+        savebtn.innerText = 'Save'
+        div.classList.add('classBox')
+        div.appendChild(label)
+        div.appendChild(input)
+        div.appendChild(savebtn)
+        document.body.appendChild(div)
+        div.style.top = e.clientY + 'px'
+        div.style.left = e.clientX + 'px'
+        savebtn.addEventListener('click', (e) => {
+          let newClassName = document.querySelector('#classBox').value
+          selectedItem.className += ' ' + newClassName.toLowerCase()
+          div.remove()
         })
-        let jseditor = ace.edit('js-editor')
-        jseditor.setTheme("ace/theme/monokai")
-        jseditor.session.setMode("ace/mode/javascript")
-        jseditor.scrollToLine(0, true, true, function () { });
-        jseditor.gotoLine(0, 0, true);
-        jseditor.session.setTabSize(2);
-        jseditor.setOptions({
-            enableBasicAutocompletion: true,
-            enableSnippets: true,
-            enableLiveAutocompletion: false
-        })
-        document.querySelectorAll('.ace-editor-block a').forEach(btn => {
-            btn.addEventListener('click', e => {
-                if (e.target.dataset.editor === 'js') {
-                    document.querySelector('#js-editor').style.display = "block"
-                    document.querySelector('#css-editor').style.display = "none"
-                }
-                if (e.target.dataset.editor === 'css') {
-                    document.querySelector('#js-editor').style.display = "none"
-                    document.querySelector('#css-editor').style.display = "block"
-                }
-            })
-        })
-        document.querySelectorAll('.ace-editor-block a').forEach(btn => {
-            btn.addEventListener('dblclick', e => {
-                if (e.target.dataset.editor === 'js') {
-                    document.querySelector('#js-editor').style.display = "none"
-                }
-                if (e.target.dataset.editor === 'css') {
-                    document.querySelector('#css-editor').style.display = "none"
-                }
-            })
-        })
-        //******************CREATE EDITABLE PAGES LINKS
-        function createEditablesPageLinks(onePage) {
-            var li = document.createElement('li');
-            var a = document.createElement('a');
-            let span = document.createElement('span');
-            a.href = '#'
-            a.innerText = onePage.name
-            a.dataset.index = editablePages.length - 1
-            a.className += "link"
-            span.innerText = "delete page"
-            li.appendChild(a);
-            li.appendChild(span)
-            //EDITING PAGES
-            a.addEventListener('click', (e) => {
-                e.preventDefault();
-                myframe = document.querySelector('.maFrame')
-                var theframe = document.createElement('div')
-                theframe.classList.add('re-edit-zone')
-                //LOADING CONTENT
-                theframe.innerHTML = editablePages[e.target.dataset.index].page
-                let niceJS = beautifier.js(editablePages[e.target.dataset.index].js, { indent_size: 2, space_in_empty_paren: true })
-                let niceCSS = beautifier.css(editablePages[e.target.dataset.index].css, { indent_size: 2, space_in_empty_paren: true })
-                jseditor.setValue(niceJS)
-                csseditor.setValue(niceCSS)
-                myframe.appendChild(theframe)
-                drake.destroy();
-                drake = dragula([document.querySelector('.re-edit-zone')])
-                document.querySelector('.edit-zone').style.display = 'none'
-                //PREPARING CHANGES
-                theframe.childNodes.forEach(node => {
-                    if (node instanceof HTMLElement) {
-                        if (node.hasAttribute('class')) {
-                            if (node.className !== "xcms-img" && node.className !== "xcms-video") {
-                                if(node.hasChildNodes){
-                                    drake.containers.push(node)
-                                }
-                                try{
-                                    node.childNodes.forEach(n=>{
-                                        if(n!= undefined){
-                                            showBorder(n)
-                                        }
-                                    })
-                                }catch{
-                                    showBorder(node)
-                                }
-                            }else{
-                                showBorder(node)
-                            }
-                        }
-                    }
-                })
-                //SAVE CHANGES
-                let button = document.createElement('a')
-                button.innerText = 'Save & Close'
-                button.href = "#"
-                document.querySelector('.boutons').appendChild(button)
-                button.addEventListener('click', ev => {
-                    //MODIFY LINKS
-                    var imgs = document.querySelectorAll('img');
-                    var i = j = 0
-                    while (i <= imgs.length - 1) {
-                        imgs[i].classList.add('xcms-img')
-                        if (/\/imgs\//.test(imgs[i].src)) {
-                            i++
-                        } else {
-                            imgs[i].src = './frontend-site/imgs/' + titresImgs[j];
-                            i++
-                            j++
-                        }
-                    }
-                    var videos = document.querySelectorAll('video');
-                    var k = l = 0
-                    while (k <= videos.length - 1) {
-                        videos[k].classList.add('xcms-video')
-                        if (/\/videos\//.test(videos[k].src)) {
-                            k++
-                        } else {
-                            videos[k].src = './frontend-site/videos/' + titresVideos[l];
-                            k++
-                            l++
-                        }
-                    }
-                    //REMOVE ATTRIBUT CONTENTEDITABLE
-                    theframe.childNodes.forEach(node => {
-                        if (node instanceof HTMLElement) {
-                            if (node.hasAttribute('class')) {
-                                if (node.className !== "xcms-img" && node.className !== "xcms-video") {
-                                    node.removeAttribute('contenteditable')
-                                }
-                            }
-                        }
-                    })
-                    let rebuiltPage = document.implementation.createHTMLDocument(/* */)
-                    for (var nde of theframe.children) {
-                        rebuiltPage.head.appendChild(nde.cloneNode(true))
-                        if (nde.getAttribute('src') === "./frontend-site/designer.js") {
-                            break
-                        }
-                    }
-                    theframe.querySelectorAll('.re-edit-zone > [class^="xcms-"]').forEach(element => {
-                        rebuiltPage.body.appendChild(element.cloneNode(true))
-                    })
-                    rebuiltPage.body.appendChild(theframe.querySelector('script:last-of-type').cloneNode(true))
-                    var gluedPage = `<!DOCTYPE html>
-                    <html lang="en">
-                    ${rebuiltPage.head.outerHTML} ${rebuiltPage.body.outerHTML}</html>`
-                    let name = e.target.innerText
-                    let page = gluedPage
-                    let js = jseditor.getValue()
-                    let css = csseditor.getValue()
-                    let changedPage = {
-                        name,
-                        page,
-                        css,
-                        js
-                    }
-                    mews.emit('message', jss({
-                        update: changedPage
-                    }))
-                    editablePages[e.target.dataset.index].page = theframe.innerHTML
-                    theframe.remove()
-                    document.querySelector('.edit-zone').style.display = 'block'
-                    drake.destroy()
-                    drake = dragula([document.querySelector('.edit-zone')])
-                    button.remove()
-                    window.location.href = `${window.location.origin}/admin`
-                })
-            }, false)
-            span.addEventListener("click", (e) => {
-                let pagename = e.target.parentElement.querySelector('a').innerText
-                mews.emit('message', jss({ deletePage: pagename }))
-                e.target.parentElement.remove()
-                editablePages = editablePages.filter(pageData => { if (pageData.name !== pagename) return pageData })
-            })
-            document.querySelector('.editables').appendChild(li)
-            li = a = span = ""
-        }
-    </script>
-    <script>
-        // AFFICHAGE
-        document.querySelector('#backcolor-picker').addEventListener('change', (e) => {
-            console.log(e.target.value)
-            if (document.querySelector('#isActive') !== null) {
-                document.querySelector('#isActive').style.backgroundColor = e.target.value
-            }
-            if (document.querySelector('#isContainer') !== null) {
-                document.querySelector('#isContainer').style.backgroundColor = e.target.value
-            }
-        })
-
-        document.querySelector('#textcolor-picker').addEventListener('change', (e) => {
-            if (document.querySelector('#isActive') !== null) {
-                document.querySelector('#isActive').style.color = e.target.value
-            }
-            if (document.querySelector('#isContainer') !== null) {
-                document.querySelector('#isContainer').style.color = e.target.value
-            }
-        })
-    </script>
-    <script>
-        const menubtn = document.querySelector('.first-class-editor-button')
-        const editor = document.querySelector('.first-class')
-        const editorMenu = document.querySelector('.first-class-editor')
-        menubtn.addEventListener('touchend', (e) => {
-            menubtn.style.display = 'none'
-            editor.style.display = 'none'
-            editorMenu.style.display = 'block'
-            editorMenu.querySelectorAll('a').forEach(a => {
-                a.addEventListener('touchend', (e) => {
-                    e.stopImmediatePropagation()
-                    e.target.click()
-                    menubtn.style.display = 'block'
-                    editor.style.display = 'block'
-                    editorMenu.style.display = 'none'
-                    return
-                }, false)
-            })
-        }, false)
-        document.querySelector('#crenew').addEventListener('touchend', (e) => {
-            e.preventDefault();
-            document.querySelector('.edit-zone').innerHTML = ""
-            //IFRAME PLUS UTILISEE
-            document.querySelector('.edit-zone').style.display = "block"
-            menubtn.style.display = 'block'
-            editor.style.display = 'block'
-            editorMenu.style.display = 'none'
-        })
-        //*****************RESET
-        document.querySelector('#efface').addEventListener('touchend', e => {
-            var allnodes = document.querySelector('.edit-zone').childNodes
-            var j = allnodes.length
-            while (j > 2) {
-                document.querySelector('.edit-zone').lastChild.remove()
-                j--
-            }
-            menubtn.style.display = 'block'
-            editor.style.display = 'block'
-            editorMenu.style.display = 'none'
-        })
-    </script>
-    <script>
-        document.querySelector('.nav p').addEventListener('click', e=>{
-            document.body.appendChild(document.querySelector('#crm-body').content.cloneNode(true))
-        })
-    </script>
-    <template id='crm-body'>
-        <div class="crm-body">
-  <style>
-    :scope *{margin:0}
-    :scope a{
-      text-decoration: none;
-      color: #448aff;
-    }
-    :scope .crm-body{
-    position: absolute;
-    top: 0;
-    background: aliceblue;
-    width: 100%;
-    height: 95%;
-    }
-    :scope button{
-      background: transparent;
-      border: none;
-      color: #448aff;
-      cursor: pointer;
-    }
-    :scope .configuration, .admin-configuration, .password-configuration{
-      display: flex;
-      flex-direction: column;
-      max-width: 200px;
-      margin: 20px auto;
-    }
-    :scope .configuration-block h1, .add-admin h1, .change-password h1{
-      text-align: center;
-      padding-top: 68px;
-    }
-    :scope .mail{
-      display: none;
-      width:80%
-    }
-    :scope .add-admin, .change-password{
-      display: none;
-    }
-    :scope #titre-mail{
-      position: absolute;
-      left: 8px;
-    }
-    :scope .ulist{
-      list-style: none;
-      padding: 6em 0 0 0;
-      min-width: 200px;
-    }
-    :scope .nav{
-      background: #82b1ff;;
-      color: #000;
-      font-weight: bold;
-      min-height: 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    :scope .nav p{
-      cursor: pointer;
-      width: 150px;
-    }
-    :scope .minimenu{
-      width: 190px;
-      position: fixed;
-      right: 0;
-      top: 108px;
-    }
-    :scope .minimenu ul{
-      list-style-type: none;
-    }
-  </style>
-  <div class="nav"><span style="padding-left: 20px;">XCMS</span> <p>Go to CMS page</p> </div>
-  <div class="minimenu">
-    <ul>
-      <li><a href="#" data-link="conf">Email configuration</a></li><br>
-      <li><a href="#" data-link="emails">Send emails</a></li><br>
-      <li><a href="#" data-link="addAdmin">Add an admin</a></li><br>
-      <li><a href="#" data-link="changePassword">Change an admin's password</a></li>
-    </ul>
-  </div>
-  <div class="configuration-block">
-    <h1>Email configuration</h1>
-    <div class="configuration">
-      <label for="host">host:</label>
-      <input type="text" name="host" id="host">
-      <label for="user">user:</label>
-      <input type="text" name="user" id="user">
-      <label for="userpassword">user password</label>
-      <input type="password" name="userpassword" id="userpassword">
-      <br>
-      <button class="submit">Save configuration</button>
-    </div>
-  </div>
-  <div class="mail">
-    <!--USERS LIST-->
-    <ul class="ulist"></ul>
-    <div class="mail-editor">
-      <h1 id="titre-mail">Email</h1>
-      <!-- Create the editor container -->
-      <div id="editor">
-      </div>
-
-      <button class="sendbtn">send</button>
-    </div>
-  </div>
-  <div class='add-admin'>
-    <h1>Add an admin</h1>
-    <div class="admin-configuration">
-      <label for="host">Admin name:</label>
-      <input type="text" name="new-admin" id="new-admin">
-      <label for="password">password:</label>
-      <input type="password" name="password" id="password">
-      <label for="verify-password">verify password</label>
-      <input type="password" name="verify-password" id="verify-password">
-      <br>
-      <button class="submit">Save admin</button>
-    </div>
-  </div>
-  <div class='change-password'>
-    <h1>Change Password</h1>
-    <div class="password-configuration">
-      <label for="admin">Admin name:</label>
-      <input type="text" name="admin" id="admin">
-      <label for="new-password">password:</label>
-      <input type="password" name="new-password" id="new-password">
-      <label for="verify-password">verify password</label>
-      <input type="password" name="verify-new-password" id="verify-new-password">
-      <br>
-      <button class="submit">Update password</button>
-    </div>
-  </div>
-  <script>
-      document.querySelector('.crm-body .nav p').addEventListener('click', (e)=>{
-        document.querySelector('.crm-body').remove()
       })
-      document.querySelectorAll('a').forEach(link=>{
-        link.addEventListener('click', e=>{
-          if(e.target.dataset.link === 'conf'){
-            document.querySelector('.mail').style.display = 'none'
-            document.querySelector('.configuration-block').style.display = 'block'
-            document.querySelector('.add-admin').style.display = 'none'
-            document.querySelector('.change-password').style.display = 'none'
-          }else if(e.target.dataset.link === 'emails'){
-            document.querySelector('.mail').style.display = 'flex'
-            document.querySelector('.configuration-block').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'none'
-            document.querySelector('.change-password').style.display = 'none'
-          }else if(e.target.dataset.link === 'addAdmin'){
-            document.querySelector('.mail').style.display = 'none'
-            document.querySelector('.configuration-block').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'block'
-            document.querySelector('.change-password').style.display = 'none'
-          }else if(e.target.dataset.link === 'changePassword'){
-            document.querySelector('.mail').style.display = 'none'
-            document.querySelector('.configuration-block').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'none'
-            document.querySelector('.change-password').style.display = 'block'
+      btn.addEventListener('click', (e) => {
+        let selectedItem = window.getSelection().focusNode.parentElement
+        selectedItem.id = selectedItem.innerText.toLowerCase()
+        selectedItem.setAttribute('lien', true)
+        selectedItem.classList.add('lien')
+        selectedItem.dataset.lien = selectedItem.id
+      })
+      if (document.querySelector('#isActive')) {
+        document.querySelector('#text-editor').appendChild(editorbtn)
+      } else {
+        return
+      }
+      editorbtn.addEventListener('click', () => {
+        if (document.body.querySelector('.remove')) document.body.querySelector('.remove').remove()
+        editorbtn.remove()
+        let newData = document.querySelector('.ql-editor').innerHTML
+        let div = document.createElement('div')
+        div.innerHTML = newData
+        div.setAttribute('style', tempStyle)
+        div.classList.add('xcms-custom')
+        node.parentElement.replaceChild(div, node)
+        document.querySelector('.ql-toolbar').remove()
+        document.querySelector('.ql-clipboard').remove()
+        document.querySelector('.ql-tooltip.ql-hidden').remove()
+        document.querySelector('.ql-editor').remove()
+        document.querySelector('#text-editor').setAttribute('class', '')
+        showBorder(div)
+      })
+      document.querySelector('.ql-editor').addEventListener('keyup', ev => {
+        node.innerHTML = document.querySelector('.ql-editor').innerHTML
+      })
+    }
+    //*************SHOW BORDER
+    function showBorder(node) {
+      node.addEventListener('mouseover', () => {
+        if (node.querySelector('.ql-editor')) return
+        node.id = "isHover"
+      })
+      node.addEventListener('mouseleave', () => {
+        if (node.querySelector('.ql-editor')) return
+        node.id = ""
+      })
+      node.addEventListener('click', () => {
+        document.querySelectorAll('.isSelected').forEach(opt => {
+          opt.classList.remove('isSelected')
+        })
+        node.id = 'isActive'
+        if (node.querySelector('.ql-editor')) return
+        node.classList.add('isSelected')
+        if (document.body.querySelector('.remove')) {
+          document.body.querySelector('.remove').remove()
+        }
+        if (!document.body.querySelector('.remove')) {
+          let div = document.createElement('div')
+          let btnEdit = document.createElement('button')
+          let btnRemove = document.createElement('button')
+          btnEdit.innerText = 'edit'
+          btnRemove.innerText = 'remove'
+          div.classList.add('remove')
+          document.body.appendChild(div)
+          div.style.display = 'flex'
+          div.style.flexDirection = "column"
+          div.style.position = 'absolute'
+          div.style.left = document.querySelector('.re-edit-zone') ?
+            document.querySelector('.re-edit-zone').getBoundingClientRect().right + 'px' :
+            document.querySelector('.edit-zone').getBoundingClientRect().right + 'px'
+          div.style.top = document.querySelector('.re-edit-zone') ?
+            document.querySelector('.re-edit-zone').getBoundingClientRect().top + 'px' :
+            document.querySelector('.edit-zone').getBoundingClientRect().top + 'px'
+          btnRemove.style.marginTop = '16px'
+          div.appendChild(btnEdit)
+          div.appendChild(btnRemove)
+          btnEdit.addEventListener('click', () => {
+            div.remove()
+            node.id = 'isActive'
+            xEdit(node)
+          })
+          btnRemove.addEventListener('click', () => {
+            node.remove()
+            div.remove()
+          })
+          if (node.classList.contains("xcms-img") || node.classList.contains("xcms-video")) {
+            btnEdit.remove()
+          }
+        }
+
+      })
+      node.addEventListener('contextmenu', ce => {
+        ce.preventDefault();
+        let menu = document.querySelector('.xcms-custom-menu')
+        //Créer le menu avec option duplicata
+        let origin = {
+          left: ce.pageX,
+          top: ce.pageY
+        }
+        menu.style.display = "block"
+        menu.style.left = origin.left + 'px'
+        menu.style.top = origin.top + 'px'
+        //*************EVENEMENT DU MENU CONTEXTUEL
+        menu.querySelectorAll('dd').forEach(dd => {
+          dd.onclick = (ne)=>{
+            if(dd.dataset.cssopt === "duplicate"){
+              let nodebis = node.cloneNode(true)
+              node.parentElement.appendChild(nodebis)
+              showBorder(nodebis)
+            }
+            let random = Math.floor(Math.random()*5000)
+            let contextClass = `xcms-custom_${random}`
+            let hasCustomClass = node.classList.value.match(/xcms-custom_[0-9]{0,4}/)
+            if(hasCustomClass !== null){
+              let classIndex = csseditor.find(hasCustomClass[0]).start.row
+              csseditor.gotoLine(classIndex+1)
+              csseditor.navigateLineEnd()
+              csseditor.insert('\n')
+              csseditor.insert(dd.dataset.cssopt)
+            }else{
+              node.classList.add(contextClass)
+              csseditor.navigateFileEnd()
+              csseditor.insert(`\n.${contextClass}{\n}`)
+              let classIndex = csseditor.find(contextClass).start.row
+              csseditor.gotoLine(classIndex+1)
+              csseditor.navigateLineEnd()
+              csseditor.insert('\n')
+              csseditor.insert(dd.dataset.cssopt)
+            }
+            menu.style.display = "none"
+            console.log(dd.dataset.cssopt)
           }
         })
       })
-      var toolbarOptions = [
-        ['bold', 'italic', 'underline', 'strike', 'link'],        // toggled buttons
-        ['blockquote', 'code-block'],           // custom button values
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],    // superscript/subscript
-        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-        [{ 'direction': 'rtl' }],                         // text direction
+    }
 
-        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    //*************CREATE CUSTOM CONTAINER
+    function customContainer() {
+      var div = document.createElement('div')
+      div.classList.add('xcms-div')
+      div.id = "isContained"
+      let menu = document.importNode(document.querySelector('#custom-container').content, true)
+      document.body.appendChild(menu)
+      document.querySelector('.cc-body').querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', e => {
+          let preset = btn.dataset.preset
+          if (preset === "100") {
+            xAppend(div)
+            showBorder(div)
+            drake.containers.push(div)
+          }
+          if (preset === "50/50") {
+            div.style.display = "flex";
+            div.style.flexDirection = 'row'
+            let leftDiv = document.createElement('div')
+            let rightDiv = document.createElement('div')
+            leftDiv.style.flex = "1"
+            rightDiv.style.flex = "1"
+            leftDiv.style.display = "flex"
+            rightDiv.style.display = "flex"
+            leftDiv.style.flexDirection = 'column'
+            rightDiv.style.flexDirection = 'column'
+            leftDiv.style.alignItems = 'center'
+            rightDiv.style.alignItems = 'center'
+            div.appendChild(leftDiv)
+            div.appendChild(rightDiv)
+            xAppend(div)
+            showBorder(leftDiv)
+            showBorder(rightDiv)
+            drake.containers.push(div)
+            drake.containers.push(leftDiv)
+            drake.containers.push(rightDiv)
+          }
+          if (preset === "35/65") {
+            div.style.display = "flex";
+            div.style.flexDirection = 'row'
+            let leftDiv = document.createElement('div')
+            let rightDiv = document.createElement('div')
+            leftDiv.style.flex = "1"
+            rightDiv.style.flex = "2"
+            leftDiv.style.display = "flex"
+            rightDiv.style.display = "flex"
+            leftDiv.style.flexDirection = 'column'
+            rightDiv.style.flexDirection = 'column'
+            leftDiv.style.alignItems = 'center'
+            rightDiv.style.alignItems = 'center'
+            div.appendChild(leftDiv)
+            div.appendChild(rightDiv)
+            xAppend(div)
+            showBorder(leftDiv)
+            showBorder(rightDiv)
+            drake.containers.push(div)
+            drake.containers.push(leftDiv)
+            drake.containers.push(rightDiv)
+          }
+          if (preset === "65/35") {
+            div.style.display = "flex";
+            div.style.flexDirection = 'row'
+            let leftDiv = document.createElement('div')
+            let rightDiv = document.createElement('div')
+            leftDiv.style.flex = "2"
+            rightDiv.style.flex = "1"
+            leftDiv.style.display = "flex"
+            rightDiv.style.display = "flex"
+            leftDiv.style.flexDirection = 'column'
+            rightDiv.style.flexDirection = 'column'
+            leftDiv.style.alignItems = 'center'
+            rightDiv.style.alignItems = 'center'
+            div.appendChild(leftDiv)
+            div.appendChild(rightDiv)
+            xAppend(div)
+            showBorder(leftDiv)
+            showBorder(rightDiv)
+            drake.containers.push(div)
+            drake.containers.push(leftDiv)
+            drake.containers.push(rightDiv)
+          }
+          if (preset === "30/30/30") {
+            div.style.display = "flex";
+            div.style.flexDirection = 'row'
+            let leftDiv = document.createElement('div')
+            let middleDiv = document.createElement('div')
+            let rightDiv = document.createElement('div')
+            leftDiv.style.flex = "1"
+            middleDiv.style.flex = "1"
+            rightDiv.style.flex = "1"
+            leftDiv.style.display = "flex"
+            middleDiv.style.display = "flex"
+            rightDiv.style.display = "flex"
+            leftDiv.style.flexDirection = 'column'
+            middleDiv.style.flexDirection = 'column'
+            rightDiv.style.flexDirection = 'column'
+            middleDiv.style.alignItems = 'center'
+            leftDiv.style.alignItems = 'center'
+            rightDiv.style.alignItems = 'center'
+            div.appendChild(leftDiv)
+            div.appendChild(middleDiv)
+            div.appendChild(rightDiv)
+            xAppend(div)
+            showBorder(leftDiv)
+            showBorder(middleDiv)
+            showBorder(rightDiv)
+            drake.containers.push(div)
+            drake.containers.push(leftDiv)
+            drake.containers.push(rightDiv)
+            drake.containers.push(middleDiv)
+          }
+          if (preset === 'cancel') {
+            document.querySelector('.cc-outer').remove()
+            return
+          }
+          document.querySelector('.cc-outer').remove()
+        })
+      })
 
-        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        [{ 'font': [] }],
-        [{ 'align': [] }],
+    }
 
-        ['clean']                                         // remove formatting button
-      ];
-      var crmeditor = new Quill('#editor', {
-        modules: { toolbar: toolbarOptions },
-        theme: 'snow'
-      });
-      var crms = io('/crm-socket');
-        crms.emit('message', jss({userslist: true}))
+    //*************DEACTIVR
+    function desactive() {
+      document.querySelectorAll('#isActive').forEach(active => {
+        active.id = ''
+      })
+    }
+    //**************DRAG & DROP
+    let drake = dragula([document.querySelector('.edit-zone')])
+    //ACE EDITORS
+    ace.require("ace/ext/language_tools")
+    let csseditor = ace.edit('css-editor')
+    csseditor.setTheme("ace/theme/monokai")
+    csseditor.session.setMode("ace/mode/css")
+    csseditor.scrollToLine(0, true, true, function () { });
+    csseditor.gotoLine(0, 0, true);
+    csseditor.session.setTabSize(2);
+    csseditor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: false
+    })
+    let jseditor = ace.edit('js-editor')
+    jseditor.setTheme("ace/theme/monokai")
+    jseditor.session.setMode("ace/mode/javascript")
+    jseditor.scrollToLine(0, true, true, function () { });
+    jseditor.gotoLine(0, 0, true);
+    jseditor.session.setTabSize(2);
+    jseditor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: false
+    })
+    document.querySelectorAll('.ace-editor-block a').forEach(btn => {
+      btn.addEventListener('click', e => {
+        if (e.target.dataset.editor === 'js') {
+          document.querySelector('#js-editor').style.display = "block"
+          document.querySelector('#css-editor').style.display = "none"
+        }
+        if (e.target.dataset.editor === 'css') {
+          document.querySelector('#js-editor').style.display = "none"
+          document.querySelector('#css-editor').style.display = "block"
+        }
+      })
+    })
+    document.querySelectorAll('.ace-editor-block a').forEach(btn => {
+      btn.addEventListener('dblclick', e => {
+        if (e.target.dataset.editor === 'js') {
+          document.querySelector('#js-editor').style.display = "none"
+        }
+        if (e.target.dataset.editor === 'css') {
+          let parser = new cssjs()
+          let pageCSS = csseditor.getValue()
+          let parsed = parser.parseCSS(pageCSS)
+          parsed.forEach(cssSelector => {
+            let selectedStyle = cssSelector.rules.map(rule => {
+              return `${rule.directive}:${rule.value};`
+            })
+            if (document.querySelector('.re-edit-zone')) {
+              document.querySelector('.re-edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+                existent.setAttribute('style', selectedStyle.join(''))
+              })
+            } else {
+              document.querySelector('.edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+                existent.setAttribute('style', selectedStyle.join(''))
+              })
+            }
+          })
+          document.querySelector('#css-editor').style.display = "none"
+        }
+      })
+    })
+    //******************CREATE EDITABLE PAGES LINKS
+    function createEditablesPageLinks(onePage) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      let span = document.createElement('span');
+      a.href = '#'
+      a.innerText = onePage.name
+      a.dataset.index = editablePages.length - 1
+      a.className += "link"
+      span.innerText = "delete page"
+      li.appendChild(a);
+      li.appendChild(span)
+      //EDITING PAGES
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        myframe = document.querySelector('.maFrame')
+        var theframe = document.createElement('div')
+        theframe.classList.add('re-edit-zone')
+        //LOADING CONTENT
+        theframe.innerHTML = editablePages[e.target.dataset.index].page
+        let niceJS = beautifier.js(editablePages[e.target.dataset.index].js, { indent_size: 2, space_in_empty_paren: true })
+        let niceCSS = beautifier.css(editablePages[e.target.dataset.index].css, { indent_size: 2, space_in_empty_paren: true })
+        jseditor.setValue(niceJS)
+        csseditor.setValue(niceCSS)
+        myframe.appendChild(theframe)
+        drake.destroy();
+        drake = dragula([document.querySelector('.re-edit-zone')])
+        document.querySelector('.edit-zone').style.display = 'none'
+        //PREPARING CHANGES
+        theframe.childNodes.forEach(node => {
+          if (node instanceof HTMLElement) {
+            if (node.hasAttribute('class')) {
+              if (node.className !== "xcms-img" && node.className !== "xcms-video") {
+                if (node.hasChildNodes) {
+                  drake.containers.push(node)
+                }
+                try {
+                  node.childNodes.forEach(n => {
+                    if (n != undefined) {
+                      showBorder(n)
+                    }
+                  })
+                } catch{
+                  showBorder(node)
+                }
+              } else {
+                showBorder(node)
+              }
+            }
+          }
+        })
+        //SAVE CHANGES
+        let button = document.createElement('a')
+        button.innerText = 'Save & Close'
+        button.href = "#"
+        document.querySelector('.boutons').appendChild(button)
+        button.addEventListener('click', ev => {
+          //APPLY INLINE CSS
+          let parser = new cssjs()
+          const pageCSS = csseditor.getValue()
+          let parsed = parser.parseCSS(pageCSS)
+          parsed.forEach(cssSelector => {
+            let selectedStyle = cssSelector.rules.map(rule => {
+              return `${rule.directive}:${rule.value};`
+            })
+            document.querySelector('.re-edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+              existent.setAttribute('style', selectedStyle.join(''))
+            })
+          })
+          //MODIFY LINKS
+          var imgs = document.querySelectorAll('img');
+          var i = j = 0
+          while (i <= imgs.length - 1) {
+            imgs[i].classList.add('xcms-img')
+            if (/\/imgs\//.test(imgs[i].src)) {
+              i++
+            } else {
+              imgs[i].src = '/imgs/' + titresImgs[j];
+              i++
+              j++
+            }
+          }
+          var videos = document.querySelectorAll('video');
+          var k = l = 0
+          while (k <= videos.length - 1) {
+            videos[k].classList.add('xcms-video')
+            if (/\/videos\//.test(videos[k].src)) {
+              k++
+            } else {
+              videos[k].src = '/videos/' + titresVideos[l];
+              k++
+              l++
+            }
+          }
+          //REMOVE ATTRIBUT CONTENTEDITABLE
+          theframe.childNodes.forEach(node => {
+            if (node instanceof HTMLElement) {
+              if (node.hasAttribute('class')) {
+                if (node.className !== "xcms-img" && node.className !== "xcms-video") {
+                  node.removeAttribute('contenteditable')
+                }
+              }
+            }
+          })
+          let rebuiltPage = document.implementation.createHTMLDocument(/* */)
+          for (var nde of theframe.children) {
+            rebuiltPage.head.appendChild(nde.cloneNode(true))
+            if (nde.getAttribute('src') === "./frontend-site/designer.js") {
+              break
+            }
+          }
+          theframe.querySelectorAll('.re-edit-zone > style').forEach(element => {
+            rebuiltPage.body.appendChild(element.cloneNode(true))
+          })
+          theframe.querySelectorAll('.re-edit-zone > [class^="xcms-"]').forEach(element => {
+            rebuiltPage.body.appendChild(element.cloneNode(true))
+          })
+          rebuiltPage.body.appendChild(theframe.querySelector('script:last-of-type').cloneNode(true))
+          var gluedPage = `<!DOCTYPE html>
+                    <html lang="en">
+                    ${rebuiltPage.head.outerHTML} ${rebuiltPage.body.outerHTML}</html>`
+          let name = e.target.innerText
+          let page = gluedPage
+          let js = jseditor.getValue()
+          let changedPage = {
+            name,
+            page,
+            css: pageCSS,
+            js
+          }
+          mews.emit('message', jss({
+            update: changedPage
+          }))
+          editablePages[e.target.dataset.index].page = theframe.innerHTML
+          theframe.remove()
+          document.querySelector('.edit-zone').style.display = 'block'
+          drake.destroy()
+          drake = dragula([document.querySelector('.edit-zone')])
+          button.remove()
+          window.location.href = `${window.location.origin}/admin`
+        })
+      }, false)
+      span.addEventListener("click", (e) => {
+        let pagename = e.target.parentElement.querySelector('a').innerText
+        mews.emit('message', jss({ deletePage: pagename }))
+        e.target.parentElement.remove()
+        editablePages = editablePages.filter(pageData => { if (pageData.name !== pagename) return pageData })
+      })
+      document.querySelector('.editables').appendChild(li)
+      li = a = span = ""
+    }
+  </script>
+  <script>
+    // AFFICHAGE
+    document.querySelector('#backcolor-picker').addEventListener('change', (e) => {
+      console.log(e.target.value)
+      if (document.querySelector('#isActive') !== null) {
+        document.querySelector('#isActive').style.backgroundColor = e.target.value
+      }
+      if (document.querySelector('#isContainer') !== null) {
+        document.querySelector('#isContainer').style.backgroundColor = e.target.value
+      }
+    })
+
+    document.querySelector('#textcolor-picker').addEventListener('change', (e) => {
+      if (document.querySelector('#isActive') !== null) {
+        document.querySelector('#isActive').style.color = e.target.value
+      }
+      if (document.querySelector('#isContainer') !== null) {
+        document.querySelector('#isContainer').style.color = e.target.value
+      }
+    })
+  </script>
+  <script>
+    const menubtn = document.querySelector('.first-class-editor-button')
+    const editor = document.querySelector('.first-class')
+    const editorMenu = document.querySelector('.first-class-editor')
+    menubtn.addEventListener('touchend', (e) => {
+      menubtn.style.display = 'none'
+      editor.style.display = 'none'
+      editorMenu.style.display = 'block'
+      editorMenu.querySelectorAll('a').forEach(a => {
+        a.addEventListener('touchend', (e) => {
+          e.stopImmediatePropagation()
+          e.target.click()
+          menubtn.style.display = 'block'
+          editor.style.display = 'block'
+          editorMenu.style.display = 'none'
+          return
+        }, false)
+      })
+    }, false)
+    document.querySelector('#crenew').addEventListener('touchend', (e) => {
+      e.preventDefault();
+      document.querySelector('.edit-zone').innerHTML = ""
+      //IFRAME PLUS UTILISEE
+      document.querySelector('.edit-zone').style.display = "block"
+      menubtn.style.display = 'block'
+      editor.style.display = 'block'
+      editorMenu.style.display = 'none'
+    })
+    //*****************RESET
+    document.querySelector('#efface').addEventListener('touchend', e => {
+      var allnodes = document.querySelector('.edit-zone').childNodes
+      var j = allnodes.length
+      while (j > 2) {
+        document.querySelector('.edit-zone').lastChild.remove()
+        j--
+      }
+      menubtn.style.display = 'block'
+      editor.style.display = 'block'
+      editorMenu.style.display = 'none'
+    })
+  </script>
+  <script>
+    document.querySelector('.nav p').addEventListener('click', e => {
+      document.body.appendChild(document.querySelector('#crm-body').content.cloneNode(true))
+    })
+  </script>
+  <template id='crm-body'>
+    <div class="crm-body">
+      <style>
+        :scope * {
+          margin: 0
+        }
+
+        :scope a {
+          text-decoration: none;
+          color: #448aff;
+        }
+
+        :scope .crm-body {
+          position: absolute;
+          top: 0;
+          background: aliceblue;
+          width: 100%;
+          height: 95%;
+        }
+
+        :scope button {
+          background: transparent;
+          border: none;
+          color: #448aff;
+          cursor: pointer;
+        }
+
+        :scope .configuration,
+        .admin-configuration,
+        .password-configuration {
+          display: flex;
+          flex-direction: column;
+          max-width: 200px;
+          margin: 20px auto;
+        }
+
+        :scope .configuration-block h1,
+        .add-admin h1,
+        .change-password h1 {
+          text-align: center;
+          padding-top: 68px;
+        }
+
+        :scope .mail {
+          display: none;
+          width: 80%
+        }
+
+        :scope .add-admin,
+        .change-password {
+          display: none;
+        }
+
+        :scope #titre-mail {
+          position: absolute;
+          left: 8px;
+        }
+
+        :scope .ulist {
+          list-style: none;
+          padding: 6em 0 0 0;
+          min-width: 200px;
+        }
+
+        :scope .nav {
+          background: #82b1ff;
+          ;
+          color: #000;
+          font-weight: bold;
+          min-height: 40px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        :scope .nav p {
+          cursor: pointer;
+          width: 150px;
+        }
+
+        :scope .minimenu {
+          width: 190px;
+          position: fixed;
+          right: 0;
+          top: 108px;
+        }
+
+        :scope .minimenu ul {
+          list-style-type: none;
+        }
+      </style>
+      <div class="nav"><span style="padding-left: 20px;">XCMS</span>
+        <p>Go to CMS page</p>
+      </div>
+      <div class="minimenu">
+        <ul>
+          <li><a href="#" data-link="conf">Email configuration</a></li><br>
+          <li><a href="#" data-link="emails">Send emails</a></li><br>
+          <li><a href="#" data-link="addAdmin">Add an admin</a></li><br>
+          <li><a href="#" data-link="changePassword">Change an admin's password</a></li>
+        </ul>
+      </div>
+      <div class="configuration-block">
+        <h1>Email configuration</h1>
+        <div class="configuration">
+          <label for="host">host:</label>
+          <input type="text" name="host" id="host">
+          <label for="user">user:</label>
+          <input type="text" name="user" id="user">
+          <label for="userpassword">user password</label>
+          <input type="password" name="userpassword" id="userpassword">
+          <br>
+          <button class="submit">Save configuration</button>
+        </div>
+      </div>
+      <div class="mail">
+        <!--USERS LIST-->
+        <ul class="ulist"></ul>
+        <div class="mail-editor">
+          <h1 id="titre-mail">Email</h1>
+          <!-- Create the editor container -->
+          <div id="editor">
+          </div>
+
+          <button class="sendbtn">send</button>
+        </div>
+      </div>
+      <div class='add-admin'>
+        <h1>Add an admin</h1>
+        <div class="admin-configuration">
+          <label for="host">Admin name:</label>
+          <input type="text" name="new-admin" id="new-admin">
+          <label for="password">password:</label>
+          <input type="password" name="password" id="password">
+          <label for="verify-password">verify password</label>
+          <input type="password" name="verify-password" id="verify-password">
+          <br>
+          <button class="submit">Save admin</button>
+        </div>
+      </div>
+      <div class='change-password'>
+        <h1>Change Password</h1>
+        <div class="password-configuration">
+          <label for="admin">Admin name:</label>
+          <input type="text" name="admin" id="admin">
+          <label for="new-password">password:</label>
+          <input type="password" name="new-password" id="new-password">
+          <label for="verify-password">verify password</label>
+          <input type="password" name="verify-new-password" id="verify-new-password">
+          <br>
+          <button class="submit">Update password</button>
+        </div>
+      </div>
+      <script>
+        document.querySelector('.crm-body .nav p').addEventListener('click', (e) => {
+          document.querySelector('.crm-body').remove()
+        })
+        document.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', e => {
+            if (e.target.dataset.link === 'conf') {
+              document.querySelector('.mail').style.display = 'none'
+              document.querySelector('.configuration-block').style.display = 'block'
+              document.querySelector('.add-admin').style.display = 'none'
+              document.querySelector('.change-password').style.display = 'none'
+            } else if (e.target.dataset.link === 'emails') {
+              document.querySelector('.mail').style.display = 'flex'
+              document.querySelector('.configuration-block').style.display = 'none'
+              document.querySelector('.add-admin').style.display = 'none'
+              document.querySelector('.change-password').style.display = 'none'
+            } else if (e.target.dataset.link === 'addAdmin') {
+              document.querySelector('.mail').style.display = 'none'
+              document.querySelector('.configuration-block').style.display = 'none'
+              document.querySelector('.add-admin').style.display = 'block'
+              document.querySelector('.change-password').style.display = 'none'
+            } else if (e.target.dataset.link === 'changePassword') {
+              document.querySelector('.mail').style.display = 'none'
+              document.querySelector('.configuration-block').style.display = 'none'
+              document.querySelector('.add-admin').style.display = 'none'
+              document.querySelector('.change-password').style.display = 'block'
+            }
+          })
+        })
+        var toolbarOptions = [
+          ['bold', 'italic', 'underline', 'strike', 'link'],        // toggled buttons
+          ['blockquote', 'code-block'],           // custom button values
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],    // superscript/subscript
+          [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+          [{ 'direction': 'rtl' }],                         // text direction
+
+          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+          [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+
+          ['clean']                                         // remove formatting button
+        ];
+        var crmeditor = new Quill('#editor', {
+          modules: { toolbar: toolbarOptions },
+          theme: 'snow'
+        });
+        var crms = io('/crm-socket');
+        crms.emit('message', jss({ userslist: true }))
         var sending = document.querySelector('.sendbtn')
-        sending.addEventListener('click', (e)=>{
+        sending.addEventListener('click', (e) => {
           let selectedContacts = []
-          document.querySelectorAll('.contactcheckbox').forEach(contact =>{
-            if(contact.checked === true){
-              selectedContacts.push({fullName: contact.nextElementSibling.innerText, email: contact.nextElementSibling.dataset.email})
+          document.querySelectorAll('.contactcheckbox').forEach(contact => {
+            if (contact.checked === true) {
+              selectedContacts.push({ fullName: contact.nextElementSibling.innerText, email: contact.nextElementSibling.dataset.email })
             }
           })
           //recuperer le message
-          if(selectedContacts.length === 0){
+          if (selectedContacts.length === 0) {
             alert('You must select a receipent to send a message.')
-          }else{
+          } else {
             let emaildata = {
               selectedContacts: selectedContacts,
               mailText: document.querySelector(':scope .ql-editor').innerText,
@@ -1445,7 +1604,7 @@
             crmeditor.setText("")
           }
         })
-        document.querySelector('.submit').addEventListener('click', ()=>{
+        document.querySelector('.submit').addEventListener('click', () => {
           let transporterData = {
             host: document.querySelector('#host').value,
             user: document.querySelector('#user').value,
@@ -1456,78 +1615,78 @@
           document.querySelector('#user').value = ""
           document.querySelector('#userpassword').value = ""
         })
-      crms.on('normal', data =>{
-        const datainfo = jsp(data)
-        if(datainfo.userslist){
-          const userslist = document.querySelector('.ulist')
-          datainfo.userslist.forEach(user=>{
-            let li = document.createElement('li')
-            let input = document.createElement('input')
-            let span = document.createElement("span")
-            input.type = 'checkbox'
-            input.classList.add('contactcheckbox')
-            li.appendChild(input)
-            span.innerText = user.fullName
-            span.dataset.email = user.email
-            li.appendChild(span)
-            userslist.appendChild(li)
-          })
-        }
-      })
-      document.querySelector('.add-admin button').addEventListener('click', e =>{
-        const username = document.querySelector('.add-admin #new-admin').value
-        const password = document.querySelector('.add-admin #password').value
-        const verifyPassword = document.querySelector('.add-admin #verify-password').value
-        if(password === verifyPassword){
-          const addAdmin = {
-            username, 
-            password
+        crms.on('normal', data => {
+          const datainfo = jsp(data)
+          if (datainfo.userslist) {
+            const userslist = document.querySelector('.ulist')
+            datainfo.userslist.forEach(user => {
+              let li = document.createElement('li')
+              let input = document.createElement('input')
+              let span = document.createElement("span")
+              input.type = 'checkbox'
+              input.classList.add('contactcheckbox')
+              li.appendChild(input)
+              span.innerText = user.fullName
+              span.dataset.email = user.email
+              li.appendChild(span)
+              userslist.appendChild(li)
+            })
           }
-          crms.emit('message', jss({addAdmin: addAdmin}))
-        }else{
-          //AFFICHER LE MESSAGE D'ERREUR
-        }
-        document.querySelector('.add-admin #new-admin').value = ""
-        document.querySelector('.add-admin #password').value = ""
-        document.querySelector('.add-admin #verify-password').value =""
-      })
-      document.querySelector('.change-password button').addEventListener('click', e =>{
-        const username = document.querySelector('.change-password #admin').value
-        const password = document.querySelector('.change-password #new-password').value
-        const verifyPassword = document.querySelector('.change-password #verify-new-password').value
-        //revoyer une validation ou une infirmation si l'admin n'existe pas
-        if(password === verifyPassword){
-          const updateAdmin = {
-            username, 
-            password
+        })
+        document.querySelector('.add-admin button').addEventListener('click', e => {
+          const username = document.querySelector('.add-admin #new-admin').value
+          const password = document.querySelector('.add-admin #password').value
+          const verifyPassword = document.querySelector('.add-admin #verify-password').value
+          if (password === verifyPassword) {
+            const addAdmin = {
+              username,
+              password
+            }
+            crms.emit('message', jss({ addAdmin: addAdmin }))
+          } else {
+            //AFFICHER LE MESSAGE D'ERREUR
           }
-          crms.emit('message', jss({updateAdmin: updateAdmin}))
-          document.querySelector('.change-password #admin').value = ""
-          document.querySelector('.change-password #new-password').value = ""
-          document.querySelector('.change-password #verify-new-password').value = ""
-        }else{
-          //AFFICHER LE MESSAGE D'ERREUR
-        }
-      })
-      crms.on('success', data =>{
-        let p = document.createElement('p')
-        p.innerText = data
-        document.querySelector('.crm-body').appendChild(p)
-        setTimeout(function(){
-          p.remove()
-        }, 3000)
-      })
-      crms.on('errorr', data =>{
-        let p = document.createElement('p')
-        p.innerText = data
-        document.querySelector('.crm-body').appendChild(p)
-        setTimeout(function(){
-          p.remove()
-        }, 3000)
-      })
-  </script>
-</div>
-    </template>
+          document.querySelector('.add-admin #new-admin').value = ""
+          document.querySelector('.add-admin #password').value = ""
+          document.querySelector('.add-admin #verify-password').value = ""
+        })
+        document.querySelector('.change-password button').addEventListener('click', e => {
+          const username = document.querySelector('.change-password #admin').value
+          const password = document.querySelector('.change-password #new-password').value
+          const verifyPassword = document.querySelector('.change-password #verify-new-password').value
+          //revoyer une validation ou une infirmation si l'admin n'existe pas
+          if (password === verifyPassword) {
+            const updateAdmin = {
+              username,
+              password
+            }
+            crms.emit('message', jss({ updateAdmin: updateAdmin }))
+            document.querySelector('.change-password #admin').value = ""
+            document.querySelector('.change-password #new-password').value = ""
+            document.querySelector('.change-password #verify-new-password').value = ""
+          } else {
+            //AFFICHER LE MESSAGE D'ERREUR
+          }
+        })
+        crms.on('success', data => {
+          let p = document.createElement('p')
+          p.innerText = data
+          document.querySelector('.crm-body').appendChild(p)
+          setTimeout(function () {
+            p.remove()
+          }, 3000)
+        })
+        crms.on('errorr', data => {
+          let p = document.createElement('p')
+          p.innerText = data
+          document.querySelector('.crm-body').appendChild(p)
+          setTimeout(function () {
+            p.remove()
+          }, 3000)
+        })
+      </script>
+    </div>
+  </template>
 </body>
 
 </html>

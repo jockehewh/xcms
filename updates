@@ -1,10 +1,10 @@
 latest update:
 
 Adds:
-  -nothing new in this version.
+  -new context menu to quickly add CSS and duplicate a node.
+  -The css is now moved inline after editing.
 Changes:
-  -moved the CRM into the main application.
-  -removed the chat part of the applications.
+  -The css is now applied after closing the editor.
 BugFixes:
-  -fixed the transporter path to properly edit the file.
+  -fixed a bug where the "in page" css was bleeding out at re-edit time.
   

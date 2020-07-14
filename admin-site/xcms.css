@@ -341,7 +341,11 @@ input:checked + .slider:before {
 .cc-body button:hover{
     background-color: #82b1ff;
 }
-
+.xcms-custom-menu{
+    display:none;
+    position: absolute;
+    background-color: #fff;
+}
 @media only screen and (max-width: 411px){
     .first-class-editor{
         display: none;
