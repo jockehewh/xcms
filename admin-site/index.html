@@ -526,8 +526,8 @@
                   menulink.addEventListener('click', (menuevent) => {
                     let div = document.createElement('div')
                     div.innerHTML = menu.menu
-                    console.log(menu)
                     xAppend(div)
+                    showBorder(div)
                     document.querySelector('.xcms-popd').style.display = 'none'
                   })
                   document.querySelector('#mymenus').appendChild(menulink)
@@ -542,6 +542,7 @@
               let desiredSize = document.querySelector('#menusize').options[
                 document.querySelector('#menusize').selectedIndex].value
               var ul = document.createElement('ul');
+              ul.classList.add('xcms-menu')
               menuSize = 0
               e.stopImmediatePropagation()
               while (menuSize < desiredSize) {
@@ -571,7 +572,7 @@
                 li.style.display = 'inline'
                 li.appendChild(alink);
                 ul.appendChild(li);
-                ul.classList.add('xcms-menu')
+                showBorder(ul)
                 alink.id = ""
               }
               menuSize = 0
@@ -582,7 +583,9 @@
               } else {
                 xAppend(ul)
                 if (confirm("do you want to save this menu for later use?")) {
-                  mymenus.push({ menu: ul.outerHTML })
+                  let newMenu = { menu: ul.outerHTML }
+                  mymenus.push(newMenu)
+                  mews.emit('message', jss(newMenu))
                   let menulink = document.createElement('a')
                   menulink.innerText = 'menu ' + mymenus.length
                   menulink.href = '#'
@@ -612,6 +615,11 @@
         }
 
       }, false)
+    })
+    //***************GET MENUS
+    mews.emit('message', jss({menulist: 1}))
+    mews.on('menulist', data=>{
+      localStorage.mymenus = data
     })
     //***************LIVE ON PAGE LIVE
     document.querySelector('.edit-zone').addEventListener('dblclick', function (e) {

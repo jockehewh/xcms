@@ -10,6 +10,10 @@ const page = new Schema({
     css: String
   })
 
+const menu = new Schema({
+  menu: String
+})
+
   const user = new Schema({
     firstname: String,
     lastname: String,
@@ -24,6 +28,8 @@ const page = new Schema({
   })
 
   const pagedb = mongoose.model('pages', page)
+
+  const menudb = mongoose.model('menus', menu)
 
   const userdb = mongoose.model('users', user)
 
@@ -51,4 +57,4 @@ admin.methods.comparePassword = function(candidatePassword, cb){
 
 const admindb = mongoose.model('admins', admin)
 
-  module.exports = {pagedb, userdb, admindb}
+  module.exports = {pagedb, menudb, userdb, admindb}

@@ -1,6 +1,6 @@
 const IO = require('koa-socket-2')
 const fs = require('fs')
-const {pagedb} = require('../cmsModels.js')
+const {pagedb, menudb} = require('../cmsModels.js')
 var pagesCollection = require('../xcmsDB/pageCollection.js')
 var isIndex = require('../xcmsDB/isIndex.js')
 
@@ -34,6 +34,23 @@ adminSocket.on('message', async (ctx) => {
             }
           })
         }
+      })
+    }
+    if(datainfo.menulist){
+      menudb.find({}, (err, res)=>{
+        if(err)console.log(err)
+        if(res){
+          ctx.socket.emit('menulist', JSON.stringify(res))
+        }
+      })
+    }
+    if(datainfo.menu){
+      let newMenu = new menudb({
+        menu: datainfo.menu
+      })
+      newMenu.save((err, res)=>{
+        if(err)console.log(err)
+        if(res)console.log(res)
       })
     }
     if (datainfo.update) {
