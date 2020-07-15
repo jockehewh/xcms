@@ -28,7 +28,8 @@ create a `config.xcms.json` file at the root of your project and follow this mod
     "useNewUrlParser": true,
     "useFindAndModify": false,
     "useUnifiedTopology": true
-     }
+     },
+  "passportKeys": "xavier-cms-key"
 }
 ```
 
@@ -111,11 +112,15 @@ __Add a container:__
 
 Clicking __Add a container__ will add a container to the workspace (it comes with a black border for you to see it. double click the border to remove it).
 
+__Quickly add CSS:__
+
+Right-clicking a container allows you to quickly add some essential css to that container. You can also duplicate a container and its content by click the __duplicate__ option at the bottom of the context menu.
+
 __Add a menu:__
 
-Clicking __Add a menu__  will prompt you to choose the size of the menu then you will be promted to enter the enpoint for each link in the new menu. (the menu will appear unstyled. it is styled on the client side only, this is where you want to change your CSS).
-you can save the menu for later use on other pages for example. (note: the menu are saved locally and will disapear if you empty the cache of the application.)
-to use a saved menu click the __Add a menu__ button, at the prompt you will see your previous menu(s) as `menuX` clicking a `menuX` will add it to the workspace.
+Clicking __Add a menu__  will prompt you to choose the size of the menu then you will be promted to enter the enpoint for each link in the new menu.
+You can save the menu for later use on other pages for example. 
+To use a saved menu click the __Add a menu__ button, at the prompt you will see your previous menu(s) as `menuX` clicking a `menuX` will add it to the workspace.
 
 __Add an image:__
 
@@ -130,6 +135,8 @@ Clicking __Add a video__ will open the file system browser for you to select one
 The pages you have created are located in this section, clicking one `page.html` will load the page content in the workspace en will add a __Save & close__ button after the __Delete page__ button.
 
 Each page comes with a __delete page__ button that allows you to delete the page.
+
+If you want to duplicate a page you can "right click" on the page's name. you will be asked to name the new page. click __duplicate__ to save your duplicata.
 
 ##### Custom Javascript and CSS
 

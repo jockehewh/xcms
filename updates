@@ -1,10 +1,9 @@
 latest update:
 
 Adds:
-  -new context menu to quickly add CSS and duplicate a node.
-  -The css is now moved inline after editing.
+  -new option to duplicate a page with a right-click.
 Changes:
-  -The css is now applied after closing the editor.
+  -the saved menus are saved in the backend 
 BugFixes:
-  -fixed a bug where the "in page" css was bleeding out at re-edit time.
+  -
   

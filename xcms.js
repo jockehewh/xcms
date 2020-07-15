@@ -28,7 +28,7 @@ var isIndex = require(__dirname + '/xcmsDB/isIndex.js')
 const { pagedb, userdb } = require(__dirname + '/cmsModels.js')
 
 xcms.proxy = true
-xcms.keys = ['xavier-cms-key']
+xcms.keys = [the.passportKeys]
 xcms.use(session({}, xcms))
 xcms.use(bodyParser())
 xcms.use(passport.initialize())
@@ -163,15 +163,6 @@ xcms.use(r.get(/\/frontend-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ct
   } else {
     ctx.body = fs.createReadStream(__dirname + ctx.url)
   }
-}))
-
-xcms.use(r.get('/instant-messaging-scripts/socket.io.js', ctx => {
-  ctx.type = 'text/javascript'
-  ctx.body = fs.createReadStream(__dirname + '/extra_modules' + ctx.url)
-}))
-xcms.use(r.get('/instant-messaging-scripts/socket.io.js.map', ctx => {
-  ctx.type = 'text/javascript'
-  ctx.body = fs.createReadStream(__dirname + '/extra_modules' + ctx.url)
 }))
 
 xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx => {
