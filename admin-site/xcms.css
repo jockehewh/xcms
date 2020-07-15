@@ -346,6 +346,15 @@ input:checked + .slider:before {
     position: absolute;
     background-color: #fff;
 }
+.page-duplicate{
+    display:none;
+    position: absolute;
+    width: 150px;
+    height: 50px;
+    background-color: #fff;
+    padding: 5px;
+    border: solid 1px #448aff;
+}
 @media only screen and (max-width: 411px){
     .first-class-editor{
         display: none;

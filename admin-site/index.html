@@ -58,6 +58,9 @@
             --bleu-gris-clair: #cfd8dc;
             --teal-bleu-special: #1de9b6;
           }
+          .xcms-custom{
+            flex:1 1 0%;
+          }
         </style>
       </div>
       <div class="maFrame">
@@ -92,22 +95,6 @@
             <li><a class="link" href="#" data-demande="menu">Add a menu</a><br class="mybr"><br class="mybr"></li>
             <li><a class="link" href="#" data-demande="image">Add image(s)</a><br class="mybr"><br class="mybr"></li>
             <li><a class="link" href="#" data-demande="video">Add video(s)</a><br class="mybr"><br class="mybr"></li>
-            <li>
-              <div class="backcolor" style="grid-row:1;">
-                <label id="fond">
-                  Background color:
-                </label>
-                <input type="color" name="backcolor-picker" id="backcolor-picker">
-              </div><br class="mybr">
-            </li>
-            <li>
-              <div class="textcolor" style="grid-row:2;">
-                <label id="texte">
-                  Text color:
-                </label>
-                <input type="color" name="textcolor-picker" id="textcolor-picker">
-              </div><br class="mybr">
-            </li>
           </ul>
         </section><br>
         <hr>
@@ -156,6 +143,18 @@
       <hr>
       <dd data-cssopt="flex-direction: column;">flex-direction: column;</dd>
       <hr>
+      <dd data-cssopt="justify-content: flex-start;">justify-content: flex-start;</dd>
+      <hr>
+      <dd data-cssopt="justify-content: flex-end;">justify-content: flex-end;</dd>
+      <hr>
+      <dd data-cssopt="justify-content: center;">justify-content: center;</dd>
+      <hr>
+      <dd data-cssopt="align-items: flex-start;">align-items: flex-start;</dd>
+      <hr>
+      <dd data-cssopt="align-items: flex-end;">align-items: flex-end;</dd>
+      <hr>
+      <dd data-cssopt="align-items: center;">align-items: center;</dd>
+      <hr>
       <dd data-cssopt='display: grid;'>display: grid;</dd>
       <hr>
       <dd data-cssopt='grid-template-rows: repeat(2, 1fr); grid-template-columns: repeat(2, 1fr);'>grid-template: 2x2</dd>
@@ -172,6 +171,10 @@
       <hr>
       <dd data-cssopt='duplicate'>duplicate node</dd>
     </dl>
+  </div>
+  <div class="page-duplicate">
+    <a href="#">page-duplicate</a>
+    <input type="text" placeholder="New page name">
   </div>
   <template id="custom-container">
     <div class="cc-outer">
@@ -921,12 +924,11 @@
             btnEdit.remove()
           }
         }
-
       })
+      //*************MENU CONTEXTUEL
       node.addEventListener('contextmenu', ce => {
         ce.preventDefault();
         let menu = document.querySelector('.xcms-custom-menu')
-        //Créer le menu avec option duplicata
         let origin = {
           left: ce.pageX,
           top: ce.pageY
@@ -941,6 +943,8 @@
               let nodebis = node.cloneNode(true)
               node.parentElement.appendChild(nodebis)
               showBorder(nodebis)
+              menu.style.display = "none"
+              return
             }
             let random = Math.floor(Math.random()*5000)
             let contextClass = `xcms-custom_${random}`
@@ -962,7 +966,6 @@
               csseditor.insert(dd.dataset.cssopt)
             }
             menu.style.display = "none"
-            console.log(dd.dataset.cssopt)
           }
         })
       })
@@ -1309,31 +1312,52 @@
         editablePages = editablePages.filter(pageData => { if (pageData.name !== pagename) return pageData })
       })
       document.querySelector('.editables').appendChild(li)
+      a.addEventListener('contextmenu', ce=>{
+        ce.preventDefault()
+        let pageDuplicateBtn = document.querySelector('.page-duplicate')
+        let selectedPage = editablePages[ce.target.dataset.index]
+        let origin = {
+          x: ce.pageX - 20,
+          y: ce.pageY 
+        }
+        pageDuplicateBtn.style.left = origin.x + 'px'
+        pageDuplicateBtn.style.top = origin.y + 'px'
+        pageDuplicateBtn.style.display = 'block'
+        pageDuplicateBtn.addEventListener('mouseleave', ()=>{
+          pageDuplicateBtn.style.display = 'none'
+        })
+        pageDuplicateBtn.querySelector('a').onclick = (oce)=>{
+          if(pageDuplicateBtn.querySelector('input').value !== ""){
+            nouvellepage = {
+              name: pageDuplicateBtn.querySelector('input').value,
+              page: selectedPage.page,
+              js: selectedPage.js,
+              css: selectedPage.css
+            }
+            mews.emit('message', jss(nouvellepage))
+            pageDuplicateBtn.style.display = 'none'
+            window.location.href = `${window.location.origin}/admin`
+          }else{
+            let selectedPageNewName = prompt('Please enter a name for the duplicated page.')
+            if(selectedPageNewName !== ""){
+              nouvellepage = {
+                name: selectedPageNewName,
+                page: selectedPage.page,
+                js: selectedPage.js,
+                css: selectedPage.css
+              }
+              mews.emit('message', jss(nouvellepage))
+              pageDuplicateBtn.style.display = 'none'
+              window.location.href = `${window.location.origin}/admin`
+            }
+          }
+        }
+      }, false)
       li = a = span = ""
     }
   </script>
   <script>
-    // AFFICHAGE
-    document.querySelector('#backcolor-picker').addEventListener('change', (e) => {
-      console.log(e.target.value)
-      if (document.querySelector('#isActive') !== null) {
-        document.querySelector('#isActive').style.backgroundColor = e.target.value
-      }
-      if (document.querySelector('#isContainer') !== null) {
-        document.querySelector('#isContainer').style.backgroundColor = e.target.value
-      }
-    })
-
-    document.querySelector('#textcolor-picker').addEventListener('change', (e) => {
-      if (document.querySelector('#isActive') !== null) {
-        document.querySelector('#isActive').style.color = e.target.value
-      }
-      if (document.querySelector('#isContainer') !== null) {
-        document.querySelector('#isContainer').style.color = e.target.value
-      }
-    })
-  </script>
-  <script>
+    //************* version mobile
     const menubtn = document.querySelector('.first-class-editor-button')
     const editor = document.querySelector('.first-class')
     const editorMenu = document.querySelector('.first-class-editor')
@@ -1355,7 +1379,6 @@
     document.querySelector('#crenew').addEventListener('touchend', (e) => {
       e.preventDefault();
       document.querySelector('.edit-zone').innerHTML = ""
-      //IFRAME PLUS UTILISEE
       document.querySelector('.edit-zone').style.display = "block"
       menubtn.style.display = 'block'
       editor.style.display = 'block'
@@ -1373,6 +1396,7 @@
       editor.style.display = 'block'
       editorMenu.style.display = 'none'
     })
+    //****************** version mobile
   </script>
   <script>
     document.querySelector('.nav p').addEventListener('click', e => {
