@@ -1,5 +1,6 @@
 const IO = require('koa-socket-2')
 const fs = require('fs')
+const sharp = require('sharp')
 const {pagedb, menudb} = require('../cmsModels.js')
 var pagesCollection = require('../xcmsDB/pageCollection.js')
 var isIndex = require('../xcmsDB/isIndex.js')
@@ -84,13 +85,13 @@ adminSocket.on('message', async (ctx) => {
     }
   }
 })
-
-adminSocket.on('image', ctx => {
-  var newImg = fs.createWriteStream(__dirname + '/../frontend-site/imgs/' + ctx.data.name, {
-    encoding: "binary"
+let extensionCheck = /(\.(jpeg)|(png)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/
+adminSocket.on('image', ctx => { //CONVERTIR EN WEBP
+  let extensionIndex = extensionCheck.exec(ctx.data.name).index
+  let newName = ctx.data.name.slice(0, extensionIndex) + 'webp'
+  sharp(ctx.data.image).toFile(__dirname + '/../frontend-site/imgs/' + newName, (err, info)=>{
+    if(err)console.log(err)
   })
-  newImg.write(ctx.data.image)
-  newImg.end()
 })
 adminSocket.on('video', ctx => {
   var newImg = fs.createWriteStream(__dirname + '/../frontend-site/videos/' + ctx.data.name, {

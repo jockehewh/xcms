@@ -175,7 +175,7 @@ xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx => {
 
 xcms.use(r.get(/^\/imgs\/([a-zA-Z0-9_-]{2,})/, ctx => {
   let imageName = ctx.url.split('/')
-  ctx.type = 'image/*'
+  ctx.type = 'image/webp'
   ctx.body = fs.createReadStream(__dirname + '/frontend-site/imgs/' + imageName[2], {
     autoclose: true
   })

@@ -237,6 +237,7 @@
     var titre, contenu, nouvellepage;
     var imgpicker = document.querySelector('#imgpiker');
     let editablePages = []
+    let extensionCheck = /(\.(jpeg)|(png)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/
 
     crepage.addEventListener('click', e => {
       //AJOUTER L'OPTION DUPLICATA
@@ -263,7 +264,9 @@
       var imgs = document.querySelectorAll('img');
       var i = 0
       while (i <= imgs.length - 1) {
-        imgs[i].src = '/imgs/' + titresImgs[i];
+        let extensionIndex = extensionCheck.exec(titresImgs[i]).index
+        let newName = titresImgs[i].slice(0, extensionIndex) + 'webp'
+        imgs[i].src = '/imgs/' + newName;
         i++
       }
       var videos = document.querySelectorAll('video');
@@ -1248,11 +1251,14 @@
             if (/\/imgs\//.test(imgs[i].src)) {
               i++
             } else {
-              imgs[i].src = '/imgs/' + titresImgs[j];
+              let extensionIndex = extensionCheck.exec(titresImgs[j]).index
+              let newName = titresImgs[j].slice(0, extensionIndex) + 'webp'
+              imgs[i].src = '/imgs/' + newName;
               i++
               j++
             }
           }
+
           var videos = document.querySelectorAll('video');
           var k = l = 0
           while (k <= videos.length - 1) {
