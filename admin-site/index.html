@@ -981,6 +981,12 @@
         })
       })
     }
+    //*************HIDE CONTEXT MENU IF VISIBLE
+    document.querySelector("main").addEventListener('click', (e)=>{
+      let menu = document.querySelector('.xcms-custom-menu')
+      if(menu.style.display === "block") menu.style.display = "none"
+    })
+
 
     //*************CREATE CUSTOM CONTAINER
     function customContainer() {
@@ -1122,7 +1128,7 @@
     csseditor.setOptions({
       enableBasicAutocompletion: true,
       enableSnippets: true,
-      enableLiveAutocompletion: false
+      enableLiveAutocompletion: true
     })
     let jseditor = ace.edit('js-editor')
     jseditor.setTheme("ace/theme/monokai")
@@ -1133,7 +1139,7 @@
     jseditor.setOptions({
       enableBasicAutocompletion: true,
       enableSnippets: true,
-      enableLiveAutocompletion: false
+      enableLiveAutocompletion: true
     })
     document.querySelectorAll('.ace-editor-block a').forEach(btn => {
       btn.addEventListener('click', e => {
@@ -1173,6 +1179,38 @@
           document.querySelector('#css-editor').style.display = "none"
         }
       })
+    })
+    //******************APPLY AND CLOSE ON CTRL+S
+    document.body.addEventListener('keydown', keyEvent=>{
+      if(keyEvent.key === "Alt"){
+        altKey = true
+      }
+      if(keyEvent.key === "Enter" && altKey){
+        let parser = new cssjs()
+        let pageCSS = csseditor.getValue()
+        let parsed = parser.parseCSS(pageCSS)
+        parsed.forEach(cssSelector => {
+          let selectedStyle = cssSelector.rules.map(rule => {
+            return `${rule.directive}:${rule.value};`
+          })
+          if (document.querySelector('.re-edit-zone')) {
+            document.querySelector('.re-edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+              existent.setAttribute('style', selectedStyle.join(''))
+            })
+          } else {
+            document.querySelector('.edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+              existent.setAttribute('style', selectedStyle.join(''))
+            })
+          }
+        })
+      }
+    })
+    let altKey = false
+    document.body.addEventListener('keyup', keyEvent=>{
+      keyEvent.preventDefault()
+      if(keyEvent.key === "Alt"){
+        altKey = false
+      }
     })
     //******************CREATE EDITABLE PAGES LINKS
     function createEditablesPageLinks(onePage) {

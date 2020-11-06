@@ -24,6 +24,97 @@ snippet f(\n\
 	(function(${1}) {\n\
 		${0:${TM_SELECTED_TEXT:/* code */}}\n\
 	}(${1}));\n\
+# DOM\n\
+# DOM\n\
+# DOM\n\
+# DOM\n\
+# DOM\n\
+# DOMWORDS\n\
+snippet contains\n\
+	contains\n\
+snippet document\n\
+	document\n\
+snippet find\n\
+	find((${0:element})=>{\n\
+		element == element \n\
+	})\n\
+snippet location\n\
+	location\n\
+snippet on\n\
+	on\n\
+snippet origin\n\
+	origin\n\
+snippet prompt\n\
+	prompt('${0:question}')\n\
+snippet push\n\
+	push\n\
+snippet pop\n\
+	pop\n\
+snippet remove\n\
+	remove()\n\
+snippet style\n\
+	style\n\
+snippet target\n\
+	target\n\
+snippet window\n\
+	window\n\
+# DOMWORDS\n\
+# DOMMANIPULATION\n\
+snippet currentTarget\n\
+	currentTarget\n\
+snippet importNode\n\
+	importNode\n\
+snippet cloneNode\n\
+	cloneNode(true)\n\
+snippet preventDefault\n\
+	preventDefault()\n\
+snippet stopPropagation\n\
+	stopPropagation()\n\
+snippet stopImmediatePropagation\n\
+	stopImmediatePropagation()\n\
+snippet querySelector\n\
+	querySelector('${0:selector}')\n\
+snippet querySelectorAll\n\
+	querySelectorAll('${0:selector}')\n\
+snippet addEventListener\n\
+	addEventListener('${0:eventType}', (${1:event})=>{\n\
+		${2:/* Code */}\n\
+	})\n\
+snippet removeEventListener\n\
+	removeEventListener('${0:eventType}', (${1:event})=>{\n\
+		${2:/* Code */}\n\
+	})\n\
+snippet createElement\n\
+	createElement('${0:NodeType}')\n\
+snippet getAttribute\n\
+	getAttribute('${0:element}')\n\
+snippet hasChildNodes\n\
+	hasChildNodes()\n\
+snippet setAttribute\n\
+	setAttribute('${0:element}', '${1:index}')\n\
+snippet getBoundingClientRect\n\
+	getBoundingClientRect()\n\
+snippet appendChild\n\
+	appendChild(${0:element})\n\
+snippet dataset\n\
+	dataset\n\
+snippet replaceWith\n\
+	replaceWith\n\
+# DOM\n\
+# DOM\n\
+# LOOPS\n\
+# LOOPS\n\
+# LOOPS\n\
+snippet forEach\n\
+	forEach((${0:element}, ${1:index})=>{\n\
+		${2:/* Code */}\n\
+	})\n\
+snippet map\n\
+	map((${0:element}, ${1:index})=>{\n\
+		${2:/* Code */}\n\
+	})\n\
+# LOOPS\n\
+# LOOPS\n\
 # if\n\
 snippet if\n\
 	if (${1:true}) {\n\

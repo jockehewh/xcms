@@ -384,6 +384,8 @@ snippet d:mis\n\
 	display: -moz-inline-stack;\n\
 snippet d:b\n\
 	display: block;\n\
+snippet d:f\n\
+	display: flex;\n\
 snippet d:cp\n\
 	display: compact;\n\
 snippet d:ib\n\

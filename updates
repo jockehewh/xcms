@@ -1,9 +1,11 @@
 latest update:
 
 Adds:
-  -
+  -Context menu.
+  -keyboard shortcut (Alt+Enter) to apply custom css without closing the editor.
+  -added new snippets to the autocompletion.
 Changes:
-  -now converts all images to webp 
-BugFixes:
   -
+BugFixes:
+  -you can now close the contextual menu without selecting an option
   
