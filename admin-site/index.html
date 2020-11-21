@@ -252,12 +252,85 @@
           existent.setAttribute('style', selectedStyle.join(''))
         })
       })
+      /* 
+        DANS LA SECTION CREER LE HTML CREER LE TEMPLATEUR
+        ET CREER UNE FONCTION HELPER DANS LE FICHIER JS
+        EASY
+      */
       document.querySelector('.edit-zone').childNodes.forEach(node => {
         if (node instanceof HTMLElement) {
           if (node.hasAttribute('class')) {
             if (node.className !== "xcms-img" && node.className !== "xcms-video") {
               node.removeAttribute('contenteditable')
             }
+          }
+          if(node.dataset.willRepeat === "true"){
+            node.querySelectorAll('[data-is-repeatable]').forEach(repeatable=>{
+              /* 
+              DESTRUCTURER LE REPETABLE EN OBJET
+              CREER UN MARQUAGE POUR LES CLEFS DYNAMIC
+        GENERER UN ID UNIQUE ET BINDER LA FONCTION DESSUS
+               */
+              let repeatableHTML = repeatable.outerHTML
+              let randomized = makeRandom(10)
+              let repeaterUniqueID = "xcms-repeater-"+randomized
+              let repeatableUniqueFunctionID = "xcmsRepeatable_"+randomized
+              let parentElementUniqueFunctionID = "xcmsRepeater_"+randomized
+              node.classList.add(repeaterUniqueID)
+              //let hasCustomClass = node.classList.value.match(/xcmsRepeat_[0-9]{0,10}/)
+              let parsedKeys = repeatableHTML.match(/::[a-zA-Z0-9_-]{0,10}::/gm)
+              let count = 0
+              parsedKeys.forEach(key=>{
+                while(repeatableHTML.includes(key)){
+                  repeatableHTML = repeatableHTML.replace(key, `::parameter_${count}::`)
+                }
+                count++
+              })
+              let parsedNewKeys = repeatableHTML.match(/::(parameter_[0-9]){0,10}::/gm)
+              count = 0
+              let variablesBinding = []
+              parsedNewKeys.forEach(key=>{
+                while(repeatableHTML.includes(key)){
+                  repeatableHTML = repeatableHTML.replace(key, "${parameter"+count+"}")
+                }
+                if(variablesBinding.indexOf("const parameter"+count+" = ''\n") === -1){
+                  //FIXER LE NOMBRE PARAMETRES
+                  console.log("const parameter"+count+" = ''\n")
+                  variablesBinding.push("const parameter"+count+" = ''\n")
+                  count++
+                }
+                
+              })
+              let templateFunction = `\n
+const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
+const ${parentElementUniqueFunctionID} = (someData)=>{
+  someData.forEach(bitOfData=>{
+    ${repeatableUniqueFunctionID}(htmlReference${randomized}, bitOfData, "time", false)
+  })
+}
+const ${repeatableUniqueFunctionID} = (parent, one, or, more, arguments)=>{
+  ${variablesBinding.join('')}
+  const htmlTemplate = \`${repeatableHTML}\`
+  arguments.forEach((arg, i)=>{
+    if(i != 0){
+      //assign arg to "parameter"+i
+    }
+    
+  })
+  let div = document.createElement('div')
+  div.innerHtml = htmlTemplate
+  htmlReference${randomized}.appendChild(div)
+}
+`
+              jseditor.navigateFileEnd()
+              jseditor.navigateLineEnd()
+              jseditor.insert('\n')
+              jseditor.insert(templateFunction)
+
+              /* 
+              FIN DE LA CREATION DE TEMPLATE REPETABLES
+               */
+            })
           }
         }
       })
@@ -907,6 +980,12 @@
         if (document.body.querySelector('.remove')) {
           document.body.querySelector('.remove').remove()
         }
+        if(document.body.querySelector('.will-repeat')){
+          document.body.querySelector('.will-repeat').remove()
+        }
+        if(document.body.querySelector('.is-repeatable')){
+          document.body.querySelector('.is-repeatable').remove()
+        }
         if (!document.body.querySelector('.remove')) {
           let div = document.createElement('div')
           let btnEdit = document.createElement('button')
@@ -939,6 +1018,39 @@
           if (node.classList.contains("xcms-img") || node.classList.contains("xcms-video")) {
             btnEdit.remove()
           }
+          let btnWillRepeat = document.createElement("button")
+          let btnIsRepeatable = document.createElement("button")
+          btnWillRepeat.innerText = "make container"
+          btnIsRepeatable.innerText = "is repeatable"
+          btnWillRepeat.classList.add("will-repeat")
+          btnIsRepeatable.classList.add("is-repeatable")
+          div.appendChild(btnWillRepeat)
+          div.appendChild(btnIsRepeatable)
+          btnWillRepeat.addEventListener('click', (e)=>{
+            //TOGGLE
+            e.preventDefault()
+          if(node.dataset.willRepeat !== "true"){
+            node.dataset.willRepeat = true
+          }else{
+            node.dataset.willRepeat = false
+          }
+            div.remove()
+          })
+          btnIsRepeatable.addEventListener('click', (e)=>{
+            e.preventDefault()
+            if(node.parentElement.classList.contains('edit-zone') || node.dataset.willRepeat !== "true"){
+              alert("You can not spawn a repatable element outside of a container.")
+              return
+            }
+            node.childNodes[0].dataset.isRepeatable = true
+            div.remove()
+            /* 
+            DANS LA SECTION CREER LE HTML CREER LE TEMPLATEUR
+            ET CREER UNE FONCTION HELPER DANS LE FICHIER JS
+            EASY
+            GENERER UN ID UNIQUE ET BINDER LA FONCTION DESSUS
+             */
+            })
         }
       })
       //*************MENU CONTEXTUEL
@@ -1411,6 +1523,10 @@
         }
       }, false)
       li = a = span = ""
+    }
+    //*************** generate random
+    const makeRandom = (seed) =>{
+      return Math.floor(Math.random() * seed * 1000)
     }
   </script>
   <script>
