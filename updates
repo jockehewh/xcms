@@ -1,11 +1,10 @@
 latest update:
 
 Adds:
-  -Context menu.
-  -keyboard shortcut (Alt+Enter) to apply custom css without closing the editor.
-  -added new snippets to the autocompletion.
+  -exports databases
+  -import databases
 Changes:
   -
 BugFixes:
-  -you can now close the contextual menu without selecting an option
+  -now closing the main websocket when navigating to the CRM
   

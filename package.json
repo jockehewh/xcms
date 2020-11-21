@@ -15,7 +15,9 @@
   "author": "Xavier bélénus <xavier.belenus@gmail.com>",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
+    "archiver": "^5.1.0",
     "bcrypt": "^3.0.8",
+    "extract-zip": "^2.0.1",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",
     "koa-bodyparser": "^4.2.1",

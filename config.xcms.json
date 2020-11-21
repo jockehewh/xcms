@@ -6,5 +6,6 @@
     "useFindAndModify": false,
     "useUnifiedTopology": true
      },
-  "passportKeys": "xavier-cms-key"
+  "passportKeys": "xavier-cms-key",
+  "gtag": ""
 }

@@ -1452,6 +1452,9 @@
   </script>
   <script>
     document.querySelector('.nav p').addEventListener('click', e => {
+      if(mews != ""){
+        mews.close()
+      }
       document.body.appendChild(document.querySelector('#crm-body').content.cloneNode(true))
     })
   </script>
@@ -1554,7 +1557,9 @@
           <li><a href="#" data-link="conf">Email configuration</a></li><br>
           <li><a href="#" data-link="emails">Send emails</a></li><br>
           <li><a href="#" data-link="addAdmin">Add an admin</a></li><br>
-          <li><a href="#" data-link="changePassword">Change an admin's password</a></li>
+          <li><a href="#" data-link="changePassword">Change an admin's password</a></li><br>
+          <li><a href="#" class="export-btn" data-link="exportConfig">Export database</a></li><br>
+          <li><a href="#" class="import-btn" data-link="importConfig">Import database</a></li>
         </ul>
       </div>
       <div class="configuration-block">
@@ -1759,6 +1764,35 @@
           setTimeout(function () {
             p.remove()
           }, 3000)
+        })
+        document.querySelector(".export-btn").addEventListener('click', (e)=>{
+          crms.emit("message", jss({exportPages: true}))
+        })
+        crms.on('export-complete', async (data)=>{
+          let exportBlob = await new Blob([data]);
+          let dataUrl = URL.createObjectURL(exportBlob)
+          let a = document.createElement('a')
+          a.innerText = "xcmsExport"
+          a.download = "xcmsExport.zip"
+          a.href = dataUrl
+          document.querySelector('.minimenu').appendChild(a)
+          a.click()
+          a.remove()
+        })
+        document.querySelector(".import-btn").addEventListener('click', (e)=>{
+          //ajouter un input type fichier 
+          let fileInput = document.createElement('input')
+          fileInput.type = 'file'
+          fileInput.multiple = false
+          fileInput.accept = "application/zip"
+          document.querySelector('.minimenu').appendChild(fileInput)
+          fileInput.addEventListener('change', (e)=>{
+            console.log(e.currentTarget.files[0])
+            crms.emit("importing", e.currentTarget.files[0])
+          })
+        })
+        crms.on('import-complete', data=>{
+          window.location.href = window.location.origin
         })
       </script>
     </div>
