@@ -6,7 +6,7 @@ var pagesCollection = require('../xcmsDB/pageCollection.js')
 var isIndex = require('../xcmsDB/isIndex.js')
 let gtag = ''
 try {
-    const env = fs.readFileSync('./../config.xcms.json')
+    const env = fs.readFileSync('./config.xcms.json')
     let temp = JSON.parse(env)
     gtag = temp.gtag
 } catch {

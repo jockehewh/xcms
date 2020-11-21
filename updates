@@ -3,6 +3,8 @@ latest update:
 Adds:
   -exports databases
   -import databases
+  -exports medias
+  -import medias
 Changes:
   -
 BugFixes:

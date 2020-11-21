@@ -7,7 +7,7 @@ const { userdb, admindb } = require('../cmsModels.js')
 const nodemailer = require('nodemailer')
 let mongoURI = ''
 try {
-    const env = fs.readFileSync('./../config.xcms.json')
+    const env = fs.readFileSync('./config.xcms.json')
     let temp = JSON.parse(env)
     mongoURI = temp.mongoURI
 } catch {
@@ -126,6 +126,19 @@ crmSocket.on('message', async (ctx) => {
             }
         })
     }
+    if (datainfo.exportMedias) {
+        const out = fs.createWriteStream(__dirname + '/../xcmsMediaExport.zip')
+        var archive = archiver('zip', { zlib: { level: 9 } });
+        out.on('close', function () {
+            fs.readFile(__dirname + "/../xcmsMediaExport.zip", function (err, data) {
+                if (err) { console.log(err) }
+                ctx.socket.emit('export-media-complete', data)
+            })
+        });
+        archive.pipe(out);
+        archive.directory('frontend-site/', false)
+        archive.finalize();
+    }
 })
 
 crmSocket.on("importing", async (ctx) =>{
@@ -139,6 +152,15 @@ crmSocket.on("importing", async (ctx) =>{
         importAction.on("close", (ec)=>{
             ctx.socket.emit('import-complete', "")
         })
+    })
+})
+crmSocket.on("importing-medias", async (ctx) =>{
+    let importedFile = fs.createWriteStream(__dirname + '/../xcmsMediaExport.zip', {autoClose: true})
+    importedFile.write(ctx.data)
+    importedFile.end()
+    importedFile.on('close', async function(){
+        await extract(__dirname + '/../xcmsMediaExport.zip', {dir: __dirname + "/../frontend-site"})
+        ctx.socket.emit('import-media-complete', "")
     })
 })
 
