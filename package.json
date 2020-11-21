@@ -16,7 +16,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "archiver": "^5.1.0",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "extract-zip": "^2.0.1",
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",
