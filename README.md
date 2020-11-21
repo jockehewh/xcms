@@ -29,7 +29,8 @@ create a `config.xcms.json` file at the root of your project and follow this mod
     "useFindAndModify": false,
     "useUnifiedTopology": true
      },
-  "passportKeys": "xavier-cms-key"
+  "passportKeys": "xavier-cms-key",
+  "gtag": "MY-GA-ID"
 }
 ```
 

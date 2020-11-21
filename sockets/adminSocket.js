@@ -4,7 +4,16 @@ const sharp = require('sharp')
 const {pagedb, menudb} = require('../cmsModels.js')
 var pagesCollection = require('../xcmsDB/pageCollection.js')
 var isIndex = require('../xcmsDB/isIndex.js')
-
+let gtag = ''
+try {
+    const env = fs.readFileSync('./../config.xcms.json')
+    let temp = JSON.parse(env)
+    gtag = temp.gtag
+} catch {
+    const defaultConfig = fs.readFileSync(__dirname + '/../config.xcms.json')
+    let temp = JSON.parse(defaultConfig)
+    gtag = temp.gtag
+}
 const adminSocket = new IO({
   namespace: 'asocket'
 })
@@ -44,6 +53,9 @@ adminSocket.on('message', async (ctx) => {
           ctx.socket.emit('menulist', JSON.stringify(res))
         }
       })
+    }
+    if(datainfo.getgtag){
+      ctx.socket.emit('gtag', {gtag:gtag})
     }
     if(datainfo.menu){
       let newMenu = new menudb({

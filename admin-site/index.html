@@ -286,9 +286,9 @@
         titre = prompt("Please enter a name for your new page.")
       }
 
-      if (confirm('I have a Google analytics ID?')) {
+      if (localStorage.gtag != "") {
         //TODO workerjs
-        googleTag = prompt('My Google Analytics ID is: ')
+        googleTag = localStorage.gtag
         contenu =
           `<!DOCTYPE html>
                     <html lang="en">
@@ -623,6 +623,11 @@
     mews.emit('message', jss({menulist: 1}))
     mews.on('menulist', data=>{
       localStorage.mymenus = data
+    })
+    //***************GET GTAG
+    mews.emit('message', jss({getgtag: 1}))
+    mews.on('gtag', data=>{
+      localStorage.gtag = data.gtag
     })
     //***************LIVE ON PAGE LIVE
     document.querySelector('.edit-zone').addEventListener('dblclick', function (e) {
