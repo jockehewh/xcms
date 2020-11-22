@@ -1,12 +1,9 @@
 latest update:
 
 Adds:
-  -exports databases
-  -import databases
-  -exports medias
-  -import medias
+  -ajout de smart template
 Changes:
   -
 BugFixes:
-  -now closing the main websocket when navigating to the CRM
+  -
   

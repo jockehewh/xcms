@@ -62,6 +62,7 @@
             flex:1 1 0%;
           }
         </style>
+        
       </div>
       <div class="maFrame">
 
@@ -240,7 +241,6 @@
     let extensionCheck = /(\.(jpeg)|(png)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/
 
     crepage.addEventListener('click', e => {
-      //AJOUTER L'OPTION DUPLICATA
       let parser = new cssjs()
       const pageCSS = csseditor.getValue()
       let parsed = parser.parseCSS(pageCSS)
@@ -252,85 +252,12 @@
           existent.setAttribute('style', selectedStyle.join(''))
         })
       })
-      /* 
-        DANS LA SECTION CREER LE HTML CREER LE TEMPLATEUR
-        ET CREER UNE FONCTION HELPER DANS LE FICHIER JS
-        EASY
-      */
       document.querySelector('.edit-zone').childNodes.forEach(node => {
         if (node instanceof HTMLElement) {
           if (node.hasAttribute('class')) {
             if (node.className !== "xcms-img" && node.className !== "xcms-video") {
               node.removeAttribute('contenteditable')
             }
-          }
-          if(node.dataset.willRepeat === "true"){
-            node.querySelectorAll('[data-is-repeatable]').forEach(repeatable=>{
-              /* 
-              DESTRUCTURER LE REPETABLE EN OBJET
-              CREER UN MARQUAGE POUR LES CLEFS DYNAMIC
-        GENERER UN ID UNIQUE ET BINDER LA FONCTION DESSUS
-               */
-              let repeatableHTML = repeatable.outerHTML
-              let randomized = makeRandom(10)
-              let repeaterUniqueID = "xcms-repeater-"+randomized
-              let repeatableUniqueFunctionID = "xcmsRepeatable_"+randomized
-              let parentElementUniqueFunctionID = "xcmsRepeater_"+randomized
-              node.classList.add(repeaterUniqueID)
-              //let hasCustomClass = node.classList.value.match(/xcmsRepeat_[0-9]{0,10}/)
-              let parsedKeys = repeatableHTML.match(/::[a-zA-Z0-9_-]{0,10}::/gm)
-              let count = 0
-              parsedKeys.forEach(key=>{
-                while(repeatableHTML.includes(key)){
-                  repeatableHTML = repeatableHTML.replace(key, `::parameter_${count}::`)
-                }
-                count++
-              })
-              let parsedNewKeys = repeatableHTML.match(/::(parameter_[0-9]){0,10}::/gm)
-              count = 0
-              let variablesBinding = []
-              parsedNewKeys.forEach(key=>{
-                while(repeatableHTML.includes(key)){
-                  repeatableHTML = repeatableHTML.replace(key, "${parameter"+count+"}")
-                }
-                if(variablesBinding.indexOf("const parameter"+count+" = ''\n") === -1){
-                  //FIXER LE NOMBRE PARAMETRES
-                  console.log("const parameter"+count+" = ''\n")
-                  variablesBinding.push("const parameter"+count+" = ''\n")
-                  count++
-                }
-                
-              })
-              let templateFunction = `\n
-const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
-const ${parentElementUniqueFunctionID} = (someData)=>{
-  someData.forEach(bitOfData=>{
-    ${repeatableUniqueFunctionID}(htmlReference${randomized}, bitOfData, "time", false)
-  })
-}
-const ${repeatableUniqueFunctionID} = (parent, one, or, more, arguments)=>{
-  ${variablesBinding.join('')}
-  const htmlTemplate = \`${repeatableHTML}\`
-  arguments.forEach((arg, i)=>{
-    if(i != 0){
-      //assign arg to "parameter"+i
-    }
-    
-  })
-  let div = document.createElement('div')
-  div.innerHtml = htmlTemplate
-  htmlReference${randomized}.appendChild(div)
-}
-`
-              jseditor.navigateFileEnd()
-              jseditor.navigateLineEnd()
-              jseditor.insert('\n')
-              jseditor.insert(templateFunction)
-
-              /* 
-              FIN DE LA CREATION DE TEMPLATE REPETABLES
-               */
-            })
           }
         }
       })
@@ -962,6 +889,10 @@ const ${repeatableUniqueFunctionID} = (parent, one, or, more, arguments)=>{
     }
     //*************SHOW BORDER
     function showBorder(node) {
+      /* 
+      AJOUTER UN BOUTTON SELECTIONNER PROCHAIN ELEMENT
+      AVEC UNE LISTE DES ELEMENT HIERARCHIQUEMENT
+       */
       node.addEventListener('mouseover', () => {
         if (node.querySelector('.ql-editor')) return
         node.id = "isHover"
@@ -1020,12 +951,16 @@ const ${repeatableUniqueFunctionID} = (parent, one, or, more, arguments)=>{
           }
           let btnWillRepeat = document.createElement("button")
           let btnIsRepeatable = document.createElement("button")
+          let generateSnippet = document.createElement("button")
           btnWillRepeat.innerText = "make container"
-          btnIsRepeatable.innerText = "is repeatable"
+          btnIsRepeatable.innerText = "make repeatable"
+          generateSnippet.innerText = "generate snippet"
           btnWillRepeat.classList.add("will-repeat")
           btnIsRepeatable.classList.add("is-repeatable")
+          generateSnippet.classList.add('generate-snippet')
           div.appendChild(btnWillRepeat)
           div.appendChild(btnIsRepeatable)
+          div.appendChild(generateSnippet)
           btnWillRepeat.addEventListener('click', (e)=>{
             //TOGGLE
             e.preventDefault()
@@ -1044,15 +979,94 @@ const ${repeatableUniqueFunctionID} = (parent, one, or, more, arguments)=>{
             }
             node.childNodes[0].dataset.isRepeatable = true
             div.remove()
-            /* 
-            DANS LA SECTION CREER LE HTML CREER LE TEMPLATEUR
-            ET CREER UNE FONCTION HELPER DANS LE FICHIER JS
-            EASY
-            GENERER UN ID UNIQUE ET BINDER LA FONCTION DESSUS
-             */
-            })
+          })
+          generateSnippet.addEventListener('click', (e)=>{
+            startLinking(node)
+          })
         }
       })
+      //***************CREATION DES DIFERENTES FONCTIONS
+      let linkedFunctions = []
+      const startLinking = (node)=>{
+        if(linkedFunctions.length === 0 && node.dataset.willRepeat === "true") {
+          createLinkingFunction(node)
+        }
+        if(node.dataset.willRepeat === "true"){
+          linkedFunctions.forEach(linkedFunction=>{
+            if(document.querySelector('.'+linkedFunction)){
+              return
+            }else{
+              createLinkingFunction(node)
+            }
+          })
+        }
+      }
+      const createLinkingFunction = (node)=>{
+        node.querySelectorAll('[data-is-repeatable]').forEach(repeatable=>{
+          let repeatableHTML = repeatable.outerHTML
+          let randomized = makeRandom(10)
+          if(linkedFunctions.indexOf("xcms-repeater-"+randomized) !== -1) return
+          let repeaterUniqueID = "xcms-repeater-"+randomized
+          let repeatableUniqueFunctionID = "xcmsRepeatable_"+randomized
+          let parentElementUniqueFunctionID = "xcmsRepeater_"+randomized
+          linkedFunctions.push(repeaterUniqueID)
+          node.classList.add(repeaterUniqueID)
+          let parsedKeys = repeatableHTML.match(/::[a-zA-Z0-9_-]{0,10}::/gm)
+          let count = 0
+          parsedKeys.forEach(key=>{
+            while(repeatableHTML.includes(key)){
+              repeatableHTML = repeatableHTML.replace(key, `::parameter_${count}::`)
+            }
+            count++
+          })
+          let parsedNewKeys = repeatableHTML.match(/::(parameter_[0-9]){0,10}::/gm)
+          let countr = 0
+          let variablesBinding = []
+          let checkDuplicate = []
+          parsedNewKeys.forEach(key=>{
+            let currentParameterName = "parameter"+countr
+            while(repeatableHTML.includes(key)){
+              repeatableHTML = repeatableHTML.replace(key, "${"+currentParameterName+"}")
+            }
+            if(checkDuplicate.indexOf(key) === -1){
+              console.log("const parameter"+countr+" = ''")
+              variablesBinding.push("const "+currentParameterName+" = ''\n")
+              checkDuplicate.push(key)
+              countr++
+            }else{}
+          })
+          let templateFunction = `\n
+const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
+const ${parentElementUniqueFunctionID} = (someData)=>{
+someData.forEach(bitOfData=>{
+/* YOUR CODE GOES HERE */
+${repeatableUniqueFunctionID}(bitOfData, "time", "and", "more")
+})
+}
+const ${repeatableUniqueFunctionID} = (bitOfData, or, more)=>{
+/* YOUR CODE GOES HERE */
+${variablesBinding.join('')}
+/* YOUR CODE GOES HERE */
+const htmlTemplate = \`${repeatableHTML}\`
+arguments.forEach((arg, i)=>{
+/* YOUR CODE GOES HERE */
+})
+let div = document.createElement('div')
+div.innerHtml = htmlTemplate
+htmlReference${randomized}.appendChild(div)
+}
+`
+        jseditor.navigateFileEnd()
+        jseditor.navigateLineEnd()
+        jseditor.insert('\n')
+        jseditor.insert(templateFunction)
+        jseditor.navigateFileEnd()
+        /* 
+        FIN DE LA CREATION DE TEMPLATE REPETABLES
+          */
+        })
+      }
+
       //*************MENU CONTEXTUEL
       node.addEventListener('contextmenu', ce => {
         ce.preventDefault();

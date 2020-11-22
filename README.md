@@ -145,3 +145,25 @@ bellow the workspace you have two buttons one for editing CSS and one for editin
 each button works as follow:
 * click the button to open the code editor
 * double click the same button to close the editor.
+
+##### Generating Javascript Snippets step by step
+
+__Activating a container component:__
+To activate a container component click it in the viewport. Some options will appear on the right.
+Click the __make container__ button, it will make the container a "repeater" element.
+
+__Adding one or more repeatable element(s):__
+With a repeater container selected, add or drag&drop an other container inside of it and select it with a click and click the __is repeatable__ button.
+
+
+__Using the smart templates system:__
+If you encase a ::string:: in the content of your "repetable" element it will be treated as a function parametre during the creation of the code snippet.
+
+__Generate the Javasvript snippet:__
+With a repeater container selected click on the __generate snippet__ button
+Then open the built-in Javascript editor to see your new functions.
+
+##### Generating CSS Snippets in 1 step
+
+To add your CSS in an easy way you can right-click on the element you focus and select one css attributes. open the built-in CSS editor to edit your CSS.
+nb. you can select many attributes for one element and they will be added into the associated CSS rule.
