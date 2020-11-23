@@ -156,6 +156,7 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
 }
 .xcms-div{
     min-height: 60px;
+    min-width: 100%;
 }
 .xcms-menu li a{
     color: #448aff !important;
@@ -368,6 +369,18 @@ input:checked + .slider:before {
     color: #448aff;
     border-color: #448aff;
     border-radius: 10px;
+}
+.tree-view{
+    position: absolute
+}
+.tree-view dl{
+    margin: auto;
+}
+.tree-view dt{
+    margin: auto;
+}
+.tree-view dd{
+    margin-left: 8px;
 }
 @media only screen and (max-width: 411px){
     .first-class-editor{

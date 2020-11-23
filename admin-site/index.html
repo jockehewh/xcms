@@ -887,6 +887,62 @@
         node.innerHTML = document.querySelector('.ql-editor').innerHTML
       })
     }
+    //*************MAKE TREE VIEW
+    function makeTreeView(node){
+      function makeSubLevel(subNode, c){
+        incrementableId++
+        let subLevelx = document.createElement('dl')
+        let subLeveldd;
+        let subNodes = subNode.children
+        subLevelx.id = incrementableId
+        if(subNode.childElementCount > 0){
+          for (let sbnd of subNodes){
+            console.log(sbnd)
+            subLeveldd = document.createElement('dt')
+            subLevelx.innerText = incrementableId
+            subLeveldd.id = incrementableId
+            subLevelx.appendChild(subLeveldd)
+            let nextSubLevel = makeSubLevel(sbnd, subLeveldd)
+            c.appendChild(nextSubLevel)
+          }
+        }else{
+          subLeveldd = document.createElement('dd')
+          subLeveldd.id = incrementableId
+          subLeveldd.innerText = incrementableId
+          subLevelx.appendChild(subLeveldd)
+        }
+        return subLevelx
+      }
+      let treeLevelMaker = {}
+      let incrementableId = 1000
+      let childNds = node.children
+      let div = document.createElement('dl')
+      let firstNode = document.createElement('dt')
+      firstNode.id = incrementableId
+      firstNode.innerText = incrementableId
+      incrementableId++
+      document.querySelector('main.mw-100').appendChild(div)
+      div.appendChild(firstNode)
+      div.classList.add('tree-view')
+      let subLevel;
+      for (let nd of childNds){
+        treeLevelMaker[incrementableId] = nd.cloneNode(true)
+        if(nd.childElementCount > 0){
+          subLevel = document.createElement('dt')
+          let anotherLevel = makeSubLevel(nd, sublevel)
+          div.appendChild(subLevel)
+        }else{
+          subLevel = document.createElement('dd')
+          subLevel.id = incrementableId
+          subLevel.innerText = incrementableId
+          incrementableId++
+          div.appendChild(subLevel)
+        }
+        /* 
+        POUR CHAQUE NODE CREER UN CLONE
+         */
+      }
+    }
     //*************MAKE BORDER COLOR
     function makeBorderColor(node){
       node.style.borderColor = '#' + Math.floor(Math.random()*16777215).toString(16);
@@ -904,10 +960,6 @@
         e.cancelBubble = true
         let xnode = e.target
         CurrentlyHoveredElement.push(e.target)
-        if(node.childElementsCount === 0){
-          console.log(xnode)
-        }
-        console.log(xnode)
         if (node.querySelector('.ql-editor')) return
         node.id = "isHover"
       })
@@ -922,7 +974,10 @@
         })
         node = CurrentlyHoveredElement.pop()
         CurrentlyHoveredElement.length = 0
-        node.id = 'isActive'
+        document.querySelectorAll('#isHover').forEach(n=>{
+          n.id = ""
+        })
+        node.id = 'isHover'
         if (node.querySelector('.ql-editor')) return
         node.classList.add('isSelected')
         if (document.body.querySelector('.container-editor-options')) {
@@ -1002,6 +1057,14 @@
           })
           generateSnippet.addEventListener('click', (e)=>{
             startLinking(node)
+          })
+          let btnTree = document.createElement('button')
+          btnTree.innerText = "make tree view"
+          btnTree.style.marginLeft = "1rem"
+          btnTree.style.padding = "4px"
+          div.appendChild(btnTree)
+          btnTree.addEventListener('click', ()=>{
+            makeTreeView(node)
           })
         }
       })
@@ -1169,6 +1232,8 @@ htmlReference${randomized}.appendChild(div)
             rightDiv.style.flexDirection = 'column'
             leftDiv.style.alignItems = 'center'
             rightDiv.style.alignItems = 'center'
+            leftDiv.style.minWidth = '60px'
+            rightDiv.style.minWidth = '60px'
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
             xAppend(div)
@@ -1191,6 +1256,8 @@ htmlReference${randomized}.appendChild(div)
             rightDiv.style.flexDirection = 'column'
             leftDiv.style.alignItems = 'center'
             rightDiv.style.alignItems = 'center'
+            leftDiv.style.minWidth = '60px'
+            rightDiv.style.minWidth = '60px'
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
             xAppend(div)
@@ -1213,6 +1280,8 @@ htmlReference${randomized}.appendChild(div)
             rightDiv.style.flexDirection = 'column'
             leftDiv.style.alignItems = 'center'
             rightDiv.style.alignItems = 'center'
+            leftDiv.style.minWidth = '60px'
+            rightDiv.style.minWidth = '60px'
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
             xAppend(div)
@@ -1240,6 +1309,9 @@ htmlReference${randomized}.appendChild(div)
             middleDiv.style.alignItems = 'center'
             leftDiv.style.alignItems = 'center'
             rightDiv.style.alignItems = 'center'
+            leftDiv.style.minWidth = '60px'
+            rightDiv.style.minWidth = '60px'
+            middleDiv.style.minWidth = '60px'
             div.appendChild(leftDiv)
             div.appendChild(middleDiv)
             div.appendChild(rightDiv)
