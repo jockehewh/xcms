@@ -146,6 +146,9 @@ each button works as follow:
 * click the button to open the code editor
 * double click the same button to close the editor.
 
+__inlining CSS__
+after editing you CSS press 'Alt+Enter' to inline it into the HTML elements.
+
 ##### Generating Javascript Snippets step by step
 
 __Activating a container component:__
@@ -167,3 +170,7 @@ Then open the built-in Javascript editor to see your new functions.
 
 To add your CSS in an easy way you can right-click on the element you focus and select one css attributes. open the built-in CSS editor to edit your CSS.
 nb. you can select many attributes for one element and they will be added into the associated CSS rule.
+
+__use custom fonts__
+to use custom fonts, import it via CDN.
+use an '@import' statement at the top of your CSS file.

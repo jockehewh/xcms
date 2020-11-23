@@ -29,7 +29,7 @@
 }
 #isActive{}
 #isHover{
-    border: solid var(--bleu-indigo-eclatant) 2px;
+    border: solid var(--bleu-indigo-eclatant) 8px;
 }
 a{
     cursor:pointer;
@@ -354,6 +354,20 @@ input:checked + .slider:before {
     background-color: #fff;
     padding: 5px;
     border: solid 1px #448aff;
+}
+.container-editor-options{
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    height: 60px;
+    padding: 1rem;
+    align-items: center;
+}
+.container-editor-options button{
+    background: transparent;
+    color: #448aff;
+    border-color: #448aff;
+    border-radius: 10px;
 }
 @media only screen and (max-width: 411px){
     .first-class-editor{

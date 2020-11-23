@@ -446,7 +446,7 @@
                   img.id = ""
                   img = ''
                 }
-                showBorder(img)
+                makeBorderColor(img)
               }
               imgpicker.replaceWith(imgpicklone);
               imgpicker.style.display = 'none'
@@ -530,7 +530,7 @@
                     let div = document.createElement('div')
                     div.innerHTML = menu.menu
                     xAppend(div)
-                    showBorder(div)
+                    makeBorderColor(div)
                     document.querySelector('.xcms-popd').style.display = 'none'
                   })
                   document.querySelector('#mymenus').appendChild(menulink)
@@ -575,7 +575,7 @@
                 li.style.display = 'inline'
                 li.appendChild(alink);
                 ul.appendChild(li);
-                showBorder(ul)
+                makeBorderColor(ul)
                 alink.id = ""
               }
               menuSize = 0
@@ -660,7 +660,7 @@
     })
     //******************APPEND
     function xAppend(item) {
-      if (item.childElementCount > 1) {
+      /* if (item.childElementCount > 1) {
         if (document.querySelector('.edit-zone').style.display === "block") {
           document.querySelector('.edit-zone').appendChild(item)
           return true
@@ -668,7 +668,7 @@
           document.querySelector('.re-edit-zone').appendChild(item)
           return true
         }
-      }
+      } */
       if (document.querySelector('.isSelected')) {
         document.querySelector('.isSelected').appendChild(item)
         document.querySelector('.isSelected').classList.remove('isSelected')
@@ -729,8 +729,8 @@
         event.target.style.width = event.target.getBoundingClientRect().width + 'px'
         event.target.style.transform = `scale(${1})`
         div.remove()
-        if (document.body.querySelector('.remove')) {
-          document.body.querySelector('.remove').remove()
+        if (document.body.querySelector('.container-editor-options')) {
+          document.body.querySelector('.container-editor-options').remove()
         }
       })
       scaler.addEventListener('change', (ev) => {
@@ -868,7 +868,7 @@
         return
       }
       editorbtn.addEventListener('click', () => {
-        if (document.body.querySelector('.remove')) document.body.querySelector('.remove').remove()
+        if (document.body.querySelector('.container-editor-options')) document.body.querySelector('.container-editor-options').remove()
         editorbtn.remove()
         let newData = document.querySelector('.ql-editor').innerHTML
         let div = document.createElement('div')
@@ -881,19 +881,33 @@
         document.querySelector('.ql-tooltip.ql-hidden').remove()
         document.querySelector('.ql-editor').remove()
         document.querySelector('#text-editor').setAttribute('class', '')
-        showBorder(div)
+        makeBorderColor(div)
       })
       document.querySelector('.ql-editor').addEventListener('keyup', ev => {
         node.innerHTML = document.querySelector('.ql-editor').innerHTML
       })
     }
+    //*************MAKE BORDER COLOR
+    function makeBorderColor(node){
+      node.style.borderColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+      showBorder(node)
+    }
     //*************SHOW BORDER
+    let CurrentlyHoveredElement = []
+    let showBorderI = 0
     function showBorder(node) {
       /* 
       AJOUTER UN BOUTTON SELECTIONNER PROCHAIN ELEMENT
       AVEC UNE LISTE DES ELEMENT HIERARCHIQUEMENT
        */
-      node.addEventListener('mouseover', () => {
+      node.addEventListener('mouseenter', (e) => {
+        e.cancelBubble = true
+        let xnode = e.target
+        CurrentlyHoveredElement.push(e.target)
+        if(node.childElementsCount === 0){
+          console.log(xnode)
+        }
+        console.log(xnode)
         if (node.querySelector('.ql-editor')) return
         node.id = "isHover"
       })
@@ -901,15 +915,18 @@
         if (node.querySelector('.ql-editor')) return
         node.id = ""
       })
-      node.addEventListener('click', () => {
+      node.addEventListener('click', (e) => {
+        e.cancelBubble = true
         document.querySelectorAll('.isSelected').forEach(opt => {
           opt.classList.remove('isSelected')
         })
+        node = CurrentlyHoveredElement.pop()
+        CurrentlyHoveredElement.length = 0
         node.id = 'isActive'
         if (node.querySelector('.ql-editor')) return
         node.classList.add('isSelected')
-        if (document.body.querySelector('.remove')) {
-          document.body.querySelector('.remove').remove()
+        if (document.body.querySelector('.container-editor-options')) {
+          document.body.querySelector('.container-editor-options').remove()
         }
         if(document.body.querySelector('.will-repeat')){
           document.body.querySelector('.will-repeat').remove()
@@ -917,27 +934,24 @@
         if(document.body.querySelector('.is-repeatable')){
           document.body.querySelector('.is-repeatable').remove()
         }
-        if (!document.body.querySelector('.remove')) {
+        if (!document.body.querySelector('.container-editor-options')) {
           let div = document.createElement('div')
           let btnEdit = document.createElement('button')
           let btnRemove = document.createElement('button')
           btnEdit.innerText = 'edit'
+          btnEdit.style.padding = "4px"
           btnRemove.innerText = 'remove'
-          div.classList.add('remove')
-          document.body.appendChild(div)
-          div.style.display = 'flex'
-          div.style.flexDirection = "column"
-          div.style.position = 'absolute'
-          div.style.left = document.querySelector('.re-edit-zone') ?
-            document.querySelector('.re-edit-zone').getBoundingClientRect().right + 'px' :
-            document.querySelector('.edit-zone').getBoundingClientRect().right + 'px'
-          div.style.top = document.querySelector('.re-edit-zone') ?
-            document.querySelector('.re-edit-zone').getBoundingClientRect().top + 'px' :
-            document.querySelector('.edit-zone').getBoundingClientRect().top + 'px'
-          btnRemove.style.marginTop = '16px'
+          btnRemove.style.marginLeft = "1rem"
+          btnRemove.style.padding = "4px"
+          div.classList.add('container-editor-options')
+          document.querySelector('main.mw-100').appendChild(div)
           div.appendChild(btnEdit)
           div.appendChild(btnRemove)
           btnEdit.addEventListener('click', () => {
+            if(node.querySelector('.xcms-img')){
+              div.remove()
+              return
+            }
             div.remove()
             node.id = 'isActive'
             xEdit(node)
@@ -958,6 +972,12 @@
           btnWillRepeat.classList.add("will-repeat")
           btnIsRepeatable.classList.add("is-repeatable")
           generateSnippet.classList.add('generate-snippet')
+          btnWillRepeat.style.marginLeft = "1rem"
+          btnIsRepeatable.style.marginLeft = "1rem"
+          generateSnippet.style.marginLeft = "1rem"
+          btnWillRepeat.style.padding = "4px"
+          btnIsRepeatable.style.padding = "4px"
+          generateSnippet.style.padding = "4px"
           div.appendChild(btnWillRepeat)
           div.appendChild(btnIsRepeatable)
           div.appendChild(generateSnippet)
@@ -985,7 +1005,7 @@
           })
         }
       })
-      //***************CREATION DES DIFERENTES FONCTIONS
+      //***************VERIFIE LES CLASSES EXISTANTE
       let linkedFunctions = []
       const startLinking = (node)=>{
         if(linkedFunctions.length === 0 && node.dataset.willRepeat === "true") {
@@ -1001,6 +1021,7 @@
           })
         }
       }
+      //***************CREATION DES SNIPPETS
       const createLinkingFunction = (node)=>{
         node.querySelectorAll('[data-is-repeatable]').forEach(repeatable=>{
           let repeatableHTML = repeatable.outerHTML
@@ -1037,6 +1058,7 @@
           })
           let templateFunction = `\n
 const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
+//run the next function to intialize you repeater element
 const ${parentElementUniqueFunctionID} = (someData)=>{
 someData.forEach(bitOfData=>{
 /* YOUR CODE GOES HERE */
@@ -1055,15 +1077,15 @@ let div = document.createElement('div')
 div.innerHtml = htmlTemplate
 htmlReference${randomized}.appendChild(div)
 }
+/* YOUR CODE GOES HERE */
+//${parentElementUniqueFunctionID}("x")
+
 `
         jseditor.navigateFileEnd()
         jseditor.navigateLineEnd()
         jseditor.insert('\n')
         jseditor.insert(templateFunction)
         jseditor.navigateFileEnd()
-        /* 
-        FIN DE LA CREATION DE TEMPLATE REPETABLES
-          */
         })
       }
 
@@ -1084,7 +1106,7 @@ htmlReference${randomized}.appendChild(div)
             if(dd.dataset.cssopt === "duplicate"){
               let nodebis = node.cloneNode(true)
               node.parentElement.appendChild(nodebis)
-              showBorder(nodebis)
+              makeBorderColor(nodebis)
               menu.style.display = "none"
               return
             }
@@ -1131,7 +1153,7 @@ htmlReference${randomized}.appendChild(div)
           let preset = btn.dataset.preset
           if (preset === "100") {
             xAppend(div)
-            showBorder(div)
+            makeBorderColor(div)
             drake.containers.push(div)
           }
           if (preset === "50/50") {
@@ -1150,8 +1172,8 @@ htmlReference${randomized}.appendChild(div)
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
             xAppend(div)
-            showBorder(leftDiv)
-            showBorder(rightDiv)
+            makeBorderColor(leftDiv)
+            makeBorderColor(rightDiv)
             drake.containers.push(div)
             drake.containers.push(leftDiv)
             drake.containers.push(rightDiv)
@@ -1172,8 +1194,8 @@ htmlReference${randomized}.appendChild(div)
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
             xAppend(div)
-            showBorder(leftDiv)
-            showBorder(rightDiv)
+            makeBorderColor(leftDiv)
+            makeBorderColor(rightDiv)
             drake.containers.push(div)
             drake.containers.push(leftDiv)
             drake.containers.push(rightDiv)
@@ -1194,8 +1216,8 @@ htmlReference${randomized}.appendChild(div)
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
             xAppend(div)
-            showBorder(leftDiv)
-            showBorder(rightDiv)
+            makeBorderColor(leftDiv)
+            makeBorderColor(rightDiv)
             drake.containers.push(div)
             drake.containers.push(leftDiv)
             drake.containers.push(rightDiv)
@@ -1222,9 +1244,9 @@ htmlReference${randomized}.appendChild(div)
             div.appendChild(middleDiv)
             div.appendChild(rightDiv)
             xAppend(div)
-            showBorder(leftDiv)
-            showBorder(middleDiv)
-            showBorder(rightDiv)
+            makeBorderColor(leftDiv)
+            makeBorderColor(middleDiv)
+            makeBorderColor(rightDiv)
             drake.containers.push(div)
             drake.containers.push(leftDiv)
             drake.containers.push(rightDiv)
@@ -1247,7 +1269,7 @@ htmlReference${randomized}.appendChild(div)
       })
     }
     //**************DRAG & DROP
-    let drake = dragula([document.querySelector('.edit-zone')])
+    let drake = dragula([document.querySelector('.edit-zone')],{revertOnSpill: true})
     //ACE EDITORS
     ace.require("ace/ext/language_tools")
     let csseditor = ace.edit('css-editor')
@@ -1369,7 +1391,7 @@ htmlReference${randomized}.appendChild(div)
         csseditor.setValue(niceCSS)
         myframe.appendChild(theframe)
         drake.destroy();
-        drake = dragula([document.querySelector('.re-edit-zone')])
+        drake = dragula([document.querySelector('.re-edit-zone')],{revertOnSpill: true})
         document.querySelector('.edit-zone').style.display = 'none'
         //PREPARING CHANGES
         theframe.childNodes.forEach(node => {
@@ -1382,14 +1404,14 @@ htmlReference${randomized}.appendChild(div)
                 try {
                   node.childNodes.forEach(n => {
                     if (n != undefined) {
-                      showBorder(n)
+                      makeBorderColor(n)
                     }
                   })
                 } catch{
-                  showBorder(node)
+                  makeBorderColor(node)
                 }
               } else {
-                showBorder(node)
+                makeBorderColor(node)
               }
             }
           }
@@ -1483,7 +1505,7 @@ htmlReference${randomized}.appendChild(div)
           theframe.remove()
           document.querySelector('.edit-zone').style.display = 'block'
           drake.destroy()
-          drake = dragula([document.querySelector('.edit-zone')])
+          drake = dragula([document.querySelector('.edit-zone')],{revertOnSpill: true})
           button.remove()
           window.location.href = `${window.location.origin}/admin`
         })
