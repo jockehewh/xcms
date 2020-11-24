@@ -19,13 +19,16 @@
 }
 
 *{margin:0; padding:0; user-select: none;
-    --rouge-brick-pale: #ef5350;
-    --rouge-brique-eclatant: #ff5252;
-    --bleu-indigo-leger: #82b1ff;;
-    --bleu-indigo-eclatant: #536dfe;
-    --orange-pale: #e64a19;
-    --bleu-gris-clair: #cfd8dc;
+    --white-0: #ffffff;
+    --white-1: #f2f2f2;
+    --white-2: #e5e5e5;
+    --white-3: #d8d8d8;
+    --grey-0: #555555;
+    --grey-1: #434343;
+    --grey-2: #303030;
     --teal-bleu-special: #1de9b6;
+    --bleu-indigo-leger: #82b1ff;
+    --bleu-indigo-eclatant: #536dfe;
 }
 #isActive{}
 #isHover{
@@ -51,22 +54,26 @@ body{
     display:none;
 }
 a, p{
-    color: #448aff ;
+    /* color: #448aff ; */
+    color: var(--grey-2);
+    text-decoration: none;
 }
 main{
-    /* display: grid;
-    grid-template-columns: repeat(3,1fr); */
     min-height: 95vh;
     width: inherit;
-    background-color: aliceblue;
+    background-color: var(--withe-0);
+    max-width: 100%;
+}
+.list {
+    list-style-type: none;
 }
 .first-class{
-    /* grid-column: 1/3;
-    padding: 90px 90px 0 90px; */
+    padding: 4rem 1rem;
+    width: 80%;
+    float: left;
 }
 .edit-zone, .re-edit-zone{
-    /*border: solid #5c6bc0 20px;*/
-    border: solid #82b1ff 1px;
+    border: solid var(--grey-2) 1px;
     min-height: 60px;
 }
 .first-class-editor{
@@ -77,9 +84,10 @@ main{
     position: absolute;
     right: 0;
     margin-top: 3.8rem;
-    padding: 0 22px;
+    padding: 0 16px;
     border-left: solid 1px;
-    border-color: #82b1ff;
+    border-color: var(--grey-2);
+    float: left;
 }
 input[type="range"] {
   -webkit-appearance: slider-vertical;
@@ -97,9 +105,11 @@ input[type="range"] {
     line-height: 2;
 }
 hr{
-    width: 87%;
-    margin: 0 auto;
+    width: 100%;
     border-top: solid 1px;
+    color: var(--grey-2);
+    height: 1px;
+    background: var(--grey-2);
 }
 .editables li{
     display: flex;
@@ -186,13 +196,13 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
     flex-direction: column;
 }
 .save{
-    font-weight: bold;
     background: transparent;
     border: none;
-    margin: 10px;
-    text-decoration: underline;
+    padding: 8px;
     cursor: pointer;
-    color: #448aff;
+}
+.save:hover{
+    background-color: var(--white-1);
 }
 #menusize{
     font-weight: bold;
@@ -213,7 +223,8 @@ iframe{
     overflow: scroll;
 }
 .nav{
-    background: #82b1ff;
+    background: var(--white-0);
+    border-bottom: solid 1px var(--grey-2);
     font-weight: bold;
     min-height: 40px;
     display: flex;
@@ -226,7 +237,7 @@ iframe{
     color: #000;
     text-align: center;
     position: relative;
-    right: 3.4rem;
+    right: 1.7rem;
 }
 .smallbordur{
     border: solid .5px;
@@ -308,10 +319,11 @@ input:checked + .slider:before {
     top: 0;
 }
 .cc-inner{
-    background-color: aliceblue;
+    background-color: var(--white-0);
     display: flex;
     flex-direction: column;
     max-width: 700px;
+    min-width: 192px;
     padding-right: 6px;
     align-items: center;
     position: absolute;
@@ -334,25 +346,25 @@ input:checked + .slider:before {
 .cc-body button{
     border: none;
     padding: 8px;
-    background-color: aliceblue;
+    background-color: var(--white-0);
 }
 .cc-body button p{
-    color: #000;
+    color: var(--grey-2);
 }
 .cc-body button:hover{
-    background-color: #82b1ff;
+    background-color: var(--white-1);
 }
 .xcms-custom-menu{
     display:none;
     position: absolute;
-    background-color: #fff;
+    background-color: var(--white-0);
 }
 .page-duplicate{
     display:none;
     position: absolute;
     width: 150px;
     height: 50px;
-    background-color: #fff;
+    background-color: var(--white-0);
     padding: 5px;
     border: solid 1px #448aff;
 }
@@ -371,16 +383,16 @@ input:checked + .slider:before {
     border-radius: 10px;
 }
 .tree-view{
-    position: absolute
+    position: absolute;
+    width: 100px;
 }
-.tree-view dl{
-    margin: auto;
-}
-.tree-view dt{
-    margin: auto;
-}
-.tree-view dd{
+.tree-view ul{
     margin-left: 8px;
+    list-style-type: none;
+}
+.tree-view li{
+    margin-left: 8px;
+    list-style-type: none;
 }
 @media only screen and (max-width: 411px){
     .first-class-editor{

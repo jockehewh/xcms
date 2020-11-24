@@ -8,7 +8,6 @@
   <title>Creative side</title>
 
   <link rel="stylesheet" href="./admin-site/xcms.css">
-  <link rel="stylesheet" href="./admin-site/tachyons.min.css">
   <link rel="stylesheet" href="./admin-site/dragula.min.css">
   <link rel="stylesheet" href="./admin-site/quill.snow.css">
   <script src="./admin-site/socket.io.js"></script>
@@ -30,8 +29,11 @@
         <li><select id="menusize"></select></li>
       </ul>
       <br>
-      <button class="save">save</button>
       <div id="mymenus"></div>
+      <button class="save">
+        <p>Save</p>
+        <p>X</p>
+      </button>
     </div>
   </div>
   <div class="nav"><span style="padding-left: 17px;">XCMS</span>
@@ -41,7 +43,7 @@
     <div class="first-class-editor-button">
       <p>Menu</p>
     </div>
-    <div class="first-class fl ph3 pv5 w-80">
+    <div class="first-class">
       <!--Master page maker-->
       <input type="file" accept="image; video/mp4" multiple id="imgpiker">
       <div class="edit-zone" style="display:block;">
@@ -50,13 +52,6 @@
             margin: 0;
             padding: 0;
             user-select: none;
-            --rouge-brick-pale: #ef5350;
-            --rouge-brique-eclatant: #ff5252;
-            --bleu-indigo-leger: #5c6bc0;
-            --bleu-indigo-eclatant: #536dfe;
-            --orange-pale: #e64a19;
-            --bleu-gris-clair: #cfd8dc;
-            --teal-bleu-special: #1de9b6;
           }
           .xcms-custom{
             flex:1 1 0%;
@@ -76,7 +71,8 @@
         <div id="text-editor"></div>
       </div>
     </div>
-    <div class="first-class-editor fl pr2 ">
+    <div class="first-class-editor">
+      <hr>
       <section id="nodemaker" class="">
         <label for="titrepage">
           <h4>Page name:</h4>
@@ -89,7 +85,7 @@
         </section><br>
         <hr>
         <section>
-          <h4 class="mt2" style="margin-bottom: 3px;">Edit content:</h4><br>
+          <h4 class="" style="margin-bottom: 3px;">Edit content:</h4><br>
           <ul class="list">
             <li><a class="link" href="#" data-demande="texte">Open editor</a><br class="mybr"><br class="mybr"></li>
             <li><a class="link" href="#" data-demande="div">Add a container</a><br class="mybr"><br class="mybr"></li>
@@ -99,7 +95,7 @@
           </ul>
         </section><br>
         <hr>
-        <section class="mt2">
+        <section class="">
           <h4>Edit an old page:</h4><br>
           <ul class="editables list">
 
@@ -888,55 +884,73 @@
       })
     }
     //*************MAKE TREE VIEW
+    function getRootNode(node){
+      let futurNode;
+      let tempNode = node.parentElement;
+      while(tempNode.className != 'edit-zone'){
+        if(tempNode.parentElement.className === 'edit-zone'){
+          console.log(tempNode)
+          return tempNode
+        }
+        tempNode = tempNode.parentElement
+      }
+      return node
+    }
     function makeTreeView(node){
-      function makeSubLevel(subNode, c){
+      function makeSubLevel(subNode, rootNode){
+        /* 
+        METTER LELEMENT EN DT DANS UN DD 
+         */
         incrementableId++
-        let subLevelx = document.createElement('dl')
-        let subLeveldd;
         let subNodes = subNode.children
-        subLevelx.id = incrementableId
         if(subNode.childElementCount > 0){
           for (let sbnd of subNodes){
-            console.log(sbnd)
-            subLeveldd = document.createElement('dt')
-            subLevelx.innerText = incrementableId
-            subLeveldd.id = incrementableId
-            subLevelx.appendChild(subLeveldd)
-            let nextSubLevel = makeSubLevel(sbnd, subLeveldd)
-            c.appendChild(nextSubLevel)
+            let subLevelx = document.createElement('ul')
+            let subLevelStart = document.createElement('li')
+            subLevelx.id = incrementableId
+            subLevelx.textContent = sbnd.nodeName
+            subLevelx.style.background = sbnd.style.borderColor
+            subLevelStart.appendChild(subLevelx)
+            makeSubLevel(sbnd, subLevelx)
+            rootNode.appendChild(subLevelx)
           }
         }else{
-          subLeveldd = document.createElement('dd')
-          subLeveldd.id = incrementableId
-          subLeveldd.innerText = incrementableId
-          subLevelx.appendChild(subLeveldd)
+          if(rootNode.nodeName == 'UL'){
+            let subRootNode = document.createElement('li')
+            subRootNode.id = incrementableId
+            subRootNode.innerText = subNode.nodeName
+            rootNode.appendChild(subRootNode)
+          }else{
+            subNode.id = incrementableId
+            subNode.innerText = subNode.nodeName
+            rootNode.appendChild(subNode)
+          }
         }
-        return subLevelx
       }
       let treeLevelMaker = {}
       let incrementableId = 1000
       let childNds = node.children
-      let div = document.createElement('dl')
-      let firstNode = document.createElement('dt')
+      let div = document.createElement('ul')
+      let firstNode = document.createElement('li')
       firstNode.id = incrementableId
-      firstNode.innerText = incrementableId
-      incrementableId++
+      firstNode.innerText = node.nodeName
+      firstNode.style.background = node.style.borderColor
       document.querySelector('main.mw-100').appendChild(div)
       div.appendChild(firstNode)
       div.classList.add('tree-view')
-      let subLevel;
+      div.style.left = document.querySelector('.re-edit-zone') ?
+        document.querySelector('.re-edit-zone').getBoundingClientRect().right + 'px' :
+        document.querySelector('.edit-zone').getBoundingClientRect().right + 'px'
+      div.style.top = document.querySelector('.re-edit-zone') ?
+        document.querySelector('.re-edit-zone').getBoundingClientRect().top + 'px' :
+        document.querySelector('.edit-zone').getBoundingClientRect().top + 'px'
       for (let nd of childNds){
         treeLevelMaker[incrementableId] = nd.cloneNode(true)
-        if(nd.childElementCount > 0){
-          subLevel = document.createElement('dt')
-          let anotherLevel = makeSubLevel(nd, sublevel)
-          div.appendChild(subLevel)
+        if(nd.childElementCount == 0){
+          makeSubLevel(nd, div)
+          //double check
         }else{
-          subLevel = document.createElement('dd')
-          subLevel.id = incrementableId
-          subLevel.innerText = incrementableId
-          incrementableId++
-          div.appendChild(subLevel)
+          makeSubLevel(nd, firstNode)
         }
         /* 
         POUR CHAQUE NODE CREER UN CLONE
@@ -950,11 +964,10 @@
     }
     //*************SHOW BORDER
     let CurrentlyHoveredElement = []
-    let showBorderI = 0
     function showBorder(node) {
       /* 
-      AJOUTER UN BOUTTON SELECTIONNER PROCHAIN ELEMENT
-      AVEC UNE LISTE DES ELEMENT HIERARCHIQUEMENT
+      MAKE TREE
+      VOIR LE BUG ISHOVER
        */
       node.addEventListener('mouseenter', (e) => {
         e.cancelBubble = true
@@ -1064,7 +1077,10 @@
           btnTree.style.padding = "4px"
           div.appendChild(btnTree)
           btnTree.addEventListener('click', ()=>{
-            makeTreeView(node)
+            if(node.childElementCount > 0){
+              /* let rootNode = getRootNode(node)
+              makeTreeView(rootNode) */
+            }
           })
         }
       })
@@ -1691,18 +1707,27 @@ htmlReference${randomized}.appendChild(div)
     <div class="crm-body">
       <style>
         :scope * {
-          margin: 0
-        }
-
+          margin: 0;
+          --white-0: #ffffff;
+          --white-1: #f2f2f2;
+          --white-2: #e5e5e5;
+          --white-3: #d8d8d8;
+          --grey-0: #555555;
+          --grey-1: #434343;
+          --grey-2: #303030;
+          --teal-bleu-special: #1de9b6;
+          --bleu-indigo-leger: #82b1ff;
+          --bleu-indigo-eclatant: #536dfe;
+              }
         :scope a {
           text-decoration: none;
-          color: #448aff;
+          color: var(--grey-2);
         }
 
         :scope .crm-body {
           position: absolute;
           top: 0;
-          background: aliceblue;
+          background: var(--white-0);
           width: 100%;
           height: 95%;
         }
@@ -1710,7 +1735,7 @@ htmlReference${randomized}.appendChild(div)
         :scope button {
           background: transparent;
           border: none;
-          color: #448aff;
+          color: var(--grey-2);
           cursor: pointer;
         }
 
@@ -1752,9 +1777,9 @@ htmlReference${randomized}.appendChild(div)
         }
 
         :scope .nav {
-          background: #82b1ff;
-          ;
-          color: #000;
+          background: var(--white-0);
+          border-bottom: solid 1px var(--grey-2);
+          color: var(--grey-2);;
           font-weight: bold;
           min-height: 40px;
           display: flex;
@@ -1768,29 +1793,43 @@ htmlReference${randomized}.appendChild(div)
         }
 
         :scope .minimenu {
-          width: 190px;
           position: fixed;
           right: 0;
           top: 108px;
+          border-left: solid 1px var(--grey-2);
+          padding: 0 16px;
         }
 
         :scope .minimenu ul {
           list-style-type: none;
+        }
+        :scope .minimenu li {
+          line-height: 2;
+        }
+        :scope .minimenu li:hover {
+          background-color: var(--white-1);
+        }
+        :scope hr {
+          height: 0px;
+        }
+        :scope input[type=checkbox]:checked {
+          background-color: var(--grey-2) !important;
+          color:  var(--grey-2) !important;
         }
       </style>
       <div class="nav"><span style="padding-left: 20px;">XCMS</span>
         <p>Go to CMS page</p>
       </div>
       <div class="minimenu">
-        <ul>
-          <li><a href="#" data-link="conf">Email configuration</a></li><br>
-          <li><a href="#" data-link="emails">Send emails</a></li><br>
-          <li><a href="#" data-link="addAdmin">Add an admin</a></li><br>
-          <li><a href="#" data-link="changePassword">Change an admin's password</a></li><br>
-          <li><a href="#" class="export-btn" data-link="exportConfig">Export database</a></li><br>
-          <li><a href="#" class="import-btn" data-link="importConfig">Import database</a></li><br>
-          <li><a href="#" class="export-media-btn" data-link="exportMedia">Export Medias</a></li><br>
-          <li><a href="#" class="import-media-btn" data-link="importMedia">Import Medias</a></li>
+        <ul><hr>
+          <li><a href="#" data-link="conf">Email configuration</a></li><hr>
+          <li><a href="#" data-link="emails">Send emails</a></li><hr>
+          <li><a href="#" data-link="addAdmin">Add an admin</a></li><hr>
+          <li><a href="#" data-link="changePassword">Change an admin's password</a></li><hr>
+          <li><a href="#" class="export-btn" data-link="exportConfig">Export database</a></li><hr>
+          <li><a href="#" class="import-btn" data-link="importConfig">Import database</a></li><hr>
+          <li><a href="#" class="export-media-btn" data-link="exportMedia">Export Medias</a></li><hr>
+          <li><a href="#" class="import-media-btn" data-link="importMedia">Import Medias</a></li><hr>
         </ul>
       </div>
       <div class="configuration-block">
