@@ -326,6 +326,7 @@ iframe{
 .tree-view{
     position: absolute;
     width: 100px;
+    background-color: var(--grey-1);
 }
 .tree-view ul{
     margin-left: 8px;

@@ -916,6 +916,7 @@
             console.log(sbnd.nodeName)
             if(sbnd.childElementCount > 0){
               subLevelStart.id = incrementableId
+               subLevelStart.style.backgroundColor = sbnd.style.borderColor 
               if(sbnd.childElementCount > 1){
                 subLevelStart.innerText = sbnd.parentElement.nodeName
                 subLevelx.innerText = sbnd.nodeName
@@ -928,8 +929,6 @@
                 rootNode.appendChild(subLevelStart)
                 subLevelStart.appendChild(subLevelx)
               }
-              
-              
             }else{
               subLevelStart.id = incrementableId
               subLevelStart.innerText = sbnd.nodeName
@@ -945,7 +944,8 @@
       let div = document.createElement('ul')
       let firstNode = document.createElement('li')
       firstNode.id = incrementableId
-      div.innerText = node.nodeName
+      div.innerText = "ROOT NODE"
+      div.style.color = "white"
       firstNode.style.background = node.style.borderColor
       document.querySelector('main.mw-100').appendChild(div)
       div.appendChild(firstNode)
