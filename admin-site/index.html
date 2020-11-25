@@ -895,10 +895,10 @@
     function getRootNode(node){
       let futurNode;
       let tempNode = node.parentElement;
-      while(tempNode.className != 'edit-zone'){
-        if(tempNode.parentElement.className === 'edit-zone'){
+      while(tempNode.className != 'edit-zone' || tempNode.className != 're-edit-zone'){
+        if(tempNode.parentElement.className === 'edit-zone' || tempNode.parentElement.className === 're-edit-zone'){
           console.log(tempNode)
-          return tempNode
+          return tempNode.parentElement
         }
         tempNode = tempNode.parentElement
       }
