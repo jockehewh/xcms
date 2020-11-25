@@ -38,8 +38,7 @@ a{
     cursor:pointer;
 }
 a:hover{
-    text-decoration: dashed;
-    text-decoration-line: underline;
+    font-weight: bold;
 }
 body{
     font-family: "Roboto";
@@ -95,6 +94,13 @@ input[type="range"] {
 .editor-btn-flexbox{
     display:flex;
     justify-content: space-around;
+    line-height: 2;
+}
+.editor-btn-flexbox a:hover{
+    background-color: var(--white-1);
+    position: relative;
+    padding: 0 5px;
+    top:1px;
 }
 #titrepage{
     border: none;
@@ -107,11 +113,26 @@ hr{
     height: 1px;
     background: var(--grey-2);
 }
-.editables li{
+.boutons a{
+    line-height: 2;
+}
+.boutons a:hover{
+    font-weight: bold;
+    background-color: var(--white-1);
+}
+.link, .boutons a{
+    width:100%;
+}
+.editables li, .list li{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 10px 0;
+    line-height: 2;
+}
+.editables li:hover, .list li:hover, .nav p:hover{
+    background-color: var(--white-1);
+    position: relative;
+    top: 1px;
 }
 .editables li a{
     max-width: 50%;
@@ -132,7 +153,6 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
 }
 .xcms-div{
     min-height: 60px;
-    min-width: 100%;
 }
 .xcms-menu li a{
     color: #448aff !important;
@@ -204,6 +224,7 @@ iframe{
     text-align: center;
     position: relative;
     right: 1.7rem;
+    line-height: 2;
 }
 #isContainer, #isContained{
     min-height: 60px;
@@ -280,7 +301,7 @@ iframe{
     display: flex;
     flex-direction: row;
     position: absolute;
-    height: 60px;
+    height: 30px;
     padding: 1rem;
     align-items: center;
 }
@@ -288,7 +309,19 @@ iframe{
     background: transparent;
     color: var(--grey-2);
     border-color: var(--grey-2);
-    border-radius: 10px;
+    cursor: pointer;
+    border-width: 1px;
+    border-right: none;
+    border-bottom: none;
+    border-top: none;
+    padding-left: 16px;
+    margin-left: 1rem;
+    line-height: 2;
+}
+.container-editor-options button:hover{
+    background: var(--white-1);
+    position: relative;
+    top: 1px;
 }
 .tree-view{
     position: absolute;

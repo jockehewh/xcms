@@ -79,19 +79,27 @@
         </label>
         <input name="titrepage" id="titrepage" type="text" placeholder="New page name"><br><br>
         <section class="boutons">
-          <a id="crepage">Save page</a><br><br>
-          <a id="crenew">New page</a><br><br>
-          <a id="efface">Delete content</a><br><br>
+          <ul class='list'>
+            <li>
+              <a id="crepage">Save page</a>
+            </li>
+            <li>
+              <a id="crenew">New page</a>
+            </li>
+            <li>
+              <a id="efface">Delete content</a>
+            </li>
+          </ul>
         </section><br>
         <hr>
         <section>
           <h4 class="" style="margin-bottom: 3px;">Edit content:</h4><br>
           <ul class="list">
-            <li><a class="link" href="#" data-demande="texte">Open editor</a><br class="mybr"><br class="mybr"></li>
-            <li><a class="link" href="#" data-demande="div">Add a container</a><br class="mybr"><br class="mybr"></li>
-            <li><a class="link" href="#" data-demande="menu">Add a menu</a><br class="mybr"><br class="mybr"></li>
-            <li><a class="link" href="#" data-demande="image">Add image(s)</a><br class="mybr"><br class="mybr"></li>
-            <li><a class="link" href="#" data-demande="video">Add video(s)</a><br class="mybr"><br class="mybr"></li>
+            <li><a class="link" href="#" data-demande="texte">Open editor</a>
+            <li><a class="link" href="#" data-demande="div">Add a container</a>
+            <li><a class="link" href="#" data-demande="menu">Add a menu</a>
+            <li><a class="link" href="#" data-demande="image">Add image(s)</a>
+            <li><a class="link" href="#" data-demande="video">Add video(s)</a>
           </ul>
         </section><br>
         <hr>
@@ -1007,10 +1015,7 @@
           let btnEdit = document.createElement('button')
           let btnRemove = document.createElement('button')
           btnEdit.innerText = 'edit'
-          btnEdit.style.padding = "4px"
           btnRemove.innerText = 'remove'
-          btnRemove.style.marginLeft = "1rem"
-          btnRemove.style.padding = "4px"
           div.classList.add('container-editor-options')
           document.querySelector('main.mw-100').appendChild(div)
           div.appendChild(btnEdit)
@@ -1040,12 +1045,6 @@
           btnWillRepeat.classList.add("will-repeat")
           btnIsRepeatable.classList.add("is-repeatable")
           generateSnippet.classList.add('generate-snippet')
-          btnWillRepeat.style.marginLeft = "1rem"
-          btnIsRepeatable.style.marginLeft = "1rem"
-          generateSnippet.style.marginLeft = "1rem"
-          btnWillRepeat.style.padding = "4px"
-          btnIsRepeatable.style.padding = "4px"
-          generateSnippet.style.padding = "4px"
           div.appendChild(btnWillRepeat)
           div.appendChild(btnIsRepeatable)
           div.appendChild(generateSnippet)
@@ -1073,8 +1072,6 @@
           })
           let btnTree = document.createElement('button')
           btnTree.innerText = "make tree view"
-          btnTree.style.marginLeft = "1rem"
-          btnTree.style.padding = "4px"
           div.appendChild(btnTree)
           btnTree.addEventListener('click', ()=>{
             if(node.childElementCount > 0){
@@ -1723,6 +1720,12 @@ htmlReference${randomized}.appendChild(div)
           text-decoration: none;
           color: var(--grey-2);
         }
+        :scope a:hover, :scope button:hover {
+          background-color: var(--white-1);
+          position: relative;
+          top: 1px;
+          font-weight: bold;
+        }
 
         :scope .crm-body {
           position: absolute;
@@ -1737,6 +1740,7 @@ htmlReference${randomized}.appendChild(div)
           border: none;
           color: var(--grey-2);
           cursor: pointer;
+          line-height: 2;
         }
 
         :scope .configuration,
@@ -1804,6 +1808,9 @@ htmlReference${randomized}.appendChild(div)
           list-style-type: none;
         }
         :scope .minimenu li {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
           line-height: 2;
         }
         :scope .minimenu li:hover {
