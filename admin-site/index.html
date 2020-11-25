@@ -891,7 +891,7 @@
         node.innerHTML = document.querySelector('.ql-editor').innerHTML
       })
     }
-    //*************MAKE TREE VIEW
+    //*************MAKE TREE VIEW ROOT
     function getRootNode(node){
       let futurNode;
       let tempNode = node.parentElement;
@@ -904,34 +904,38 @@
       }
       return node
     }
-    function makeTreeView(node){
-      function makeSubLevel(subNode, rootNode){
-        /* 
-        METTER LELEMENT EN DT DANS UN DD 
-         */
+    //*************MAKE TREE VIEW
+    function makeTreeView(node, ){
+      function makeSubLevel(subNode, rootNode, ){
         incrementableId++
         let subNodes = subNode.children
         if(subNode.childElementCount > 0){
           for (let sbnd of subNodes){
             let subLevelx = document.createElement('ul')
             let subLevelStart = document.createElement('li')
-            subLevelx.id = incrementableId
-            subLevelx.textContent = sbnd.nodeName
-            subLevelx.style.background = sbnd.style.borderColor
-            subLevelStart.appendChild(subLevelx)
-            makeSubLevel(sbnd, subLevelx)
-            rootNode.appendChild(subLevelx)
-          }
-        }else{
-          if(rootNode.nodeName == 'UL'){
-            let subRootNode = document.createElement('li')
-            subRootNode.id = incrementableId
-            subRootNode.innerText = subNode.nodeName
-            rootNode.appendChild(subRootNode)
-          }else{
-            subNode.id = incrementableId
-            subNode.innerText = subNode.nodeName
-            rootNode.appendChild(subNode)
+            console.log(sbnd.nodeName)
+            if(sbnd.childElementCount > 0){
+              subLevelStart.id = incrementableId
+              if(sbnd.childElementCount > 1){
+                subLevelStart.innerText = sbnd.parentElement.nodeName
+                subLevelx.innerText = sbnd.nodeName
+                makeSubLevel(sbnd, subLevelx)
+                rootNode.appendChild(subLevelStart)
+                subLevelStart.appendChild(subLevelx)
+              }else{  
+                subLevelStart.innerText = sbnd.nodeName
+                makeSubLevel(sbnd, subLevelx)
+                rootNode.appendChild(subLevelStart)
+                subLevelStart.appendChild(subLevelx)
+              }
+              
+              
+            }else{
+              subLevelStart.id = incrementableId
+              subLevelStart.innerText = sbnd.nodeName
+              makeSubLevel(sbnd, subLevelStart)
+              rootNode.appendChild(subLevelStart)
+            }
           }
         }
       }
@@ -941,7 +945,7 @@
       let div = document.createElement('ul')
       let firstNode = document.createElement('li')
       firstNode.id = incrementableId
-      firstNode.innerText = node.nodeName
+      div.innerText = node.nodeName
       firstNode.style.background = node.style.borderColor
       document.querySelector('main.mw-100').appendChild(div)
       div.appendChild(firstNode)
@@ -958,7 +962,7 @@
           makeSubLevel(nd, div)
           //double check
         }else{
-          makeSubLevel(nd, firstNode)
+          makeSubLevel(nd, div)
         }
         /* 
         POUR CHAQUE NODE CREER UN CLONE
@@ -1075,8 +1079,8 @@
           div.appendChild(btnTree)
           btnTree.addEventListener('click', ()=>{
             if(node.childElementCount > 0){
-              /* let rootNode = getRootNode(node)
-              makeTreeView(rootNode) */
+              let rootNode = getRootNode(node)
+              makeTreeView(rootNode)
             }
           })
         }

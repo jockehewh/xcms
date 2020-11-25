@@ -32,7 +32,7 @@
 }
 #isActive{}
 #isHover{
-    border: solid var(--bleu-indigo-eclatant) 8px;
+    border: solid var(--bleu-indigo-eclatant) 4px;
 }
 a{
     cursor:pointer;
@@ -314,7 +314,7 @@ iframe{
     border-right: none;
     border-bottom: none;
     border-top: none;
-    padding-left: 16px;
+    padding: 0 16px;
     margin-left: 1rem;
     line-height: 2;
 }
