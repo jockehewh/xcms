@@ -97,7 +97,7 @@ adminSocket.on('message', async (ctx) => {
     }
   }
 })
-let extensionCheck = /(\.(jpeg)|(png)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/
+let extensionCheck = /(\.(jpeg)|(png)|(PNG)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/
 adminSocket.on('image', ctx => { //CONVERTIR EN WEBP
   let extensionIndex = extensionCheck.exec(ctx.data.name).index
   let newName = ctx.data.name.slice(0, extensionIndex) + 'webp'

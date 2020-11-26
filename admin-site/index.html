@@ -726,8 +726,8 @@
         document.querySelector('.re-edit-zone').getBoundingClientRect().right + 'px' :
         document.querySelector('.edit-zone').getBoundingClientRect().right + 'px'
       div.style.top = document.querySelector('.re-edit-zone') ?
-        document.querySelector('.re-edit-zone').getBoundingClientRect().top + 50 + 'px' :
-        document.querySelector('.edit-zone').getBoundingClientRect().top + 50 + 'px'
+        document.querySelector('.re-edit-zone').getBoundingClientRect().top - 35 + 'px' :
+        document.querySelector('.edit-zone').getBoundingClientRect().top - 35 + 'px'
       document.body.appendChild(div)
       button.addEventListener('click', () => {
         event.target.style.width = event.target.getBoundingClientRect().width + 'px'
@@ -739,6 +739,8 @@
       })
       scaler.addEventListener('change', (ev) => {
         event.target.style.transform = `scale(${ev.target.value / 10})`
+        event.target.dataset.lastScale = ev.target.value
+        console.log(ev.target.value)
       })
     }
     //******************EDIT
@@ -891,13 +893,21 @@
         node.innerHTML = document.querySelector('.ql-editor').innerHTML
       })
     }
+    //*************HANDLE DRAG & DROP FOR THE TREE
+    var treeHandler = dragula({revertOnSpill: true})
+    let treeLevelMaker = {}
+    treeHandler.on("drop", (droped, target)=>{
+      let dropedId = droped.id
+      let targetId = target.id
+      document.getElementById(dropedId).remove()
+      document.getElementById(targetId).appendChild(treeLevelMaker[dropedId])
+    })
     //*************MAKE TREE VIEW ROOT
     function getRootNode(node){
       let futurNode;
       let tempNode = node.parentElement;
       while(tempNode.className != 'edit-zone' || tempNode.className != 're-edit-zone'){
         if(tempNode.parentElement.className === 'edit-zone' || tempNode.parentElement.className === 're-edit-zone'){
-          console.log(tempNode)
           return tempNode.parentElement
         }
         tempNode = tempNode.parentElement
@@ -905,25 +915,28 @@
       return node
     }
     //*************MAKE TREE VIEW
-    function makeTreeView(node, ){
-      function makeSubLevel(subNode, rootNode, ){
+    function makeTreeView(node){
+      function makeSubLevel(subNode, rootNode){
         incrementableId++
+        subNode.id = incrementableId
         let subNodes = subNode.children
         if(subNode.childElementCount > 0){
           for (let sbnd of subNodes){
+            treeLevelMaker[incrementableId] = sbnd.cloneNode(true)
             let subLevelx = document.createElement('ul')
             let subLevelStart = document.createElement('li')
-            console.log(sbnd.nodeName)
+            treeHandler.containers.push(rootNode)
+            subLevelx.id = incrementableId
             if(sbnd.childElementCount > 0){
               subLevelStart.id = incrementableId
                subLevelStart.style.backgroundColor = sbnd.style.borderColor 
               if(sbnd.childElementCount > 1){
-                subLevelStart.innerText = sbnd.parentElement.nodeName
+                subLevelStart.innerText = sbnd.parentElement.nodeName + "-"
                 subLevelx.innerText = sbnd.nodeName
                 makeSubLevel(sbnd, subLevelx)
                 rootNode.appendChild(subLevelStart)
                 subLevelStart.appendChild(subLevelx)
-              }else{  
+              }else{
                 subLevelStart.innerText = sbnd.nodeName
                 makeSubLevel(sbnd, subLevelx)
                 rootNode.appendChild(subLevelStart)
@@ -938,7 +951,9 @@
           }
         }
       }
-      let treeLevelMaker = {}
+      /*  
+        MAKE DRAGGABLE ELEMENTS
+       */
       let incrementableId = 1000
       let childNds = node.children
       let div = document.createElement('ul')
@@ -977,7 +992,6 @@
     let CurrentlyHoveredElement = []
     function showBorder(node) {
       /* 
-      MAKE TREE
       VOIR LE BUG ISHOVER
        */
       node.addEventListener('mouseenter', (e) => {
