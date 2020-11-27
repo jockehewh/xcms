@@ -305,7 +305,7 @@ iframe{
     padding: 1rem;
     align-items: center;
 }
-.container-editor-options button, button{
+.container-editor-options button{
     background: transparent;
     color: var(--grey-2);
     border-color: var(--grey-2);
@@ -318,10 +318,10 @@ iframe{
     margin-left: 1rem;
     line-height: 2;
 }
-button:last-of-type{
+.save-scale{
     background-color: var(--white-1);
 }
-.container-editor-options button:hover{
+.save-scale:hover{
     background: var(--white-1);
     position: relative;
     top: 1px;

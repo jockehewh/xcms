@@ -703,6 +703,7 @@
       let label = document.createElement('label')
       label.innerText = 'Scale'
       let button = document.createElement('button')
+      button.classList.add('save-scale')
       button.innerText = 'save scaling'
       button.style.width = "min-content"
       let scaler = document.createElement('input')
@@ -897,10 +898,19 @@
     var treeHandler = dragula({revertOnSpill: true})
     let treeLevelMaker = {}
     treeHandler.on("drop", (droped, target)=>{
-      let dropedId = droped.id
-      let targetId = target.id
-      document.getElementById(dropedId).remove()
-      document.getElementById(targetId).appendChild(treeLevelMaker[dropedId])
+      let dropedId = droped.className.match(/([0-9]{4,})/)[0]
+      let targetId = target.className.match(/([0-9]{4,})/)[0]
+      if(targetId === "1000"){
+        treeHandler.cancel()
+        return
+      }
+      try{
+        document.getElementsByClassName(dropedId)[0].remove()
+        document.getElementsByClassName(targetId)[0].appendChild(treeLevelMaker[dropedId])
+      }catch{
+        cleanTreeAndMakeNew()
+      }
+      cleanTreeAndMakeNew()
     })
     //*************MAKE TREE VIEW ROOT
     function getRootNode(node){
@@ -908,28 +918,46 @@
       let tempNode = node.parentElement;
       while(tempNode.className != 'edit-zone' || tempNode.className != 're-edit-zone'){
         if(tempNode.parentElement.className === 'edit-zone' || tempNode.parentElement.className === 're-edit-zone'){
-          return tempNode.parentElement
+          return tempNode
         }
         tempNode = tempNode.parentElement
       }
       return node
     }
+    //*************CLEAN TREE AND MAKE NEW TREE
+    function cleanTreeAndMakeNew(){
+      if(document.querySelector('.edit-zone')){
+        let editZone = document.querySelector('.edit-zone')
+        let childNodes = editZone.children
+        for(nd of childNodes){
+          if(/([0-9]{4,})/.test(nd.className)){
+            let className = nd.className.match(/([0-9]{4,})/)[0]
+            nd.classList.remove(className)
+          }
+        }
+        document.querySelector('.tree-view').remove()
+        treeLevelMaker = {}
+        makeTreeView(editZone)
+      }
+      
+    }
     //*************MAKE TREE VIEW
     function makeTreeView(node){
       function makeSubLevel(subNode, rootNode){
         incrementableId++
-        subNode.id = incrementableId
+        subNode.classList.add(incrementableId)
         let subNodes = subNode.children
         if(subNode.childElementCount > 0){
           for (let sbnd of subNodes){
             treeLevelMaker[incrementableId] = sbnd.cloneNode(true)
             let subLevelx = document.createElement('ul')
             let subLevelStart = document.createElement('li')
-            treeHandler.containers.push(rootNode)
-            subLevelx.id = incrementableId
+            subLevelx.classList.add(incrementableId)
             if(sbnd.childElementCount > 0){
-              subLevelStart.id = incrementableId
-               subLevelStart.style.backgroundColor = sbnd.style.borderColor 
+              subLevelStart.classList.add(incrementableId)
+              subLevelStart.style.backgroundColor = sbnd.style.borderColor 
+              subLevelStart.style.border = "solid 1px var(--white-2)"
+            if(rootNode.textContent !== "ROOT NODE")treeHandler.containers.push(rootNode)
               if(sbnd.childElementCount > 1){
                 subLevelStart.innerText = sbnd.parentElement.nodeName + "-"
                 subLevelx.innerText = sbnd.nodeName
@@ -943,7 +971,7 @@
                 subLevelStart.appendChild(subLevelx)
               }
             }else{
-              subLevelStart.id = incrementableId
+              subLevelStart.classList.add(incrementableId)
               subLevelStart.innerText = sbnd.nodeName
               makeSubLevel(sbnd, subLevelStart)
               rootNode.appendChild(subLevelStart)
@@ -951,14 +979,11 @@
           }
         }
       }
-      /*  
-        MAKE DRAGGABLE ELEMENTS
-       */
       let incrementableId = 1000
       let childNds = node.children
       let div = document.createElement('ul')
       let firstNode = document.createElement('li')
-      firstNode.id = incrementableId
+      firstNode.classList.add(incrementableId)
       div.innerText = "ROOT NODE"
       div.style.color = "white"
       firstNode.style.background = node.style.borderColor
@@ -978,9 +1003,6 @@
         }else{
           makeSubLevel(nd, div)
         }
-        /* 
-        POUR CHAQUE NODE CREER UN CLONE
-         */
       }
     }
     //*************MAKE BORDER COLOR
