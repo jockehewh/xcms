@@ -1149,6 +1149,7 @@
           generateSnippet.addEventListener('click', (e)=>{
             if(node.parentElement.dataset.willRepeat === "true"){
               startLinking(node.parentElement)
+              //document.querySelector('.isSelected').classList.remove('isSelected')
             }else{
               console.log('cannot make repeatble from: ', node.parentElement)
               return
@@ -1267,7 +1268,7 @@
           jseditor.find(`xcmsRepeatable_${currentClassName}`)
           jseditor.removeLines()
           jseditor.navigateLeft(1)
-          jseditor.insert('\n'+ funcOne)
+          jseditor.insert('\n  '+ funcOne)
           jseditor.find(`const xcmsRepeatable_${currentClassName}`)
           jseditor.removeLines()
           jseditor.navigateLeft(1)
@@ -1275,7 +1276,7 @@
           jseditor.find('const htmlTemplate'+currentClassName)
           jseditor.removeLines()
           jseditor.navigateLeft(1)
-          jseditor.insert('\n'+ htmplate)
+          jseditor.insert('\n  '+ htmplate)
           jseditor.navigateLineEnd()
         }
       })
@@ -1284,7 +1285,6 @@
     let linkedFunctions = []
     const startLinking = (node)=>{
       if(linkedFunctions.length === 0 && node.dataset.willRepeat === "true") {
-        //VERIFIER DANS L'EDITEUR JS
         createLinkingFunction(node)
         return
       }
@@ -1293,6 +1293,8 @@
           if(document.querySelector('.'+linkedFunction)){
             if(node.classList.contains(linkedFunction)){
               updateExistentLinkingFunction(node)
+            }else{
+              createLinkingFunction(node)
             }
           }else{
             createLinkingFunction(node)
@@ -1302,6 +1304,9 @@
     }
     //***************CREATION DES SNIPPETS
     const createLinkingFunction = (node)=>{
+      if(/xcms-repeater-[0,9]{0,4}/.test(node.className)){
+        return
+      }
       node.querySelectorAll('[data-is-repeatable]').forEach(repeatable=>{
         let repeatableHTML = repeatable.outerHTML
         let randomized = makeRandom(10)
@@ -1334,8 +1339,7 @@
             countr++
           }else{}
         })
-        let templateFunction = `\n
-const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
+        let templateFunction = `const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
 //run the next function to intialize you repeater element
 const ${parentElementUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
   htmlReference${randomized}.querySelectorAll('[data-is-repeatable]').forEach(n=>{
@@ -1345,18 +1349,15 @@ const ${parentElementUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>
 ${repeatableUniqueFunctionID}(${variablesBindingNames.join(', ')})
 }
 const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
-/* YOUR CODE GOES HERE */
-const htmlTemplate${randomized} = \`${repeatableHTML.replace('data-is-repeatable="true"', '')}\`
+  /* YOUR CODE GOES HERE */
+  const htmlTemplate${randomized} = \`${repeatableHTML.replace('data-is-repeatable="true"', '')}\`
 
-htmlReference${randomized}.insertAdjacentHTML('beforeend', htmlTemplate${randomized}) 
+  htmlReference${randomized}.insertAdjacentHTML('beforeend', htmlTemplate${randomized}) 
 }
-/* YOUR CODE GOES HERE */
+/* uncomment the next line createElement on start */
 //${parentElementUniqueFunctionID}("x")
-
 `
       jseditor.navigateFileEnd()
-      jseditor.navigateLineEnd()
-      jseditor.insert('\n')
       jseditor.insert(templateFunction)
       jseditor.navigateFileEnd()
       })
