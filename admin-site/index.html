@@ -985,7 +985,6 @@
               subLevelStart.style.backgroundColor = sbnd.style.borderColor 
               subLevelStart.style.border = "solid 1px var(--white-2)"
             if(rootNode.textContent !== "ROOT NODE")treeHandler.containers.push(rootNode)
-              //if(sbnd.childElementCount === 1){
                 if(sbnd.childElementCount === 1 && sbnd.firstElementChild.nodeName === sbnd.nodeName){
                   subLevelx.innerText = sbnd.nodeName
                   makeSubLevel(sbnd.firstElementChild, subLevelx)
@@ -1003,8 +1002,6 @@
                   rootNode.appendChild(subLevelStart)
                   subLevelStart.appendChild(subLevelx)
                 }
-              //}
-              
             }else{
               subLevelStart.classList.add(incrementableId)
               subLevelStart.innerText = sbnd.nodeName
@@ -1227,16 +1224,76 @@
         })
       })
     }
+    //***************UPDATE EXISTING LINKING FUNCTION
+    const updateExistentLinkingFunction = (node)=>{
+      node.querySelectorAll('[data-is-repeatable]').forEach(linkedElement =>{
+        if(/xcms-repeater-[0-9]{0,4}/.test(node.className)){
+          let currentClassName = node.className.match(/xcms-repeater-[0-9]{0,4}/)[0].split('-')[2]
+          let repeatableHTML = linkedElement.outerHTML
+
+          let parsedKeys = repeatableHTML.match(/::[a-zA-Z0-9_-]{0,10}::/gm)
+          let count = 0
+          parsedKeys.forEach(key=>{
+            while(repeatableHTML.includes(key)){
+              repeatableHTML = repeatableHTML.replace(key, `::parameter_${count}::`)
+            }
+            count++
+          })
+          let parsedNewKeys = repeatableHTML.match(/::(parameter_[0-9]){0,10}::/gm)
+          let countr = 0
+          let variablesBindingNames = []
+          let checkDuplicate = []
+          parsedNewKeys.forEach(key=>{
+            let currentParameterName = "parameter"+countr
+            while(repeatableHTML.includes(key)){
+              repeatableHTML = repeatableHTML.replace(key, "${"+currentParameterName+"}")
+            }
+            if(checkDuplicate.indexOf(key) === -1){
+              variablesBindingNames.push(currentParameterName)
+              checkDuplicate.push(key)
+              countr++
+            }else{}
+          })
+          
+          let parentElementId = `const xcmsRepeater_${currentClassName} = (${variablesBindingNames.join(', ')})=>{`
+          let funcOne = `xcmsRepeatable_${currentClassName}(${variablesBindingNames.join(', ')})`
+          let funcTwo = `const xcmsRepeatable_${currentClassName} = (${variablesBindingNames.join(', ')})=>{`
+          let htmplate = `const htmlTemplate${currentClassName} = \`${repeatableHTML.replace('data-is-repeatable="true"', '')}\``
+          jseditor.navigateFileStart()
+          jseditor.find(`const xcmsRepeater_${currentClassName}`)
+          jseditor.removeLines()
+          jseditor.navigateLeft(1)
+          jseditor.insert('\n'+ parentElementId)
+          jseditor.find(`xcmsRepeatable_${currentClassName}`)
+          jseditor.removeLines()
+          jseditor.navigateLeft(1)
+          jseditor.insert('\n'+ funcOne)
+          jseditor.find(`const xcmsRepeatable_${currentClassName}`)
+          jseditor.removeLines()
+          jseditor.navigateLeft(1)
+          jseditor.insert('\n'+ funcTwo)
+          jseditor.find('const htmlTemplate'+currentClassName)
+          jseditor.removeLines()
+          jseditor.navigateLeft(1)
+          jseditor.insert('\n'+ htmplate)
+          jseditor.navigateLineEnd()
+        }
+      })
+    }
     //***************VERIFIE LES CLASSES EXISTANTE
     let linkedFunctions = []
     const startLinking = (node)=>{
       if(linkedFunctions.length === 0 && node.dataset.willRepeat === "true") {
+        //VERIFIER DANS L'EDITEUR JS
         createLinkingFunction(node)
+        return
       }
       if(node.dataset.willRepeat === "true"){
         linkedFunctions.forEach(linkedFunction=>{
           if(document.querySelector('.'+linkedFunction)){
-            return
+            if(node.classList.contains(linkedFunction)){
+              updateExistentLinkingFunction(node)
+            }
           }else{
             createLinkingFunction(node)
           }
@@ -1289,9 +1346,9 @@ ${repeatableUniqueFunctionID}(${variablesBindingNames.join(', ')})
 }
 const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
 /* YOUR CODE GOES HERE */
-const htmlTemplate = \`${repeatableHTML.replace('data-is-repeatable="true"', '')}\`
+const htmlTemplate${randomized} = \`${repeatableHTML.replace('data-is-repeatable="true"', '')}\`
 
-htmlReference${randomized}.insertAdjacentHTML('beforeend', htmlTemplate) 
+htmlReference${randomized}.insertAdjacentHTML('beforeend', htmlTemplate${randomized}) 
 }
 /* YOUR CODE GOES HERE */
 //${parentElementUniqueFunctionID}("x")
@@ -1305,23 +1362,6 @@ htmlReference${randomized}.insertAdjacentHTML('beforeend', htmlTemplate)
       })
     }
 
-    /* 
-      ****************
-      *************
-      *************
-      *************
-      *************
-       ****************
-      *************
-      *************
-      *************
-      *************
-       ****************
-      *************
-      *************
-      *************
-      *************
-     */
     //*************HIDE CONTEXT MENU IF VISIBLE
     document.querySelector("main").addEventListener('click', (e)=>{
       let menu = document.querySelector('.xcms-custom-menu')
