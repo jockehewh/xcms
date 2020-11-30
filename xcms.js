@@ -119,6 +119,12 @@ xcms.use(r.get('/admin-site/dltcursor.png', ctx => {
     autoClose: true
   })
 }))
+xcms.use(r.get('/admin-site/smart-template.png', ctx => {
+  ctx.type = 'image/png'
+  ctx.body = fs.createReadStream(__dirname + '/admin-site/smart-template.png', {
+    autoClose: true
+  })
+}))
 xcms.use(r.get(/column/, ctx => {
   ctx.type = 'image/png'
   ctx.body = fs.createReadStream(__dirname + ctx.url, {

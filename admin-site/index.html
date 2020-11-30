@@ -191,6 +191,12 @@
         </div>
         <div class="cc-body">
           <div>
+            <button data-preset="smart template">
+              <p>Smart template</p>
+              <img src="/admin-site/smart-template.png" alt="">
+            </button>
+          </div>
+          <div>
             <button data-preset="100">
               <p>1 column</p>
               <img src="/admin-site/1-column.png" alt="">
@@ -1163,89 +1169,7 @@
           })
         }
       })
-      //***************VERIFIE LES CLASSES EXISTANTE
-      let linkedFunctions = []
-      const startLinking = (node)=>{
-        if(linkedFunctions.length === 0 && node.dataset.willRepeat === "true") {
-          createLinkingFunction(node)
-        }
-        if(node.dataset.willRepeat === "true"){
-          linkedFunctions.forEach(linkedFunction=>{
-            if(document.querySelector('.'+linkedFunction)){
-              return
-            }else{
-              createLinkingFunction(node)
-            }
-          })
-        }
-      }
-      //***************CREATION DES SNIPPETS
-      const createLinkingFunction = (node)=>{
-        node.querySelectorAll('[data-is-repeatable]').forEach(repeatable=>{
-          let repeatableHTML = repeatable.outerHTML
-          let randomized = makeRandom(10)
-          if(linkedFunctions.indexOf("xcms-repeater-"+randomized) !== -1) return
-          let repeaterUniqueID = "xcms-repeater-"+randomized
-          let repeatableUniqueFunctionID = "xcmsRepeatable_"+randomized
-          let parentElementUniqueFunctionID = "xcmsRepeater_"+randomized
-          linkedFunctions.push(repeaterUniqueID)
-          node.classList.add(repeaterUniqueID)
-          let parsedKeys = repeatableHTML.match(/::[a-zA-Z0-9_-]{0,10}::/gm)
-          let count = 0
-          parsedKeys.forEach(key=>{
-            while(repeatableHTML.includes(key)){
-              repeatableHTML = repeatableHTML.replace(key, `::parameter_${count}::`)
-            }
-            count++
-          })
-          let parsedNewKeys = repeatableHTML.match(/::(parameter_[0-9]){0,10}::/gm)
-          let countr = 0
-          let variablesBinding = []
-          let checkDuplicate = []
-          parsedNewKeys.forEach(key=>{
-            let currentParameterName = "parameter"+countr
-            while(repeatableHTML.includes(key)){
-              repeatableHTML = repeatableHTML.replace(key, "${"+currentParameterName+"}")
-            }
-            if(checkDuplicate.indexOf(key) === -1){
-              variablesBinding.push("const "+currentParameterName+" = ''\n")
-              checkDuplicate.push(key)
-              countr++
-            }else{}
-          })
-          let templateFunction = `\n
-const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
-//run the next function to intialize you repeater element
-const ${parentElementUniqueFunctionID} = (someData)=>{
-someData.forEach(bitOfData=>{
-/* YOUR CODE GOES HERE */
-${repeatableUniqueFunctionID}(bitOfData, "time", "and", "more")
-})
-}
-const ${repeatableUniqueFunctionID} = (bitOfData, or, more)=>{
-/* YOUR CODE GOES HERE */
-${variablesBinding.join('')}
-/* YOUR CODE GOES HERE */
-const htmlTemplate = \`${repeatableHTML}\`
-arguments.forEach((arg, i)=>{
-/* YOUR CODE GOES HERE */
-})
-let div = document.createElement('div')
-div.innerHtml = htmlTemplate
-htmlReference${randomized}.appendChild(div)
-}
-/* YOUR CODE GOES HERE */
-//${parentElementUniqueFunctionID}("x")
-
-`
-        jseditor.navigateFileEnd()
-        jseditor.navigateLineEnd()
-        jseditor.insert('\n')
-        jseditor.insert(templateFunction)
-        jseditor.navigateFileEnd()
-        })
-      }
-
+      
       //*************MENU CONTEXTUEL
       if(CurrentlyHoveredElement.length > 0){
         node = CurrentlyHoveredElement.pop()
@@ -1303,6 +1227,101 @@ htmlReference${randomized}.appendChild(div)
         })
       })
     }
+    //***************VERIFIE LES CLASSES EXISTANTE
+    let linkedFunctions = []
+    const startLinking = (node)=>{
+      if(linkedFunctions.length === 0 && node.dataset.willRepeat === "true") {
+        createLinkingFunction(node)
+      }
+      if(node.dataset.willRepeat === "true"){
+        linkedFunctions.forEach(linkedFunction=>{
+          if(document.querySelector('.'+linkedFunction)){
+            return
+          }else{
+            createLinkingFunction(node)
+          }
+        })
+      }
+    }
+    //***************CREATION DES SNIPPETS
+    const createLinkingFunction = (node)=>{
+      node.querySelectorAll('[data-is-repeatable]').forEach(repeatable=>{
+        let repeatableHTML = repeatable.outerHTML
+        let randomized = makeRandom(10)
+        if(linkedFunctions.indexOf("xcms-repeater-"+randomized) !== -1) return
+        let repeaterUniqueID = "xcms-repeater-"+randomized
+        let repeatableUniqueFunctionID = "xcmsRepeatable_"+randomized
+        let parentElementUniqueFunctionID = "xcmsRepeater_"+randomized
+        linkedFunctions.push(repeaterUniqueID)
+        node.classList.add(repeaterUniqueID)
+        let parsedKeys = repeatableHTML.match(/::[a-zA-Z0-9_-]{0,10}::/gm)
+        let count = 0
+        parsedKeys.forEach(key=>{
+          while(repeatableHTML.includes(key)){
+            repeatableHTML = repeatableHTML.replace(key, `::parameter_${count}::`)
+          }
+          count++
+        })
+        let parsedNewKeys = repeatableHTML.match(/::(parameter_[0-9]){0,10}::/gm)
+        let countr = 0
+        let variablesBindingNames = []
+        let checkDuplicate = []
+        parsedNewKeys.forEach(key=>{
+          let currentParameterName = "parameter"+countr
+          while(repeatableHTML.includes(key)){
+            repeatableHTML = repeatableHTML.replace(key, "${"+currentParameterName+"}")
+          }
+          if(checkDuplicate.indexOf(key) === -1){
+            variablesBindingNames.push(currentParameterName)
+            checkDuplicate.push(key)
+            countr++
+          }else{}
+        })
+        let templateFunction = `\n
+const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
+//run the next function to intialize you repeater element
+const ${parentElementUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
+  htmlReference${randomized}.querySelectorAll('[data-is-repeatable]').forEach(n=>{
+    n.remove()
+  })
+/* YOUR CODE GOES HERE */
+${repeatableUniqueFunctionID}(${variablesBindingNames.join(', ')})
+}
+const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
+/* YOUR CODE GOES HERE */
+const htmlTemplate = \`${repeatableHTML.replace('data-is-repeatable="true"', '')}\`
+
+htmlReference${randomized}.insertAdjacentHTML('beforeend', htmlTemplate) 
+}
+/* YOUR CODE GOES HERE */
+//${parentElementUniqueFunctionID}("x")
+
+`
+      jseditor.navigateFileEnd()
+      jseditor.navigateLineEnd()
+      jseditor.insert('\n')
+      jseditor.insert(templateFunction)
+      jseditor.navigateFileEnd()
+      })
+    }
+
+    /* 
+      ****************
+      *************
+      *************
+      *************
+      *************
+       ****************
+      *************
+      *************
+      *************
+      *************
+       ****************
+      *************
+      *************
+      *************
+      *************
+     */
     //*************HIDE CONTEXT MENU IF VISIBLE
     document.querySelector("main").addEventListener('click', (e)=>{
       let menu = document.querySelector('.xcms-custom-menu')
@@ -1333,6 +1352,19 @@ htmlReference${randomized}.appendChild(div)
       document.querySelector('.cc-body').querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', e => {
           let preset = btn.dataset.preset
+          if(preset === "smart template"){
+            let templateContainer = document.createElement("div")
+            let templateElement = document.createElement('div')
+            let demoElement = document.createElement('h1')
+            templateContainer.dataset.willRepeat = true
+            templateElement.dataset.isRepeatable = true
+            templateContainer.appendChild(templateElement)
+            demoElement.innerText = "Hello ::name:: !"
+            templateElement.appendChild(demoElement)
+            makeBorderColor(templateElement)
+            xAppend(templateContainer)
+            startLinking(templateContainer)
+          }
           if (preset === "100") {
             xAppend(div)
             makeBorderColor(div)
