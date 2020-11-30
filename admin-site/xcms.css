@@ -52,7 +52,7 @@ body{
 #imgpiker{
     display:none;
 }
-a, p{
+a{
     /* color: #448aff ; */
     color: var(--grey-2);
     text-decoration: none;
@@ -331,10 +331,20 @@ button:last-of-type:hover{
     position: relative;
     top: 1px;
 }
+.tree-view .close{
+    color: var(--white-0);
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    border-left: solid 1px;
+    padding: 0 8px;
+}
 .tree-view{
     position: absolute;
-    width: 100px;
+    width: 200px;
     background-color: var(--grey-1);
+    padding-top: 16px;
 }
 .tree-view ul{
     margin-left: 8px;

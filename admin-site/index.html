@@ -142,6 +142,8 @@
       <hr>
       <dt>Quick CSS</dt>
       <hr>
+      <dd data-cssopt="">Create a custom class</dd>
+      <hr>
       <dd data-cssopt="display: flex;">display: flex;</dd>
       <hr>
       <dd data-cssopt="flex-direction: row;">flex-direction: row;</dd>
@@ -741,7 +743,6 @@
       scaler.addEventListener('change', (ev) => {
         event.target.style.transform = `scale(${ev.target.value / 10})`
         event.target.dataset.lastScale = ev.target.value
-        console.log(ev.target.value)
       })
     }
     //******************EDIT
@@ -881,7 +882,9 @@
         let div = document.createElement('div')
         div.innerHTML = newData
         div.setAttribute('style', tempStyle)
+        if(node.dataset.isRepeatable !== undefined) div.dataset.isRepeatable = node.dataset.isRepeatable
         div.classList.add('xcms-custom')
+        div.className = node.className
         node.parentElement.replaceChild(div, node)
         document.querySelector('.ql-toolbar').remove()
         document.querySelector('.ql-clipboard').remove()
@@ -900,6 +903,7 @@
     treeHandler.on("drop", (droped, target)=>{
       let dropedId = droped.className.match(/([0-9]{4,})/)[0]
       let targetId = target.className.match(/([0-9]{4,})/)[0]
+      console.log(`targetId: ${targetId} dropedId: ${dropedId}`)
       if(targetId === "1000"){
         treeHandler.cancel()
         return
@@ -907,10 +911,11 @@
       try{
         document.getElementsByClassName(dropedId)[0].remove()
         document.getElementsByClassName(targetId)[0].appendChild(treeLevelMaker[dropedId])
+        cleanTreeAndMakeNew()
       }catch{
         cleanTreeAndMakeNew()
+        
       }
-      cleanTreeAndMakeNew()
     })
     //*************MAKE TREE VIEW ROOT
     function getRootNode(node){
@@ -926,14 +931,30 @@
     }
     //*************CLEAN TREE AND MAKE NEW TREE
     function cleanTreeAndMakeNew(){
-      if(document.querySelector('.edit-zone')){
+      function cleanSubLevel(node){
+        for(subNd of node.children){
+          if(/([0-9]{4,})/.test(subNd.className)){
+            let className = subNd.className.match(/([0-9]{4,})/)[0]
+            subNd.classList.remove(className)
+          }
+          if(subNd.childElementCount > 0)
+          cleanSubLevel(subNd)
+        }
+      }
+      if(document.querySelector('.edit-zone').style.display === "block"){
         let editZone = document.querySelector('.edit-zone')
         let childNodes = editZone.children
         for(nd of childNodes){
-          if(/([0-9]{4,})/.test(nd.className)){
-            let className = nd.className.match(/([0-9]{4,})/)[0]
-            nd.classList.remove(className)
-          }
+            cleanSubLevel(nd)
+        }
+        document.querySelector('.tree-view').remove()
+        treeLevelMaker = {}
+        makeTreeView(editZone)
+      }else{
+        let editZone = document.querySelector('.re-edit-zone')
+        let childNodes = editZone.children
+        for(nd of childNodes){
+            cleanSubLevel(nd)
         }
         document.querySelector('.tree-view').remove()
         treeLevelMaker = {}
@@ -958,18 +979,26 @@
               subLevelStart.style.backgroundColor = sbnd.style.borderColor 
               subLevelStart.style.border = "solid 1px var(--white-2)"
             if(rootNode.textContent !== "ROOT NODE")treeHandler.containers.push(rootNode)
-              if(sbnd.childElementCount > 1){
-                subLevelStart.innerText = sbnd.parentElement.nodeName + "-"
-                subLevelx.innerText = sbnd.nodeName
-                makeSubLevel(sbnd, subLevelx)
-                rootNode.appendChild(subLevelStart)
-                subLevelStart.appendChild(subLevelx)
-              }else{
-                subLevelStart.innerText = sbnd.nodeName
-                makeSubLevel(sbnd, subLevelx)
-                rootNode.appendChild(subLevelStart)
-                subLevelStart.appendChild(subLevelx)
-              }
+              //if(sbnd.childElementCount === 1){
+                if(sbnd.childElementCount === 1 && sbnd.firstElementChild.nodeName === sbnd.nodeName){
+                  subLevelx.innerText = sbnd.nodeName
+                  makeSubLevel(sbnd.firstElementChild, subLevelx)
+                  rootNode.appendChild(subLevelStart)
+                  subLevelStart.appendChild(subLevelx)
+                }else if(sbnd.childElementCount > 1 && sbnd.firstElementChild.nodeName !== sbnd.nodeName){
+                  subLevelStart.innerText = sbnd.parentElement.nodeName
+                  subLevelx.innerText = sbnd.nodeName
+                  makeSubLevel(sbnd, subLevelx)
+                  rootNode.appendChild(subLevelStart)
+                  subLevelStart.appendChild(subLevelx)
+                }else{
+                  subLevelStart.innerText = sbnd.nodeName
+                  makeSubLevel(sbnd, subLevelx)
+                  rootNode.appendChild(subLevelStart)
+                  subLevelStart.appendChild(subLevelx)
+                }
+              //}
+              
             }else{
               subLevelStart.classList.add(incrementableId)
               subLevelStart.innerText = sbnd.nodeName
@@ -984,8 +1013,9 @@
       let div = document.createElement('ul')
       let firstNode = document.createElement('li')
       firstNode.classList.add(incrementableId)
+      let closeBtn = document.createElement('a')
       div.innerText = "ROOT NODE"
-      div.style.color = "white"
+      div.style.color = "var(--white-0)"
       firstNode.style.background = node.style.borderColor
       document.querySelector('main.mw-100').appendChild(div)
       div.appendChild(firstNode)
@@ -1004,6 +1034,12 @@
           makeSubLevel(nd, div)
         }
       }
+      closeBtn.innerText = 'Close tree view [x]'
+      closeBtn.classList.add('close')
+      div.appendChild(closeBtn)
+      closeBtn.addEventListener('click', e=>{
+        document.querySelector('.tree-view').remove()
+      })
     }
     //*************MAKE BORDER COLOR
     function makeBorderColor(node){
@@ -1068,6 +1104,7 @@
             node.id = 'isActive'
             xEdit(node)
           })
+          
           btnRemove.addEventListener('click', () => {
             node.remove()
             div.remove()
@@ -1099,15 +1136,21 @@
           })
           btnIsRepeatable.addEventListener('click', (e)=>{
             e.preventDefault()
-            if(node.parentElement.classList.contains('edit-zone') || node.dataset.willRepeat !== "true"){
+            if(node.parentElement.classList.contains('edit-zone') || node.parentElement.dataset.willRepeat !== "true"){
               alert("You can not spawn a repatable element outside of a container.")
               return
             }
-            node.childNodes[0].dataset.isRepeatable = true
+            node.dataset.isRepeatable = true
             div.remove()
           })
           generateSnippet.addEventListener('click', (e)=>{
-            startLinking(node)
+            if(node.parentElement.dataset.willRepeat === "true"){
+              startLinking(node.parentElement)
+            }else{
+              console.log('cannot make repeatble from: ', node.parentElement)
+              return
+            }
+            
           })
           let btnTree = document.createElement('button')
           btnTree.innerText = "make tree view"
@@ -1165,7 +1208,6 @@
               repeatableHTML = repeatableHTML.replace(key, "${"+currentParameterName+"}")
             }
             if(checkDuplicate.indexOf(key) === -1){
-              console.log("const parameter"+countr+" = ''")
               variablesBinding.push("const "+currentParameterName+" = ''\n")
               checkDuplicate.push(key)
               countr++
@@ -1205,13 +1247,20 @@ htmlReference${randomized}.appendChild(div)
       }
 
       //*************MENU CONTEXTUEL
+      if(CurrentlyHoveredElement.length > 0){
+        node = CurrentlyHoveredElement.pop()
+        CurrentlyHoveredElement.length = 0
+      }
+      
       node.addEventListener('contextmenu', ce => {
         ce.preventDefault();
+        ce.cancelBubble = true
         let menu = document.querySelector('.xcms-custom-menu')
         let origin = {
           left: ce.pageX,
           top: ce.pageY
         }
+        
         menu.style.display = "block"
         menu.style.left = origin.left + 'px'
         menu.style.top = origin.top + 'px'
@@ -1228,6 +1277,7 @@ htmlReference${randomized}.appendChild(div)
             let random = Math.floor(Math.random()*5000)
             let contextClass = `xcms-custom_${random}`
             let hasCustomClass = node.classList.value.match(/xcms-custom_[0-9]{0,4}/)
+            let existingStyle = node.getAttribute('style').split(';')
             if(hasCustomClass !== null){
               let classIndex = csseditor.find(hasCustomClass[0]).start.row
               csseditor.gotoLine(classIndex+1)
@@ -1242,6 +1292,10 @@ htmlReference${randomized}.appendChild(div)
               csseditor.gotoLine(classIndex+1)
               csseditor.navigateLineEnd()
               csseditor.insert('\n')
+              existingStyle.forEach(style => {
+                if(style != "")
+                csseditor.insert(style +";\n")
+              })
               csseditor.insert(dd.dataset.cssopt)
             }
             menu.style.display = "none"
@@ -1254,13 +1308,26 @@ htmlReference${randomized}.appendChild(div)
       let menu = document.querySelector('.xcms-custom-menu')
       if(menu.style.display === "block") menu.style.display = "none"
     })
-
-
+    //*************GET CONTAINER NODENAME
+    function getContainerNodeName(){
+      if (document.querySelector('.isSelected')) {
+        if(document.querySelector('.isSelected').nodeName === 'DIV'){
+          let selectedContainer = document.querySelector('.isSelected')
+          return {isDiv: 1, selectedContainer}
+        }
+        return {isDiv: 0, selectedContainer: 0}
+      }
+      return {isDiv: 0, selectedContainer: 0}
+    }
     //*************CREATE CUSTOM CONTAINER
     function customContainer() {
       var div = document.createElement('div')
+      let isSelected = getContainerNodeName()
+      if(isSelected.isDiv){
+        div = isSelected.selectedContainer
+      }
       div.classList.add('xcms-div')
-      div.id = "isContained"
+      div.id = "isContainer"
       let menu = document.importNode(document.querySelector('#custom-container').content, true)
       document.body.appendChild(menu)
       document.querySelector('.cc-body').querySelectorAll('button').forEach(btn => {
@@ -1286,9 +1353,11 @@ htmlReference${randomized}.appendChild(div)
             rightDiv.style.alignItems = 'center'
             leftDiv.style.minWidth = '60px'
             rightDiv.style.minWidth = '60px'
+            leftDiv.style.minHeight = '60px'
+            rightDiv.style.minHeight = '60px'
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
-            xAppend(div)
+            if(!isSelected.isDiv)xAppend(div)
             makeBorderColor(leftDiv)
             makeBorderColor(rightDiv)
             drake.containers.push(div)
@@ -1310,9 +1379,11 @@ htmlReference${randomized}.appendChild(div)
             rightDiv.style.alignItems = 'center'
             leftDiv.style.minWidth = '60px'
             rightDiv.style.minWidth = '60px'
+            leftDiv.style.minHeight = '60px'
+            rightDiv.style.minHeight = '60px'
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
-            xAppend(div)
+            if(!isSelected.isDiv)xAppend(div)
             makeBorderColor(leftDiv)
             makeBorderColor(rightDiv)
             drake.containers.push(div)
@@ -1334,9 +1405,11 @@ htmlReference${randomized}.appendChild(div)
             rightDiv.style.alignItems = 'center'
             leftDiv.style.minWidth = '60px'
             rightDiv.style.minWidth = '60px'
+            leftDiv.style.minHeight = '60px'
+            rightDiv.style.minHeight = '60px'
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
-            xAppend(div)
+            if(!isSelected.isDiv)xAppend(div)
             makeBorderColor(leftDiv)
             makeBorderColor(rightDiv)
             drake.containers.push(div)
@@ -1364,10 +1437,13 @@ htmlReference${randomized}.appendChild(div)
             leftDiv.style.minWidth = '60px'
             rightDiv.style.minWidth = '60px'
             middleDiv.style.minWidth = '60px'
+            leftDiv.style.minHeight = '60px'
+            rightDiv.style.minHeight = '60px'
+            middleDiv.style.minHeight = '60px'
             div.appendChild(leftDiv)
             div.appendChild(middleDiv)
             div.appendChild(rightDiv)
-            xAppend(div)
+            if(!isSelected.isDiv)xAppend(div)
             makeBorderColor(leftDiv)
             makeBorderColor(middleDiv)
             makeBorderColor(rightDiv)
@@ -1760,7 +1836,6 @@ htmlReference${randomized}.appendChild(div)
           color: var(--grey-2);
         }
         :scope a:hover, :scope button:hover {
-          background-color: var(--white-1);
           position: relative;
           top: 1px;
           font-weight: bold;
@@ -2096,14 +2171,12 @@ htmlReference${randomized}.appendChild(div)
           a.remove()
         })
         document.querySelector(".import-btn").addEventListener('click', (e)=>{
-          //ajouter un input type fichier 
           let fileInput = document.createElement('input')
           fileInput.type = 'file'
           fileInput.multiple = false
           fileInput.accept = "application/zip"
           document.querySelector('.minimenu').appendChild(fileInput)
           fileInput.addEventListener('change', (e)=>{
-            console.log(e.currentTarget.files[0])
             crms.emit("importing", e.currentTarget.files[0])
           })
         })
@@ -2125,14 +2198,12 @@ htmlReference${randomized}.appendChild(div)
           a.remove()
         })
         document.querySelector(".import-media-btn").addEventListener('click', (e)=>{
-          //ajouter un input type fichier 
           let fileInput = document.createElement('input')
           fileInput.type = 'file'
           fileInput.multiple = false
           fileInput.accept = "application/zip"
           document.querySelector('.minimenu').appendChild(fileInput)
           fileInput.addEventListener('change', (e)=>{
-            console.log(e.currentTarget.files[0])
             crms.emit("importing-medias", e.currentTarget.files[0])
             fileInput.setAttribute('disabled', true)
           })
