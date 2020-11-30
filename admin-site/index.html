@@ -64,10 +64,11 @@
       </div>
       <div class="ace-editor-block">
         <div class="editor-btn-flexbox">
-          <a data-editor="js">Edit your javascript</a> <a data-editor="css">Edit your css</a>
+          <a data-editor="js">Edit your JS</a> <a data-editor="html">Edit your HTML</a> <a data-editor="css">Edit your CSS</a>
         </div>
         <div id="css-editor"></div>
         <div id="js-editor"></div>
+        <div id="html-editor"></div>
         <div id="text-editor"></div>
       </div>
     </div>
@@ -1546,7 +1547,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
     }
     //**************DRAG & DROP
     let drake = dragula([document.querySelector('.edit-zone')],{revertOnSpill: true})
-    //ACE EDITORS
+    //**************ACE EDITORS
     ace.require("ace/ext/language_tools")
     let csseditor = ace.edit('css-editor')
     csseditor.setTheme("ace/theme/monokai")
@@ -1570,22 +1571,61 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       enableSnippets: true,
       enableLiveAutocompletion: true
     })
+    let htmleditor = ace.edit('html-editor')
+    htmleditor.setTheme("ace/theme/monokai")
+    htmleditor.session.setMode("ace/mode/html")
+    htmleditor.scrollToLine(0, true, true, function () { });
+    htmleditor.gotoLine(0, 0, true);
+    htmleditor.session.setTabSize(2);
+    htmleditor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true
+    })
     document.querySelectorAll('.ace-editor-block a').forEach(btn => {
       btn.addEventListener('click', e => {
         if (e.target.dataset.editor === 'js') {
           document.querySelector('#js-editor').style.display = "block"
           document.querySelector('#css-editor').style.display = "none"
+          document.querySelector('#html-editor').style.display = "none"
         }
         if (e.target.dataset.editor === 'css') {
           document.querySelector('#js-editor').style.display = "none"
+          document.querySelector('#html-editor').style.display = "none"
           document.querySelector('#css-editor').style.display = "block"
+        }
+        if (e.target.dataset.editor === 'html') {
+          document.querySelector('#js-editor').style.display = "none"
+          document.querySelector('#css-editor').style.display = "none"
+          document.querySelector('#html-editor').style.display = "block"
+          /* 
+          UPDATE THE HTML CONTENT WITH CURRENT EDIT ZONE HTML CONTENT
+          REMETTE A JOUR LE EDIT DOM TOUTE LES 500
+           */
+          setTimeout(clearTimeOutForHTMLEditor, 500)
         }
       })
     })
+    function clearTimeOutForHTMLEditor(){
+      htmleditor.selectAll()
+      htmleditor.remove()
+      let niceHTML = document.querySelector('.edit-zone').style.display === "block" ? 
+      beautifier.html(document.querySelector('.edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true }) :
+      beautifier.html(document.querySelector('.re-edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true })
+      htmleditor.setValue(niceHTML)
+    }
     document.querySelectorAll('.ace-editor-block a').forEach(btn => {
       btn.addEventListener('dblclick', e => {
         if (e.target.dataset.editor === 'js') {
           document.querySelector('#js-editor').style.display = "none"
+        }
+        if (e.target.dataset.editor === 'html') {
+          document.querySelector('.edit-zone').innerHTML = htmleditor.getValue()
+          document.querySelector('#html-editor').style.display = "none"
+          clearTimeout(clearTimeOutForHTMLEditor, 500)
+          /* 
+          RECRÉER LE DOM DANS .edit-zone OU .re-edit-zone
+           */
         }
         if (e.target.dataset.editor === 'css') {
           let parser = new cssjs()

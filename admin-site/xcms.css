@@ -44,7 +44,7 @@ body{
     font-family: "Roboto";
     font-size: 13px;
 }
-#css-editor, #js-editor{
+#css-editor, #js-editor, #html-editor{
     top:50px;
     height: 500px;
     display:none;

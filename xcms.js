@@ -226,11 +226,10 @@ xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css$/, ctx
   ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
 
-xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ctx => {
+xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js$/, ctx => {
   ctx.type = 'text/javascript'
   ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
-
 
 xcms.use(r.get('/logout', (ctx, next) => {
   ctx.logout();
