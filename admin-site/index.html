@@ -1114,7 +1114,7 @@
           let parentElementId = `const xcmsRepeater_${currentClassName} = (${variablesBindingNames.join(', ')})=>{`
           let funcOne = `xcmsRepeatable_${currentClassName}(${variablesBindingNames.join(', ')})`
           let funcTwo = `const xcmsRepeatable_${currentClassName} = (${variablesBindingNames.join(', ')})=>{`
-          let htmplate = `const htmlTemplate${currentClassName} = \`${repeatableHTML.replace('data-is-repeatable="true"', '')}\``
+          let htmplate = `const htmlTemplate${currentClassName} = \`${repeatableHTML.replace('data-is-repeatable="true"', '').split('\n').join('')}\``
           jseditor.navigateFileStart()
           jseditor.find(`const xcmsRepeater_${currentClassName}`)
           jseditor.removeLines()
@@ -1144,22 +1144,13 @@
         return
       }
       if(node.dataset.willRepeat === "true"){
-        linkedFunctions.forEach(linkedFunction=>{
-          if(document.querySelector('.'+linkedFunction)){
-            if(node.classList.contains(linkedFunction)){
-              updateExistentLinkingFunction(node)
-            }else{
-              createLinkingFunction(node)
-            }
-          }else{
-            createLinkingFunction(node)
-          }
-        })
+        createLinkingFunction(node)
       }
     }
     //***************CREATION DES SNIPPETS
     const createLinkingFunction = (node)=>{
       if(/xcms-repeater-[0,9]{0,4}/.test(node.className)){
+        updateExistentLinkingFunction(node)
         return
       }
       node.querySelectorAll('[data-is-repeatable]').forEach(repeatable=>{
@@ -1205,7 +1196,7 @@ ${repeatableUniqueFunctionID}(${variablesBindingNames.join(', ')})
 }
 const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
   /* YOUR CODE GOES HERE */
-  const htmlTemplate${randomized} = \`${repeatableHTML.replace('data-is-repeatable="true"', '')}\`
+  const htmlTemplate${randomized} = \`${repeatableHTML.replace('data-is-repeatable="true"', '').split('\n').join('')}\`
 
   htmlReference${randomized}.insertAdjacentHTML('beforeend', htmlTemplate${randomized}) 
 }
@@ -1543,7 +1534,6 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             })
           }
         })
-        document.querySelector('#css-editor').style.display = "none"
       }
     })
     let altKey = false
