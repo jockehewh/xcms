@@ -673,15 +673,6 @@
     })
     //******************APPEND
     function xAppend(item) {
-      /* if (item.childElementCount > 1) {
-        if (document.querySelector('.edit-zone').style.display === "block") {
-          document.querySelector('.edit-zone').appendChild(item)
-          return true
-        } else {
-          document.querySelector('.re-edit-zone').appendChild(item)
-          return true
-        }
-      } */
       if (document.querySelector('.isSelected')) {
         document.querySelector('.isSelected').appendChild(item)
         document.querySelector('.isSelected').classList.remove('isSelected')
@@ -904,27 +895,7 @@
         node.innerHTML = document.querySelector('.ql-editor').innerHTML
       })
     }
-    //*************HANDLE DRAG & DROP FOR THE TREE
-    var treeHandler = dragula({revertOnSpill: true})
-    let treeLevelMaker = {}
-    treeHandler.on("drop", (droped, target)=>{
-      let dropedId = droped.className.match(/([0-9]{4,})/)[0]
-      let targetId = target.className.match(/([0-9]{4,})/)[0]
-      console.log(`targetId: ${targetId} dropedId: ${dropedId}`)
-      if(targetId === "1000"){
-        treeHandler.cancel()
-        return
-      }
-      try{
-        document.getElementsByClassName(dropedId)[0].remove()
-        document.getElementsByClassName(targetId)[0].appendChild(treeLevelMaker[dropedId])
-        cleanTreeAndMakeNew()
-      }catch{
-        cleanTreeAndMakeNew()
-        
-      }
-    })
-    //*************MAKE TREE VIEW ROOT
+    //*************GET ROOT NODE
     function getRootNode(node){
       let futurNode;
       let tempNode = node.parentElement;
@@ -935,115 +906,6 @@
         tempNode = tempNode.parentElement
       }
       return node
-    }
-    //*************CLEAN TREE AND MAKE NEW TREE
-    function cleanTreeAndMakeNew(){
-      function cleanSubLevel(node){
-        for(subNd of node.children){
-          if(/([0-9]{4,})/.test(subNd.className)){
-            let className = subNd.className.match(/([0-9]{4,})/)[0]
-            subNd.classList.remove(className)
-          }
-          if(subNd.childElementCount > 0)
-          cleanSubLevel(subNd)
-        }
-      }
-      if(document.querySelector('.edit-zone').style.display === "block"){
-        let editZone = document.querySelector('.edit-zone')
-        let childNodes = editZone.children
-        for(nd of childNodes){
-            cleanSubLevel(nd)
-        }
-        document.querySelector('.tree-view').remove()
-        treeLevelMaker = {}
-        makeTreeView(editZone)
-      }else{
-        let editZone = document.querySelector('.re-edit-zone')
-        let childNodes = editZone.children
-        for(nd of childNodes){
-            cleanSubLevel(nd)
-        }
-        document.querySelector('.tree-view').remove()
-        treeLevelMaker = {}
-        makeTreeView(editZone)
-      }
-      
-    }
-    //*************MAKE TREE VIEW
-    function makeTreeView(node){
-      function makeSubLevel(subNode, rootNode){
-        incrementableId++
-        subNode.classList.add(incrementableId)
-        let subNodes = subNode.children
-        if(subNode.childElementCount > 0){
-          for (let sbnd of subNodes){
-            treeLevelMaker[incrementableId] = sbnd.cloneNode(true)
-            let subLevelx = document.createElement('ul')
-            let subLevelStart = document.createElement('li')
-            subLevelx.classList.add(incrementableId)
-            if(sbnd.childElementCount > 0){
-              subLevelStart.classList.add(incrementableId)
-              subLevelStart.style.backgroundColor = sbnd.style.borderColor 
-              subLevelStart.style.border = "solid 1px var(--white-2)"
-            if(rootNode.textContent !== "ROOT NODE")treeHandler.containers.push(rootNode)
-                if(sbnd.childElementCount === 1 && sbnd.firstElementChild.nodeName === sbnd.nodeName){
-                  subLevelx.innerText = sbnd.nodeName
-                  makeSubLevel(sbnd.firstElementChild, subLevelx)
-                  rootNode.appendChild(subLevelStart)
-                  subLevelStart.appendChild(subLevelx)
-                }else if(sbnd.childElementCount > 1 && sbnd.firstElementChild.nodeName !== sbnd.nodeName){
-                  subLevelStart.innerText = sbnd.parentElement.nodeName
-                  subLevelx.innerText = sbnd.nodeName
-                  makeSubLevel(sbnd, subLevelx)
-                  rootNode.appendChild(subLevelStart)
-                  subLevelStart.appendChild(subLevelx)
-                }else{
-                  subLevelStart.innerText = sbnd.nodeName
-                  makeSubLevel(sbnd, subLevelx)
-                  rootNode.appendChild(subLevelStart)
-                  subLevelStart.appendChild(subLevelx)
-                }
-            }else{
-              subLevelStart.classList.add(incrementableId)
-              subLevelStart.innerText = sbnd.nodeName
-              makeSubLevel(sbnd, subLevelStart)
-              rootNode.appendChild(subLevelStart)
-            }
-          }
-        }
-      }
-      let incrementableId = 1000
-      let childNds = node.children
-      let div = document.createElement('ul')
-      let firstNode = document.createElement('li')
-      firstNode.classList.add(incrementableId)
-      let closeBtn = document.createElement('a')
-      div.innerText = "ROOT NODE"
-      div.style.color = "var(--white-0)"
-      firstNode.style.background = node.style.borderColor
-      document.querySelector('main.mw-100').appendChild(div)
-      div.appendChild(firstNode)
-      div.classList.add('tree-view')
-      div.style.left = document.querySelector('.re-edit-zone') ?
-        document.querySelector('.re-edit-zone').getBoundingClientRect().right + 'px' :
-        document.querySelector('.edit-zone').getBoundingClientRect().right + 'px'
-      div.style.top = document.querySelector('.re-edit-zone') ?
-        document.querySelector('.re-edit-zone').getBoundingClientRect().top + 'px' :
-        document.querySelector('.edit-zone').getBoundingClientRect().top + 'px'
-      for (let nd of childNds){
-        treeLevelMaker[incrementableId] = nd.cloneNode(true)
-        if(nd.childElementCount == 0){
-          makeSubLevel(nd, div)
-        }else{
-          makeSubLevel(nd, div)
-        }
-      }
-      closeBtn.innerText = 'Close tree view [x]'
-      closeBtn.classList.add('close')
-      div.appendChild(closeBtn)
-      closeBtn.addEventListener('click', e=>{
-        document.querySelector('.tree-view').remove()
-      })
     }
     //*************MAKE BORDER COLOR
     function makeBorderColor(node){
@@ -1148,22 +1010,14 @@
             div.remove()
           })
           generateSnippet.addEventListener('click', (e)=>{
+            node.classList.remove('isSelected')
             if(node.parentElement.dataset.willRepeat === "true"){
               startLinking(node.parentElement)
-              //document.querySelector('.isSelected').classList.remove('isSelected')
+            }else if(node.dataset.willRepeat === "true"){
+              startLinking(node)
             }else{
-              console.log('cannot make repeatble from: ', node.parentElement)
+              console.log('cannot make repeatble with node')
               return
-            }
-            
-          })
-          let btnTree = document.createElement('button')
-          btnTree.innerText = "make tree view"
-          div.appendChild(btnTree)
-          btnTree.addEventListener('click', ()=>{
-            if(node.childElementCount > 0){
-              let rootNode = getRootNode(node)
-              makeTreeView(rootNode)
             }
           })
         }
@@ -1573,7 +1427,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
     })
     let htmleditor = ace.edit('html-editor')
     htmleditor.setTheme("ace/theme/monokai")
-    htmleditor.session.setMode("ace/mode/html")
+    htmleditor.getSession().setMode("ace/mode/php")
     htmleditor.scrollToLine(0, true, true, function () { });
     htmleditor.gotoLine(0, 0, true);
     htmleditor.session.setTabSize(2);
@@ -1598,21 +1452,26 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           document.querySelector('#js-editor').style.display = "none"
           document.querySelector('#css-editor').style.display = "none"
           document.querySelector('#html-editor').style.display = "block"
-          /* 
-          UPDATE THE HTML CONTENT WITH CURRENT EDIT ZONE HTML CONTENT
-          REMETTE A JOUR LE EDIT DOM TOUTE LES 500
-           */
-          setTimeout(clearTimeOutForHTMLEditor, 500)
+          setTimeout(updateDOMEditor, 500)
         }
       })
     })
-    function clearTimeOutForHTMLEditor(){
+    function updateDOMEditor(){
       htmleditor.selectAll()
       htmleditor.remove()
       let niceHTML = document.querySelector('.edit-zone').style.display === "block" ? 
       beautifier.html(document.querySelector('.edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true }) :
       beautifier.html(document.querySelector('.re-edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true })
       htmleditor.setValue(niceHTML)
+      htmleditor.navigateFileEnd()
+    }
+    function activateBorders(rootNode){
+      for(let i = 1; i<rootNode.childElementCount; i++){
+        makeBorderColor(rootNode.children[i])
+        if(rootNode.children[i].childElementCount > 0){
+          activateBorders(rootNode.children[i])
+        }
+      }
     }
     document.querySelectorAll('.ace-editor-block a').forEach(btn => {
       btn.addEventListener('dblclick', e => {
@@ -1620,12 +1479,15 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           document.querySelector('#js-editor').style.display = "none"
         }
         if (e.target.dataset.editor === 'html') {
-          document.querySelector('.edit-zone').innerHTML = htmleditor.getValue()
+          clearTimeout(updateDOMEditor, 500)
+          if(document.querySelector('.edit-zone').style.display == "block"){
+            document.querySelector('.edit-zone').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.edit-zone'))
+          }else{
+            document.querySelector('.re-edit-zone').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.re-edit-zone'))
+          }
           document.querySelector('#html-editor').style.display = "none"
-          clearTimeout(clearTimeOutForHTMLEditor, 500)
-          /* 
-          RECRÉER LE DOM DANS .edit-zone OU .re-edit-zone
-           */
         }
         if (e.target.dataset.editor === 'css') {
           let parser = new cssjs()
@@ -1655,6 +1517,15 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         altKey = true
       }
       if(keyEvent.key === "Enter" && altKey){
+        if(htmleditor.getValue() !== ""){
+          if(document.querySelector('.edit-zone').style.display == "block"){
+            document.querySelector('.edit-zone').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.edit-zone'))
+          }else{
+            document.querySelector('.re-edit-zone').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.re-edit-zone'))
+          }
+        }
         let parser = new cssjs()
         let pageCSS = csseditor.getValue()
         let parsed = parser.parseCSS(pageCSS)
@@ -1672,6 +1543,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             })
           }
         })
+        document.querySelector('#css-editor').style.display = "none"
       }
     })
     let altKey = false

@@ -88,9 +88,13 @@ adminSocket.on('message', async (ctx) => {
     if (datainfo.deletePage) {
       pagedb.deleteOne({ name: datainfo.deletePage }, (err, success) => {
         if (err) console.log(err)//envoyer l'erreur
-        if (success) console.log(datainfo.deletePage, 'was successfully deleted')//envoyer success
+        if (success) {
+          console.log(datainfo.deletePage, 'was successfully deleted')
+          //envoyer success
+          }
       })
-      pagesCollection = pagesCollection.filter(pageData => { if (pageData.name !== datainfo.deletePage) return pageData })
+      let pagesCollectionTemp = pagesCollection.filter(pageData => { if (pageData.name !== datainfo.deletePage) return pageData })
+      pagesCollection = pagesCollectionTemp
       if(datainfo.deletePage === 'index.html'){
         isIndex.length = 0
       }

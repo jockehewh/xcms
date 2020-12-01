@@ -35,8 +35,8 @@ xcms.use(passport.initialize())
 xcms.use(passport.session())
 require(__dirname + '/adminAuth.js')
 
-
-pagedb.find({}, (err, data) => {
+function updatePageCollection(){
+  pagedb.find({}, (err, data) => {
   if (err) { console.log('fetch page error', err) }
   pagesCollection.push(...data)
   pagesCollection.forEach(page => {
@@ -45,6 +45,8 @@ pagedb.find({}, (err, data) => {
     }
   })
 })
+}
+updatePageCollection()
 
 const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
 
@@ -132,7 +134,8 @@ xcms.use(r.get(/column/, ctx => {
   })
 }))
 
-xcms.use(r.get(/\/[a-zA-Z0-9_-]{2,}.html/, ctx => {
+xcms.use(r.get(/\/([a-zA-Z0-9_-]{2,}.html)/, ctx => {
+  updatePageCollection()
   ctx.type = 'text/html'
   pagesCollection.forEach(page => {
     if ('/' + page.name === ctx.url) {
@@ -230,6 +233,7 @@ xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js$/, ctx 
   ctx.type = 'text/javascript'
   ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
+
 
 xcms.use(r.get('/logout', (ctx, next) => {
   ctx.logout();
