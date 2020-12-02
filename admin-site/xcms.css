@@ -63,6 +63,9 @@ main{
     background-color: var(--withe-0);
     max-width: 100%;
 }
+.isSelected{
+    border: solid;
+}
 .list {
     list-style-type: none;
 }

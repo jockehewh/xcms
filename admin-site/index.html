@@ -9,13 +9,13 @@
 
   <link rel="stylesheet" href="./admin-site/xcms.css">
   <link rel="stylesheet" href="./admin-site/dragula.min.css">
-  <link rel="stylesheet" href="./admin-site/quill.snow.css">
+  <link rel="stylesheet" href="./admin-site/quill.snow.css">    
+  <script src="./admin-site/quill.js"></script>
   <script src="./admin-site/socket.io.js"></script>
   <script src="./admin-site/ace-editor/ace.js"></script>
   <script src="./admin-site/ace-editor/theme-monokai.js"></script>
   <script src="./admin-site/beautifier.js"></script>
   <script src="./admin-site/ace-editor/ext-language_tools.js"></script>
-  <script src="./admin-site/quill.js"></script>
   <script src="./admin-site/css.min.js"></script>
 </head>
 
@@ -96,7 +96,6 @@
         <section>
           <h4 class="" style="margin-bottom: 3px;">Edit content:</h4><br>
           <ul class="list">
-            <li><a class="link" href="#" data-demande="texte">Open editor</a>
             <li><a class="link" href="#" data-demande="div">Add a container</a>
             <li><a class="link" href="#" data-demande="menu">Add a menu</a>
             <li><a class="link" href="#" data-demande="image">Add image(s)</a>
@@ -421,6 +420,7 @@
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        e.cancelBubble = true
         switch (e.target.dataset.demande) {
           case 'div':
             desactive()
@@ -464,13 +464,6 @@
               imgpicker.replaceWith(imgpicklone);
               imgpicker.style.display = 'none'
             }, false)
-            break;
-          case 'texte':
-            desactive()
-            var pé = document.createElement('div');
-            pé.id = "isActive"
-            xAppend(pé)
-            xEdit(pé)
             break;
           case 'video':
             desactive()
@@ -743,158 +736,6 @@
         event.target.dataset.lastScale = ev.target.value
       })
     }
-    //******************EDIT
-    let lastItem;
-
-    function xEdit(item) {
-      if (document.querySelector('.ql-editor')) return
-      if (item.nodeName === "BUTTON") {
-        applyChanges(lastItem)
-      }
-      let toolbarOptions = {
-        container: [
-          { 'header': [1, 2, 3, 4, 5, 6, false] },
-          'bold', 'italic', 'underline', 'strike', 'link',
-          { 'color': [] }, { 'background': [] }, { 'align': [] },
-          { 'list': 'ordered' }, { 'list': 'bullet' },
-          { 'direction': 'rtl' },
-        ],
-        handlers: {
-          header: function (value) {
-            this.quill.format('header', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          },
-          color: function (value) {
-            this.quill.format('color', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          },
-          background: function (value) {
-            this.quill.format('background', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          },
-          bold: function (value) {
-            this.quill.format('bold', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          },
-          italic: function (value) {
-            this.quill.format('italic', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          },
-          underline: function (value) {
-            this.quill.format('underline', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          },
-          strike: function (value) {
-            this.quill.format('strike', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          },
-          align: function (value) {
-            this.quill.format('align', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          },
-          list: function (value) {
-            this.quill.format('list', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          },
-          direction: function (value) {
-            this.quill.format('direction', value)
-            item.innerHTML = document.querySelector('.ql-editor').innerHTML
-          }
-        }
-      }
-      let editor = new Quill("#text-editor", {
-        modules: {
-          toolbar: toolbarOptions
-        },
-        theme: 'snow'
-      });
-      lastItem = item
-      applyChanges(item)
-    }
-
-    function applyChanges(node) {
-      let tempStyle = node.getAttribute('style') === null ? '' : node.getAttribute('style')
-      if (node.hasChildNodes) {
-        document.querySelector('.ql-editor').innerHTML = node.innerHTML
-      }
-      document.querySelector('.ql-editor').focus()
-      let editorbtn = document.createElement('button')
-      editorbtn.innerText = 'save'
-      let btn = document.createElement('button')
-      btn.innerHTML =
-        `<svg viewBox="0 0 18 18" class="" style="
-    background: #444;
-"> <line class="ql-stroke" x1="7" x2="11" y1="7" y2="11" style="
-    stroke: #fff;
-"></line> <path class="ql-even ql-stroke" d="M8.9,4.577a3.476,3.476,0,0,1,.36,4.679A3.476,3.476,0,0,1,4.577,8.9C3.185,7.5,2.035,6.4,4.217,4.217S7.5,3.185,8.9,4.577Z" style="
-    stroke: #fff;
-"></path> <path class="ql-even ql-stroke" d="M13.423,9.1a3.476,3.476,0,0,0-4.679-.36,3.476,3.476,0,0,0,.36,4.679c1.392,1.392,2.5,2.542,4.679.36S14.815,10.5,13.423,9.1Z" style="
-    stroke: #fff;
-"></path> </svg>`
-      btn.className = 'btn-link'
-      document.querySelector('.ql-toolbar .ql-formats').appendChild(btn)
-      let addClassBtn = document.createElement('button')
-      addClassBtn.innerText = ".cls"
-      document.querySelector('.ql-toolbar .ql-formats').appendChild(addClassBtn)
-      addClassBtn.addEventListener('click', (e) => {
-        let selectedItem = window.getSelection().focusNode.parentElement
-        let div = document.createElement('div')
-        let label = document.createElement('label')
-        let input = document.createElement('input')
-        let savebtn = document.createElement('button')
-        label.for = 'classBox'
-        label.innerText = 'Enter a class name: '
-        input.name = "classBox"
-        input.id = "classBox"
-        input.type = 'text'
-        savebtn.innerText = 'Save'
-        div.classList.add('classBox')
-        div.appendChild(label)
-        div.appendChild(input)
-        div.appendChild(savebtn)
-        document.body.appendChild(div)
-        div.style.top = e.clientY + 'px'
-        div.style.left = e.clientX + 'px'
-        savebtn.addEventListener('click', (e) => {
-          let newClassName = document.querySelector('#classBox').value
-          selectedItem.className += ' ' + newClassName.toLowerCase()
-          div.remove()
-        })
-      })
-      btn.addEventListener('click', (e) => {
-        let selectedItem = window.getSelection().focusNode.parentElement
-        selectedItem.id = selectedItem.innerText.toLowerCase()
-        selectedItem.setAttribute('lien', true)
-        selectedItem.classList.add('lien')
-        selectedItem.dataset.lien = selectedItem.id
-      })
-      if (document.querySelector('#isActive')) {
-        document.querySelector('#text-editor').appendChild(editorbtn)
-      } else {
-        return
-      }
-      editorbtn.addEventListener('click', () => {
-        if (document.body.querySelector('.container-editor-options')) document.body.querySelector('.container-editor-options').remove()
-        editorbtn.remove()
-        let newData = document.querySelector('.ql-editor').innerHTML
-        let div = document.createElement('div')
-        div.innerHTML = newData
-        div.setAttribute('style', tempStyle)
-        if(node.dataset.isRepeatable !== undefined) div.dataset.isRepeatable = node.dataset.isRepeatable
-        div.classList.add('xcms-custom')
-        div.className = node.className
-        node.parentElement.replaceChild(div, node)
-        document.querySelector('.ql-toolbar').remove()
-        document.querySelector('.ql-clipboard').remove()
-        document.querySelector('.ql-tooltip.ql-hidden').remove()
-        document.querySelector('.ql-editor').remove()
-        document.querySelector('#text-editor').setAttribute('class', '')
-        makeBorderColor(div)
-      })
-      document.querySelector('.ql-editor').addEventListener('keyup', ev => {
-        node.innerHTML = document.querySelector('.ql-editor').innerHTML
-      })
-    }
     //*************GET ROOT NODE
     function getRootNode(node){
       let futurNode;
@@ -922,11 +763,9 @@
         e.cancelBubble = true
         let xnode = e.target
         CurrentlyHoveredElement.push(e.target)
-        if (node.querySelector('.ql-editor')) return
         node.id = "isHover"
       })
       node.addEventListener('mouseleave', () => {
-        if (node.querySelector('.ql-editor')) return
         node.id = ""
       })
       node.addEventListener('click', (e) => {
@@ -940,7 +779,6 @@
           n.id = ""
         })
         node.id = 'isHover'
-        if (node.querySelector('.ql-editor')) return
         node.classList.add('isSelected')
         if (document.body.querySelector('.container-editor-options')) {
           document.body.querySelector('.container-editor-options').remove()
@@ -953,36 +791,20 @@
         }
         if (!document.body.querySelector('.container-editor-options')) {
           let div = document.createElement('div')
-          let btnEdit = document.createElement('button')
           let btnRemove = document.createElement('button')
-          btnEdit.innerText = 'edit'
           btnRemove.innerText = 'remove'
           div.classList.add('container-editor-options')
           document.querySelector('main.mw-100').appendChild(div)
-          div.appendChild(btnEdit)
           div.appendChild(btnRemove)
-          btnEdit.addEventListener('click', () => {
-            if(node.querySelector('.xcms-img')){
-              div.remove()
-              return
-            }
-            div.remove()
-            node.id = 'isActive'
-            xEdit(node)
-          })
-          
           btnRemove.addEventListener('click', () => {
             node.remove()
             div.remove()
           })
-          if (node.classList.contains("xcms-img") || node.classList.contains("xcms-video")) {
-            btnEdit.remove()
-          }
           let btnWillRepeat = document.createElement("button")
           let btnIsRepeatable = document.createElement("button")
           let generateSnippet = document.createElement("button")
-          btnWillRepeat.innerText = "make container"
-          btnIsRepeatable.innerText = "make repeatable"
+          btnWillRepeat.innerText = "mark as repeater"
+          btnIsRepeatable.innerText = "mark as repeatable"
           generateSnippet.innerText = "generate snippet"
           btnWillRepeat.classList.add("will-repeat")
           btnIsRepeatable.classList.add("is-repeatable")
@@ -991,7 +813,6 @@
           div.appendChild(btnIsRepeatable)
           div.appendChild(generateSnippet)
           btnWillRepeat.addEventListener('click', (e)=>{
-            //TOGGLE
             e.preventDefault()
           if(node.dataset.willRepeat !== "true"){
             node.dataset.willRepeat = true
@@ -1241,6 +1062,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       document.body.appendChild(menu)
       document.querySelector('.cc-body').querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', e => {
+          e.cancelBubble = true
           let preset = btn.dataset.preset
           if(preset === "smart template"){
             let templateContainer = document.createElement("div")
@@ -1261,22 +1083,13 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             drake.containers.push(div)
           }
           if (preset === "50/50") {
-            div.style.display = "flex";
-            div.style.flexDirection = 'row'
+            div.classList.add('flex-row')
             let leftDiv = document.createElement('div')
             let rightDiv = document.createElement('div')
-            leftDiv.style.flex = "1"
-            rightDiv.style.flex = "1"
-            leftDiv.style.display = "flex"
-            rightDiv.style.display = "flex"
-            leftDiv.style.flexDirection = 'column'
-            rightDiv.style.flexDirection = 'column'
-            leftDiv.style.alignItems = 'center'
-            rightDiv.style.alignItems = 'center'
-            leftDiv.style.minWidth = '60px'
-            rightDiv.style.minWidth = '60px'
-            leftDiv.style.minHeight = '60px'
-            rightDiv.style.minHeight = '60px'
+            leftDiv.classList.add('flex-column-centered')
+            leftDiv.classList.add('flex-1')
+            rightDiv.classList.add('flex-column-centered')
+            rightDiv.classList.add('flex-1')
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
             if(!isSelected.isDiv)xAppend(div)
@@ -1287,22 +1100,13 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             drake.containers.push(rightDiv)
           }
           if (preset === "35/65") {
-            div.style.display = "flex";
-            div.style.flexDirection = 'row'
+            div.classList.add('flex-row')
             let leftDiv = document.createElement('div')
             let rightDiv = document.createElement('div')
-            leftDiv.style.flex = "1"
-            rightDiv.style.flex = "2"
-            leftDiv.style.display = "flex"
-            rightDiv.style.display = "flex"
-            leftDiv.style.flexDirection = 'column'
-            rightDiv.style.flexDirection = 'column'
-            leftDiv.style.alignItems = 'center'
-            rightDiv.style.alignItems = 'center'
-            leftDiv.style.minWidth = '60px'
-            rightDiv.style.minWidth = '60px'
-            leftDiv.style.minHeight = '60px'
-            rightDiv.style.minHeight = '60px'
+            leftDiv.classList.add('flex-column-centered')
+            leftDiv.classList.add('flex-1')
+            rightDiv.classList.add('flex-column-centered')
+            rightDiv.classList.add('flex-2')
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
             if(!isSelected.isDiv)xAppend(div)
@@ -1313,22 +1117,13 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             drake.containers.push(rightDiv)
           }
           if (preset === "65/35") {
-            div.style.display = "flex";
-            div.style.flexDirection = 'row'
+            div.classList.add('flex-row')
             let leftDiv = document.createElement('div')
             let rightDiv = document.createElement('div')
-            leftDiv.style.flex = "2"
-            rightDiv.style.flex = "1"
-            leftDiv.style.display = "flex"
-            rightDiv.style.display = "flex"
-            leftDiv.style.flexDirection = 'column'
-            rightDiv.style.flexDirection = 'column'
-            leftDiv.style.alignItems = 'center'
-            rightDiv.style.alignItems = 'center'
-            leftDiv.style.minWidth = '60px'
-            rightDiv.style.minWidth = '60px'
-            leftDiv.style.minHeight = '60px'
-            rightDiv.style.minHeight = '60px'
+            leftDiv.classList.add('flex-column-centered')
+            leftDiv.classList.add('flex-2')
+            rightDiv.classList.add('flex-column-centered')
+            rightDiv.classList.add('flex-1')
             div.appendChild(leftDiv)
             div.appendChild(rightDiv)
             if(!isSelected.isDiv)xAppend(div)
@@ -1339,29 +1134,16 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             drake.containers.push(rightDiv)
           }
           if (preset === "30/30/30") {
-            div.style.display = "flex";
-            div.style.flexDirection = 'row'
+            div.classList.add('flex-row')
             let leftDiv = document.createElement('div')
             let middleDiv = document.createElement('div')
             let rightDiv = document.createElement('div')
-            leftDiv.style.flex = "1"
-            middleDiv.style.flex = "1"
-            rightDiv.style.flex = "1"
-            leftDiv.style.display = "flex"
-            middleDiv.style.display = "flex"
-            rightDiv.style.display = "flex"
-            leftDiv.style.flexDirection = 'column'
-            middleDiv.style.flexDirection = 'column'
-            rightDiv.style.flexDirection = 'column'
-            middleDiv.style.alignItems = 'center'
-            leftDiv.style.alignItems = 'center'
-            rightDiv.style.alignItems = 'center'
-            leftDiv.style.minWidth = '60px'
-            rightDiv.style.minWidth = '60px'
-            middleDiv.style.minWidth = '60px'
-            leftDiv.style.minHeight = '60px'
-            rightDiv.style.minHeight = '60px'
-            middleDiv.style.minHeight = '60px'
+            leftDiv.classList.add('flex-column-centered')
+            leftDiv.classList.add('flex-1')
+            rightDiv.classList.add('flex-column-centered')
+            rightDiv.classList.add('flex-1')
+            middleDiv.classList.add('flex-column-centered')
+            middleDiv.classList.add('flex-1')
             div.appendChild(leftDiv)
             div.appendChild(middleDiv)
             div.appendChild(rightDiv)
@@ -1379,6 +1161,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             return
           }
           document.querySelector('.cc-outer').remove()
+          cssEditorApply()
         })
       })
 
@@ -1405,6 +1188,31 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       enableSnippets: true,
       enableLiveAutocompletion: true
     })
+    const defaultCss = `.flex-row{
+  display: flex;
+  flex-direction: row;
+}
+.flex-column-centered{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 60px;
+  min-width: 60px;
+}
+.flex-1{
+  flex: 1;
+}
+.flex-2{
+  flex: 2;
+}
+.flex-3{
+  flex: 3;
+}
+.flex-4{
+  flex: 4;
+}
+`
+csseditor.setValue(defaultCss)
     let jseditor = ace.edit('js-editor')
     jseditor.setTheme("ace/theme/monokai")
     jseditor.session.setMode("ace/mode/javascript")
@@ -1427,6 +1235,79 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       enableSnippets: true,
       enableLiveAutocompletion: true
     })
+    function cssEditorApply(){
+      let parser = new cssjs()
+      let pageCSS = csseditor.getValue()
+      let parsed = parser.parseCSS(pageCSS)
+      parsed.forEach(cssSelector => {
+        let selectedStyle = cssSelector.rules.map(rule => {
+          return `${rule.directive}:${rule.value};`
+        })
+        if (document.querySelector('.re-edit-zone')) {
+          document.querySelector('.re-edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+            let existingcss = existent.getAttribute('style') ? existent.getAttribute('style') : ""
+            selectedStyle.forEach(rule=>{
+              if(existingcss.includes(rule)){
+                return
+              }else{
+                existingcss += rule
+              }
+            })
+            existent.setAttribute('style', existingcss)
+          })
+        } else {
+          document.querySelector('.edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+            let existingcss = existent.getAttribute('style') ? existent.getAttribute('style') : ""
+            selectedStyle.forEach(rule=>{
+              if(existingcss.includes(rule)){
+                return
+              }else{
+                existingcss += rule
+              }
+            })
+            existent.setAttribute('style', existingcss)
+          })
+        }
+      })
+    }
+    function removeStyleAttr(){
+      if(document.querySelector('.edit-zone').style.display === "block"){
+        for(nd of document.querySelector('.edit-zone').children){
+          nd.removeAttribute('style')
+        }
+      }else{
+        for(nd of document.querySelector('.re-edit-zone').children){
+          nd.removeAttribute('style')
+        }
+      }
+    }
+    function updateDOMEditor(){
+      htmleditor.selectAll()
+      htmleditor.remove()
+      let niceHTML = document.querySelector('.edit-zone').style.display === "block" ? 
+      beautifier.html(document.querySelector('.edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true }) :
+      beautifier.html(document.querySelector('.re-edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true })
+      let findStyleAttr = /(style="[a-zA-Z -_]{1,}:[\sa-zA-Z0-9\s\(\),]{1,};")/
+      while(findStyleAttr.test(niceHTML)){
+        niceHTML = niceHTML.replace(findStyleAttr, 'style=""')
+      }
+      htmleditor.setValue(niceHTML)
+      htmleditor.navigateFileEnd()
+    }
+    function activateBorders(rootNode){
+      if(!rootNode.className.includes('edit-zone') && !rootNode.className.includes('re-edit-zone')){
+        makeBorderColor(rootNode)
+      }
+      for(let i = 1; i<rootNode.childElementCount; i++){
+        makeBorderColor(rootNode.children[i])
+        if(rootNode.children[i].childElementCount > 0){
+          for(nd of rootNode.children[i].children){
+            activateBorders(nd)
+          }
+        }
+      }
+    }
+
     document.querySelectorAll('.ace-editor-block a').forEach(btn => {
       btn.addEventListener('click', e => {
         if (e.target.dataset.editor === 'js') {
@@ -1447,23 +1328,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         }
       })
     })
-    function updateDOMEditor(){
-      htmleditor.selectAll()
-      htmleditor.remove()
-      let niceHTML = document.querySelector('.edit-zone').style.display === "block" ? 
-      beautifier.html(document.querySelector('.edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true }) :
-      beautifier.html(document.querySelector('.re-edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true })
-      htmleditor.setValue(niceHTML)
-      htmleditor.navigateFileEnd()
-    }
-    function activateBorders(rootNode){
-      for(let i = 1; i<rootNode.childElementCount; i++){
-        makeBorderColor(rootNode.children[i])
-        if(rootNode.children[i].childElementCount > 0){
-          activateBorders(rootNode.children[i])
-        }
-      }
-    }
+    
     document.querySelectorAll('.ace-editor-block a').forEach(btn => {
       btn.addEventListener('dblclick', e => {
         if (e.target.dataset.editor === 'js') {
@@ -1481,23 +1346,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           document.querySelector('#html-editor').style.display = "none"
         }
         if (e.target.dataset.editor === 'css') {
-          let parser = new cssjs()
-          let pageCSS = csseditor.getValue()
-          let parsed = parser.parseCSS(pageCSS)
-          parsed.forEach(cssSelector => {
-            let selectedStyle = cssSelector.rules.map(rule => {
-              return `${rule.directive}:${rule.value};`
-            })
-            if (document.querySelector('.re-edit-zone')) {
-              document.querySelector('.re-edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
-                existent.setAttribute('style', selectedStyle.join(''))
-              })
-            } else {
-              document.querySelector('.edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
-                existent.setAttribute('style', selectedStyle.join(''))
-              })
-            }
-          })
+          cssEditorApply()
           document.querySelector('#css-editor').style.display = "none"
         }
       })
@@ -1517,23 +1366,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             activateBorders(document.querySelector('.re-edit-zone'))
           }
         }
-        let parser = new cssjs()
-        let pageCSS = csseditor.getValue()
-        let parsed = parser.parseCSS(pageCSS)
-        parsed.forEach(cssSelector => {
-          let selectedStyle = cssSelector.rules.map(rule => {
-            return `${rule.directive}:${rule.value};`
-          })
-          if (document.querySelector('.re-edit-zone')) {
-            document.querySelector('.re-edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
-              existent.setAttribute('style', selectedStyle.join(''))
-            })
-          } else {
-            document.querySelector('.edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
-              existent.setAttribute('style', selectedStyle.join(''))
-            })
-          }
-        })
+        cssEditorApply()
       }
     })
     let altKey = false

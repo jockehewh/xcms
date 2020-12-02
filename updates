@@ -2,11 +2,10 @@ latest update:
 
 Adds:
   -added smart template generation
-  -added a DOM editor aswell
+  -added a DOM editor 
+  -added some default css for the containers created with the GUI
 Changes:
-  -
+  -removed the quill editor
 BugFixes:
   -can now select the latest of the nested element
   -enabled the revertOnSpill option so dragable elements can retreive their initial position if dropped outside of a receiver component.
-
-  
