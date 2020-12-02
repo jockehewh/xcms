@@ -45,9 +45,14 @@ body{
     font-size: 13px;
 }
 #css-editor, #js-editor, #html-editor{
-    top:50px;
+    top: 22px;
     height: 500px;
     display:none;
+}
+#shortcut-save{
+    position: relative;
+    top: 8px;
+    display: none;
 }
 #imgpiker{
     display:none;

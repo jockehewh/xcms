@@ -64,8 +64,9 @@
       </div>
       <div class="ace-editor-block">
         <div class="editor-btn-flexbox">
-          <a data-editor="js">Edit your JS</a> <a data-editor="html">Edit your HTML</a> <a data-editor="css">Edit your CSS</a>
+          <a data-editor="js" id="js-editor-btn">Edit your JS</a> <a data-editor="html" id="html-editor-btn">Edit your HTML</a> <a data-editor="css" id="css-editor-btn">Edit your CSS</a>
         </div>
+        <p id="shortcut-save">Use ALT+Enter or double-click the [Edit your CODE]  button to apply changes.</p>
         <div id="css-editor"></div>
         <div id="js-editor"></div>
         <div id="html-editor"></div>
@@ -1195,7 +1196,8 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
   flex: 4;
 }
 `
-csseditor.setValue(defaultCss)
+    csseditor.setValue(defaultCss)
+    csseditor.navigateFileEnd()
     let jseditor = ace.edit('js-editor')
     jseditor.setTheme("ace/theme/monokai")
     jseditor.session.setMode("ace/mode/javascript")
@@ -1293,19 +1295,27 @@ csseditor.setValue(defaultCss)
 
     document.querySelectorAll('.ace-editor-block a').forEach(btn => {
       btn.addEventListener('click', e => {
+        e.target.style.borderBottom = "solid 1px"
+        document.querySelector('#shortcut-save').style.display = "block"
         if (e.target.dataset.editor === 'js') {
           document.querySelector('#js-editor').style.display = "block"
           document.querySelector('#css-editor').style.display = "none"
           document.querySelector('#html-editor').style.display = "none"
+          document.querySelector('#css-editor-btn').style.borderBottom = "none"
+          document.querySelector('#html-editor-btn').style.borderBottom = "none"
         }
         if (e.target.dataset.editor === 'css') {
           document.querySelector('#js-editor').style.display = "none"
           document.querySelector('#html-editor').style.display = "none"
+          document.querySelector('#js-editor-btn').style.borderBottom = "none"
+          document.querySelector('#html-editor-btn').style.borderBottom = "none"
           document.querySelector('#css-editor').style.display = "block"
         }
         if (e.target.dataset.editor === 'html') {
           document.querySelector('#js-editor').style.display = "none"
           document.querySelector('#css-editor').style.display = "none"
+          document.querySelector('#css-editor-btn').style.borderBottom = "none"
+          document.querySelector('#js-editor-btn').style.borderBottom = "none"
           document.querySelector('#html-editor').style.display = "block"
           setTimeout(updateDOMEditor, 500)
         }
@@ -1314,6 +1324,8 @@ csseditor.setValue(defaultCss)
     
     document.querySelectorAll('.ace-editor-block a').forEach(btn => {
       btn.addEventListener('dblclick', e => {
+        e.target.style.borderBottom = "none"
+        document.querySelector('#shortcut-save').style.display = "none"
         if (e.target.dataset.editor === 'js') {
           document.querySelector('#js-editor').style.display = "none"
         }
