@@ -522,6 +522,7 @@
                     xAppend(div)
                     makeBorderColor(div)
                     document.querySelector('.xcms-popd').style.display = 'none'
+                    cssEditorApply()
                   })
                   document.querySelector('#mymenus').appendChild(menulink)
                   let br = document.createElement('br')
@@ -587,6 +588,7 @@
                     div.innerHTML = ul.outerHTML
                     xAppend(div)
                     document.querySelector('.xcms-popd').style.display = 'none'
+                    cssEditorApply()
                   })
                   document.querySelector('#mymenus').appendChild(menulink)
                   let br = document.createElement('br')
@@ -1175,6 +1177,12 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
     const defaultCss = `.flex-row{
   display: flex;
   flex-direction: row;
+}
+.xcms-menu{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  list-style: none;
 }
 .flex-column-centered{
   display: flex;
