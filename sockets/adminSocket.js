@@ -85,12 +85,34 @@ adminSocket.on('message', async (ctx) => {
         }
       })
     }
+    if (datainfo.oldName) {
+      let oldName = datainfo.oldName.slice(0, -5)
+      pagedb.findOneAndUpdate({ name: datainfo.oldName },
+        { name: datainfo.newName + '.html' },
+        { new: true },
+        (err, data) => {
+          if (err) {
+            console.log('error updating the page', err)
+            ctx.socket.emit('errorr', 'error updating the page name, please retry.')
+          }
+          data.page.replace(oldName+ ".css", datainfo.newName + ".css")
+          data.page.replace(oldName+ ".js", datainfo.newName + ".js")
+          data.save()
+          ctx.socket.emit('success', `the page ${datainfo.oldName} was sucesfully renamed to ${datainfo.newName}`)
+        })
+      pagesCollection.forEach(page => {
+        if (page.name === datainfo.oldName) {
+          page.name = datainfo.newName + '.html'
+        }
+      })
+    }
     if (datainfo.deletePage) {
       pagedb.deleteOne({ name: datainfo.deletePage }, (err, success) => {
-        if (err) console.log(err)//envoyer l'erreur
+        if (err) {
+          ctx.socket.emit('errorr', `error deleting the page: ${datainfo.deletePage}, please retry.`)
+        }
         if (success) {
-          console.log(datainfo.deletePage, 'was successfully deleted')
-          //envoyer success
+          ctx.socket.emit('success', `Done. The: ${datainfo.deletePage} was successfully deleted`)
           }
       })
       let pagesCollectionTemp = pagesCollection.filter(pageData => { if (pageData.name !== datainfo.deletePage) return pageData })

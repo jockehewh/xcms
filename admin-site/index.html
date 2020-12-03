@@ -22,17 +22,20 @@
 <body>
   <div class="xcms-popd">
     <!--Master menu maker-->
-    <div id="options-selectd" class="cc-inner">
-      <h4>Menus:</h4>
+    <div id="options-selectd" class="">
+      <h4>New menu:</h4>
+      <p>select the number of links bellow.</p>
       <br>
       <ul>
         <li><select id="menusize"></select></li>
       </ul>
       <br>
-      <div id="mymenus"></div>
-      <button class="save">
-        <p>Save</p>
-        <p>X</p>
+      <div id="mymenus">
+        <h4>Saved menus:</h4>
+      </div>
+        <h4>Compose menu:</h4>
+      <div id="option-menu-picker"></div>
+      <button class="save">Close [x]
       </button>
     </div>
   </div>
@@ -181,8 +184,11 @@
     </dl>
   </div>
   <div class="page-duplicate">
-    <a href="#">page-duplicate</a>
-    <input type="text" placeholder="New page name">
+    <button href="#" class="duplicate-btn">Duplicate page</button>
+    <input type="text" placeholder="Duplicata name">
+    <br>
+    <button href="#" class="rename-btn">Rename page</button>
+    <input type="text" placeholder="New name">
   </div>
   <template id="custom-container">
     <div class="cc-outer">
@@ -232,9 +238,7 @@
             </button>
           </div>
           <div>
-            <button data-preset="cancel">
-              <p>close</p>
-              <p>X</p>
+            <button data-preset="cancel">Close [x]
             </button>
           </div>
         </div>
@@ -494,6 +498,9 @@
             desactive()
             var menuSize;
             let mymenus = []
+            document.querySelector('#options-selectd').style.width = document.querySelector('.first-class-editor').offsetWidth -1 + 'px'
+            document.querySelector('.xcms-popd').style.width = document.querySelector('.first-class-editor').offsetWidth + 'px'
+            document.querySelector('.xcms-popd').style.top = e.clientY -45 + 'px'
             document.querySelector('.xcms-popd').style.display = 'flex'
             if (!document.querySelector('#menusize').hasChildNodes()) {
               let i = 0
@@ -509,7 +516,7 @@
                 i++
               }
             }
-            if (!document.querySelector('#mymenus').hasChildNodes()) {
+            if (document.querySelector('#mymenus').childElementCount == 1) {
               if (localStorage.mymenus) {
                 mymenus = jsp(localStorage.mymenus)
                 mymenus.forEach((menu, i) => {
@@ -525,75 +532,130 @@
                     cssEditorApply()
                   })
                   document.querySelector('#mymenus').appendChild(menulink)
-                  let br = document.createElement('br')
-                  document.querySelector('#mymenus').appendChild(br)
                 })
               } else {
                 mymenus = []
               }
             }
-            document.querySelector('.xcms-popd .save').addEventListener('click', (e) => {
-              let desiredSize = document.querySelector('#menusize').options[
-                document.querySelector('#menusize').selectedIndex].value
-              var ul = document.createElement('ul');
-              ul.classList.add('xcms-menu')
-              menuSize = 0
-              e.stopImmediatePropagation()
-              while (menuSize < desiredSize) {
-                menuSize++
-                var li = document.createElement('li');
-                var alink = document.createElement('a');
-                var titrelien = prompt(
-                  "Please enter the target element for the link n°" + (
-                    menuSize) + "/" + desiredSize + ":\n please start with the '#' sign to target a link inside of the page, \n start with the '/' sign to link to another page. \n")
-                if (titrelien.charAt(0) === '#') {
-                  alink.href = titrelien
-                  alink.innerText = titrelien.split('#').join('')
-                } else if (titrelien.charAt(0) === '/') {
-                  if (!/.html$/.test(titrelien)) {
-                    alink.href = titrelien + '.html'
-                    alink.innerText = titrelien.split('/').join('')
-                  } else {
-                    alink.href = titrelien
-                    alink.innerText = titrelien.split('/').join('').split('.html').join('')
-                  }
-                } else {
-                  alink.href = '#' + titrelien
-                  alink.innerText = titrelien
-                }
-                alink.id = "isActive"
-                li.style.margin = "5px 10px"
-                li.style.display = 'inline'
-                li.appendChild(alink);
-                ul.appendChild(li);
-                makeBorderColor(ul)
-                alink.id = ""
+            document.querySelector('#menusize').addEventListener("change",  che=>{
+              if(che.target.selectedIndex == 0){
+                document.querySelector('.save').innerText = "Close [x]"
+              }else{
+                document.querySelector('.save').innerText = "Save [!]"
               }
-              menuSize = 0
-              if (desiredSize === '0') {
-                ul = ""
-                document.querySelector('.xcms-popd').style.display = 'none'
+            })
+            /* 
+            CREATION DE LA SELECTIONS DES PAGES EXISTANTES
+            AUTOMATISER LE NOM DU LIEN SANS LE .html
+             */
+            let omp = document.querySelector('#option-menu-picker')
+            if(!omp.hasChildNodes()){
+              editablePages.forEach(page =>{
+                let pageName = page.name.slice(0, -5)
+                let div = document.createElement('label')
+                let inp = document.createElement('input')
+                div.for = pageName
+                inp.id = pageName
+                inp.name = pageName
+                inp.type = "checkbox"
+                div.textContent = pageName
+                inp.value = pageName
+                div.appendChild(inp)
+                omp.appendChild(div)
+              })
+              
+            }
+            document.querySelector('.xcms-popd .save').addEventListener('click', (e) => {
+              e.cancelBubble = true
+              let selectedOptions = document.querySelectorAll('#option-menu-picker input[type=checkbox]:checked')
+              let selectedIndex = document.querySelector('#menusize').selectedIndex
+              if(selectedOptions.length > 0 && parseInt(selectedIndex) > 0){
+                /* 
+                RENVOYER UNE ERREUR
+                 */
+                alert('you can not select premade links and custom links at the same time. set your premade links to "Zero links"')
                 return
-              } else {
-                xAppend(ul)
-                if (confirm("do you want to save this menu for later use?")) {
-                  let newMenu = { menu: ul.outerHTML }
-                  mymenus.push(newMenu)
-                  mews.emit('message', jss(newMenu))
-                  let menulink = document.createElement('a')
-                  menulink.innerText = 'menu ' + mymenus.length
-                  menulink.href = '#'
-                  menulink.addEventListener('click', (menuevent) => {
-                    let div = document.createElement('div')
-                    div.innerHTML = ul.outerHTML
-                    xAppend(div)
-                    document.querySelector('.xcms-popd').style.display = 'none'
-                    cssEditorApply()
+              }else{
+                if(selectedOptions.length > 0){
+                  var ul = document.createElement('ul');
+                  selectedOptions.forEach(opt=>{
+                    var li = document.createElement('li');
+                    var alink = document.createElement('a');
+                    li.appendChild(alink)
+                    alink.innerText = opt.value
+                    alink.href = opt.value
+                    ul.appendChild(li)
+                    ul.classList.add('xcms-menu')
                   })
-                  document.querySelector('#mymenus').appendChild(menulink)
-                  let br = document.createElement('br')
-                  document.querySelector('#mymenus').appendChild(br)
-                  localStorage.mymenus = jss(mymenus)
+                  xAppend(ul)
+                  cssEditorApply()
+                }
+                if(selectedIndex > 0){
+                  document.querySelectorAll('#option-menu-picker input[type=checkbox]:checked').forEach(ckbx=>{
+                    console.log(ckbx, document.querySelector('#menusize').selectedIndex)
+                  })
+                  let desiredSize = document.querySelector('#menusize').options[
+                    document.querySelector('#menusize').selectedIndex
+                  ].value
+                  var ul = document.createElement('ul');
+                  ul.classList.add('xcms-menu')
+                  menuSize = 0
+                  e.stopImmediatePropagation()
+                  while (menuSize < desiredSize) {
+                    menuSize++
+                    var li = document.createElement('li');
+                    var alink = document.createElement('a');
+                    var titrelien = prompt(
+                      "Enter the navigation destination for the link n°" + (
+                        menuSize) + "/" + desiredSize + ":\n1. For in-page navigation use the '#' prefix.\n2. For outter-page navigation use the '/' prefix.")
+                    if (titrelien.charAt(0) === '#') {
+                      alink.href = titrelien
+                      alink.innerText = titrelien.split('#').join('')
+                    } else if (titrelien.charAt(0) === '/') {
+                      if (!/.html$/.test(titrelien)) {
+                        alink.href = titrelien + '.html'
+                        alink.innerText = titrelien.split('/').join('')
+                      } else {
+                        alink.href = titrelien
+                        alink.innerText = titrelien.split('/').join('').split('.html').join('')
+                      }
+                    } else {
+                      alink.href = '#' + titrelien
+                      alink.innerText = titrelien
+                    }
+                    alink.id = "isActive"
+                    li.style.margin = "5px 10px"
+                    li.style.display = 'inline'
+                    li.appendChild(alink);
+                    ul.appendChild(li);
+                    makeBorderColor(ul)
+                    alink.id = ""
+                  }
+                  menuSize = 0
+                  if (desiredSize === '0') {
+                    ul = ""
+                    document.querySelector('.xcms-popd').style.display = 'none'
+                    return
+                  } else {
+                    xAppend(ul)
+                    if (confirm("do you want to save this menu for later use?")) {
+                      let newMenu = { menu: ul.outerHTML }
+                      mymenus.push(newMenu)
+                      mews.emit('message', jss(newMenu))
+                      let menulink = document.createElement('a')
+                      menulink.innerText = 'menu ' + mymenus.length
+                      menulink.href = '#'
+                      menulink.addEventListener('click', (menuevent) => {
+                        let div = document.createElement('div')
+                        div.innerHTML = ul.outerHTML
+                        xAppend(div)
+                        document.querySelector('.xcms-popd').style.display = 'none'
+                        cssEditorApply()
+                      })
+                      document.querySelector('#mymenus').appendChild(menulink)
+                      localStorage.mymenus = jss(mymenus)
+                    }
+                  }
                 }
               }
               document.querySelector('.xcms-popd').style.display = 'none'
@@ -1046,6 +1108,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       div.id = "isContainer"
       let menu = document.importNode(document.querySelector('#custom-container').content, true)
       document.body.appendChild(menu)
+      document.querySelector('.cc-inner').style.width = document.querySelector('.first-class-editor').offsetWidth -1 + 'px'
       document.querySelector('.cc-body').querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', e => {
           e.cancelBubble = true
@@ -1511,14 +1574,15 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           x: ce.pageX - 20,
           y: ce.pageY 
         }
-        pageDuplicateBtn.style.left = origin.x + 'px'
-        pageDuplicateBtn.style.top = origin.y + 'px'
-        pageDuplicateBtn.style.display = 'block'
+        pageDuplicateBtn.style.right = '0px'
+        pageDuplicateBtn.style.top = origin.y - 50 + 'px'
+        pageDuplicateBtn.style.width = document.querySelector('.first-class-editor').offsetWidth + 'px'
+        pageDuplicateBtn.style.display = 'flex'
         pageDuplicateBtn.addEventListener('mouseleave', ()=>{
           pageDuplicateBtn.style.display = 'none'
-        })
-        pageDuplicateBtn.querySelector('a').onclick = (oce)=>{
-          if(pageDuplicateBtn.querySelector('input').value !== ""){
+        }, {once: true})
+        pageDuplicateBtn.querySelector('.duplicate-btn').onclick = (oce)=>{
+          if(oce.target.nextElementSibling.value !== ""){
             nouvellepage = {
               name: pageDuplicateBtn.querySelector('input').value,
               page: selectedPage.page,
@@ -1541,6 +1605,19 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
               pageDuplicateBtn.style.display = 'none'
               window.location.href = `${window.location.origin}/admin`
             }
+          }
+        }
+        pageDuplicateBtn.querySelector('.rename-btn').onclick = (oce) =>{
+          if(oce.target.nextElementSibling.value === ""){
+            alert('You can not rename with an empty name.')
+          }else{
+            let toBeRenamed = {
+              oldName: selectedPage.name,
+              newName: oce.target.nextElementSibling.value
+            }
+            mews.emit('message', jss(toBeRenamed))
+            pageDuplicateBtn.style.display = 'none'
+            window.location.href = `${window.location.origin}/admin`
           }
         }
       }, false)
