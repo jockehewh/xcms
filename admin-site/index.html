@@ -544,10 +544,6 @@
                 document.querySelector('.save').innerText = "Save [!]"
               }
             })
-            /* 
-            CREATION DE LA SELECTIONS DES PAGES EXISTANTES
-            AUTOMATISER LE NOM DU LIEN SANS LE .html
-             */
             let omp = document.querySelector('#option-menu-picker')
             if(!omp.hasChildNodes()){
               editablePages.forEach(page =>{
@@ -563,16 +559,12 @@
                 div.appendChild(inp)
                 omp.appendChild(div)
               })
-              
             }
             document.querySelector('.xcms-popd .save').addEventListener('click', (e) => {
               e.cancelBubble = true
               let selectedOptions = document.querySelectorAll('#option-menu-picker input[type=checkbox]:checked')
               let selectedIndex = document.querySelector('#menusize').selectedIndex
               if(selectedOptions.length > 0 && parseInt(selectedIndex) > 0){
-                /* 
-                RENVOYER UNE ERREUR
-                 */
                 alert('you can not select premade links and custom links at the same time. set your premade links to "Zero links"')
                 return
               }else{
@@ -588,12 +580,26 @@
                     ul.classList.add('xcms-menu')
                   })
                   xAppend(ul)
+                  if (confirm("do you want to save this menu for later use?")) {
+                      let newMenu = { menu: ul.outerHTML }
+                      mymenus.push(newMenu)
+                      mews.emit('message', jss(newMenu))
+                      let menulink = document.createElement('a')
+                      menulink.innerText = 'menu ' + mymenus.length
+                      menulink.href = '#'
+                      menulink.addEventListener('click', (menuevent) => {
+                        let div = document.createElement('div')
+                        div.innerHTML = ul.outerHTML
+                        xAppend(div)
+                        document.querySelector('.xcms-popd').style.display = 'none'
+                        cssEditorApply()
+                      })
+                      document.querySelector('#mymenus').appendChild(menulink)
+                      localStorage.mymenus = jss(mymenus)
+                    }
                   cssEditorApply()
                 }
                 if(selectedIndex > 0){
-                  document.querySelectorAll('#option-menu-picker input[type=checkbox]:checked').forEach(ckbx=>{
-                    console.log(ckbx, document.querySelector('#menusize').selectedIndex)
-                  })
                   let desiredSize = document.querySelector('#menusize').options[
                     document.querySelector('#menusize').selectedIndex
                   ].value
