@@ -72,7 +72,6 @@ window.onload = ()=>{
             }
             if(titre.getAttribute('lien') === 'true'){
                 document.querySelectorAll('.xcms-menu li a').forEach(lien=>{
-                    lien.className += " link white"
                     console.log(lien.innerText.toLowerCase(), titre.innerText.toLowerCase())
                     if(lien.innerText.toLowerCase() === titre.innerText.toLowerCase()){
                         console.log(lien.href.toLowerCase(), titre.innerText.toLowerCase())
@@ -86,22 +85,12 @@ window.onload = ()=>{
     document.querySelectorAll('.xcms-custom').forEach(titre =>{
         if(titre.classList.contains('lien')){
                 document.querySelectorAll('.xcms-menu li a').forEach(lien=>{
-                    lien.className += " link white"
                     if(lien.innerText.toLowerCase() === titre.dataset.lien.toLowerCase()){
                         titre.id = titre.dataset.lien.toLowerCase()
                     }
                 })
             }
     })
-
-    if(document.querySelector('.xcms-menu') !== null){
-        document.querySelector('.xcms-menu').className += " bg-green w-100 pb2 pt2 tc"
-        //document.querySelector('.xcms-menu').nextElementSibling.style.marginTop = window.getComputedStyle(document.querySelector('.xcms-menu')).height.split('px').join('') *2 +'px'
-
-        document.querySelectorAll('.xcms-div').forEach(div=>{
-            div.className += " washed-red bg-blue"
-        })
-    }
     if(document.querySelector('.xcms-img') !== null){
         let imgArray = []
         let tempArray = document.querySelectorAll('.xcms-img')

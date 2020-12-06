@@ -237,7 +237,7 @@ xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js$/, ctx 
 
 xcms.use(r.get('/logout', (ctx, next) => {
   ctx.logout();
-  ctx.redirect('/')
+  ctx.redirect('/connect')
 }))
 /* AUTHENTICATED ROUTES END */
 

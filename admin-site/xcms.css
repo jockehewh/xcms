@@ -269,6 +269,12 @@ iframe{
     right: 1.7rem;
     line-height: 2;
 }
+.nav span{
+    line-height: 2;
+}
+.nav a{
+    margin-left: 16px;
+}
 #isContainer, #isContained{
     min-height: 60px;
 }

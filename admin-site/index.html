@@ -39,7 +39,7 @@
       </button>
     </div>
   </div>
-  <div class="nav"><span style="padding-left: 17px;">XCMS</span>
+  <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
     <p>Go to CRM page</p>
   </div>
   <main class="mw-100">
@@ -308,7 +308,6 @@
 
                     gtag('config', '${googleTag}');
                     <\/script>
-                    <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
                     <link rel="stylesheet" href="./frontend-site/onthefly/${titre}.css">
                     <script src='./frontend-site/designer.js'><\/script>
                     </head><body>
@@ -326,7 +325,6 @@
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <title>${titre}</title>
-                    <link rel="stylesheet" href="./frontend-site/tachyons.min.css">
                     <link rel="stylesheet" href="./frontend-site/onthefly/${titre}.css">
                     <script src='./frontend-site/designer.js'><\/script>
                     </head><body>
@@ -708,6 +706,9 @@
       e.preventDefault();
       document.querySelector('.edit-zone').innerHTML = ""
       document.querySelector('.edit-zone').style.display = "block"
+      jseditor.setValue('')
+      csseditor.setValue('')
+      htmleditor.setValue('')
     })
     //*****************RESET
     document.querySelector('#efface').addEventListener('click', e => {
