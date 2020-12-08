@@ -355,8 +355,9 @@
       editablePages.push(nouvellepage)
       createEditablesPageLinks(nouvellepage)
       nouvellepage = {}
-      jseditor.setValue('', 0)
-      csseditor.setValue('', 0)
+      jseditor.setValue('')
+      csseditor.setValue('')
+      htmleditor.setValue('')
       alert(
         `your new page is accessible at the following address: ${window.location.origin}/${titre}.html`
       )
@@ -1557,6 +1558,9 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           mews.emit('message', jss({
             update: changedPage
           }))
+          jseditor.setValue('')
+          csseditor.setValue('')
+          htmleditor.setValue('') 
           editablePages[e.target.dataset.index].page = theframe.innerHTML
           theframe.remove()
           document.querySelector('.edit-zone').style.display = 'block'

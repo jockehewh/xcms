@@ -48,7 +48,7 @@ function updatePageCollection(){
 }
 updatePageCollection()
 
-const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4)/
+const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4|webp)/
 
 
 
