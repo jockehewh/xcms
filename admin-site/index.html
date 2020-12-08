@@ -1351,7 +1351,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       let niceHTML = document.querySelector('.edit-zone').style.display === "block" ? 
       beautifier.html(document.querySelector('.edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true }) :
       beautifier.html(document.querySelector('.re-edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true })
-      let findStyleAttr = /(style="[a-zA-Z -_]{1,}:[\sa-zA-Z0-9\s\(\),]{1,};")/
+      let findStyleAttr = /(style="[^transform][a-zA-Z -_]{1,}:[\sa-zA-Z0-9\s\(\),]{1,};")/
       while(findStyleAttr.test(niceHTML)){
         niceHTML = niceHTML.replace(findStyleAttr, 'style=""')
       }

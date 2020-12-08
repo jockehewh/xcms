@@ -1,9 +1,8 @@
 latest update:
 
 Adds:
-  - added a logout button
+  - 
 Changes:
   -
 BugFixes:
-  - added the media directories to git
-  - now reset the content of the editors after saving
+  - fixed a regex to not remove the inline css of image elements
