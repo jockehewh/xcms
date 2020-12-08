@@ -1,12 +1,9 @@
 latest update:
 
 Adds:
-  -added smart template generation
-  -added a DOM editor 
-  -added some default css for the containers created with the GUI
+  - added a logout button
 Changes:
-  -removed the quill editor
-  -images and video now use their true URL as thay are added
+  -
 BugFixes:
-  -can now select the latest of the nested element
-  -enabled the revertOnSpill option so dragable elements can retreive their initial position if dropped outside of a receiver component.
+  - added the media directories to git
+  - now reset the content of the editors after saving
