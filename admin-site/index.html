@@ -190,6 +190,8 @@
     <button href="#" class="rename-btn">Rename page</button>
     <input type="text" placeholder="New name">
   </div>
+  <div id="svg-temp">
+  </div>
   <template id="custom-container">
     <div class="cc-outer">
       <div class="cc-inner">
@@ -244,6 +246,30 @@
         </div>
       </div>
     </div>
+  </template>
+  <template id="video-poster">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg"
+    style="isolation:isolate" viewBox="0 0 600 400" width="600" height="400">
+    <defs>
+      <clipPath id="_clipPath_ftW9NGJ4IzBx297g6OOgEVEu0UjWHA0S">
+        <rect width="600" height="400" />
+      </clipPath>
+    </defs>
+    <g clip-path="url(#_clipPath_ftW9NGJ4IzBx297g6OOgEVEu0UjWHA0S)">
+      <linearGradient id="_lgradient_1" x1="0.49666666666666665" y1="0.46249999999999997" x2="0.49833333333333335"
+        y2="0.9650000000000001">
+        <stop offset="0%" style="stop-color:#FFFFFF" />
+        <stop offset="100%" style="stop-color:#000000" />
+      </linearGradient>
+      <rect width="600" height="400" style="fill:url(#_lgradient_1);" />
+      <path
+        d=" M 317.269 197.144 L 291.13 182.059 C 290.123 181.455 288.846 181.455 287.838 182.059 C 286.83 182.664 286.192 183.739 286.192 184.915 L 286.192 215.085 C 286.192 216.261 286.83 217.336 287.838 217.941 C 288.342 218.243 288.913 218.377 289.484 218.377 C 290.055 218.377 290.627 218.243 291.13 217.941 L 317.269 202.856 C 318.276 202.251 318.915 201.176 318.915 200 C 318.915 198.824 318.276 197.715 317.269 197.144 L 317.269 197.144 Z  M 292.777 209.373 L 292.777 190.627 L 309.004 200 L 292.777 209.373 L 292.777 209.373 Z  M 299.832 168.822 C 282.731 168.822 268.822 182.731 268.822 199.832 C 268.822 216.933 282.731 230.842 299.832 230.842 C 316.933 230.842 330.842 216.933 330.842 199.832 C 330.875 182.731 316.933 168.822 299.832 168.822 Z  M 299.832 226.474 C 285.15 226.474 273.224 214.547 273.224 199.866 C 273.224 185.184 285.15 173.257 299.832 173.257 C 314.514 173.257 326.44 185.184 326.44 199.866 C 326.474 214.514 314.514 226.474 299.832 226.474 Z  M 324.257 154.544 L 275.743 154.544 C 264.052 154.544 254.544 164.052 254.544 175.743 L 254.544 224.257 C 254.544 235.948 264.052 245.456 275.743 245.456 L 324.257 245.456 C 335.948 245.456 345.456 235.948 345.456 224.257 L 345.456 175.743 C 345.49 164.052 335.982 154.544 324.257 154.544 L 324.257 154.544 Z  M 338.871 224.257 C 338.871 232.32 332.32 238.871 324.257 238.871 L 275.743 238.871 C 267.68 238.871 261.129 232.32 261.129 224.257 L 261.129 175.743 C 261.129 167.68 267.68 161.129 275.743 161.129 L 324.257 161.129 C 332.32 161.129 338.871 167.68 338.871 175.743 L 338.871 224.257 L 338.871 224.257 Z "
+        fill="rgb(86,89,92)" />
+      <g transform="matrix(1,0,0,1,210,274)"><text transform="matrix(1,0,0,1,36.575,18.555)" id="svg-video-poster"
+          style="font-family:'Roboto';;font-weight:400;font-size:20px;font-style:normal;fill:#ffffff;stroke:none;">Video
+          name</text></g>
+    </g>
+  </svg>
   </template>
   <script src="./admin-site/dragula.min.js"></script>
   <script>
@@ -465,17 +491,29 @@
             videopicklone.id = 'imgpiker'
             videopicklone.style.display = 'none'
             videopicker.addEventListener('change', function (ev) {
+              let videoTemp = document.querySelector('#svg-temp')
               ev.stopPropagation()
               for (let file of videopicker.files) {
                 var video = document.createElement('video');
                 video.type = 'video/mp4'
                 video.setAttribute('controls', 'true')
                 video.classList.add('xcms-video')
+                video.width = 600
+                video.height = 400
                 let videoName = file.name.split(' ').join('_')
                 mews.emit('video', {
                   name: videoName,
                   video: file
                 })
+                let videoPoster = document.querySelector('#video-poster').innerHTML
+                videoTemp.insertAdjacentHTML('beforeEnd', videoPoster)
+                videoTemp.querySelector('#svg-video-poster').textContent = videoName
+                videoPoster = videoTemp.innerHTML
+                video.poster = "data:image/svg+xml;base64," + btoa(videoPoster)
+                videoTemp.innerHTML = ""
+                /* 
+                  AVANT L'ENREGISTREMENT AJOUTER UN BOUTON CHANGER LA MINIATURE DE LA VIDEO
+                 */
                 setTimeout(function(){
                   video.src = "/videos/" + videoName
                 }, 1000)

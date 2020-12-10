@@ -221,6 +221,7 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
 #option-menu-picker input{
     margin: 8px;
 }
+#svg-temp{display:block;}
 .save{
     background: transparent;
     border: none;

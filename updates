@@ -3,6 +3,6 @@ latest update:
 Adds:
   - 
 Changes:
-  -
+  - The videos are now lazy loaded on both ends
 BugFixes:
-  - fixed a regex to not remove the inline css of image elements
+  - 

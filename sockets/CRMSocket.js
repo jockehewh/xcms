@@ -96,7 +96,6 @@ crmSocket.on('message', async (ctx) => {
         admindb.findOne({ xcmsAdmin: toUpdate.username }, (err, res) => {
             if (err) console.log("err", err)
             if (res) {
-                console.log(res)
                 res.password = toUpdate.password
                 res.save()
                 ctx.socket.emit('success', 'the admin was successfully updated')
