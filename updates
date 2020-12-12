@@ -3,6 +3,6 @@ latest update:
 Adds:
   - 
 Changes:
-  - The videos are now lazy loaded on both ends
-BugFixes:
   - 
+BugFixes:
+  - Fixed a bug where some pages where note updated

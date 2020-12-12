@@ -68,9 +68,9 @@ adminSocket.on('message', async (ctx) => {
     }
     if (datainfo.update) {
       pagedb.findOneAndUpdate({ name: datainfo.update.name },
-        { page: datainfo.update.page, js: datainfo.update.js, css: datainfo.update.css },
+        { page: datainfo.update.page, css: datainfo.update.css, js: datainfo.update.js },
         { new: true },
-        (err, data) => {
+        (err) => {
           if (err) {
             console.log('error updating the page', err)
             ctx.socket.emit('errorr', 'error updating the page, please retry.')

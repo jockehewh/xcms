@@ -1546,17 +1546,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         document.querySelector('.boutons').appendChild(button)
         button.addEventListener('click', ev => {
           //APPLY INLINE CSS
-          let parser = new cssjs()
           const pageCSS = csseditor.getValue()
-          let parsed = parser.parseCSS(pageCSS)
-          parsed.forEach(cssSelector => {
-            let selectedStyle = cssSelector.rules.map(rule => {
-              return `${rule.directive}:${rule.value};`
-            })
-            document.querySelector('.re-edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
-              existent.setAttribute('style', selectedStyle.join(''))
-            })
-          })
           //REMOVE ATTRIBUT CONTENTEDITABLE
           theframe.childNodes.forEach(node => {
             if (node instanceof HTMLElement) {
@@ -1580,6 +1570,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           theframe.querySelectorAll('.re-edit-zone > [class^="xcms-"]').forEach(element => {
             rebuiltPage.body.appendChild(element.cloneNode(true))
           })
+
           rebuiltPage.body.appendChild(theframe.querySelector('script:last-of-type').cloneNode(true))
           var gluedPage = `<!DOCTYPE html>
                     <html lang="en">
@@ -1588,7 +1579,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           let page = gluedPage
           let js = jseditor.getValue()
           let changedPage = {
-            name,
+            name: name.toLowerCase(),
             page,
             css: pageCSS,
             js
