@@ -320,7 +320,7 @@
         googleTag = localStorage.gtag
         contenu =
           `<!DOCTYPE html>
-                    <html lang="en">
+                    <html lang="${localStorage.lang}">
                     <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -345,7 +345,7 @@
       } else {
         contenu =
           `<!DOCTYPE html>
-                    <html lang="en">
+                    <html lang="${localStorage.lang}">
                     <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -725,6 +725,11 @@
     mews.emit('message', jss({getgtag: 1}))
     mews.on('gtag', data=>{
       localStorage.gtag = data.gtag
+    })
+    //***************GET LANG
+    mews.emit('message', jss({getlang: 1}))
+    mews.on('lang', data=>{
+      localStorage.lang = data.lang
     })
     //***************LIVE ON PAGE LIVE
     document.querySelector('.edit-zone').addEventListener('dblclick', function (e) {
@@ -1573,7 +1578,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
 
           rebuiltPage.body.appendChild(theframe.querySelector('script:last-of-type').cloneNode(true))
           var gluedPage = `<!DOCTYPE html>
-                    <html lang="en">
+                    <html lang="${localStorage.lang}">
                     ${rebuiltPage.head.outerHTML} ${rebuiltPage.body.outerHTML}</html>`
           let name = e.target.innerText
           let page = gluedPage

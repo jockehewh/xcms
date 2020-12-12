@@ -7,5 +7,6 @@
     "useUnifiedTopology": true
      },
   "passportKeys": "xavier-cms-key",
-  "gtag": ""
+  "gtag": "",
+  "lang": "en"
 }
