@@ -192,6 +192,7 @@
   </div>
   <div id="svg-temp">
   </div>
+  <div class="status-box"></div>
   <template id="custom-container">
     <div class="cc-outer">
       <div class="cc-inner">
@@ -283,7 +284,36 @@
     let editablePages = []
     let extensionCheck = /(\.(jpeg)|(png)|(PNG)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/
 
+
+    //*****************STATUS HANDLER
+    mews.on('success', data => {
+      showStatusMessage(1, data)
+    })
+    mews.on('errorr', data => {
+      showStatusMessage(0, data)
+    })
+    function showStatusMessage(status, data){
+      let statusEvent
+      if(status){
+        statusEvent = new Event('page-saved')
+        document.querySelector('.status-box').style.background = "green"
+      }else{
+        statusEvent = new Event('internal-error')
+        document.querySelector('.status-box').style.background = "red"
+      }
+      let p = document.createElement('p')
+      p.innerText = data
+      document.querySelector('.status-box').appendChild(p)
+      document.querySelector('.status-box').style.display = "block"
+      setTimeout(function () {
+        p.remove()
+        document.querySelector('.status-box').style.display = "none"
+        document.body.dispatchEvent(statusEvent)
+      }, 6000)
+    }
+
     crepage.addEventListener('click', e => {
+      e.cancelBubble = true
       let parser = new cssjs()
       const pageCSS = csseditor.getValue()
       let parsed = parser.parseCSS(pageCSS)
@@ -370,24 +400,31 @@
       }
       //CSS et JS
       mews.emit('message', jss(nouvellepage))
-      var allnodes = document.querySelector('.edit-zone').childNodes
-      var j = allnodes.length
-      while (j > 2) {
-        document.querySelector('.edit-zone').lastChild.remove()
-        j--
-      }
-      nouvellepage.index = editablePages.length
-      nouvellepage.name = nouvellepage.name + '.html'
-      editablePages.push(nouvellepage)
-      createEditablesPageLinks(nouvellepage)
-      nouvellepage = {}
-      jseditor.setValue('')
-      csseditor.setValue('')
-      htmleditor.setValue('')
-      alert(
+      document.body.addEventListener('internal-error', ie=>{
+        console.log('error', ie)
+        return
+      })
+      document.body.addEventListener('page-saved', ie=>{
+        ie.cancelBubble = true
+        var allnodes = document.querySelector('.edit-zone').childNodes
+        var j = allnodes.length
+        while (j > 2) {
+          document.querySelector('.edit-zone').lastChild.remove()
+          j--
+        }
+        nouvellepage.index = editablePages.length
+        nouvellepage.name = nouvellepage.name + '.html'
+        editablePages.push(nouvellepage)
+        createEditablesPageLinks(nouvellepage)
+        nouvellepage = {}
+        jseditor.setValue('')
+        csseditor.setValue('')
+        htmleditor.setValue('')
+        alert(
         `your new page is accessible at the following address: ${window.location.origin}/${titre}.html`
-      )
-      window.location.href = `${window.location.origin}/admin`
+        )
+        window.location.href = `${window.location.origin}/admin`
+      }, {once: true})
     }, false)
     mews.on('normal', data => {
       parsed = jsp(data)
@@ -1155,7 +1192,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       if(isSelected.isDiv){
         div = isSelected.selectedContainer
       }
-      div.classList.add('xcms-div')
+      div.classList.add('xcms-container')
       div.id = "isContainer"
       let menu = document.importNode(document.querySelector('#custom-container').content, true)
       document.body.appendChild(menu)
@@ -1854,11 +1891,11 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           <li><a href="#" data-link="conf">Email configuration</a></li><hr>
           <li><a href="#" data-link="emails">Send emails</a></li><hr>
           <li><a href="#" data-link="addAdmin">Add an admin</a></li><hr>
-          <li><a href="#" data-link="changePassword">Change an admin's password</a></li><hr>
+          <li><a href="#" data-link="changePassword">Change an admins password</a></li><hr>
           <li><a href="#" class="export-btn" data-link="exportConfig">Export database</a></li><hr>
           <li><a href="#" class="import-btn" data-link="importConfig">Import database</a></li><hr>
-          <li><a href="#" class="export-media-btn" data-link="exportMedia">Export Medias</a></li><hr>
-          <li><a href="#" class="import-media-btn" data-link="importMedia">Import Medias</a></li><hr>
+          <li><a href="#" class="export-media-btn" data-link="exportMedia">Export medias</a></li><hr>
+          <li><a href="#" class="import-media-btn" data-link="importMedia">Import medias</a></li><hr>
         </ul>
       </div>
       <div class="configuration-block">

@@ -65,57 +65,9 @@ Clicking __Delete content__ will empty the workspace.
 
 ##### adding content:
 
-__Open editor:__
-
-Clicking __Open editor__ opens the WYSIWYG editor in the workspace.
-
-* ###### Editors options
-  * ![Adding a class](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btncls.PNG) 
-  With the editor open, select the text of the element you want to name and click on the ‘.cls’ button. In the floating text bar, enter the class name for your element(s).
-  Click save to apply.
-  * ![Adding an ID](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnid.PNG)
-  With the editor open, select the text of the element you want to add an ID to and click on the ‘reverse-link’ button. In the floating text bar, enter the ID for your element(s) .
-  Click save to apply.
-  * ![Creating a link](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnlien.PNG)
-  Select the text of the element you want to use as link and click on the ‘link’ button. In the floating text bar, enter the address to link to
-  Click save to apply.
-  * ![Setting background color](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnbackground.PNG)
-  Select the text of the element for wich you want to change the background color and click on the ‘grayed-A’ button. 
-  Click on a color to apply.
-  * ![Setting text color](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btntextcolor.PNG)
-  Select the text of the element for wich you want to change the font color and click on the ‘underlined-A’ button. 
-  Click on a color to apply.
-  * ![Changing fonts](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnfont.PNG)
-  Open the fonts menu and select a font.
-  Or
-  Select the text of the element for wich you want to change the font and open the fonts menu.
-  Select a font to apply.
-  * ![Change font size](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnheading.PNG)
-  Open the heading menu and select a font size.
-  Or
-  Select the text of the element for wich you want to change the font size and open the heading menu.
-  Select a font size to apply.
-  * ![Creating a list](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnlist.PNG)
-  To create a list choose from the ‘ordered-list’ button and the ‘unordered-list’ button press enter to create a new element.
-  Click on the button again to stop the list
-
-  * ![Aligning the text](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnalign.PNG)
-  To align your text right or left you can click the ‘align’ button and select the way the text will be displayed
-
-  * ![Remove all formating](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnremovestyle.PNG)
-  To remove all formating click on the ‘paragraph’ button
-
-__closing the editor:__
-To close the editor click `save` in the editor
-Clicking save will add the “xcms-custom” class to the current element.
-
 __Add a container:__
 
 Clicking __Add a container__ will add a container to the workspace (it comes with a black border for you to see it. double click the border to remove it).
-
-__Quickly add CSS:__
-
-Right-clicking a container allows you to quickly add some essential css to that container. You can also duplicate a container and its content by click the __duplicate__ option at the bottom of the context menu.
 
 __Add a menu:__
 
@@ -141,10 +93,14 @@ If you want to duplicate a page you can "right click" on the page's name. you wi
 
 ##### Custom Javascript and CSS
 
-bellow the workspace you have two buttons one for editing CSS and one for editing Javascript.
+bellow the workspace you have three buttons one for editing CSS, one for editing Javascript and one for editing HTML.
 each button works as follow:
-* click the button to open the code editor
+* click the button to open the code editor. (N.B. clicking the 'edit your HTML' will get the content from the viewport)
 * double click the same button to close the editor.
+
+__Quickly add CSS:__
+
+Right-clicking a container allows you to quickly add some essential css to that container. You can also duplicate a container and its content by click the __duplicate__ option at the bottom of the context menu.
 
 __inlining CSS__
 after editing you CSS press 'Alt+Enter' to inline it into the HTML elements.
@@ -154,10 +110,11 @@ after editing you CSS press 'Alt+Enter' to inline it into the HTML elements.
 __Activating a container component:__
 To activate a container component click it in the viewport. Some options will appear on the right.
 Click the __make container__ button, it will make the container a "repeater" element.
+You also can add the data attribute 'data-will-repeat="true"' manually.
 
 __Adding one or more repeatable element(s):__
 With a repeater container selected, add or drag&drop an other container inside of it and select it with a click and click the __is repeatable__ button.
-
+You also can add the data attribute 'data-is-repeatable="true"' manually.
 
 __Using the smart templates system:__
 If you encase a ::string:: in the content of your "repetable" element it will be treated as a function parametre during the creation of the code snippet.
@@ -169,8 +126,75 @@ Then open the built-in Javascript editor to see your new functions.
 ##### Generating CSS Snippets in 1 step
 
 To add your CSS in an easy way you can right-click on the element you focus and select one css attributes. open the built-in CSS editor to edit your CSS.
-nb. you can select many attributes for one element and they will be added into the associated CSS rule.
+(N.B. you can select many attributes for one element and they will be added into the associated CSS rule.)
 
 __use custom fonts__
 to use custom fonts, import it via CDN.
 use an '@import' statement at the top of your CSS file.
+
+
+##### CRM part
+
+__Email configuration:__
+
+The email configuration form allows you to connect your email provider to the CMS.
+Provide the Host, Username and Password to enable emailing in your apps.
+
+__Writing emails:__
+
+Clicking __Send emails__ opens the WYSIWYG editor in the workspace.
+
+* ###### Editors options
+  * ![Creating a link](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnlien.PNG)
+  Select the text of the element you want to use as link and click on the ‘link’ button. In the floating text bar, enter the address to link to
+  Click save to apply.
+  * ![Setting background color](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btN.B.ackground.PNG)
+  Select the text of the element for wich you want to change the background color and click on the ‘grayed-A’ button. 
+  Click on a color to apply.
+  * ![Setting text color](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btntextcolor.PNG)
+  Select the text of the element for wich you want to change the font color and click on the ‘underlined-A’ button. 
+  Click on a color to apply.
+  * ![Changing fonts](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnfont.PNG)
+  Open the fonts menu and select a font.
+  Or
+  Select the text of the element for wich you want to change the font and open the fonts menu.
+  Select a font to apply.
+  * ![Change font size](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnheading.PNG)
+  Open the heading menu and select a font size.
+  Or
+  Select the text of the element for wich you want to change the font size and open the heading menu.
+  Select a font size to apply.
+  * ![Creating a list](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnlist.PNG)
+  To create a list choose from the ‘ordered-list’ button and the ‘unordered-list’ button press enter to create a new element.
+  Click on the button again to stop the list
+
+  * ![Aligning the text](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnalign.PNG)
+  To align your text right or left you can click the ‘align’ button and select the way the text will be displayed
+
+  * ![Remove all formating](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnremovestyle.PNG)
+  To remove all formating click on the ‘paragraph’ button
+
+__Add an admin:__
+
+Allows you to create more admins (N.B.. only admins can update the content of the apps).
+
+__Change an admins password:__
+
+Fill the form with an existing admin username and set the new password.
+Then click the 'Update password' button to save your changes.
+
+__Export database:__
+
+Clicking the 'Export database' button will generate a zip file from your database and download it to your computer. (N.B. admins are not part of the export as it is a potential security flaw)
+
+__Import database:__
+
+Clicking the 'Import database' button will allow you to pick an "xcmsExport.zip" from your computer that will be uploaded to your database so you can deploy as if you didn't migrate.
+
+__Export medias:__
+
+Clicking the 'Export medias' button will generate a zip file containing all your images and videos.
+
+__Import medias:__
+
+Clicking the 'Import medias' button will allow you to pick an "xcmsMediaExport.zip" file that will be uploaded to your server. You can then access all your assets as if you didn't migrate.

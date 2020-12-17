@@ -26,7 +26,7 @@ adminSocket.on('message', async (ctx) => {
     if (datainfo.name) {
       pagedb.find({ name: datainfo.name + '.html' }, (err, data) => {
         if (data.length > 0) {
-          ctx.socket.emit('errorr', 'a page with the same name already exist')
+          ctx.socket.emit('errorr', 'A page with the same name already exist')
         } else {
           let newPage = new pagedb({
             name: datainfo.name + ".html",
@@ -44,6 +44,7 @@ adminSocket.on('message', async (ctx) => {
               if (data.name === "index.html") {
                 isIndex = data
               }
+              ctx.socket.emit('success', `The ${datainfo.name} was saved succesfully!`)
             }
           })
         }

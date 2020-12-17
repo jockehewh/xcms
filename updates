@@ -1,8 +1,8 @@
 latest update:
 
 Adds:
-  - 
+  - Added status messages.
 Changes:
-  - 
+  - Updated the documentation.
 BugFixes:
-  - Fixed a bug where some pages where note updated
+  - Now handles the error when using an existing name.

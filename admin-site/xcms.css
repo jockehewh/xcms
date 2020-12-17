@@ -43,6 +43,7 @@ a:hover{
 body{
     font-family: "Roboto";
     font-size: 13px;
+    overflow-x: hidden;
 }
 #css-editor, #js-editor, #html-editor{
     top: 22px;
@@ -230,6 +231,22 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
 }
 .save:hover{
     background-color: var(--white-1);
+}
+.status-box{
+    display: none;
+    position: absolute;
+    top: 0;
+    right: -25%;
+    padding: 10px;
+    animation: statusmove;
+    animation-duration: 4s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+    font-size: 26px;
+}
+@keyframes statusmove{
+    from {right: -25%;}
+    to {right: 75%;}
 }
 #menusize{
     border: none;
