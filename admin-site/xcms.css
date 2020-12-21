@@ -236,17 +236,22 @@ section:nth-child(2), section:nth-child(3), section:nth-child(4){
     display: none;
     position: absolute;
     top: 0;
-    right: -25%;
-    padding: 10px;
+    right: -22%;
+    left: 76%;
     animation: statusmove;
-    animation-duration: 4s;
+    animation-duration: 2s;
     animation-fill-mode: forwards;
-    animation-timing-function: ease-out;
+    animation-timing-function: cubic-bezier(.88,1.15,1,1);
     font-size: 26px;
+    min-width: max-content;
+}
+.status-box p {
+    padding: 4px 8px 4px 8px;
+    background: var(--white-0);
 }
 @keyframes statusmove{
-    from {right: -25%;}
-    to {right: 75%;}
+    from {right: -22%; left: 76%}
+    to {right: 76%; left: 0%;}
 }
 #menusize{
     border: none;

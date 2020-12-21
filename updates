@@ -1,8 +1,8 @@
 latest update:
 
 Adds:
-  - Added status messages.
+  - 
 Changes:
-  - Updated the documentation.
+  - applied the design to the status messages.
 BugFixes:
-  - Now handles the error when using an existing name.
+  - 

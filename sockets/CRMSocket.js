@@ -56,6 +56,7 @@ crmSocket.on('message', async (ctx) => {
                     html: datainfo.htmlText
                 }
                 mailTransporter.sendMail(mailOptions)
+                ctx.socket.emit('success', `Your email to ${contact.email} was sent successfully.`)
             })
         })
     }
@@ -74,6 +75,7 @@ crmSocket.on('message', async (ctx) => {
         }
         transporter.write(JSON.stringify(transporterData))
         transporter.end()
+        ctx.socket.emit('success', `Your email provider was updated successfully.`)
     }
     if (datainfo.addAdmin) {
         const newAdmin = datainfo.addAdmin
@@ -85,22 +87,25 @@ crmSocket.on('message', async (ctx) => {
                     password: newAdmin.password
                 })
                 addAnAdmin.save()
-                ctx.socket.emit('success', 'the admin was successfully created')
+                ctx.socket.emit('success', 'The admin was successfully added')
             } else {
-                ctx.socket.emit('errorr', `the admin ${newAdmin.username} already exist`)
+                ctx.socket.emit('errorr', `The admin ${newAdmin.username} already exist`)
             }
         })
     }
     if (datainfo.updateAdmin) {
         const toUpdate = datainfo.updateAdmin
         admindb.findOne({ xcmsAdmin: toUpdate.username }, (err, res) => {
-            if (err) console.log("err", err)
+            if (err) {
+                console.log("err", err)
+                ctx.socket.emit('errorr', `The admin "${datainfo.updateAdmin.username}" does not exist.`)
+            } 
             if (res) {
                 res.password = toUpdate.password
                 res.save()
-                ctx.socket.emit('success', 'the admin was successfully updated')
-            } else {
-                ctx.socket.emit('errorr', 'the admin does not exist')
+                ctx.socket.emit('success', `The admin "${datainfo.updateAdmin.username}" was successfully updated.`)
+            }else{
+                ctx.socket.emit('errorr', `The admin "${datainfo.updateAdmin.username}" does not exist.`)
             }
         })
     }
@@ -120,8 +125,10 @@ crmSocket.on('message', async (ctx) => {
                 archive.pipe(out);
                 archive.directory('mongoExport/', false)
                 archive.finalize();
+                ctx.socket.emit('success', "Your database has been successfully exported.")
             } else {
                 console.log(err)
+                ctx.socket.emit('errorr', "Your database export generated an error.", err)
             }
         })
     }
@@ -132,11 +139,13 @@ crmSocket.on('message', async (ctx) => {
             fs.readFile(__dirname + "/../xcmsMediaExport.zip", function (err, data) {
                 if (err) { console.log(err) }
                 ctx.socket.emit('export-media-complete', data)
+                ctx.socket.emit('success', "Your media files has been successfully exported.")
             })
         });
         archive.pipe(out);
         archive.directory('frontend-site/', false)
         archive.finalize();
+        ctx.socket.emit('success', "Gathering your media files...")
     }
 })
 
@@ -144,6 +153,7 @@ crmSocket.on("importing", async (ctx) =>{
     let importedFile = fs.createWriteStream(__dirname + '/../xcmsExport.zip', {autoClose: true})
     importedFile.write(ctx.data)
     importedFile.end()
+    ctx.socket.emit('success', "Unziping your content...")
     importedFile.on('close', async function(){
         await extract(__dirname + '/../xcmsExport.zip', {dir: __dirname + "/../xcmsExport"})
         const mongorestoreCommand = [`--uri=${mongoURI}/xcms`, "--gzip", `--nsInclude="xcms.*"`, `${__dirname}/../xcmsExport`]
@@ -157,6 +167,7 @@ crmSocket.on("importing-medias", async (ctx) =>{
     let importedFile = fs.createWriteStream(__dirname + '/../xcmsMediaExport.zip', {autoClose: true})
     importedFile.write(ctx.data)
     importedFile.end()
+    ctx.socket.emit('success', "Unziping your media files...")
     importedFile.on('close', async function(){
         await extract(__dirname + '/../xcmsMediaExport.zip', {dir: __dirname + "/../frontend-site"})
         ctx.socket.emit('import-media-complete', "")

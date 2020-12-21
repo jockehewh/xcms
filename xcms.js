@@ -36,6 +36,7 @@ xcms.use(passport.session())
 require(__dirname + '/adminAuth.js')
 
 function updatePageCollection(){
+  isIndex.length = 0
   pagedb.find({}, (err, data) => {
   if (err) { console.log('fetch page error', err) }
   pagesCollection.push(...data)
@@ -49,8 +50,6 @@ function updatePageCollection(){
 updatePageCollection()
 
 const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4|webp)/
-
-
 
 /* ROUTER START */
 
@@ -111,25 +110,6 @@ xcms.use(r.post('/contact', ctx => {
 xcms.use(r.get('/favicon.ico', ctx => {
   ctx.type = 'image/png'
   ctx.body = fs.createReadStream(__dirname + '/favicon.ico', {
-    autoClose: true
-  })
-}))
-
-xcms.use(r.get('/admin-site/dltcursor.png', ctx => {
-  ctx.type = 'image/png'
-  ctx.body = fs.createReadStream(__dirname + '/admin-site/dltcursor.png', {
-    autoClose: true
-  })
-}))
-xcms.use(r.get('/admin-site/smart-template.png', ctx => {
-  ctx.type = 'image/png'
-  ctx.body = fs.createReadStream(__dirname + '/admin-site/smart-template.png', {
-    autoClose: true
-  })
-}))
-xcms.use(r.get(/column/, ctx => {
-  ctx.type = 'image/png'
-  ctx.body = fs.createReadStream(__dirname + ctx.url, {
     autoClose: true
   })
 }))
@@ -207,7 +187,7 @@ xcms.use(r.post('/admin',
   })
 ))
 
-/* AUTHENTICATED ROUTES END */
+/* AUTHENTICATED ROUTES START */
 
 xcms.use((ctx, next) => {
   if (ctx.isAuthenticated()) {
@@ -234,6 +214,25 @@ xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js$/, ctx 
   ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
 
+xcms.use(r.get('/admin-site/dltcursor.png', ctx => {
+  ctx.type = 'image/png'
+  ctx.body = fs.createReadStream(__dirname + '/admin-site/dltcursor.png', {
+    autoClose: true
+  })
+}))
+xcms.use(r.get('/admin-site/smart-template.png', ctx => {
+  ctx.type = 'image/png'
+  ctx.body = fs.createReadStream(__dirname + '/admin-site/smart-template.png', {
+    autoClose: true
+  })
+}))
+xcms.use(r.get(/column/, ctx => {
+  ctx.type = 'image/png'
+  ctx.body = fs.createReadStream(__dirname + ctx.url, {
+    autoClose: true
+  })
+}))
+
 
 xcms.use(r.get('/logout', (ctx, next) => {
   ctx.logout();
@@ -244,7 +243,7 @@ xcms.use(r.get('/logout', (ctx, next) => {
 /* ROUTER END */
 
 /* SOCKET IO */
-adminSocket.attach(xcms) //main socket handler
+adminSocket.attach(xcms)
 adminSocket.on('connection', (ctx) => {
   pagedb.find({}, (err, res) => {
     if (err) console.log(err)
@@ -280,5 +279,3 @@ xcms.listen(the.port, () => {
 })
 
 module.exports = xcms
-
-//COMMUNIQUER LES ERREURS A LA FRONTEND

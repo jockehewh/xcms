@@ -26,7 +26,7 @@ adminSocket.on('message', async (ctx) => {
     if (datainfo.name) {
       pagedb.find({ name: datainfo.name + '.html' }, (err, data) => {
         if (data.length > 0) {
-          ctx.socket.emit('errorr', 'A page with the same name already exist')
+          ctx.socket.emit('errorr', 'This page already exist.')
         } else {
           let newPage = new pagedb({
             name: datainfo.name + ".html",
@@ -37,14 +37,14 @@ adminSocket.on('message', async (ctx) => {
           newPage.save((err, data) => {
             if (err) {
               console.log('error saving a new page', err)
-              ctx.socket.emit('errorr', 'A problem happened: ' + err)
+              ctx.socket.emit('errorr', 'A problem happened.\n' + err)
               return
             } else {
               pagesCollection.push(data)
               if (data.name === "index.html") {
                 isIndex = data
               }
-              ctx.socket.emit('success', `The ${datainfo.name} was saved succesfully!`)
+              ctx.socket.emit('success', `The ${datainfo.name} was successfully created !`)
             }
           })
         }
@@ -80,9 +80,9 @@ adminSocket.on('message', async (ctx) => {
         (err) => {
           if (err) {
             console.log('error updating the page', err)
-            ctx.socket.emit('errorr', 'error updating the page, please retry.')
+            ctx.socket.emit('errorr', 'Couldn\'t update the page.\n', err)
           }
-          ctx.socket.emit('success', `the page ${datainfo.update.name} was sucesfully updated`)
+          ctx.socket.emit('success', `the page ${datainfo.update.name} was successfully updated.`)
         })
       pagesCollection.forEach(page => {
         if (page.name === datainfo.update.name) {
@@ -99,13 +99,13 @@ adminSocket.on('message', async (ctx) => {
         { new: true },
         (err, data) => {
           if (err) {
-            console.log('error updating the page', err)
-            ctx.socket.emit('errorr', 'error updating the page name, please retry.')
+            console.log('An error occured while renaming the page.', err)
+            ctx.socket.emit('errorr', 'An error occured while renaming the page.\n', err)
           }
           data.page.replace(oldName+ ".css", datainfo.newName + ".css")
           data.page.replace(oldName+ ".js", datainfo.newName + ".js")
           data.save()
-          ctx.socket.emit('success', `the page ${datainfo.oldName} was sucesfully renamed to ${datainfo.newName}`)
+          ctx.socket.emit('success', `the page ${datainfo.oldName} was successfully renamed to ${datainfo.newName}.`)
         })
       pagesCollection.forEach(page => {
         if (page.name === datainfo.oldName) {
@@ -119,7 +119,7 @@ adminSocket.on('message', async (ctx) => {
           ctx.socket.emit('errorr', `error deleting the page: ${datainfo.deletePage}, please retry.`)
         }
         if (success) {
-          ctx.socket.emit('success', `Done. The: ${datainfo.deletePage} was successfully deleted`)
+          ctx.socket.emit('success', `Done. The: ${datainfo.deletePage} page was successfully deleted`)
           }
       })
       let pagesCollectionTemp = pagesCollection.filter(pageData => { if (pageData.name !== datainfo.deletePage) return pageData })
@@ -131,7 +131,7 @@ adminSocket.on('message', async (ctx) => {
   }
 })
 let extensionCheck = /(\.(jpeg)|(png)|(PNG)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/
-adminSocket.on('image', ctx => { //CONVERTIR EN WEBP
+adminSocket.on('image', ctx => {
   let extensionIndex = extensionCheck.exec(ctx.data.name).index
   let newName = ctx.data.name.slice(0, extensionIndex) + 'webp'
   sharp(ctx.data.image).toFile(__dirname + '/../frontend-site/imgs/' + newName, (err, info)=>{
