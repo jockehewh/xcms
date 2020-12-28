@@ -2223,6 +2223,26 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         crms.on('import-mail-complete', data=>{
           window.location.href = window.location.origin
         })
+        /* 
+        AJOUTER UN MODE DE CREATION DE MODELES CUSTOMISÉS
+         */
+        /* 
+        AJOUTER CREATION D'API EN 3 TEMPS
+        MODEL ?
+        ROUTE
+        OPERATION
+        let jseditor = ace.edit('js-editor')
+        jseditor.setTheme("ace/theme/monokai")
+        jseditor.session.setMode("ace/mode/javascript")
+        jseditor.scrollToLine(0, true, true, function () { });
+        jseditor.gotoLine(0, 0, true);
+        jseditor.session.setTabSize(2);
+        jseditor.setOptions({
+          enableBasicAutocompletion: true,
+          enableSnippets: true,
+          enableLiveAutocompletion: true
+        })
+         */
       </script>
     </div>
   </template>

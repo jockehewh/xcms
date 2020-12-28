@@ -9,6 +9,7 @@ const adminSocket = require('./sockets/adminSocket.js')
 const xcms = new koa();
 const jsp = JSON.parse;
 const mongoose = require('mongoose')
+let allModels = {}
 
 let the = ''
 
@@ -25,7 +26,12 @@ mongoose.connect(the.mongoURI + '/xcms', the.mongoOptions)
 var pagesCollection = require(__dirname + '/xcmsDB/pageCollection.js')
 
 var isIndex = require(__dirname + '/xcmsDB/isIndex.js')
-const { pagedb, userdb } = require(__dirname + '/cmsModels.js')
+const { pagedb, menudb } = require(__dirname + '/cmsModels.js')
+allModels = Object.assign({pagedb}, allModels)
+allModels = Object.assign({menudb}, allModels)
+/* 
+CRÉER DEUX TABLEAUX POUR LES DIFFERENTES ROUTES
+ */
 
 xcms.proxy = true
 xcms.keys = [the.passportKeys]
@@ -195,6 +201,37 @@ xcms.use(r.post('/admin', (ctx)=>{
   })(ctx)
 }))
 
+/* 
+ENREGISTRER LES MODELES CUSTOMISÉS
+ */
+
+let customAPIReader = fs.readFileSync(__dirname +'/xcmsDB/customAPI.json')
+let customAPI = JSON.parse(customAPIReader)
+customAPI.forEach(conf=>{
+  return xcms.use(r[conf.action]('/'+conf.route, (ctx)=>{
+    ctx.status = 200
+    return allModels[conf.model].find({}, (err, res)=>{
+      if(err) console.log(err)
+      if(res){
+        ctx.type = "text/json"
+        let targetMapped = {}
+        conf.target.forEach(target =>{
+          targetMapped = Object.assign({[target]: target}, targetMapped)
+          return {[target]: target}
+        })
+        console.log(targetMapped)
+        let queryResponse = res.map(obj=>{
+          let queryObject = {}
+          for (key in targetMapped){
+            queryObject = Object.assign({[key]: obj[key]}, queryObject)
+          }
+          return queryObject
+        })
+        ctx.body = JSON.stringify(queryResponse)
+      }
+    })
+  }))
+})
 
 /* AUTHENTICATED ROUTES START */
 
