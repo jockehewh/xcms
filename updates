@@ -1,7 +1,9 @@
 latest update:
 
 Adds:
-  - super admin accounts
+  - super admin accounts.
+  - Custom API from the CRM page.
+  - Custom Models from the CRM page.
 Changes:
   - 
 BugFixes:
