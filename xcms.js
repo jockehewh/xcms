@@ -83,7 +83,7 @@ xcms.use(r.post('/contact', ctx => {
         messagesHistory: [contact.message]
       })
       newContact.save((err, user) => { })
-      let transporterInfo = fs.createReadStream(__dirname + '/xcmsDB/transporter', {
+      let transporterInfo = fs.createReadStream('./mail.config.json', {
         autoClose: true
       })
       let transporter = "";
@@ -157,7 +157,7 @@ xcms.use(r.get(/\/frontend-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.js/, ct
 xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx => {
   let videoName = ctx.url.split('/')
   ctx.type = 'video/*'
-  ctx.body = fs.createReadStream(__dirname + '/frontend-site/videos/' + videoName[2], {
+  ctx.body = fs.createReadStream('./medias/videos/' + videoName[2], {
     autoclose: true
   })
 }))
@@ -165,7 +165,7 @@ xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx => {
 xcms.use(r.get(/^\/imgs\/([a-zA-Z0-9_-]{2,})/, ctx => {
   let imageName = ctx.url.split('/')
   ctx.type = 'image/webp'
-  ctx.body = fs.createReadStream(__dirname + '/frontend-site/imgs/' + imageName[2], {
+  ctx.body = fs.createReadStream('./medias/imgs/' + imageName[2], {
     autoclose: true
   })
 }))
@@ -255,7 +255,7 @@ adminSocket.on('connection', (ctx) => {
       })
     }
   })
-  let transporterInfo = fs.createReadStream(__dirname + '/xcmsDB/transporter', {
+  let transporterInfo = fs.createReadStream('./mail.config.json', {
     autoClose: true
   })
   let transporter = "";
@@ -264,9 +264,11 @@ adminSocket.on('connection', (ctx) => {
   })
   transporterInfo.on('end', () => {
     transporter = JSON.parse(transporter)
-    if (transporter.host !== '') ctx.socket.emit('normal', JSON.stringify({
-      formfield: true
-    }))
+    if (transporter.host !== ''){
+      ctx.emit('normal', JSON.stringify({
+        formfield: true
+      }))
+    }
   })
 })
 
@@ -276,6 +278,30 @@ require(__dirname + '/sockets/CRMSocket.js').attach(xcms)
 
 xcms.listen(the.port, () => {
   console.log("listenning on port:", the.port)
+  if(!fs.existsSync('./medias')){
+    fs.mkdir('./medias/imgs', {recursive: true}, (err)=>{
+      if(err) console.log(err)
+    })
+    fs.mkdir('./medias/videos', {recursive: true}, (err)=>{
+      if(err) console.log(err)
+    })
+  }
+  if(!fs.existsSync('./mail.config.json')){
+    let transporter = fs.createWriteStream('./mail.config.json', {
+          encoding: 'utf8'
+      })
+    let transporterData = {
+        host: "",
+        port: 587,
+        secure: false,
+        auth: {
+            user: "",
+            pass: ""
+        }
+    }
+    transporter.write(JSON.stringify(transporterData))
+    transporter.end()
+  }
 })
 
 module.exports = xcms

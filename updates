@@ -1,8 +1,9 @@
 latest update:
 
 Adds:
-  - 
+  - import + export of mail configuration.
 Changes:
-  - applied the design to the status messages.
-BugFixes:
   - 
+BugFixes:
+  - fixed the media files were deleted during an update.
+  - fixed the mail configuration was deleted during an update.

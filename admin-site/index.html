@@ -1902,6 +1902,8 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           <li><a href="#" class="import-btn" data-link="importConfig">Import database</a></li><hr>
           <li><a href="#" class="export-media-btn" data-link="exportMedia">Export media file</a></li><hr>
           <li><a href="#" class="import-media-btn" data-link="importMedia">Import media files</a></li><hr>
+          <li><a href="#" class="export-mail-btn" data-link="exportMail">Export mail configuration</a></li><hr>
+          <li><a href="#" class="import-mail-btn" data-link="importMail">Import mail configuration</a></li><hr>
         </ul>
       </div>
       <div class="configuration-block">
@@ -2168,6 +2170,33 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           })
         })
         crms.on('import-media-complete', data=>{
+          window.location.href = window.location.origin
+        })
+        document.querySelector('.export-mail-btn').addEventListener('click', e=>{
+          crms.emit('message', jss({exportMailConfig: true}))
+        })
+        crms.on('exporting-mail-config', data=>{
+          let dataUrl = "data:text/json;charset=utf-8," + encodeURIComponent(data)
+          let a = document.createElement('a')
+          a.innerText = "xcmsMailConfigExport"
+          a.download = "xcmsMailConfig.json"
+          a.href = dataUrl
+          document.querySelector('.minimenu').appendChild(a)
+          a.click()
+          a.remove()
+        })
+        document.querySelector('.import-mail-btn').addEventListener('click', e=>{
+          let fileInput = document.createElement('input')
+          fileInput.type = 'file'
+          fileInput.multiple = false
+          fileInput.accept = "text/json"
+          document.querySelector('.minimenu').appendChild(fileInput)
+          fileInput.addEventListener('change', (e)=>{
+            crms.emit("importing-mail-config", e.currentTarget.files[0])
+            fileInput.setAttribute('disabled', true)
+          })
+        })
+        crms.on('import-mail-complete', data=>{
           window.location.href = window.location.origin
         })
       </script>

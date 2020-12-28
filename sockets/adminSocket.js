@@ -134,12 +134,12 @@ let extensionCheck = /(\.(jpeg)|(png)|(PNG)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp
 adminSocket.on('image', ctx => {
   let extensionIndex = extensionCheck.exec(ctx.data.name).index
   let newName = ctx.data.name.slice(0, extensionIndex) + 'webp'
-  sharp(ctx.data.image).toFile(__dirname + '/../frontend-site/imgs/' + newName, (err, info)=>{
+  sharp(ctx.data.image).toFile('./medias/imgs/' + newName, (err, info)=>{
     if(err)console.log(err)
   })
 })
 adminSocket.on('video', ctx => {
-  var newImg = fs.createWriteStream(__dirname + '/../frontend-site/videos/' + ctx.data.name, {
+  var newImg = fs.createWriteStream('./medias/videos/' + ctx.data.name, {
     encoding: "binary"
   })
   newImg.write(ctx.data.video)

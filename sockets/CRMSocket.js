@@ -37,7 +37,7 @@ crmSocket.on('message', async (ctx) => {
         })
     }
     if (datainfo.selectedContacts) {
-        let transporterInfo = fs.createReadStream(__dirname + '/../xcmsDB/transporter', {
+        let transporterInfo = fs.createReadStream('./mail.config.json', {
             autoClose: true
         })
         let transporter = "";
@@ -61,7 +61,7 @@ crmSocket.on('message', async (ctx) => {
         })
     }
     if (datainfo.host) {
-        let transporter = fs.createWriteStream(__dirname + '/../xcmsDB/transporter', {
+        let transporter = fs.createWriteStream('./mail.config.json', {
             encoding: 'utf8'
         })
         let transporterData = {
@@ -139,13 +139,24 @@ crmSocket.on('message', async (ctx) => {
             fs.readFile(__dirname + "/../xcmsMediaExport.zip", function (err, data) {
                 if (err) { console.log(err) }
                 ctx.socket.emit('export-media-complete', data)
-                ctx.socket.emit('success', "Your media files has been successfully exported.")
+                ctx.socket.emit('success', "Your media files was successfully exported.")
             })
         });
         archive.pipe(out);
-        archive.directory('frontend-site/', false)
+        archive.directory('./medias/', false)
         archive.finalize();
         ctx.socket.emit('success', "Gathering your media files...")
+    }
+    if(datainfo.exportMailConfig){
+        let mailConf = fs.createReadStream('./mail.config.json', {autoClose:true})
+        let mailJSON = ""
+        mailConf.on('data', data=>{
+            mailJSON+= data
+        })
+        mailConf.on('end', ()=>{
+            ctx.socket.emit('exporting-mail-config', mailJSON)
+            ctx.socket.emit('success', "Your mail configuration was successfully exported.")
+        })
     }
 })
 
@@ -169,8 +180,17 @@ crmSocket.on("importing-medias", async (ctx) =>{
     importedFile.end()
     ctx.socket.emit('success', "Unziping your media files...")
     importedFile.on('close', async function(){
-        await extract(__dirname + '/../xcmsMediaExport.zip', {dir: __dirname + "/../frontend-site"})
+        await extract(__dirname + '/../xcmsMediaExport.zip', {dir: "./medias/"})
         ctx.socket.emit('import-media-complete', "")
+    })
+})
+crmSocket.on("importing-mail-config", async (ctx) =>{
+    let mailConfig = fs.createWriteStream('./mail.config.json', {autoClose: true})
+    mailConfig.write(ctx.data)
+    mailConfig.end()
+    ctx.socket.emit('success', "Mail configuration imported successfully.")
+    mailConfig.on('close', async function(){
+        ctx.socket.emit('import-mail-complete', "")
     })
 })
 
