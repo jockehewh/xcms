@@ -55,6 +55,32 @@ function updatePageCollection(){
 }
 updatePageCollection()
 
+
+const makeCustomRoute = (conf)=>{
+  return xcms.use(r[conf.action]('/'+conf.route, (ctx)=>{
+    ctx.status = 200
+    return allModels[conf.model].find({}, (err, res)=>{
+      if(err) console.log(err)
+      if(res){
+        ctx.type = "text/json"
+        let targetMapped = {}
+        conf.target.forEach(target =>{
+          targetMapped = Object.assign({[target]: target}, targetMapped)
+          return {[target]: target}
+        })
+        let queryResponse = res.map(obj=>{
+          let queryObject = {}
+          for (key in targetMapped){
+            queryObject = Object.assign({[key]: obj[key]}, queryObject)
+          }
+          return queryObject
+        })
+        ctx.body = JSON.stringify(queryResponse)
+      }
+    })
+  }))
+}
+
 const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4|webp)/
 
 /* ROUTER START */
@@ -207,30 +233,18 @@ ENREGISTRER LES MODELES CUSTOMISÉS
 
 let customAPIReader = fs.readFileSync(__dirname +'/xcmsDB/customAPI.json')
 let customAPI = JSON.parse(customAPIReader)
-customAPI.forEach(conf=>{
-  return xcms.use(r[conf.action]('/'+conf.route, (ctx)=>{
-    ctx.status = 200
-    return allModels[conf.model].find({}, (err, res)=>{
-      if(err) console.log(err)
-      if(res){
-        ctx.type = "text/json"
-        let targetMapped = {}
-        conf.target.forEach(target =>{
-          targetMapped = Object.assign({[target]: target}, targetMapped)
-          return {[target]: target}
-        })
-        console.log(targetMapped)
-        let queryResponse = res.map(obj=>{
-          let queryObject = {}
-          for (key in targetMapped){
-            queryObject = Object.assign({[key]: obj[key]}, queryObject)
-          }
-          return queryObject
-        })
-        ctx.body = JSON.stringify(queryResponse)
-      }
-    })
-  }))
+let identifiedRoutes = customAPI.map(route=>{
+  if(route.authenticated === true)
+  return route
+})
+let unidentifiedRoutes = customAPI.map(route=>{
+  if(route.authenticated === false)
+  return route
+})
+unidentifiedRoutes.forEach(conf=>{
+  if(conf !== undefined){
+    makeCustomRoute(conf)
+  }
 })
 
 /* AUTHENTICATED ROUTES START */
@@ -279,11 +293,16 @@ xcms.use(r.get(/column/, ctx => {
   })
 }))
 
+identifiedRoutes.forEach(conf=>{
+  if(conf !== undefined)
+  makeCustomRoute(conf)
+})
 
 xcms.use(r.get('/logout', (ctx, next) => {
   ctx.logout();
   ctx.redirect('/connect')
 }))
+
 /* AUTHENTICATED ROUTES END */
 
 /* ROUTER END */
