@@ -1775,6 +1775,14 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           top: 1px;
           font-weight: bold;
         }
+        :scope select {
+          line-height: 2;
+          border: none;
+          border-left: solid 1px var(--grey-2);
+          border-bottom: solid 1px var(--grey-2);
+          padding-inline-start: 8px;
+          height: 32px;
+        }
 
         :scope .crm-body {
           position: absolute;
@@ -1897,7 +1905,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           <li><a href="#" data-link="conf">Email configuration</a></li><hr>
           <li><a href="#" data-link="emails">Send emails</a></li><hr>
           <li><a href="#" data-link="addAdmin">Add an admin</a></li><hr>
-          <li><a href="#" data-link="changePassword">Change an admins password</a></li><hr>
+          <li><a href="#" data-link="changePassword">Update an account</a></li><hr>
           <li><a href="#" class="export-btn" data-link="exportConfig">Export database</a></li><hr>
           <li><a href="#" class="import-btn" data-link="importConfig">Import database</a></li><hr>
           <li><a href="#" class="export-media-btn" data-link="exportMedia">Export media file</a></li><hr>
@@ -1926,7 +1934,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           <div id="editor">
           </div>
 
-          <button class="sendbtn">send</button>
+          <button class="sendbtn">Send</button>
         </div>
       </div>
       <div class='add-admin'>
@@ -1938,6 +1946,11 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           <input type="password" name="password" id="password">
           <label for="verify-password">verify password</label>
           <input type="password" name="verify-password" id="verify-password">
+          <label for="super-admin">super admin?</label>
+          <select name="super-admin" id="super-admin">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
           <br>
           <button class="submit">Save admin</button>
         </div>
@@ -1951,8 +1964,13 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           <input type="password" name="new-password" id="new-password">
           <label for="verify-password">verify password</label>
           <input type="password" name="verify-new-password" id="verify-new-password">
+          <label for="super-admin">super admin?</label>
+          <select name="super-admin" id="super-admin">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
           <br>
-          <button class="submit">Update password</button>
+          <button class="submit">Update account</button>
         </div>
       </div>
       <div class="crm-status-box"></div>
@@ -2059,14 +2077,16 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           const username = document.querySelector('.add-admin #new-admin').value
           const password = document.querySelector('.add-admin #password').value
           const verifyPassword = document.querySelector('.add-admin #verify-password').value
+          const isSuperAdmin = document.querySelector('.add-admin #super-admin').selectedIndex
           if (password === verifyPassword) {
             const addAdmin = {
               username,
-              password
+              password, 
+              isSuperAdmin
             }
             crms.emit('message', jss({ addAdmin: addAdmin }))
           } else {
-            alert('The passwords are not identical please retry')
+            alert('The passwords are not identical please retry.')
           }
           document.querySelector('.add-admin #new-admin').value = ""
           document.querySelector('.add-admin #password').value = ""
@@ -2076,15 +2096,19 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           const username = document.querySelector('.change-password #admin').value
           const password = document.querySelector('.change-password #new-password').value
           const verifyPassword = document.querySelector('.change-password #verify-new-password').value
+          const isSuperAdmin = document.querySelector('.change-password #super-admin').selectedIndex
           if (password === verifyPassword) {
             const updateAdmin = {
               username,
-              password
+              password,
+              isSuperAdmin
             }
             crms.emit('message', jss({ updateAdmin: updateAdmin }))
             document.querySelector('.change-password #admin').value = ""
             document.querySelector('.change-password #new-password').value = ""
             document.querySelector('.change-password #verify-new-password').value = ""
+          } else {
+            alert('The passwords are not identical please retry.')
           }
         })
         function showStatusMessage2(status, data){

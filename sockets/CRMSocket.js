@@ -5,6 +5,13 @@ const archiver = require("archiver")
 const extract = require("extract-zip")
 const { userdb, admindb } = require('../cmsModels.js')
 const nodemailer = require('nodemailer')
+const theEventListener = require(__dirname + '/../xcmsDB/innerEvents')
+let isSuperAdmin = false
+theEventListener.on('isSuperAdmin', (b)=>{
+    if(b){
+        isSuperAdmin = true
+    }
+})
 let mongoURI = ''
 try {
     const env = fs.readFileSync('./config.xcms.json')
@@ -79,35 +86,45 @@ crmSocket.on('message', async (ctx) => {
     }
     if (datainfo.addAdmin) {
         const newAdmin = datainfo.addAdmin
-        admindb.find({ xcmsAdmin: newAdmin.username }, (err, res) => {
-            if (err) console.log(err)
-            if (res.length === 0) {
-                const addAnAdmin = new admindb({
-                    xcmsAdmin: newAdmin.username,
-                    password: newAdmin.password
-                })
-                addAnAdmin.save()
-                ctx.socket.emit('success', 'The admin was successfully added')
-            } else {
-                ctx.socket.emit('errorr', `The admin ${newAdmin.username} already exist`)
-            }
-        })
+        if(isSuperAdmin === true){
+            admindb.find({ xcmsAdmin: newAdmin.username }, (err, res) => {
+                if (err) console.log(err)
+                if (res.length === 0) {
+                    const addAnAdmin = new admindb({
+                        xcmsAdmin: newAdmin.username,
+                        password: newAdmin.password,
+                        superAdmin: newAdmin.isSuperAdmin == 1 ? true : false
+                    })
+                    addAnAdmin.save()
+                    ctx.socket.emit('success', 'The admin was successfully added')
+                } else {
+                    ctx.socket.emit('errorr', `The admin ${newAdmin.username} already exist`)
+                }
+            })
+        }else{
+            ctx.socket.emit('errorr', `You must be a super admin to create an admin account`)
+        }
     }
     if (datainfo.updateAdmin) {
         const toUpdate = datainfo.updateAdmin
-        admindb.findOne({ xcmsAdmin: toUpdate.username }, (err, res) => {
-            if (err) {
-                console.log("err", err)
-                ctx.socket.emit('errorr', `The admin "${datainfo.updateAdmin.username}" does not exist.`)
-            } 
-            if (res) {
-                res.password = toUpdate.password
-                res.save()
-                ctx.socket.emit('success', `The admin "${datainfo.updateAdmin.username}" was successfully updated.`)
-            }else{
-                ctx.socket.emit('errorr', `The admin "${datainfo.updateAdmin.username}" does not exist.`)
-            }
-        })
+        if(isSuperAdmin === true){
+            admindb.findOne({ xcmsAdmin: toUpdate.username }, (err, res) => {
+                if (err) {
+                    console.log("err", err)
+                    ctx.socket.emit('errorr', `The admin "${datainfo.updateAdmin.username}" does not exist.`)
+                } 
+                if (res) {
+                    res.password = toUpdate.password
+                    res.superAdmin = toUpdate.isSuperAdmin == 1 ? true : false
+                    res.save()
+                    ctx.socket.emit('success', `The admin "${datainfo.updateAdmin.username}" was successfully updated.`)
+                }else{
+                    ctx.socket.emit('errorr', `The admin "${datainfo.updateAdmin.username}" does not exist.`)
+                }
+            })
+        }else{
+            ctx.socket.emit('errorr', `You must be a super admin to update another admin account.`)
+        }
     }
     if (datainfo.exportPages) {
         const mongodumpCommand = [`--uri=${mongoURI}/xcms`, `-o="mongoExport"`, "--excludeCollection=admins", "--gzip"]

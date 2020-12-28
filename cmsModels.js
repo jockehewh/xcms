@@ -24,7 +24,8 @@ const menu = new Schema({
 
   const admin = new Schema({
     xcmsAdmin: String,
-    password: String
+    password: String,
+    superAdmin: Boolean
   })
 
   const pagedb = mongoose.model('pages', page)

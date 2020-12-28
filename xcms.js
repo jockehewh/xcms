@@ -180,12 +180,21 @@ xcms.use(r.get(/\/[a-zA-Z0-9_-]{2,}.ttf/, ctx => {
   ctx.body = fs.createReadStream(__dirname + ctx.url)
 }))
 
-xcms.use(r.post('/admin',
-  passport.authenticate('local', {
-    successRedirect: '/admin',
-    failureRedirect: '/'
-  })
-))
+xcms.use(r.post('/admin', (ctx)=>{
+  return passport.authenticate('connexion', function(err, res){
+    if(err){
+      console.log(err)
+      ctx.redirect('/')
+      }
+    if(res){
+      const evem = require(__dirname + "/xcmsDB/innerEvents")
+      evem.emit('isSuperAdmin', res.superAdmin)
+      ctx.login(res)
+      ctx.redirect('/admin')
+    }
+  })(ctx)
+}))
+
 
 /* AUTHENTICATED ROUTES START */
 

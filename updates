@@ -1,9 +1,8 @@
 latest update:
 
 Adds:
-  - import + export of mail configuration.
+  - super admin accounts
 Changes:
   - 
 BugFixes:
-  - fixed the media files were deleted during an update.
-  - fixed the mail configuration was deleted during an update.
+  - 

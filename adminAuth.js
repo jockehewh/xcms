@@ -9,7 +9,8 @@ admindb.find({}, (err, res)=>{
   }else{
     const defaultAdmin = new admindb({
       xcmsAdmin: 'superuser',
-      password: '2one0time1password9'
+      password: '2one0time1password9',
+      superAdmin: true
     })
     defaultAdmin.save((err, res)=>{
       if(err) console.log(err)
@@ -27,7 +28,7 @@ passport.deserializeUser(async function(id, done) {
     done(err, user)
   })
 })
-passport.use(new LocalStrategy(function(username, password, done) {
+passport.use('connexion', new LocalStrategy(function(username, password, done) {
   admindb.findOne({xcmsAdmin: username}, (err, res)=>{
     if(res === null){
       return done(null, false)
