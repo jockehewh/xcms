@@ -185,6 +185,7 @@ crmSocket.on('message', async (ctx) => {
         updatedModels.write(latestModels)
         updatedModels.end()
         theEventListener.emit('RegisterNewModel', newModel)
+        ctx.socket.emit('success', `Successfully created the new model: ${newModel.dbName+'db'}`)
     }
     if(datainfo.newRoute){
         let newRoute = datainfo.newRoute
@@ -196,6 +197,7 @@ crmSocket.on('message', async (ctx) => {
         updatedModels.write(latestRoutes)
         updatedModels.end()
         theEventListener.emit('MakeNewCustomRoute', newRoute)
+        ctx.socket.emit('success', `Successfully created the new route: ${newRoute.route+'db'}`)
     }
 })
 

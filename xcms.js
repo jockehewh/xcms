@@ -98,7 +98,6 @@ theEventListener.on('MakeNewCustomRoute', (route)=>{
   makeCustomRoute(route)
 })
 const makeCustomRoute = (conf)=>{
-  console.log(conf.action, conf.route)
   /* AJOUTER LES AUTRES OPERATION POSSIBLE SUR LA DB */
   return xcms.use(r[conf.action]('/'+conf.route, (ctx)=>{
     ctx.status = 200
