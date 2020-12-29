@@ -9,6 +9,7 @@ const adminSocket = require('./sockets/adminSocket.js')
 const xcms = new koa();
 const jsp = JSON.parse;
 const mongoose = require('mongoose')
+const theEventListener = require(__dirname + "/xcmsDB/innerEvents")
 let allModels = {}
 
 let the = ''
@@ -29,9 +30,46 @@ var isIndex = require(__dirname + '/xcmsDB/isIndex.js')
 const { pagedb, menudb } = require(__dirname + '/cmsModels.js')
 allModels = Object.assign({pagedb}, allModels)
 allModels = Object.assign({menudb}, allModels)
-/* 
-CRÉER DEUX TABLEAUX POUR LES DIFFERENTES ROUTES
- */
+
+let customModelsJson = fs.readFileSync(__dirname + '/xcmsDB/customModels.json')
+let customModels = JSON.parse(customModelsJson)
+const registerModel = (model)=>{
+  let identifiers = model.identifiers
+  for (let id in identifiers){
+    if(identifiers[id] === "String")
+      identifiers[id] = String
+    if(identifiers[id] === "Number")
+      identifiers[id] = Number
+    if(identifiers[id] === "Boolean")
+      identifiers[id] = Boolean
+    if(identifiers[id] === "Array")
+      identifiers[id] = Array
+    if(identifiers[id] === "Buffer")
+      identifiers[id] = Buffer
+    if(identifiers[id] === "Map")
+      identifiers[id] = Map
+    if(identifiers[id] === "Date")
+      identifiers[id] = Date
+    if(identifiers[id] === "Mixed")
+      identifiers[id] = mongoose.Mixed
+    if(identifiers[id] === "ObjectId")
+      identifiers[id] = mongoose.ObjectId
+    if(identifiers[id] === "Decimal128")
+      identifiers[id] = mongoose.Decimal128
+  }
+  allModels = Object.assign({
+    [model.dbName + 'db' ]: mongoose.model(model.dbName, new mongoose.Schema (identifiers))
+  }, allModels)
+}
+customModels.forEach(model =>{
+  if(model != undefined){
+    registerModel(model)
+  }
+})
+theEventListener.on('RegisterNewModel', (model)=>{
+  registerModel(model)
+})
+
 
 xcms.proxy = true
 xcms.keys = [the.passportKeys]
@@ -55,8 +93,13 @@ function updatePageCollection(){
 }
 updatePageCollection()
 
-
+theEventListener.on('MakeNewCustomRoute', (route)=>{
+  console.log("creating route")
+  makeCustomRoute(route)
+})
 const makeCustomRoute = (conf)=>{
+  console.log(conf.action, conf.route)
+  /* AJOUTER LES AUTRES OPERATION POSSIBLE SUR LA DB */
   return xcms.use(r[conf.action]('/'+conf.route, (ctx)=>{
     ctx.status = 200
     return allModels[conf.model].find({}, (err, res)=>{

@@ -175,6 +175,28 @@ crmSocket.on('message', async (ctx) => {
             ctx.socket.emit('success', "Your mail configuration was successfully exported.")
         })
     }
+    if(datainfo.newModel){
+        let newModel = datainfo.newModel
+        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+        let latestModels = JSON.parse(customModelsJson)
+        latestModels.push(newModel)
+        latestModels = JSON.stringify(latestModels)
+        let updatedModels = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json')
+        updatedModels.write(latestModels)
+        updatedModels.end()
+        theEventListener.emit('RegisterNewModel', newModel)
+    }
+    if(datainfo.newRoute){
+        let newRoute = datainfo.newRoute
+        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let latestRoutes = JSON.parse(customAPIJson)
+        latestRoutes.push(newRoute)
+        latestRoutes = JSON.stringify(latestRoutes)
+        let updatedModels = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json')
+        updatedModels.write(latestRoutes)
+        updatedModels.end()
+        theEventListener.emit('MakeNewCustomRoute', newRoute)
+    }
 })
 
 crmSocket.on("importing", async (ctx) =>{

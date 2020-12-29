@@ -1816,13 +1816,61 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           padding-top: 68px;
         }
 
-        :scope .mail {
+        :scope .mail,
+        :scope .configuration-block,
+        :scope .make-routes{
           display: none;
-          width: 80%
+          width: 80%; 
+          min-height: 50vh;
         }
-
+        :scope .edit-models{
+          display: block;
+          width: 80%; 
+          min-height: 50vh;
+          margin-top: 10px;
+          margin-left: 10px;
+        }
+        :scope .make-routes{
+          margin-top: 10px;
+          margin-left: 10px;
+        }
+        :scope .existing-models, :scope .existing-routes{
+          display: flex;
+          min-height: 50vh;
+        }
+        :scope .existing-models > div:first-of-type, :scope .existing-routes > div:first-of-type{
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          min-height: 50vh;
+          position: relative;
+          top: 30px;
+        }
+        :scope .existing-models > div:first-of-type ul, :scope .existing-routes > div:first-of-type ul{
+          min-height: 200px;
+          border-left: solid 1px var(--grey-2);
+          padding: 0 16px;
+          list-style-type: none;
+        }
+        :scope .add-model, :scope .add-route{
+          width: 100px;
+          align-self: center;
+        }
+        :scope .model-editor, :scope .route-editor{
+          display: flex;
+          flex: 3;
+          min-height: 50vh;
+          align-items: center;
+          justify-content: center;
+        }
+        :scope #model-editor, :scope #route-editor{
+          height: 200px;
+          width: 400px;
+          display: none;
+        }
+        :scope .mail,
         :scope .add-admin,
-        .change-password {
+        :scope .change-password {
           display: none;
         }
 
@@ -1902,6 +1950,8 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       </div>
       <div class="minimenu">
         <ul><hr>
+          <li><a href="#" data-link="edit-models">Manage your data</a></li><hr>
+          <li><a href="#" data-link="make-routes">Manage your RestAPI</a></li><hr>
           <li><a href="#" data-link="conf">Email configuration</a></li><hr>
           <li><a href="#" data-link="emails">Send emails</a></li><hr>
           <li><a href="#" data-link="addAdmin">Add an admin</a></li><hr>
@@ -1973,6 +2023,36 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           <button class="submit">Update account</button>
         </div>
       </div>
+      <div class="edit-models">
+        <h1>Create and manage your data</h1>
+        <div class="existing-models">
+          <div>
+            <ul>
+              <h3>My Models:</h3><hr>
+            </ul>
+            <hr style="width: 84%;align-self: center;">
+            <button class="add-model">New model</button>
+          </div>
+          <div class="model-editor">
+            <div id="model-editor"></div>
+          </div>
+        </div>
+      </div>
+      <div class="make-routes">
+        <h1>Create and manage your RestAPI</h1>
+        <div class="existing-routes">
+          <div>
+            <ul>
+              <h3>My Routes:</h3><hr>
+            </ul>
+            <hr style="width: 84%;align-self: center;">
+            <button class="add-route">New route</button>
+          </div>
+          <div class="route-editor">
+            <div id="route-editor"></div>
+          </div>
+        </div>
+      </div>
       <div class="crm-status-box"></div>
       <script>
         document.querySelector('.crm-body .nav p').addEventListener('click', (e) => {
@@ -1982,24 +2062,46 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           link.addEventListener('click', e => {
             if (e.target.dataset.link === 'conf') {
               document.querySelector('.mail').style.display = 'none'
-              document.querySelector('.configuration-block').style.display = 'block'
               document.querySelector('.add-admin').style.display = 'none'
               document.querySelector('.change-password').style.display = 'none'
+              document.querySelector('.make-routes').style.display = 'none'
+              document.querySelector('.edit-models').style.display = 'none'
+              document.querySelector('.configuration-block').style.display = 'block'
             } else if (e.target.dataset.link === 'emails') {
-              document.querySelector('.mail').style.display = 'flex'
               document.querySelector('.configuration-block').style.display = 'none'
               document.querySelector('.add-admin').style.display = 'none'
               document.querySelector('.change-password').style.display = 'none'
+              document.querySelector('.make-routes').style.display = 'none'
+              document.querySelector('.edit-models').style.display = 'none'
+              document.querySelector('.mail').style.display = 'flex'
             } else if (e.target.dataset.link === 'addAdmin') {
               document.querySelector('.mail').style.display = 'none'
               document.querySelector('.configuration-block').style.display = 'none'
-              document.querySelector('.add-admin').style.display = 'block'
               document.querySelector('.change-password').style.display = 'none'
+              document.querySelector('.make-routes').style.display = 'none'
+              document.querySelector('.edit-models').style.display = 'none'
+              document.querySelector('.add-admin').style.display = 'block'
             } else if (e.target.dataset.link === 'changePassword') {
               document.querySelector('.mail').style.display = 'none'
               document.querySelector('.configuration-block').style.display = 'none'
               document.querySelector('.add-admin').style.display = 'none'
+              document.querySelector('.make-routes').style.display = 'none'
+              document.querySelector('.edit-models').style.display = 'none'
               document.querySelector('.change-password').style.display = 'block'
+            } else if (e.target.dataset.link === 'edit-models') {
+              document.querySelector('.mail').style.display = 'none'
+              document.querySelector('.configuration-block').style.display = 'none'
+              document.querySelector('.add-admin').style.display = 'none'
+              document.querySelector('.change-password').style.display = 'none'
+              document.querySelector('.make-routes').style.display = 'none'
+              document.querySelector('.edit-models').style.display = 'block'
+            } else if (e.target.dataset.link === 'make-routes') {
+              document.querySelector('.mail').style.display = 'none'
+              document.querySelector('.configuration-block').style.display = 'none'
+              document.querySelector('.add-admin').style.display = 'none'
+              document.querySelector('.change-password').style.display = 'none'
+              document.querySelector('.edit-models').style.display = 'none'
+              document.querySelector('.make-routes').style.display = 'block'
             }
           })
         })
@@ -2226,7 +2328,96 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         /* 
         AJOUTER UN MODE DE CREATION DE MODELES CUSTOMISÉS
          */
+        document.querySelector('.add-model').addEventListener('click', (e)=>{
+
+          if(e.target.textContent === 'New model'){
+            e.target.textContent = "Save"
+            document.querySelector('#model-editor').style.display = 'block'
+            modeleditor.setValue(`
+{
+  "dbName": "",
+  "identifiers": {"exampleName": "String"}
+}`)
+modeleditor.navigateFileEnd()
+          }else{
+            let currentModel = modeleditor.getValue()
+            while(currentModel.indexOf('\n') != -1){
+              currentModel = currentModel.replace('\n', '')
+            }
+            while(currentModel.indexOf(' ') != -1){
+              currentModel = currentModel.replace(' ', '')
+            }
+            currentModel = JSON.parse(currentModel)
+            if(currentModel.dbName !== "" && currentModel.dbName != " "){
+              crms.emit('message', JSON.stringify({newModel: currentModel}))
+            }
+            modeleditor.setValue('')
+            document.querySelector('#model-editor').style.display = 'none'
+            e.target.textContent = "New model"
+          }
+        })
+        
+        document.querySelector('.add-route').addEventListener('click', (e)=>{
+          if(e.target.textContent === 'New route'){
+            e.target.textContent = "Save"
+            document.querySelector('#route-editor').style.display = 'block'
+            routeeditor.setValue(`
+{
+"authenticated": false,
+"name": "testtest",
+"model": "testdb",
+"route":"testtest",
+"action":"get",
+"target": ["page", "css", "name"]
+}`)
+routeeditor.navigateFileEnd()
+          }else{
+            let newRoute = routeeditor.getValue()
+            while(newRoute.indexOf('\n') != -1){
+              newRoute = newRoute.replace('\n', '')
+            }
+            while(newRoute.indexOf(' ') != -1){
+              newRoute = newRoute.replace(' ', '')
+            }
+            newRoute = JSON.parse(newRoute)
+            if(newRoute.dbName !== "" && newRoute.dbName != " "){
+              crms.emit('message', JSON.stringify({newRoute: newRoute}))
+            }
+            routeeditor.setValue('')
+            document.querySelector('#model-editor').style.display = 'none'
+            e.target.textContent = "New route"
+          }
+        })
+        let modeleditor = ace.edit('model-editor')
+        modeleditor.setTheme("ace/theme/monokai")
+        modeleditor.session.setMode("ace/mode/javascript")
+        modeleditor.gotoLine(0, 0, true);
+        modeleditor.session.setTabSize(2);
+        modeleditor.setOptions({
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          showGutter: false
+        })
+        let routeeditor = ace.edit('route-editor')
+        routeeditor.setTheme("ace/theme/monokai")
+        routeeditor.session.setMode("ace/mode/javascript")
+        routeeditor.gotoLine(0, 0, true);
+        routeeditor.session.setTabSize(2);
+        routeeditor.setOptions({
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          showGutter: false
+        })
+
         /* 
+        route{
+          authenticated: false,
+          name: "",
+          model: ""
+          route:"",
+          action:"",
+          target: ["page", "css", "name"]
+        }
         AJOUTER CREATION D'API EN 3 TEMPS
         MODEL ?
         ROUTE
