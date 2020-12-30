@@ -226,6 +226,9 @@ crmSocket.on('message', async (ctx) => {
         updatedRoutes.end()
         //theEventListener.emit('MakeNewCustomRoute', updateRoute)
         ctx.socket.emit('success', `Successfully updated the route: ${updateRoute.route.name}`)
+        /* 
+            REDEMARER L'APPLICATION
+         */
     }
     if(datainfo.updateModel){
         let updateModel = datainfo.updateModel
@@ -244,6 +247,9 @@ crmSocket.on('message', async (ctx) => {
         updatedModels.end()
         //theEventListener.emit('MakeNewCustomRoute', newRoute)
         ctx.socket.emit('success', `Successfully updated the model: ${updateModel.model.dbName+'db'}`)
+        /* 
+            REDEMARER L'APPLICATION
+         */
     }
 })
 
