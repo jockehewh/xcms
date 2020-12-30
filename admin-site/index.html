@@ -2336,7 +2336,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             modeleditor.setValue(`
 {
   "dbName": "exampleModel",
-  "identifiers": {"exampleName": "String"}
+  "identifiers": {"exampleNameKey": "String"}
 }`)
 modeleditor.navigateFileEnd()
           }else{
@@ -2358,6 +2358,40 @@ modeleditor.navigateFileEnd()
         })
         
         document.querySelector('.add-route').addEventListener('click', (e)=>{
+/* `
+get{
+"authenticated": false,
+"name": "exampleName",
+"model": "exampleModel+db",
+"route":"exampleRoute",
+"action":"get", //post, delete, get, update
+"targetValues": ["exampleNameKey"]
+}`
+post{
+"authenticated": false,
+"name": "exampleName",
+"model": "exampleModel+db",
+"route":"exampleRoute",
+"action":"post", //post, delete, get, update
+}
+update{
+"authenticated": false,
+"name": "exampleName",
+"model": "exampleModel+db",
+"route":"exampleRoute",
+"action":"update", //post, delete, get, update
+"targetValue": "exampleNameKey",
+"valuesToUpdate": ["exampleNameKey"]
+}
+delete{
+"authenticated": false,
+"name": "exampleName",
+"model": "exampleModel+db",
+"route":"exampleRoute",
+"action":"delete", //post, delete, get, update
+"targetItem": {"exampleNameKey": "item"}
+}
+*/
           if(e.target.textContent === 'New route'){
             e.target.textContent = "Save"
             document.querySelector('#route-editor').style.display = 'block'
@@ -2367,8 +2401,8 @@ modeleditor.navigateFileEnd()
 "name": "exampleName",
 "model": "exampleModel+db",
 "route":"exampleRoute",
-"action":"get", //add, delete, get, update
-"target": ["exampleName"]
+"action":"get", //post, delete, get, update
+"target": ["exampleNameKey"] {newer: "item"}
 }`)
 routeeditor.navigateFileEnd()
           }else{
@@ -2380,6 +2414,7 @@ routeeditor.navigateFileEnd()
               newRoute = newRoute.replace(' ', '')
             }
             newRoute = JSON.parse(newRoute)
+            newRoute.action = newRoute.action.toLowerCase()
             if(newRoute.model !== "" && newRoute.model !== " " && newRoute.model !== "exampleName"){
               crms.emit('message', JSON.stringify({newRoute: newRoute}))
             }

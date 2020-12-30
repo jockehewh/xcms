@@ -98,29 +98,68 @@ theEventListener.on('MakeNewCustomRoute', (route)=>{
   makeCustomRoute(route)
 })
 const makeCustomRoute = (conf)=>{
-  /* AJOUTER LES AUTRES OPERATION POSSIBLE SUR LA DB */
-  return xcms.use(r[conf.action]('/'+conf.route, (ctx)=>{
-    ctx.status = 200
-    return allModels[conf.model].find({}, (err, res)=>{
-      if(err) console.log(err)
-      if(res){
-        ctx.type = "text/json"
-        let targetMapped = {}
-        conf.target.forEach(target =>{
-          targetMapped = Object.assign({[target]: target}, targetMapped)
-          return {[target]: target}
-        })
-        let queryResponse = res.map(obj=>{
-          let queryObject = {}
-          for (key in targetMapped){
-            queryObject = Object.assign({[key]: obj[key]}, queryObject)
-          }
-          return queryObject
-        })
-        ctx.body = JSON.stringify(queryResponse)
+  if(conf.action === "get"){
+    return xcms.use(r[conf.action]('/'+conf.route, (ctx)=>{
+      ctx.status = 200
+      return allModels[conf.model].find({}, (err, res)=>{
+        if(err) console.log(err)
+        if(res){
+          ctx.type = "text/json"
+          let targetMapped = {}
+          conf.targetValues.forEach(target =>{
+            targetMapped = Object.assign({[target]: target}, targetMapped)
+            return {[target]: target}
+          })
+          let queryResponse = res.map(obj=>{
+            let queryObject = {}
+            for (key in targetMapped){
+              queryObject = Object.assign({[key]: obj[key]}, queryObject)
+            }
+            return queryObject
+          })
+          ctx.body = JSON.stringify(queryResponse)
+        }
+      })
+    }))
+  }else{
+    return xcms.use(r.post('/'+conf.route, (ctx)=>{
+      let reqBody = ctx.request.body
+      ctx.status = 200
+      if(conf.action === "post"){
+        let addItem = new allModels[conf.model](reqBody)
+        addItem.save()
       }
-    })
-  }))
+      if(conf.action === "update"){
+        allModels[conf.model].findOneAndUpdate(reqBody[conf.targetValue],reqBody,
+        {new: true}, (err, res)=>{
+          if(err) {
+            ctx.type = "text/json"
+            console.log(err)
+            ctx.body = JSON.stringify({updateError: `couldnt update the data with item:\n${reqBody}`})
+            }
+          if(res){
+            ctx.type = "text/json"
+            res.save()
+            ctx.body = JSON.stringify({success: "Data updated successfully."})
+          }
+        })
+      }
+      if(conf.action === "delete"){
+        allModels[conf.model].deleteOne(reqBody, (err, res)=>{
+          if(err){
+            ctx.type = "text/json"
+            console.log(err)
+            ctx.body = JSON.stringify({updateError: `couldn't delete the data with item:\n${reqBody}`})
+          }
+          if(res){
+            ctx.type = "text/json"
+            res.save()
+            ctx.body = JSON.stringify({success: "Data deleted successfully."})
+          }
+        })
+      }
+    }))
+  }
 }
 
 const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4|webp)/
