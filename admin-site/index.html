@@ -2142,6 +2142,8 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         });
         var crms = io('/crm-socket');
         crms.emit('message', jss({ userslist: true }))
+        crms.emit('message', jss({ routeslist: true }))
+        crms.emit('message', jss({ modelslist: true }))
         var sending = document.querySelector('.sendbtn')
         sending.addEventListener('click', (e) => {
           let selectedContacts = []
@@ -2188,6 +2190,18 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
               span.dataset.email = user.email
               li.appendChild(span)
               userslist.appendChild(li)
+            })
+          }
+          if(datainfo.customRoutes){
+            let customRoutes = datainfo.customRoutes.routes
+            customRoutes.forEach(route=>{
+              makeEditableRouteButton(route)
+            })
+          }
+          if(datainfo.customModels){
+            let customModels = datainfo.customModels.models
+            customModels.forEach(model =>{
+              makeEditableModelButton(model)
             })
           }
         })
@@ -2479,8 +2493,9 @@ routeeditor.navigateFileEnd()
           let li = document.createElement('li')
           let a = document.createElement('a')
           let hr = document.createElement('hr')
+          let oldName = route.name
           li.appendChild(a)
-          a.innerText = `${route.action}: /${route.name}`
+          a.innerText = `${route.action}: /${route.route}`
           a.href = "#"
           route = JSON.stringify(route)
           document.querySelector('.existing-routes ul').appendChild(li)
@@ -2488,6 +2503,7 @@ routeeditor.navigateFileEnd()
           a.addEventListener('click', e=>{
             e.preventDefault()
             routeeditor.setValue(beautifier.js(route))
+            routeeditor.navigateFileEnd()
             let btn = document.createElement('button')
             btn.innerText = "Save"
             li.appendChild(btn)
@@ -2501,8 +2517,9 @@ routeeditor.navigateFileEnd()
               }
               updateRoute = JSON.parse(updateRoute)
               updateRoute.action = updateRoute.action.toLowerCase()
-              crms.emit('message', JSON.stringify({updateRoute:{oldName: route.name, route:updateRoute}}))
+              crms.emit('message', JSON.stringify({updateRoute:{oldName, route:updateRoute}}))
               routeeditor.setValue('')
+              btn.remove()
             })
           })
         }
@@ -2513,12 +2530,14 @@ routeeditor.navigateFileEnd()
           li.appendChild(a)
           a.innerText = `${model.dbName}db`
           a.href = "#"
+          let dbName = model.dbName
           model = JSON.stringify(model)
           document.querySelector('.existing-models ul').appendChild(li)
           document.querySelector('.existing-models ul').appendChild(hr)
           a.addEventListener('click', e=>{
             e.preventDefault()
             modeleditor.setValue(beautifier.js(model))
+            modeleditor.navigateFileEnd()
             let btn = document.createElement('button')
             btn.innerText = "Save"
             li.appendChild(btn)
@@ -2531,8 +2550,9 @@ routeeditor.navigateFileEnd()
                 updateModel = updateModel.replace(' ', '')
               }
               updateModel = JSON.parse(updateModel)
-              crms.emit('message', JSON.stringify({updateModel:{oldName: model.dbName, model:updateModel}}))
+              crms.emit('message', JSON.stringify({updateModel:{oldName: dbName, model:updateModel}}))
               modeleditor.setValue('')
+              btn.remove()
             })
           })
         }
