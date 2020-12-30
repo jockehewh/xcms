@@ -1859,6 +1859,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         :scope .model-editor, :scope .route-editor{
           display: flex;
           flex: 3;
+          flex-direction: column;
           min-height: 50vh;
           align-items: center;
           justify-content: center;
@@ -1866,7 +1867,16 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         :scope #model-editor, :scope #route-editor{
           height: 200px;
           width: 400px;
-          display: none;
+          display: block;
+        }
+        :scope .route-types{
+          display: flex;
+          flex-direction: row;
+          width: 400px;
+          justify-content: space-evenly;
+        }
+        :scope .route-types button:hover{
+          background: var(--white-2);
         }
         :scope .mail,
         :scope .add-admin,
@@ -2050,6 +2060,12 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           </div>
           <div class="route-editor">
             <div id="route-editor"></div>
+            <div class="route-types">
+              <button data-message-type="get">GET</button>
+              <button data-message-type="create">CREATE</button>
+              <button data-message-type="update">UPDATE</button>
+              <button data-message-type="delete">DELETE</button>
+            </div>
           </div>
         </div>
       </div>
@@ -2325,16 +2341,13 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         crms.on('import-mail-complete', data=>{
           window.location.href = window.location.origin
         })
-        /* 
-        AJOUTER UN MODE DE CREATION DE MODELES CUSTOMISÉS
-         */
-        document.querySelector('.add-model').addEventListener('click', (e)=>{
 
+        document.querySelector('.add-model').addEventListener('click', (e)=>{
           if(e.target.textContent === 'New model'){
             e.target.textContent = "Save"
             document.querySelector('#model-editor').style.display = 'block'
-            modeleditor.setValue(`
-{
+            modeleditor.setValue(
+`{
   "dbName": "exampleModel",
   "identifiers": {"exampleNameKey": "String"}
 }`)
@@ -2348,7 +2361,7 @@ modeleditor.navigateFileEnd()
               currentModel = currentModel.replace(' ', '')
             }
             currentModel = JSON.parse(currentModel)
-            if(currentModel.dbName !== "" && currentModel.dbName != " "){
+            if(currentModel.dbName !== "" && currentModel.dbName != " " && currentModel.dbName != "exampleModel"){
               crms.emit('message', JSON.stringify({newModel: currentModel}))
             }
             modeleditor.setValue('')
@@ -2356,53 +2369,72 @@ modeleditor.navigateFileEnd()
             e.target.textContent = "New model"
           }
         })
-        
-        document.querySelector('.add-route').addEventListener('click', (e)=>{
-/* `
-get{
+        document.querySelectorAll('.route-types button').forEach(btn=>{
+          btn.addEventListener('click', e=>{
+            switch(e.target.dataset.messageType){
+              case "get":
+                routeeditor.setValue(
+`{
 "authenticated": false,
 "name": "exampleName",
 "model": "exampleModel+db",
 "route":"exampleRoute",
-"action":"get", //post, delete, get, update
+"action":"get",
 "targetValues": ["exampleNameKey"]
 }`
-post{
+)
+                break;
+              case "create":
+                routeeditor.setValue(
+`{
 "authenticated": false,
 "name": "exampleName",
 "model": "exampleModel+db",
 "route":"exampleRoute",
-"action":"post", //post, delete, get, update
-}
-update{
+"action":"create",
+}`
+)
+                break;
+              case "update":
+                routeeditor.setValue(
+`{
 "authenticated": false,
 "name": "exampleName",
 "model": "exampleModel+db",
 "route":"exampleRoute",
-"action":"update", //post, delete, get, update
-"targetValue": "exampleNameKey",
-"valuesToUpdate": ["exampleNameKey"]
-}
-delete{
+"action":"update",
+"targetValue": "exampleNameKey"
+}`
+)
+                break;
+              case "delete":
+                routeeditor.setValue(
+`{
 "authenticated": false,
 "name": "exampleName",
 "model": "exampleModel+db",
 "route":"exampleRoute",
-"action":"delete", //post, delete, get, update
-"targetItem": {"exampleNameKey": "item"}
-}
-*/
+"action":"delete"
+}`
+)
+                break;
+            }
+            routeeditor.navigateFileEnd()
+            document.querySelector('.add-route').textContent = "Save"
+          })
+        })
+        document.querySelector('.add-route').addEventListener('click', (e)=>{
           if(e.target.textContent === 'New route'){
             e.target.textContent = "Save"
             document.querySelector('#route-editor').style.display = 'block'
-            routeeditor.setValue(`
-{
+            routeeditor.setValue(
+`{
 "authenticated": false,
 "name": "exampleName",
 "model": "exampleModel+db",
 "route":"exampleRoute",
-"action":"get", //post, delete, get, update
-"target": ["exampleNameKey"] {newer: "item"}
+"action":"get",
+"targetValues": ["exampleNameKey"]
 }`)
 routeeditor.navigateFileEnd()
           }else{
@@ -2415,7 +2447,7 @@ routeeditor.navigateFileEnd()
             }
             newRoute = JSON.parse(newRoute)
             newRoute.action = newRoute.action.toLowerCase()
-            if(newRoute.model !== "" && newRoute.model !== " " && newRoute.model !== "exampleName"){
+            if(newRoute.model !== "" && newRoute.model !== " " && newRoute.model !== "exampleModel+db"){
               crms.emit('message', JSON.stringify({newRoute: newRoute}))
             }
             routeeditor.setValue('')
@@ -2443,32 +2475,67 @@ routeeditor.navigateFileEnd()
           enableLiveAutocompletion: true,
           showGutter: false
         })
-
-        /* 
-        route{
-          authenticated: false,
-          name: "",
-          model: ""
-          route:"",
-          action:"",
-          target: ["page", "css", "name"]
+        const makeEditableRouteButton = (route)=>{
+          let li = document.createElement('li')
+          let a = document.createElement('a')
+          let hr = document.createElement('hr')
+          li.appendChild(a)
+          a.innerText = `${route.action}: /${route.name}`
+          a.href = "#"
+          route = JSON.stringify(route)
+          document.querySelector('.existing-routes ul').appendChild(li)
+          document.querySelector('.existing-routes ul').appendChild(hr)
+          a.addEventListener('click', e=>{
+            e.preventDefault()
+            routeeditor.setValue(beautifier.js(route))
+            let btn = document.createElement('button')
+            btn.innerText = "Save"
+            li.appendChild(btn)
+            btn.addEventListener('click', (ev)=>{
+              let updateRoute = routeeditor.getValue()
+              while(updateRoute.indexOf('\n') != -1){
+                updateRoute = updateRoute.replace('\n', '')
+              }
+              while(updateRoute.indexOf(' ') != -1){
+                updateRoute = updateRoute.replace(' ', '')
+              }
+              updateRoute = JSON.parse(updateRoute)
+              updateRoute.action = updateRoute.action.toLowerCase()
+              crms.emit('message', JSON.stringify({updateRoute:{oldName: route.name, route:updateRoute}}))
+              routeeditor.setValue('')
+            })
+          })
         }
-        AJOUTER CREATION D'API EN 3 TEMPS
-        MODEL ?
-        ROUTE
-        OPERATION
-        let jseditor = ace.edit('js-editor')
-        jseditor.setTheme("ace/theme/monokai")
-        jseditor.session.setMode("ace/mode/javascript")
-        jseditor.scrollToLine(0, true, true, function () { });
-        jseditor.gotoLine(0, 0, true);
-        jseditor.session.setTabSize(2);
-        jseditor.setOptions({
-          enableBasicAutocompletion: true,
-          enableSnippets: true,
-          enableLiveAutocompletion: true
-        })
-         */
+        const makeEditableModelButton = (model)=>{
+          let li = document.createElement('li')
+          let a = document.createElement('a')
+          let hr = document.createElement('hr')
+          li.appendChild(a)
+          a.innerText = `${model.dbName}db`
+          a.href = "#"
+          model = JSON.stringify(model)
+          document.querySelector('.existing-models ul').appendChild(li)
+          document.querySelector('.existing-models ul').appendChild(hr)
+          a.addEventListener('click', e=>{
+            e.preventDefault()
+            modeleditor.setValue(beautifier.js(model))
+            let btn = document.createElement('button')
+            btn.innerText = "Save"
+            li.appendChild(btn)
+            btn.addEventListener('click', (ev)=>{
+              let updateModel = modeleditor.getValue()
+              while(updateModel.indexOf('\n') != -1){
+                updateModel = updateModel.replace('\n', '')
+              }
+              while(updateModel.indexOf(' ') != -1){
+                updateModel = updateModel.replace(' ', '')
+              }
+              updateModel = JSON.parse(updateModel)
+              crms.emit('message', JSON.stringify({updateModel:{oldName: model.dbName, model:updateModel}}))
+              modeleditor.setValue('')
+            })
+          })
+        }
       </script>
     </div>
   </template>

@@ -193,11 +193,47 @@ crmSocket.on('message', async (ctx) => {
         let latestRoutes = JSON.parse(customAPIJson)
         latestRoutes.push(newRoute)
         latestRoutes = JSON.stringify(latestRoutes)
-        let updatedModels = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json')
-        updatedModels.write(latestRoutes)
-        updatedModels.end()
+        let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json')
+        updatedRoutes.write(latestRoutes)
+        updatedRoutes.end()
         theEventListener.emit('MakeNewCustomRoute', newRoute)
         ctx.socket.emit('success', `Successfully created the new route: ${newRoute.route+'db'}`)
+    }
+    if(datainfo.updateRoute){
+        let updateRoute = datainfo.updateRoute
+        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let latestRoutes = JSON.parse(customAPIJson)
+        let updatedRoutes = latestRoutes.map(route=>{
+            if(route.name === updateRoute.oldName){
+                return updateRoute.route
+            }else{
+                return route
+            }
+        })
+        updatedRoutes = JSON.stringify(updatedRoutes)
+        let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json')
+        updatedRoutes.write(updatedRoutes)
+        updatedRoutes.end()
+        theEventListener.emit('MakeNewCustomRoute', updateRoute)
+        ctx.socket.emit('success', `Successfully updated the new route: ${updateRoute.route}`)
+    }
+    if(datainfo.updateModel){
+        let updateModel = datainfo.updateModel
+        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+        let latestModels = JSON.parse(customModelsJson)
+        latestModels = latestModels.map(model=>{
+            if(model.dbName === updateModel.oldName){
+                return updateModel.model
+            }else{
+                return model
+            }
+        })
+        latestModels = JSON.stringify(latestModels)
+        let updatedModels = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json')
+        updatedModels.write(latestModels)
+        updatedModels.end()
+        theEventListener.emit('MakeNewCustomRoute', newRoute)
+        ctx.socket.emit('success', `Successfully updated the model: ${updateModel.model+'db'}`)
     }
 })
 

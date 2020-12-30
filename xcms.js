@@ -125,7 +125,7 @@ const makeCustomRoute = (conf)=>{
     return xcms.use(r.post('/'+conf.route, (ctx)=>{
       let reqBody = ctx.request.body
       ctx.status = 200
-      if(conf.action === "post"){
+      if(conf.action === "create"){
         let addItem = new allModels[conf.model](reqBody)
         addItem.save()
       }
