@@ -12,6 +12,19 @@ theEventListener.on('isSuperAdmin', (b)=>{
         isSuperAdmin = true
     }
 })
+
+function restart(){
+    process.on('exit', ()=>{
+    spawn(process.argv.shift(), process.argv, {
+        cwd: process.cwd(),
+        detached: true,
+        stdio: "inherit"
+    })
+    })
+    console.log('restarting')
+    process.exit()
+}
+
 let mongoURI = ''
 try {
     const env = fs.readFileSync('./config.xcms.json')
@@ -250,6 +263,12 @@ crmSocket.on('message', async (ctx) => {
         /* 
             REDEMARER L'APPLICATION
          */
+    }
+    if(datainfo.restart){
+        if(isSuperAdmin === true){
+            ctx.socket.emit('restarting', "")
+            restart()
+        }
     }
 })
 

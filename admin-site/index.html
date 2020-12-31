@@ -2084,7 +2084,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       <div class="crm-status-box"></div>
       <script>
         document.querySelector('.crm-body .nav p').addEventListener('click', (e) => {
-          document.querySelector('.crm-body').remove()
+          window.location.href = window.location.origin+ "/admin"
         })
         document.querySelectorAll('a').forEach(link => {
           link.addEventListener('click', e => {
@@ -2352,6 +2352,9 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           document.querySelector('.minimenu').appendChild(a)
           a.click()
           a.remove()
+        })
+        crms.on('restarting', ()=>{
+          document.querySelector('.nav a').click()
         })
         document.querySelector('.import-mail-btn').addEventListener('click', e=>{
           let fileInput = document.createElement('input')
