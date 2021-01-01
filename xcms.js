@@ -11,7 +11,6 @@ const jsp = JSON.parse;
 const mongoose = require('mongoose')
 const theEventListener = require(__dirname + "/xcmsDB/innerEvents")
 let allModels = {}
-
 let the = ''
 
 try {
