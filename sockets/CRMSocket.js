@@ -1,8 +1,9 @@
 const IO = require('koa-socket-2')
 const fs = require('fs')
-const { spawn } = require('child_process')
+const { spawn, exec } = require('child_process')
 const archiver = require("archiver")
 const extract = require("extract-zip")
+const process = require('process')
 const { userdb, admindb } = require('../cmsModels.js')
 const nodemailer = require('nodemailer')
 const theEventListener = require(__dirname + '/../xcmsDB/innerEvents')
@@ -12,18 +13,6 @@ theEventListener.on('isSuperAdmin', (b)=>{
         isSuperAdmin = true
     }
 })
-
-function restart(){
-    process.on('exit', ()=>{
-    spawn(process.argv.shift(), process.argv, {
-        cwd: process.cwd(),
-        detached: true,
-        stdio: "inherit"
-    })
-    })
-    console.log('restarting')
-    process.exit()
-}
 
 let mongoURI = ''
 try {
@@ -39,6 +28,26 @@ const crmSocket = new IO({
     namespace: 'crm-socket'
 })
 crmSocket.on('message', async (ctx) => {
+    function restart(){
+        ctx.socket.emit('restarting', "")
+        exec('pm2', (err,res)=>{
+            if(err) {
+                process.on('exit', ()=>{
+                    spawn(process.argv.shift(), process.argv, {
+                        cwd: process.cwd(),
+                        detached: true,
+                        stdio: "inherit"
+                    })
+                })
+                console.log('restarting with new PID')
+                process.exit()
+            }
+            if(res) {
+                console.log('restarting...')
+                process.exit()
+            }
+        })
+    }
     var datainfo = JSON.parse(ctx.data)
     if (datainfo.userslist) {
         userContacts = []
@@ -237,11 +246,8 @@ crmSocket.on('message', async (ctx) => {
         let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
         updatedRoutes.write(latestRoutesUpdated)
         updatedRoutes.end()
-        //theEventListener.emit('MakeNewCustomRoute', updateRoute)
-        ctx.socket.emit('success', `Successfully updated the route: ${updateRoute.route.name}`)
-        /* 
-            REDEMARER L'APPLICATION
-         */
+        ctx.socket.emit('success', `Successfully updated the route: ${updateRoute.route.name} ...Restarting.`)
+        restart()
     }
     if(datainfo.updateModel){
         let updateModel = datainfo.updateModel
@@ -258,17 +264,8 @@ crmSocket.on('message', async (ctx) => {
         let updatedModels = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json')
         updatedModels.write(latestModelsUpdated)
         updatedModels.end()
-        //theEventListener.emit('MakeNewCustomRoute', newRoute)
-        ctx.socket.emit('success', `Successfully updated the model: ${updateModel.model.dbName+'db'}`)
-        /* 
-            REDEMARER L'APPLICATION
-         */
-    }
-    if(datainfo.restart){
-        if(isSuperAdmin === true){
-            ctx.socket.emit('restarting', "")
-            restart()
-        }
+        ctx.socket.emit('success', `Successfully updated the model: ${updateModel.model.dbName+'db'} ...Restarting.`)
+        restart()
     }
 })
 

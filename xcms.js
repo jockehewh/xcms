@@ -12,7 +12,6 @@ const mongoose = require('mongoose')
 const theEventListener = require(__dirname + "/xcmsDB/innerEvents")
 let allModels = {}
 let the = ''
-
 try {
   const env = fs.readFileSync('./config.xcms.json')
   the = jsp(env)
@@ -378,7 +377,7 @@ identifiedRoutes.forEach(conf=>{
   makeCustomRoute(conf)
 })
 
-xcms.use(r.get('/logout', (ctx, next) => {
+xcms.use(r.get('/logout', (ctx) => {
   ctx.logout();
   ctx.redirect('/connect')
 }))

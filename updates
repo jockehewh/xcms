@@ -4,8 +4,8 @@ Adds:
   - super admin accounts.
   - Custom API from the CRM page.
   - Custom Models from the CRM page.
-  - restart the app
+  - 
 Changes:
   - 
 BugFixes:
-  - 
+  - restart the app on model update.

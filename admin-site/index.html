@@ -2354,7 +2354,10 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           a.remove()
         })
         crms.on('restarting', ()=>{
-          document.querySelector('.nav a').click()
+          fetch('/logout', (err,res)=>{}).catch(err=>{console.log(err)})
+          setTimeout(()=>{
+            window.location.href = window.location.origin + '/connect'
+          },2000)
         })
         document.querySelector('.import-mail-btn').addEventListener('click', e=>{
           let fileInput = document.createElement('input')
