@@ -2,10 +2,10 @@ latest update:
 
 Adds:
   - super admin accounts.
-  - Custom API from the CRM page.
-  - Custom Models from the CRM page.
-  - 
+  - Create custom API from the data manager.
+  - Create custom Models from the data manager.
 Changes:
-  - 
+  - renamed the "get" action to "read" action.
 BugFixes:
   - restart the app on model update.
+  - fixed the route template for the "read" action.

@@ -39,7 +39,7 @@ crmSocket.on('message', async (ctx) => {
                         stdio: "inherit"
                     })
                 })
-                console.log('restarting with new PID')
+                console.log('restarting without PM2...')
                 process.exit()
             }
             if(res) {
@@ -267,6 +267,16 @@ crmSocket.on('message', async (ctx) => {
         ctx.socket.emit('success', `Successfully updated the model: ${updateModel.model.dbName+'db'} ...Restarting.`)
         restart()
     }
+    if(datainfo.exportRoutes){
+        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let latestRoutes = JSON.parse(customAPIJson)
+        ctx.socket.emit('exporting-routes', JSON.stringify(latestRoutes))
+    }
+    if(datainfo.exportModels){
+        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+        let latestModels = JSON.parse(customModelsJson)
+        ctx.socket.emit('exporting-models', JSON.stringify(latestModels))
+    }
 })
 
 crmSocket.on("importing", async (ctx) =>{
@@ -300,6 +310,59 @@ crmSocket.on("importing-mail-config", async (ctx) =>{
     ctx.socket.emit('success', "Mail configuration imported successfully.")
     mailConfig.on('close', async function(){
         ctx.socket.emit('import-mail-complete', "")
+    })
+})
+
+crmSocket.on('importing-routes', async ctx=>{
+    let customAPIJson = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+    customAPIJson.write(ctx.data)
+    customAPIJson.end()
+    ctx.socket.emit('success', "API configuration imported successfully. Restarting...")
+    customAPIJson.on('close', async()=>{
+        ctx.socket.emit('restarting', "")
+        exec('pm2', (err,res)=>{
+            if(err) {
+                process.on('exit', ()=>{
+                    spawn(process.argv.shift(), process.argv, {
+                        cwd: process.cwd(),
+                        detached: true,
+                        stdio: "inherit"
+                    })
+                })
+                console.log('restarting without PM2...')
+                process.exit()
+            }
+            if(res) {
+                console.log('restarting...')
+                process.exit()
+            }
+        })
+    })
+})
+crmSocket.on('importing-models', async ctx=>{
+    let customModelsJson = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+    customModelsJson.write(ctx.data)
+    customModelsJson.end()
+    ctx.socket.emit('success', "Models configuration imported successfully. Restarting...")
+    customModelsJson.on('close', async()=>{
+        ctx.socket.emit('restarting', "")
+        exec('pm2', (err,res)=>{
+            if(err) {
+                process.on('exit', ()=>{
+                    spawn(process.argv.shift(), process.argv, {
+                        cwd: process.cwd(),
+                        detached: true,
+                        stdio: "inherit"
+                    })
+                })
+                console.log('restarting without PM2...')
+                process.exit()
+            }
+            if(res) {
+                console.log('restarting...')
+                process.exit()
+            }
+        })
     })
 })
 

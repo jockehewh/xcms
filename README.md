@@ -36,7 +36,7 @@ create a `config.xcms.json` file at the root of your project and follow this mod
 
 open your browser and visit the following address `localhost:$PORT` you will be redirected to the connexion page:
 
-the default user is `superuser` and the password is `2one0time1password9`
+the default user is `superuser` and the password is `2one0time2password1`
 
 once logged-in i invite you to change your password via the 'CRM page'
 
@@ -134,6 +134,11 @@ use an '@import' statement at the top of your CSS file.
 
 
 ##### CRM part
+__Data manager:__
+
+
+
+__CRUD manager:__
 
 __Email configuration:__
 

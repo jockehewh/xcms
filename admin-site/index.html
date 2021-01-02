@@ -40,7 +40,7 @@
     </div>
   </div>
   <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
-    <p>Go to CRM page</p>
+    <p>Go to the Data manager</p>
   </div>
   <main class="mw-100">
     <div class="first-class-editor-button">
@@ -1859,6 +1859,9 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           width: 100px;
           align-self: center;
         }
+        :scope .add-model:hover, :scope .add-route:hover{
+          background-color: var(--white-2) !important;
+        }
         :scope .model-editor, :scope .route-editor{
           display: flex;
           flex: 3;
@@ -1880,6 +1883,17 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         }
         :scope .existing-models li:hover, :scope .existing-routes li:hover{
           background-color: var(--white-2);
+        }
+        :scope .config-import-export{
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          justify-content: space-evenly;
+        }
+        :scope .config-import-export button{
+          padding: 0 15px;
+        }
+        :scope .config-import-export button:hover{
+          background: var(--white-2);
         }
         :scope .route-types{
           display: flex;
@@ -1967,13 +1981,13 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           color:  var(--grey-2) !important;
         }
       </style>
-      <div class="nav"><span style="padding-left: 20px;">XCMS</span>
-        <p>Go to CMS page</p>
+      <div class="nav"><span style="padding-left: 20px;">XCMS <a href="/logout">logout</a></span>
+        <p>Go to the CMS page</p>
       </div>
       <div class="minimenu">
         <ul><hr>
-          <li><a href="#" data-link="edit-models">Manage your data</a></li><hr>
-          <li><a href="#" data-link="make-routes">Manage your RestAPI</a></li><hr>
+          <li><a href="#" data-link="edit-models">Data editor</a></li><hr>
+          <li><a href="#" data-link="make-routes">API manager</a></li><hr>
           <li><a href="#" data-link="conf">Email configuration</a></li><hr>
           <li><a href="#" data-link="emails">Send emails</a></li><hr>
           <li><a href="#" data-link="addAdmin">Add an admin</a></li><hr>
@@ -2046,7 +2060,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         </div>
       </div>
       <div class="edit-models">
-        <h1>Create and manage your data</h1>
+        <h1>Customize your data</h1>
         <div class="existing-models">
           <div>
             <ul>
@@ -2054,6 +2068,10 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             </ul>
             <hr style="width: 84%;align-self: center;">
             <button class="add-model">New model</button>
+            <div class="config-import-export">
+              <button class='export-models'>Export models</button>
+              <button class='import-models'>Import models</button>
+            </div>
           </div>
           <div class="model-editor">
             <div id="model-editor"></div>
@@ -2061,7 +2079,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         </div>
       </div>
       <div class="make-routes">
-        <h1>Create and manage your RestAPI</h1>
+        <h1>Customize your CRUD API</h1>
         <div class="existing-routes">
           <div>
             <ul>
@@ -2069,12 +2087,16 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             </ul>
             <hr style="width: 84%;align-self: center;">
             <button class="add-route">New route</button>
+            <div class="config-import-export">
+              <button class='export-routes'>Export routes</button>
+              <button class='import-routes'>Import routes</button>
+            </div>
           </div>
           <div class="route-editor">
             <div id="route-editor"></div>
             <div class="route-types">
-              <button data-message-type="get">GET</button>
               <button data-message-type="create">CREATE</button>
+              <button data-message-type="read">READ</button>
               <button data-message-type="update">UPDATE</button>
               <button data-message-type="delete">DELETE</button>
             </div>
@@ -2404,14 +2426,14 @@ modeleditor.navigateFileEnd()
         document.querySelectorAll('.route-types button').forEach(btn=>{
           btn.addEventListener('click', e=>{
             switch(e.target.dataset.messageType){
-              case "get":
+              case "read":
                 routeeditor.setValue(
 `{
 "authenticated": false,
 "name": "exampleName",
-"model": "exampleModel+db",
+"model": "exampleModeldb",
 "route":"exampleRoute",
-"action":"get",
+"action":"read",
 "targetValues": ["exampleNameKey"]
 }`
 )
@@ -2421,7 +2443,7 @@ modeleditor.navigateFileEnd()
 `{
 "authenticated": false,
 "name": "exampleName",
-"model": "exampleModel+db",
+"model": "exampleModeldb",
 "route":"exampleRoute",
 "action":"create"
 }`
@@ -2432,7 +2454,7 @@ modeleditor.navigateFileEnd()
 `{
 "authenticated": false,
 "name": "exampleName",
-"model": "exampleModel+db",
+"model": "exampleModeldb",
 "route":"exampleRoute",
 "action":"update",
 "targetValue": "exampleNameKey"
@@ -2444,7 +2466,7 @@ modeleditor.navigateFileEnd()
 `{
 "authenticated": false,
 "name": "exampleName",
-"model": "exampleModel+db",
+"model": "exampleModeldb",
 "route":"exampleRoute",
 "action":"delete"
 }`
@@ -2463,9 +2485,9 @@ modeleditor.navigateFileEnd()
 `{
 "authenticated": false,
 "name": "exampleName",
-"model": "exampleModel+db",
+"model": "exampleModeldb",
 "route":"exampleRoute",
-"action":"get",
+"action":"read",
 "targetValues": ["exampleNameKey"]
 }`)
 routeeditor.navigateFileEnd()
@@ -2506,6 +2528,59 @@ routeeditor.navigateFileEnd()
           enableBasicAutocompletion: true,
           enableLiveAutocompletion: true,
           showGutter: false
+        })
+
+        document.querySelector('.export-routes').addEventListener('click', (e)=>{
+          crms.emit('message', JSON.stringify({exportRoutes: true}))
+        })
+        document.querySelector('.export-models').addEventListener('click', (e)=>{
+          crms.emit('message', JSON.stringify({exportModels: true}))
+        })
+        crms.on('exporting-routes', data=>{
+          let dataUrl = "data:text/json;charset=utf-8," + encodeURIComponent(data)
+          let a = document.createElement('a')
+          a.innerText = "xcmsRoutesExport"
+          a.download = "xcmsRoutes.json"
+          a.href = dataUrl
+          document.querySelector('.minimenu').appendChild(a)
+          a.click()
+          a.remove()
+        })
+        crms.on('exporting-models', data=>{
+          let dataUrl = "data:text/json;charset=utf-8," + encodeURIComponent(data)
+          let a = document.createElement('a')
+          a.innerText = "xcmsModelsExport"
+          a.download = "xcmsModels.json"
+          a.href = dataUrl
+          document.querySelector('.minimenu').appendChild(a)
+          a.click()
+          a.remove()
+        })
+        document.querySelector('.import-routes').addEventListener('click', (e)=>{
+          let fileInput = document.createElement('input')
+          fileInput.type = 'file'
+          fileInput.multiple = false
+          fileInput.accept = "text/json"
+          fileInput.style.gridColumn = "1/3"
+          fileInput.style.borderLeft= 'none'
+          document.querySelector('.import-routes').parentElement.appendChild(fileInput)
+          fileInput.addEventListener('change', (e)=>{
+            crms.emit("importing-routes", e.currentTarget.files[0])
+            fileInput.setAttribute('disabled', true)
+          })
+        })
+        document.querySelector('.import-models').addEventListener('click', (e)=>{
+          let fileInput = document.createElement('input')
+          fileInput.type = 'file'
+          fileInput.multiple = false
+          fileInput.accept = "text/json"
+          fileInput.style.gridColumn = "1/3"
+          fileInput.style.borderLeft= 'none'
+          document.querySelector('.import-models').parentElement.appendChild(fileInput)
+          fileInput.addEventListener('change', (e)=>{
+            crms.emit("importing-models", e.currentTarget.files[0])
+            fileInput.setAttribute('disabled', true)
+          })
         })
         const makeEditableRouteButton = (route)=>{
           let li = document.createElement('li')

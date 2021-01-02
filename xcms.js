@@ -91,14 +91,10 @@ function updatePageCollection(){
 }
 updatePageCollection()
 
-theEventListener.on('MakeNewCustomRoute', (route)=>{
-  console.log("creating route")
-  makeCustomRoute(route)
-  theEventListener.emit('NewRouteCreated')
-})
+
 const makeCustomRoute = (conf)=>{
-  if(conf.action === "get"){
-    return xcms.use(r[conf.action]('/'+conf.route, (ctx)=>{
+  if(conf.action === "read"){
+    return xcms.use(r.get('/'+conf.route, (ctx)=>{
       ctx.status = 200
       return allModels[conf.model].find({}, (err, res)=>{
         if(err) console.log(err)
@@ -134,7 +130,7 @@ const makeCustomRoute = (conf)=>{
           if(err) {
             ctx.type = "text/json"
             console.log(err)
-            ctx.body = JSON.stringify({updateError: `Couldnt update the data with item:\n${reqBody}`})
+            ctx.body = JSON.stringify({updateError: `Could not update the data with item:\n${reqBody}`})
             }
           if(res){
             ctx.type = "text/json"
@@ -148,7 +144,7 @@ const makeCustomRoute = (conf)=>{
           if(err){
             ctx.type = "text/json"
             console.log(err)
-            ctx.body = JSON.stringify({updateError: `Couldn't delete the data with item:\n${reqBody}`})
+            ctx.body = JSON.stringify({updateError: `Could not delete the data with item:\n${reqBody}`})
           }
           if(res){
             ctx.type = "text/json"
@@ -306,9 +302,7 @@ xcms.use(r.post('/admin', (ctx)=>{
   })(ctx)
 }))
 
-/* 
-ENREGISTRER LES MODELES CUSTOMISÉS
- */
+/* ENABLE CUSTOM API ROUTES */
 
 let customAPIReader = fs.readFileSync(__dirname +'/xcmsDB/customAPI.json')
 let customAPI = JSON.parse(customAPIReader)
@@ -371,7 +365,7 @@ xcms.use(r.get(/column/, ctx => {
     autoClose: true
   })
 }))
-
+/* ENABLE CUSTOM API AUTHENTIFIED ROUTES */
 identifiedRoutes.forEach(conf=>{
   if(conf !== undefined)
   makeCustomRoute(conf)

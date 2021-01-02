@@ -9,7 +9,7 @@ admindb.find({}, (err, res)=>{
   }else{
     const defaultAdmin = new admindb({
       xcmsAdmin: 'superuser',
-      password: '2one0time1password9',
+      password: '2one0time2password1',
       superAdmin: true
     })
     defaultAdmin.save((err, res)=>{
