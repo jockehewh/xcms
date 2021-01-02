@@ -94,6 +94,7 @@ updatePageCollection()
 theEventListener.on('MakeNewCustomRoute', (route)=>{
   console.log("creating route")
   makeCustomRoute(route)
+  theEventListener.emit('NewRouteCreated')
 })
 const makeCustomRoute = (conf)=>{
   if(conf.action === "get"){
@@ -128,12 +129,12 @@ const makeCustomRoute = (conf)=>{
         addItem.save()
       }
       if(conf.action === "update"){
-        allModels[conf.model].findOneAndUpdate(reqBody[conf.targetValue],reqBody,
+        allModels[conf.model].findOneAndUpdate({[conf.targetValue]: reqBody[conf.targetValue]},reqBody,
         {new: true}, (err, res)=>{
           if(err) {
             ctx.type = "text/json"
             console.log(err)
-            ctx.body = JSON.stringify({updateError: `couldnt update the data with item:\n${reqBody}`})
+            ctx.body = JSON.stringify({updateError: `Couldnt update the data with item:\n${reqBody}`})
             }
           if(res){
             ctx.type = "text/json"
@@ -147,11 +148,10 @@ const makeCustomRoute = (conf)=>{
           if(err){
             ctx.type = "text/json"
             console.log(err)
-            ctx.body = JSON.stringify({updateError: `couldn't delete the data with item:\n${reqBody}`})
+            ctx.body = JSON.stringify({updateError: `Couldn't delete the data with item:\n${reqBody}`})
           }
           if(res){
             ctx.type = "text/json"
-            res.save()
             ctx.body = JSON.stringify({success: "Data deleted successfully."})
           }
         })

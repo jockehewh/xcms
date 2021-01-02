@@ -216,8 +216,8 @@ crmSocket.on('message', async (ctx) => {
         let updatedModels = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json')
         updatedModels.write(latestModels)
         updatedModels.end()
-        theEventListener.emit('RegisterNewModel', newModel)
         ctx.socket.emit('success', `Successfully created the new model: ${newModel.dbName+'db'}`)
+        restart()
     }
     if(datainfo.newRoute){
         let newRoute = datainfo.newRoute
@@ -228,8 +228,8 @@ crmSocket.on('message', async (ctx) => {
         let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json')
         updatedRoutes.write(latestRoutes)
         updatedRoutes.end()
-        theEventListener.emit('MakeNewCustomRoute', newRoute)
-        ctx.socket.emit('success', `Successfully created the new route: ${newRoute.route+'db'}`)
+        ctx.socket.emit('success', `Successfully created the new route: ${newRoute.route}`)
+        restart()
     }
     if(datainfo.updateRoute){
         let updateRoute = datainfo.updateRoute
