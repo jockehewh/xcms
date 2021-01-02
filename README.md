@@ -136,9 +136,61 @@ use an '@import' statement at the top of your CSS file.
 ##### CRM part
 __Data manager:__
 
+Allows you to create data models (mongoose Schema) for mongodb.
+The model name is the "dbName" key.
+The model fields are represented as a JSON object named "identifiers".  
 
+__CRUD API manager:__
 
-__CRUD manager:__
+The CRUD API manager allows you to create custom routes to gather or record your data.
+{"authenticated":false,"name":"deleteuser","model":"xavdb","route":"deleteuser","action":"delete"}
+Use the different verbs to create a custom route. 
+A route is a JSON object with at least the following 5 keys: "authenticated", "name", "model", "route" and "action"
+see the templates below for more informations.
+Create:
+```
+{
+  "authenticated": false, // if set to true only authenticated user will be able to access the route
+  "name": "exampleName",
+  "model": "exampleModeldb", // the model that will be queried
+  "route":"exampleRoute", // the path used to query the data
+  "action":"create" // "create" is expecting a post request with the data model you want to create.
+}
+```
+
+Read:
+```
+{
+  "authenticated": false,
+  "name": "exampleName",
+  "model": "exampleModeldb",
+  "route":"exampleRoute",
+  "action":"read", // "read" is expecting a get. it returns a JSON array.
+  "targetValues": ["exampleNameKey"] // each value represent an attibute in the specified model.
+```
+
+Update:
+```
+{
+  "authenticated": false,
+  "name": "exampleName",
+  "model": "exampleModeldb",
+  "route":"exampleRoute",
+  "action":"update", // "update" is expecting a post request with data model you want to update.
+  "targetValue": "exampleNameKey" // the value represent an attibute in the specified model we want to look for.
+}
+```
+
+Delete:
+```
+{
+  "authenticated": false,
+  "name": "exampleName",
+  "model": "exampleModeldb",
+  "route":"exampleRoute",
+  "action":"delete" // "delete" is expecting a post request with an unique identifier from the model you want to delete.
+}
+```
 
 __Email configuration:__
 
