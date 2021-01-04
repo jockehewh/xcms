@@ -167,6 +167,7 @@ Read:
   "route":"exampleRoute",
   "action":"read", // "read" is expecting a get. it returns a JSON array.
   "targetValues": ["exampleNameKey"] // each value represent an attibute in the specified model.
+}
 ```
 
 Update:

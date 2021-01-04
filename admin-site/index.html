@@ -39,83 +39,86 @@
       </button>
     </div>
   </div>
-  <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
-    <p>Go to the Data manager</p>
-  </div>
-  <main class="mw-100">
-    <div class="first-class-editor-button">
-      <p>Menu</p>
+  <div class="content-manager">
+    <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
+      <p>Go to the Data manager</p>
     </div>
-    <div class="first-class">
-      <!--Master page maker-->
-      <input type="file" accept="image; video/mp4" multiple id="imgpiker">
-      <div class="edit-zone" style="display:block;">
-        <style scoped>
-          * {
-            margin: 0;
-            padding: 0;
-            user-select: none;
-          }
-          .xcms-custom{
-            flex:1 1 0%;
-          }
-        </style>
-        
+    <main class="mw-100">
+      <div class="first-class-editor-button">
+        <p>Menu</p>
       </div>
-      <div class="maFrame">
-
-      </div>
-      <div class="ace-editor-block">
-        <div class="editor-btn-flexbox">
-          <a data-editor="js" id="js-editor-btn">Edit your JS</a> <a data-editor="html" id="html-editor-btn">Edit your HTML</a> <a data-editor="css" id="css-editor-btn">Edit your CSS</a>
+      <div class="first-class">
+        <!--Master page maker-->
+        <input type="file" accept="image; video/mp4" multiple id="imgpiker">
+        <div class="edit-zone" style="display:block;">
+          <style scoped>
+            * {
+              margin: 0;
+              padding: 0;
+              user-select: none;
+            }
+            .xcms-custom{
+              flex:1 1 0%;
+            }
+          </style>
+          <div class="xcms-root-container"></div>
         </div>
-        <p id="shortcut-save">Use ALT+Enter or double-click the [Edit your CODE]  button to apply changes.</p>
-        <div id="css-editor"></div>
-        <div id="js-editor"></div>
-        <div id="html-editor"></div>
-        <div id="text-editor"></div>
-      </div>
-    </div>
-    <div class="first-class-editor">
-      <hr>
-      <section id="nodemaker" class="">
-        <label for="titrepage">
-          <h4>Page name:</h4>
-        </label>
-        <input name="titrepage" id="titrepage" type="text" placeholder="New page name"><br><br>
-        <section class="boutons">
-          <ul class='list'>
-            <li>
-              <a id="crepage">Save page</a>
-            </li>
-            <li>
-              <a id="crenew">New page</a>
-            </li>
-            <li>
-              <a id="efface">Delete content</a>
-            </li>
-          </ul>
-        </section><br>
-        <hr>
-        <section>
-          <h4 class="" style="margin-bottom: 3px;">Edit content:</h4><br>
-          <ul class="list">
-            <li><a class="link" href="#" data-demande="div">Add a container</a>
-            <li><a class="link" href="#" data-demande="menu">Add a menu</a>
-            <li><a class="link" href="#" data-demande="image">Add image(s)</a>
-            <li><a class="link" href="#" data-demande="video">Add video(s)</a>
-          </ul>
-        </section><br>
-        <hr>
-        <section class="">
-          <h4>Edit an old page:</h4><br>
-          <ul class="editables list">
+        <div class="maFrame">
 
-          </ul>
-        </section>
-      </section><br><br>
-    </div>
-  </main>
+        </div>
+        <div class="ace-editor-block">
+          <div class="editor-btn-flexbox">
+            <a data-editor="js" id="js-editor-btn">Edit your JS</a> <a data-editor="html" id="html-editor-btn">Edit your HTML</a> <a data-editor="css" id="css-editor-btn">Edit your CSS</a>
+          </div>
+          <p id="shortcut-save">Use ALT+Enter or double-click the [Edit your CODE]  button to apply changes.</p>
+          <div id="css-editor"></div>
+          <div id="js-editor"></div>
+          <div id="html-editor"></div>
+          <div id="text-editor"></div>
+        </div>
+      </div>
+      <div class="first-class-editor">
+        <hr>
+        <section id="nodemaker" class="">
+          <label for="titrepage">
+            <h4>Page name:</h4>
+          </label>
+          <input name="titrepage" id="titrepage" type="text" placeholder="New page name"><br><br>
+          <section class="boutons">
+            <ul class='list'>
+              <li>
+                <a id="crepage">Save page</a>
+              </li>
+              <li>
+                <a id="crenew">New page</a>
+              </li>
+              <li>
+                <a id="efface">Delete content</a>
+              </li>
+            </ul>
+          </section><br>
+          <hr>
+          <section>
+            <h4 class="" style="margin-bottom: 3px;">Edit content:</h4><br>
+            <ul class="list">
+              <li><a class="link" href="#" data-demande="div">Add a container</a>
+              <li><a class="link" href="#" data-demande="menu">Add a menu</a>
+              <li><a class="link" href="#" data-demande="image">Add image(s)</a>
+              <li><a class="link" href="#" data-demande="video">Add video(s)</a>
+            </ul>
+          </section><br>
+          <hr>
+          <section class="">
+            <h4>Edit an old page:</h4><br>
+            <ul class="editables list">
+
+            </ul>
+          </section>
+        </section><br><br>
+      </div>
+    </main>
+  </div>
+  
   <div class="xcms-custom-menu">
     <style>
       .xcms-custom-menu {
@@ -321,11 +324,11 @@
         let selectedStyle = cssSelector.rules.map(rule => {
           return `${rule.directive}:${rule.value};`
         })
-        document.querySelector('.edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+        document.querySelector('.edit-zone .xcms-root-container').querySelectorAll(cssSelector.selector).forEach(existent => {
           existent.setAttribute('style', selectedStyle.join(''))
         })
       })
-      document.querySelector('.edit-zone').childNodes.forEach(node => {
+      document.querySelector('.edit-zone .xcms-root-container').childNodes.forEach(node => {
         if (node instanceof HTMLElement) {
           if (node.hasAttribute('class')) {
             if (node.className !== "xcms-img" && node.className !== "xcms-video") {
@@ -334,7 +337,7 @@
           }
         }
       })
-      document.querySelector('.edit-zone').querySelectorAll('link').forEach(link => {
+      document.querySelector('.edit-zone .xcms-root-container').querySelectorAll('link').forEach(link => {
         link.remove()
       })
       e.preventDefault();
@@ -370,7 +373,7 @@
                     <style scoped>
                     @import "./frontend-site/style.css";
                     </style>
-                    ${document.querySelector('.edit-zone').innerHTML}
+                    <div class="xcms-root-container">${document.querySelector('.edit-zone .xcms-root-container').innerHTML}</div>
                     <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
       } else {
         contenu =
@@ -387,7 +390,7 @@
                     <style scoped>
                     @import "./frontend-site/style.css";
                     </style>
-                    ${document.querySelector('.edit-zone').innerHTML}
+                    <div class="xcms-root-container">${document.querySelector('.edit-zone .xcms-root-container').innerHTML}</div>
                     <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
       }
       const pageJS = jseditor.getValue()
@@ -405,10 +408,10 @@
       })
       document.body.addEventListener('page-created', ie=>{
         ie.cancelBubble = true
-        var allnodes = document.querySelector('.edit-zone').childNodes
+        var allnodes = document.querySelector('.edit-zone .xcms-root-container').childNodes
         var j = allnodes.length
-        while (j > 2) {
-          document.querySelector('.edit-zone').lastChild.remove()
+        while (j > 0) {
+          document.querySelector('.edit-zone .xcms-root-container').lastChild.remove()
           j--
         }
         nouvellepage.index = editablePages.length
@@ -775,7 +778,7 @@
     //******************CREATION DE PAGE
     document.querySelector('#crenew').addEventListener('click', (e) => {
       e.preventDefault();
-      document.querySelector('.edit-zone').innerHTML = ""
+      document.querySelector('.edit-zone .xcms-root-container').innerHTML = ""
       document.querySelector('.edit-zone').style.display = "block"
       jseditor.setValue('')
       csseditor.setValue('')
@@ -783,10 +786,10 @@
     })
     //*****************RESET
     document.querySelector('#efface').addEventListener('click', e => {
-      var allnodes = document.querySelector('.edit-zone').childNodes
+      var allnodes = document.querySelector('.edit-zone .xcms-root-container').childNodes
       var j = allnodes.length
-      while (j > 2) {
-        document.querySelector('.edit-zone').lastChild.remove()
+      while (j > 0) {
+        document.querySelector('.edit-zone .xcms-root-container').lastChild.remove()
         j--
       }
     })
@@ -801,9 +804,9 @@
           document.querySelector('#isContainer').classList.add('not-empty-container')
         } else {
           if (document.querySelector('.edit-zone').style.display === "block") {
-            document.querySelector('.edit-zone').appendChild(item)
+            document.querySelector('.edit-zone .xcms-root-container').appendChild(item)
           } else {
-            document.querySelector('.re-edit-zone').appendChild(item)
+            document.querySelector('.re-edit-zone .xcms-root-container').appendChild(item)
           }
         }
       }
@@ -861,18 +864,6 @@
         event.target.style.transform = `scale(${ev.target.value / 10})`
         event.target.dataset.lastScale = ev.target.value
       })
-    }
-    //*************GET ROOT NODE
-    function getRootNode(node){
-      let futurNode;
-      let tempNode = node.parentElement;
-      while(tempNode.className != 'edit-zone' || tempNode.className != 're-edit-zone'){
-        if(tempNode.parentElement.className === 'edit-zone' || tempNode.parentElement.className === 're-edit-zone'){
-          return tempNode
-        }
-        tempNode = tempNode.parentElement
-      }
-      return node
     }
     //*************MAKE BORDER COLOR
     function makeBorderColor(node){
@@ -949,7 +940,9 @@
           })
           btnIsRepeatable.addEventListener('click', (e)=>{
             e.preventDefault()
-            if(node.parentElement.classList.contains('edit-zone') || node.parentElement.dataset.willRepeat !== "true"){
+            if(node.parentElement.classList.contains('edit-zone') ||
+                node.parentElement.classList.contains('xcms-root-container') ||
+                node.parentElement.dataset.willRepeat !== "true") {
               alert("You can not spawn a repatable element outside of a container.")
               return
             }
@@ -1301,7 +1294,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       })
     }
     //**************DRAG & DROP
-    let drake = dragula([document.querySelector('.edit-zone')],{revertOnSpill: true})
+    let drake = dragula([document.querySelector('.edit-zone .xcms-root-container')],{revertOnSpill: true})
     //**************ACE EDITORS
     ace.require("ace/ext/language_tools")
     let csseditor = ace.edit('css-editor')
@@ -1378,7 +1371,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           return `${rule.directive}:${rule.value};`
         })
         if (document.querySelector('.re-edit-zone')) {
-          document.querySelector('.re-edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+          document.querySelector('.re-edit-zone .xcms-root-container').querySelectorAll(cssSelector.selector).forEach(existent => {
             let existingcss = existent.getAttribute('style') ? existent.getAttribute('style') : ""
             selectedStyle.forEach(rule=>{
               if(existingcss.includes(rule)){
@@ -1390,7 +1383,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             existent.setAttribute('style', existingcss)
           })
         } else {
-          document.querySelector('.edit-zone').querySelectorAll(cssSelector.selector).forEach(existent => {
+          document.querySelector('.edit-zone .xcms-root-container').querySelectorAll(cssSelector.selector).forEach(existent => {
             let existingcss = existent.getAttribute('style') ? existent.getAttribute('style') : ""
             selectedStyle.forEach(rule=>{
               if(existingcss.includes(rule)){
@@ -1406,11 +1399,11 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
     }
     function removeStyleAttr(){
       if(document.querySelector('.edit-zone').style.display === "block"){
-        for(nd of document.querySelector('.edit-zone').children){
+        for(nd of document.querySelector('.edit-zone .xcms-root-container').children){
           nd.removeAttribute('style')
         }
       }else{
-        for(nd of document.querySelector('.re-edit-zone').children){
+        for(nd of document.querySelector('.re-edit-zone .xcms-root-container').children){
           nd.removeAttribute('style')
         }
       }
@@ -1419,8 +1412,8 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       htmleditor.selectAll()
       htmleditor.remove()
       let niceHTML = document.querySelector('.edit-zone').style.display === "block" ? 
-      beautifier.html(document.querySelector('.edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true }) :
-      beautifier.html(document.querySelector('.re-edit-zone').innerHTML, { indent_size: 2, space_in_empty_paren: true })
+      beautifier.html(document.querySelector('.edit-zone .xcms-root-container').innerHTML, { indent_size: 2, space_in_empty_paren: true }) :
+      beautifier.html(document.querySelector('.re-edit-zone .xcms-root-container').innerHTML, { indent_size: 2, space_in_empty_paren: true })
       let findStyleAttr = /(style="[^transform][a-zA-Z -_]{1,}:[\sa-zA-Z0-9\s\(\),]{1,};")/
       while(findStyleAttr.test(niceHTML)){
         niceHTML = niceHTML.replace(findStyleAttr, 'style=""')
@@ -1429,7 +1422,9 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       htmleditor.navigateFileEnd()
     }
     function activateBorders(rootNode){
-      if(!rootNode.className.includes('edit-zone') && !rootNode.className.includes('re-edit-zone')){
+      if(!rootNode.className.includes('edit-zone') &&
+         !rootNode.className.includes('re-edit-zone') &&
+         !rootNode.className.includes(' .xcms-root-container')){
         makeBorderColor(rootNode)
       }
       for(let i = 1; i<rootNode.childElementCount; i++){
@@ -1481,11 +1476,11 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         if (e.target.dataset.editor === 'html') {
           clearTimeout(updateDOMEditor, 500)
           if(document.querySelector('.edit-zone').style.display == "block"){
-            document.querySelector('.edit-zone').innerHTML = htmleditor.getValue()
-            activateBorders(document.querySelector('.edit-zone'))
+            document.querySelector('.edit-zone .xcms-root-container').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.edit-zone .xcms-root-container'))
           }else{
-            document.querySelector('.re-edit-zone').innerHTML = htmleditor.getValue()
-            activateBorders(document.querySelector('.re-edit-zone'))
+            document.querySelector('.re-edit-zone .xcms-root-container').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.re-edit-zone .xcms-root-container'))
           }
           document.querySelector('#html-editor').style.display = "none"
         }
@@ -1503,11 +1498,11 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       if(keyEvent.key === "Enter" && altKey){
         if(htmleditor.getValue() !== ""){
           if(document.querySelector('.edit-zone').style.display == "block"){
-            document.querySelector('.edit-zone').innerHTML = htmleditor.getValue()
-            activateBorders(document.querySelector('.edit-zone'))
+            document.querySelector('.edit-zone .xcms-root-container').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.edit-zone .xcms-root-container'))
           }else{
-            document.querySelector('.re-edit-zone').innerHTML = htmleditor.getValue()
-            activateBorders(document.querySelector('.re-edit-zone'))
+            document.querySelector('.re-edit-zone .xcms-root-container').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.re-edit-zone .xcms-root-container'))
           }
         }
         cssEditorApply()
@@ -1536,7 +1531,10 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       a.addEventListener('click', (e) => {
         e.preventDefault();
         myframe = document.querySelector('.maFrame')
+        let xcmsRootContainer = document.createElement('div')
+        xcmsRootContainer.classList.add('xcms-root-container')
         var theframe = document.createElement('div')
+        theframe.appendChild(xcmsRootContainer)
         theframe.classList.add('re-edit-zone')
         //LOADING CONTENT
         theframe.innerHTML = editablePages[e.target.dataset.index].page
@@ -1546,7 +1544,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         csseditor.setValue(niceCSS)
         myframe.appendChild(theframe)
         drake.destroy();
-        drake = dragula([document.querySelector('.re-edit-zone')],{revertOnSpill: true})
+        drake = dragula([document.querySelector('.re-edit-zone .xcms-root-container')],{revertOnSpill: true})
         document.querySelector('.edit-zone').style.display = 'none'
         //PREPARING CHANGES
         theframe.childNodes.forEach(node => {
@@ -1599,7 +1597,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           theframe.querySelectorAll('.re-edit-zone > style').forEach(element => {
             rebuiltPage.body.appendChild(element.cloneNode(true))
           })
-          theframe.querySelectorAll('.re-edit-zone > [class^="xcms-"]').forEach(element => {
+          theframe.querySelectorAll('.re-edit-zone > [class^="xcms-root-container"]').forEach(element => {
             rebuiltPage.body.appendChild(element.cloneNode(true))
           })
 
@@ -1626,7 +1624,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           theframe.remove()
           document.querySelector('.edit-zone').style.display = 'block'
           drake.destroy()
-          drake = dragula([document.querySelector('.edit-zone')],{revertOnSpill: true})
+          drake = dragula([document.querySelector('.edit-zone .xcms-root-container')],{revertOnSpill: true})
           button.remove()
           window.location.href = `${window.location.origin}/admin`
         })
@@ -1722,7 +1720,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
     }, false)
     document.querySelector('#crenew').addEventListener('touchend', (e) => {
       e.preventDefault();
-      document.querySelector('.edit-zone').innerHTML = ""
+      document.querySelector('.edit-zone .xcms-root-container').innerHTML = ""
       document.querySelector('.edit-zone').style.display = "block"
       menubtn.style.display = 'block'
       editor.style.display = 'block'
@@ -1730,10 +1728,10 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
     })
     //*****************RESET
     document.querySelector('#efface').addEventListener('touchend', e => {
-      var allnodes = document.querySelector('.edit-zone').childNodes
+      var allnodes = document.querySelector('.edit-zone .xcms-root-container').childNodes
       var j = allnodes.length
-      while (j > 2) {
-        document.querySelector('.edit-zone').lastChild.remove()
+      while (j > 0) {
+        document.querySelector('.edit-zone .xcms-root-container').lastChild.remove()
         j--
       }
       menubtn.style.display = 'block'
@@ -1748,6 +1746,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         mews.close()
       }
       document.body.appendChild(document.querySelector('#crm-body').content.cloneNode(true))
+      document.querySelector('.content-manager').style.display = "none"
     })
   </script>
   <template id='crm-body'>
