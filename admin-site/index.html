@@ -184,6 +184,7 @@
     </dl>
   </div>
   <div class="page-duplicate">
+    <button><a href="" target="_blank" referrerpolicy="no-referrer">Visit page <span></span></a></button><br>
     <button href="#" class="duplicate-btn">Duplicate page</button>
     <input type="text" placeholder="Duplicata name">
     <br>
@@ -297,8 +298,9 @@
       if(status){
         if(data.includes('created')){
           statusEvent = new Event('page-created')
+        }else{
+          statusEvent = new Event('no-event')
         }
-        statusEvent = new Event('no-event')
         document.querySelector('.status-box').style.borderLeft = "solid 8px #aff9ba"
       }else{
         statusEvent = new Event('internal-error')
@@ -312,7 +314,7 @@
         p.remove()
         document.querySelector('.status-box').style.display = "none"
         document.body.dispatchEvent(statusEvent)
-      }, 4000)
+      }, 2500)
     }
 
     crepage.addEventListener('click', e => {
@@ -422,10 +424,10 @@
         jseditor.setValue('')
         csseditor.setValue('')
         htmleditor.setValue('')
-        alert(
-        `your new page is accessible at the following address: ${window.location.origin}/${titre}.html`
-        )
-        window.location.href = `${window.location.origin}/admin`
+        document.querySelector('.status-box').addEventListener('animationend', ()=>{
+          window.location.href = `${window.location.origin}/admin`
+        })
+        
       }, {once: true})
     }, false)
     mews.on('normal', data => {
@@ -1626,7 +1628,9 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           drake.destroy()
           drake = dragula([document.querySelector('.edit-zone .xcms-root-container')],{revertOnSpill: true})
           button.remove()
-          window.location.href = `${window.location.origin}/admin`
+          document.querySelector('.status-box').addEventListener('animationend', ()=>{
+            window.location.href = `${window.location.origin}/admin`
+          })
         })
       }, false)
       span.addEventListener("click", (e) => {
@@ -1648,6 +1652,9 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         pageDuplicateBtn.style.top = origin.y - 50 + 'px'
         pageDuplicateBtn.style.width = document.querySelector('.first-class-editor').offsetWidth + 'px'
         pageDuplicateBtn.style.display = 'flex'
+        pageDuplicateBtn.querySelector('a').href = window.location.origin + '/' + selectedPage.name
+        pageDuplicateBtn.querySelector('span').innerText = selectedPage.name
+        pageDuplicateBtn.querySelector('span').style.textDecoration = "underline"
         pageDuplicateBtn.addEventListener('mouseleave', ()=>{
           pageDuplicateBtn.style.display = 'none'
         }, {once: true})

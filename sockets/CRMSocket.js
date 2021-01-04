@@ -277,6 +277,9 @@ crmSocket.on('message', async (ctx) => {
         let latestModels = JSON.parse(customModelsJson)
         ctx.socket.emit('exporting-models', JSON.stringify(latestModels))
     }
+    /* 
+    suprimer ou désactiver un model, une route
+     */
 })
 
 crmSocket.on("importing", async (ctx) =>{

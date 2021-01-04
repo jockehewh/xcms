@@ -378,9 +378,10 @@ iframe{
     padding: 16px;
     min-height: 150px;
     justify-content: space-around;
+    border: solid 1px var(--grey-2);
 }
-.page-duplicate input{
-    margin-left: 16px;
+.page-duplicate input, .page-duplicate button{
+    margin-left: 0 !important;
 }
 input{
     line-height: 2;
