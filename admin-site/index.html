@@ -2420,9 +2420,16 @@ modeleditor.navigateFileEnd()
             while(currentModel.indexOf(' ') != -1){
               currentModel = currentModel.replace(' ', '')
             }
+            let usedWords = ["pages", "menus", "users", "admins"]
             currentModel = JSON.parse(currentModel)
-            if(currentModel.dbName !== "" && currentModel.dbName != " " && currentModel.dbName != "exampleModel"){
+            if( !usedWords.includes(currentModel.dbName) &&
+                currentModel.dbName !== "" &&
+                currentModel.dbName != " " &&
+                currentModel.dbName != "exampleModel"){
               crms.emit('message', JSON.stringify({newModel: currentModel}))
+            }else{
+              alert('You can not use a reserved keyword for your new model.')
+              showStatusMessage2(0, "The model was not created, verify your data and retry.")
             }
             modeleditor.setValue('')
             document.querySelector('#model-editor').style.display = 'none'
@@ -2507,8 +2514,15 @@ routeeditor.navigateFileEnd()
             }
             newRoute = JSON.parse(newRoute)
             newRoute.action = newRoute.action.toLowerCase()
-            if(newRoute.model !== "" && newRoute.model !== " " && newRoute.model !== "exampleModel+db"){
+            let reservedWords = ["contact", "connect", "admin", "logout"]
+            if( !reservedWords.includes(newRoute.route) &&
+                newRoute.route !== "" &&
+                newRoute.model !== "" &&
+                newRoute.model !== " " &&
+                newRoute.model !== "exampleModel+db"){
               crms.emit('message', JSON.stringify({newRoute: newRoute}))
+            }else{
+              showStatusMessage2(0, "Incorrect route model, verify your data and retry.")
             }
             routeeditor.setValue('')
             document.querySelector('#model-editor').style.display = 'none'
@@ -2603,8 +2617,11 @@ routeeditor.navigateFileEnd()
             e.preventDefault()
             routeeditor.setValue(beautifier.js(route))
             routeeditor.navigateFileEnd()
+            let deleteBtn = document.createElement('button')
+            deleteBtn.innerText = "Delete"
             let btn = document.createElement('button')
             btn.innerText = "Save"
+            li.appendChild(deleteBtn)
             li.appendChild(btn)
             btn.addEventListener('click', (ev)=>{
               let updateRoute = routeeditor.getValue()
@@ -2619,6 +2636,11 @@ routeeditor.navigateFileEnd()
               crms.emit('message', JSON.stringify({updateRoute:{oldName, route:updateRoute}}))
               routeeditor.setValue('')
               btn.remove()
+              deleteBtn.remove()
+            })
+            deleteBtn.addEventListener('click', (ev)=>{
+              crms.emit('message', JSON.stringify({deleteRoute: {name: oldName}}))
+              li.remove()
             })
           })
         }
@@ -2637,8 +2659,11 @@ routeeditor.navigateFileEnd()
             e.preventDefault()
             modeleditor.setValue(beautifier.js(model))
             modeleditor.navigateFileEnd()
+            let deleteBtn = document.createElement('button')
+            deleteBtn.innerText = "Delete"
             let btn = document.createElement('button')
             btn.innerText = "Save"
+            li.appendChild(deleteBtn)
             li.appendChild(btn)
             btn.addEventListener('click', (ev)=>{
               let updateModel = modeleditor.getValue()
@@ -2652,6 +2677,12 @@ routeeditor.navigateFileEnd()
               crms.emit('message', JSON.stringify({updateModel:{oldName: dbName, model:updateModel}}))
               modeleditor.setValue('')
               btn.remove()
+              deleteBtn.remove()
+            })
+            deleteBtn.addEventListener('click', (ev)=>{
+              let removeDocument = confirm('Do you want to remove all the related documents from the database?')
+              crms.emit('message', JSON.stringify({deleteModel: {name: dbName, purge: removeDocument}}))
+              li.remove()
             })
           })
         }

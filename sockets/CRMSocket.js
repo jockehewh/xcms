@@ -6,6 +6,7 @@ const extract = require("extract-zip")
 const process = require('process')
 const { userdb, admindb } = require('../cmsModels.js')
 const nodemailer = require('nodemailer')
+const mongoose = require('mongoose')
 const theEventListener = require(__dirname + '/../xcmsDB/innerEvents')
 let isSuperAdmin = false
 theEventListener.on('isSuperAdmin', (b)=>{
@@ -33,14 +34,16 @@ crmSocket.on('message', async (ctx) => {
         exec('pm2', (err,res)=>{
             if(err) {
                 process.on('exit', ()=>{
-                    spawn(process.argv.shift(), process.argv, {
-                        cwd: process.cwd(),
-                        detached: true,
-                        stdio: "inherit"
-                    })
+                    if(process.exitCode == "custom"){
+                        spawn(process.argv.shift(), process.argv, {
+                            cwd: process.cwd(),
+                            detached: true,
+                            stdio: "inherit"
+                        })
+                    }
                 })
                 console.log('restarting without PM2...')
-                process.exit()
+                process.exit("custom")
             }
             if(res) {
                 console.log('restarting...')
@@ -237,7 +240,7 @@ crmSocket.on('message', async (ctx) => {
         let latestRoutes = JSON.parse(customAPIJson)
         let latestRoutesUpdated = latestRoutes.map(route=>{
             if(route.name === updateRoute.oldName){
-                return route = updateRoute.route
+                return updateRoute.route
             }else{
                 return route
             }
@@ -277,9 +280,52 @@ crmSocket.on('message', async (ctx) => {
         let latestModels = JSON.parse(customModelsJson)
         ctx.socket.emit('exporting-models', JSON.stringify(latestModels))
     }
-    /* 
-    suprimer ou désactiver un model, une route
-     */
+    if(datainfo.deleteRoute){
+        let deletedRoute = datainfo.deleteRoute.name
+        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let latestRoutes = JSON.parse(customAPIJson)
+        let updatedAPI = latestRoutes.filter(route=>{
+            if(route.name !== deletedRoute){
+                return route
+            }
+        })
+        customAPIJson = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json')
+        customAPIJson.write(JSON.stringify(updatedAPI))
+        customAPIJson.end()
+        customAPIJson.on('close', ()=>{
+            ctx.socket.emit('success', `The route named ${deletedRoute} was successfully deleted`)
+            restart()
+        })
+    }
+    if(datainfo.deleteModel){
+        let deletedModel = datainfo.deleteModel
+        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+        let customModels = JSON.parse(customModelsJson)
+        let latestModels = customModels.filter(model=>{
+            if(model.dbName !== deletedModel.name){
+                return model
+            }
+        })
+        customModelsJson = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json')
+        customModelsJson.write(JSON.stringify(latestModels))
+        customModelsJson.end()
+        customModelsJson.on('close', ()=>{
+            ctx.socket.emit('success', `The model named ${deletedModel} was successfully deleted`)
+            if(deletedModel.purge){
+                mongoose.model(deletedModel.name).remove((err, res)=>{
+                    if(err){
+                        console.log("err", err)
+                        ctx.socket.emit('errorr', `Something went wrong: ${err}`)
+                    }
+                    if(res){
+                        console.log("res", res)
+                        ctx.socket.emit('success', `Successfully removed all the documents from the collection ${deletedModel.name}`)
+                        restart()
+                    }
+                })
+            }
+        })
+    }
 })
 
 crmSocket.on("importing", async (ctx) =>{
