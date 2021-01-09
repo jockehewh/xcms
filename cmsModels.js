@@ -29,10 +29,13 @@ const menu = new Schema({
   })
 
   const customComponent = new Schema({
+    framework: String,
     scriptName: String,
     scriptContent: String
   })
-  
+  /* 
+  BUNDLED PAGES MODEL WITH CSS
+   */
   const customComponentsdb = mongoose.model('custom-components', customComponent)
 
   const pagedb = mongoose.model('pages', page)
@@ -40,8 +43,6 @@ const menu = new Schema({
   const menudb = mongoose.model('menus', menu)
 
   const userdb = mongoose.model('users', user)
-
-  
 
   admin.pre('save', function(next){
   var user = this;

@@ -152,19 +152,26 @@ body{
           <button>CSS Editor</button>
         </div>
         <div class="editor-options">
-          <h3>Select options:</h3> Todo
+          <h3>Select options:</h3>
+          <input type="radio" id="vanilla" name="editor-options-option" checked="true">
           <!-- options? --></div>
       </div>
       <div class="build-config">
         <h3>Editors actions:</h3>
 <!-- liste des composant 
 ajouter un main
+bouton reset et bouton enregistrer
  -->
       </div>
     </div>
   </div>
   <div class="create-build">
     <h3>Configure build:</h3>
+    <ul></ul>
+    <div>
+      <input type="text" id="bundled-page" placeholder="path" disabled value="">
+      <button>build page</button>
+    </div>
   </div>
   <script>
     let bundles = io('/bundler-socket')
@@ -172,19 +179,67 @@ ajouter un main
       let datainfo = JSON.parse(data)
       if(datainfo.existingComponents){
         let allComponents = document.querySelector('.all-components ul')
+        let createBuildListing = document.querySelector('.create-build ul')
+        let createBtn = document.querySelector('.create-build button')
         let existingComponents = datainfo.existingComponents
+        let componentsList = []
         existingComponents.forEach(component=>{
           let li = document.createElement('li')
           let a = document.createElement('a')
           a.innerText = component.scriptName
           a.dataset.content = component.scriptContent
+          a.dataset.framework = component.framework
           li.appendChild(a)
           allComponents.appendChild(li)
           a.addEventListener('click', (e)=>{
             jseditor.setValue(component.scriptContent)
+            /* 
+              CREER LES BOUTONS ENREGISTRER ET REINITIALISER
+             */
+          })
+          let buildLi = document.createElement('li')
+          let label = document.createElement('label')
+          let isSelected = document.createElement("input")
+          let isMain = document.createElement('input')
+          isSelected.type = "checkbox"
+          isSelected.name= 'is-selected'
+          isSelected.dataset.cname = component.scriptName
+          isMain.type = "checkbox"
+          isMain.name= 'is-main'
+          isMain.classList.add('main-selector')
+          isMain.value = component.scriptName
+          isMain.setAttribute('checked', false)
+          label.textContent = component.scriptName
+          label.appendChild(isMain)
+          label.appendChild(isSelected)
+          buildLi.appendChild(label)
+          createBuildListing.appendChild(buildLi)
+          isMain.addEventListener('change', (e)=>{
+            e.preventDefault()
+            document.querySelectorAll('.main-selector').forEach(selector=>{
+              if(selector.parentElement.textContent !== e.currentTarget.value ){
+                selector.setAttribute('checked', false)
+              }else{
+                selector.setAttribute('checked', true)
+                document.querySelector('#bundled-page').value = selector.scriptName
+              }
+            })
           })
         })
-        
+        createBtn.addEventListener('click', (e)=>{
+          document.querySelectorAll('[name=is-selected]').forEach(checkedSelector=>{
+            if(checkedSelector.checked == true){
+              componentsList.push(checkedSelector.dataset.cname)
+            }
+          })
+          let buildObject = {
+            pageName: document.querySelector('#bundled-page').value.replace('.js', '.html'),
+            framework: document.querySelector('.editor-options-option [checked=true]').id,
+            main: document.querySelector('#bundled-page').value,
+            componentsList
+          }
+          bundles.emit('message', JSON.stringify({createBuild: buildObject}))
+        })
       }
     })
     ace.require("ace/ext/language_tools")
