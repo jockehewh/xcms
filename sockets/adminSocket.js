@@ -2,8 +2,8 @@ const IO = require('koa-socket-2')
 const fs = require('fs')
 const sharp = require('sharp')
 const {pagedb, menudb} = require('../cmsModels.js')
-var pagesCollection = require('../xcmsDB/pageCollection.js')
-var isIndex = require('../xcmsDB/isIndex.js')
+var pagesCollection = require('../xcmsCustoms/pageCollection.js')
+var isIndex = require('../xcmsCustoms/isIndex.js')
 let gtag = ''
 let lang = ''
 try {

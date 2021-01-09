@@ -7,7 +7,7 @@ const process = require('process')
 const { userdb, admindb } = require('../cmsModels.js')
 const nodemailer = require('nodemailer')
 const mongoose = require('mongoose')
-const theEventListener = require(__dirname + '/../xcmsDB/innerEvents')
+const theEventListener = require(__dirname + '/../xcmsCustoms/innerEvents')
 let isSuperAdmin = false
 theEventListener.on('isSuperAdmin', (b)=>{
     if(b){
@@ -69,12 +69,12 @@ crmSocket.on('message', async (ctx) => {
         })
     }
     if (datainfo.routeslist) {
-        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', {autoClose: true})
         let customAPI = JSON.parse(customAPIJson)
         ctx.socket.emit('normal', JSON.stringify({customRoutes: {routes: customAPI}}))
     }
     if (datainfo.modelslist) {
-        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', {autoClose: true})
         let customModels = JSON.parse(customModelsJson)
         ctx.socket.emit('normal', JSON.stringify({customModels: {models: customModels}}))
     }
@@ -212,11 +212,11 @@ crmSocket.on('message', async (ctx) => {
     }
     if(datainfo.newModel){
         let newModel = datainfo.newModel
-        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', {autoClose: true})
         let latestModels = JSON.parse(customModelsJson)
         latestModels.push(newModel)
         latestModels = JSON.stringify(latestModels)
-        let updatedModels = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json')
+        let updatedModels = fs.createWriteStream(__dirname + '/../xcmsCustoms/customModels.json')
         updatedModels.write(latestModels)
         updatedModels.end()
         ctx.socket.emit('success', `Successfully created the new model: ${newModel.dbName+'db'}`)
@@ -224,11 +224,11 @@ crmSocket.on('message', async (ctx) => {
     }
     if(datainfo.newRoute){
         let newRoute = datainfo.newRoute
-        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', {autoClose: true})
         let latestRoutes = JSON.parse(customAPIJson)
         latestRoutes.push(newRoute)
         latestRoutes = JSON.stringify(latestRoutes)
-        let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json')
+        let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsCustoms/customAPI.json')
         updatedRoutes.write(latestRoutes)
         updatedRoutes.end()
         ctx.socket.emit('success', `Successfully created the new route: ${newRoute.route}`)
@@ -236,7 +236,7 @@ crmSocket.on('message', async (ctx) => {
     }
     if(datainfo.updateRoute){
         let updateRoute = datainfo.updateRoute
-        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', {autoClose: true})
         let latestRoutes = JSON.parse(customAPIJson)
         let latestRoutesUpdated = latestRoutes.map(route=>{
             if(route.name === updateRoute.oldName){
@@ -246,7 +246,7 @@ crmSocket.on('message', async (ctx) => {
             }
         })
         latestRoutesUpdated = JSON.stringify(latestRoutesUpdated)
-        let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsCustoms/customAPI.json', {autoClose: true})
         updatedRoutes.write(latestRoutesUpdated)
         updatedRoutes.end()
         ctx.socket.emit('success', `Successfully updated the route: ${updateRoute.route.name} ...Restarting.`)
@@ -254,7 +254,7 @@ crmSocket.on('message', async (ctx) => {
     }
     if(datainfo.updateModel){
         let updateModel = datainfo.updateModel
-        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', {autoClose: true})
         let latestModels = JSON.parse(customModelsJson)
         let latestModelsUpdated = latestModels.map(model=>{
             if(model.dbName === updateModel.oldName){
@@ -264,32 +264,32 @@ crmSocket.on('message', async (ctx) => {
             }
         })
         latestModelsUpdated = JSON.stringify(latestModelsUpdated)
-        let updatedModels = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json')
+        let updatedModels = fs.createWriteStream(__dirname + '/../xcmsCustoms/customModels.json')
         updatedModels.write(latestModelsUpdated)
         updatedModels.end()
         ctx.socket.emit('success', `Successfully updated the model: ${updateModel.model.dbName+'db'} ...Restarting.`)
         restart()
     }
     if(datainfo.exportRoutes){
-        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', {autoClose: true})
         let latestRoutes = JSON.parse(customAPIJson)
         ctx.socket.emit('exporting-routes', JSON.stringify(latestRoutes))
     }
     if(datainfo.exportModels){
-        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', {autoClose: true})
         let latestModels = JSON.parse(customModelsJson)
         ctx.socket.emit('exporting-models', JSON.stringify(latestModels))
     }
     if(datainfo.deleteRoute){
         let deletedRoute = datainfo.deleteRoute.name
-        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+        let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', {autoClose: true})
         let latestRoutes = JSON.parse(customAPIJson)
         let updatedAPI = latestRoutes.filter(route=>{
             if(route.name !== deletedRoute){
                 return route
             }
         })
-        customAPIJson = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json')
+        customAPIJson = fs.createWriteStream(__dirname + '/../xcmsCustoms/customAPI.json')
         customAPIJson.write(JSON.stringify(updatedAPI))
         customAPIJson.end()
         customAPIJson.on('close', ()=>{
@@ -299,14 +299,14 @@ crmSocket.on('message', async (ctx) => {
     }
     if(datainfo.deleteModel){
         let deletedModel = datainfo.deleteModel
-        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+        let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', {autoClose: true})
         let customModels = JSON.parse(customModelsJson)
         let latestModels = customModels.filter(model=>{
             if(model.dbName !== deletedModel.name){
                 return model
             }
         })
-        customModelsJson = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json')
+        customModelsJson = fs.createWriteStream(__dirname + '/../xcmsCustoms/customModels.json')
         customModelsJson.write(JSON.stringify(latestModels))
         customModelsJson.end()
         customModelsJson.on('close', ()=>{
@@ -363,7 +363,7 @@ crmSocket.on("importing-mail-config", async (ctx) =>{
 })
 
 crmSocket.on('importing-routes', async ctx=>{
-    let customAPIJson = fs.createWriteStream(__dirname + '/../xcmsDB/customAPI.json', {autoClose: true})
+    let customAPIJson = fs.createWriteStream(__dirname + '/../xcmsCustoms/customAPI.json', {autoClose: true})
     customAPIJson.write(ctx.data)
     customAPIJson.end()
     ctx.socket.emit('success', "API configuration imported successfully. Restarting...")
@@ -389,7 +389,7 @@ crmSocket.on('importing-routes', async ctx=>{
     })
 })
 crmSocket.on('importing-models', async ctx=>{
-    let customModelsJson = fs.createWriteStream(__dirname + '/../xcmsDB/customModels.json', {autoClose: true})
+    let customModelsJson = fs.createWriteStream(__dirname + '/../xcmsCustoms/customModels.json', {autoClose: true})
     customModelsJson.write(ctx.data)
     customModelsJson.end()
     ctx.socket.emit('success', "Models configuration imported successfully. Restarting...")

@@ -6,10 +6,11 @@ const passport = require('koa-passport')
 const r = require('koa-route')
 const session = require('koa-session')
 const adminSocket = require('./sockets/adminSocket.js')
+const bundleSocket = require('./sockets/bundleSocket.js')
 const xcms = new koa();
 const jsp = JSON.parse;
 const mongoose = require('mongoose')
-const theEventListener = require(__dirname + "/xcmsDB/innerEvents")
+const theEventListener = require(__dirname + "/xcmsCustoms/innerEvents")
 let allModels = {}
 let the = ''
 try {
@@ -22,14 +23,14 @@ try {
 
 mongoose.connect(the.mongoURI + '/xcms', the.mongoOptions)
 
-var pagesCollection = require(__dirname + '/xcmsDB/pageCollection.js')
+var pagesCollection = require(__dirname + '/xcmsCustoms/pageCollection.js')
 
-var isIndex = require(__dirname + '/xcmsDB/isIndex.js')
-const { pagedb, menudb } = require(__dirname + '/cmsModels.js')
+var isIndex = require(__dirname + '/xcmsCustoms/isIndex.js')
+const { pagedb, menudb, customComponentsdb } = require(__dirname + '/cmsModels.js')
 allModels = Object.assign({pagedb}, allModels)
 allModels = Object.assign({menudb}, allModels)
 
-let customModelsJson = fs.readFileSync(__dirname + '/xcmsDB/customModels.json')
+let customModelsJson = fs.readFileSync(__dirname + '/xcmsCustoms/customModels.json')
 let customModels = JSON.parse(customModelsJson)
 const registerModel = (model)=>{
   let identifiers = model.identifiers
@@ -294,7 +295,7 @@ xcms.use(r.post('/admin', (ctx)=>{
       ctx.redirect('/')
       }
     if(res){
-      const evem = require(__dirname + "/xcmsDB/innerEvents")
+      const evem = require(__dirname + "/xcmsCustoms/innerEvents")
       evem.emit('isSuperAdmin', res.superAdmin)
       ctx.login(res)
       ctx.redirect('/admin')
@@ -304,7 +305,7 @@ xcms.use(r.post('/admin', (ctx)=>{
 
 /* ENABLE CUSTOM API ROUTES */
 
-let customAPIReader = fs.readFileSync(__dirname +'/xcmsDB/customAPI.json')
+let customAPIReader = fs.readFileSync(__dirname +'/xcmsCustoms/customAPI.json')
 let customAPI = JSON.parse(customAPIReader)
 let identifiedRoutes = customAPI.map(route=>{
   if(route.authenticated === true)
@@ -336,7 +337,12 @@ xcms.use(r.get('/admin', (ctx) => {
     autoClose: true
   })
 }))
-
+xcms.use(r.get('/bundle-editor', (ctx) => {
+  ctx.type = "html"
+  ctx.body = fs.createReadStream(__dirname + '/admin-site/bundlemaker.html', {
+    autoClose: true
+  })
+}))
 xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css$/, ctx => {
   ctx.type = 'text/css'
   ctx.body = fs.createReadStream(__dirname + ctx.url)
@@ -411,6 +417,18 @@ adminSocket.on('connection', (ctx) => {
 })
 
 require(__dirname + '/sockets/CRMSocket.js').attach(xcms)
+bundleSocket.attach(xcms)
+bundleSocket.on('connection', (ctx)=>{
+  customComponentsdb.find({}, (err, res)=>{
+    if(err){
+      console.log(err)
+      ctx.emit('errorr', "Error gathering all components")
+    }
+    if(res){
+      ctx.emit('normal', JSON.stringify({existingComponents: res}))
+    }
+  })
+})
 
 /* SOCKET IO END */
 
@@ -439,6 +457,11 @@ xcms.listen(the.port, () => {
     }
     transporter.write(JSON.stringify(transporterData))
     transporter.end()
+  }
+  if(!fs.existsSync('./builders')){
+    fs.mkdir('./builders', {}, (err)=>{
+      if(err) console.log(err)
+    })
   }
 })
 

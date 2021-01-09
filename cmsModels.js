@@ -28,6 +28,13 @@ const menu = new Schema({
     superAdmin: Boolean
   })
 
+  const customComponent = new Schema({
+    scriptName: String,
+    scriptContent: String
+  })
+  
+  const customComponentsdb = mongoose.model('custom-components', customComponent)
+
   const pagedb = mongoose.model('pages', page)
 
   const menudb = mongoose.model('menus', menu)
@@ -58,4 +65,4 @@ admin.methods.comparePassword = function(candidatePassword, cb){
 
 const admindb = mongoose.model('admins', admin)
 
-  module.exports = {pagedb, menudb, userdb, admindb}
+  module.exports = {pagedb, menudb, userdb, admindb, customComponentsdb}
