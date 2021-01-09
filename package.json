@@ -16,7 +16,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "archiver": "^5.1.0",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "extract-zip": "^2.0.1",
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",
@@ -30,7 +30,11 @@
     "passport-local": "^1.0.0",
     "sharp": "^0.25.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "html-webpack-plugin": "^4.5.1",
+    "webpack": "^5.12.2",
+    "webpack-cli": "^4.3.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jockehewh/xcms.git"

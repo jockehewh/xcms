@@ -128,6 +128,10 @@ adminSocket.on('message', async (ctx) => {
         isIndex.length = 0
       }
     }
+    /* 
+    faciliter la création le stockage et l'utilisation de composants
+    integrer avec webpack
+     */
   }
 })
 let extensionCheck = /(\.(jpeg)|(png)|(PNG)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/

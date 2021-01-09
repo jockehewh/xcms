@@ -414,7 +414,6 @@ require(__dirname + '/sockets/CRMSocket.js').attach(xcms)
 
 /* SOCKET IO END */
 
-
 xcms.listen(the.port, () => {
   console.log("listenning on port:", the.port)
   if(!fs.existsSync('./medias')){
