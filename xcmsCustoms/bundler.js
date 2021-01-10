@@ -5,7 +5,6 @@ const fs = require('fs')
 const webpack = require('webpack')
 var pagesCollection = require('../xcmsCustoms/pageCollection.js')
 const { customComponentsdb, pagedb } = require("../cmsModels")
-const pageCollection = require('../xcmsCustoms/pageCollection.js')
 const htmlTemplate = `<!doctype html>
 <html lang="en">
 <head>
@@ -40,15 +39,6 @@ const Bundler = (buildConfig, ctx)=>{
             })
           }
         })
-        //A voir
-        
-        /* 
-        CREATE OUTPUT FROM MAIN
-        REBUILD JS OUTPUT
-        BUILD PAGE FROM TEMPLATE
-        SAVE PAGE
-        REMOVE TEMPORARYFILES
-         */
       })
     }
     let templateFile = fs.createWriteStream(__dirname + '/../builders/indexTemplate.html')
@@ -97,7 +87,7 @@ const Bundler = (buildConfig, ctx)=>{
                   ctx.socket.emit('errorr', "Couldnt save the bundle into the database.")
                 }
                 if(res){
-                  pageCollection.push(res)
+                  pagesCollection.push(res)
                   ctx.socket.emit('success', "The bundle was saved at: "+buildConfig.pageName)
                    fs.rmdir(__dirname + '/../builders/', {recursive: true, force: true}, (err)=>{
                       if(err === null){
