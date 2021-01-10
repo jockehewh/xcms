@@ -458,11 +458,34 @@ xcms.listen(the.port, () => {
     transporter.write(JSON.stringify(transporterData))
     transporter.end()
   }
-  if(!fs.existsSync('./builders')){
-    fs.mkdir('./builders', {}, (err)=>{
+  if(!fs.existsSync(__dirname + '/builders')){
+    fs.mkdir(__dirname + '/builders/prebuild', {recursive: true}, (err)=>{
+      if(err) console.log(err)
+    })
+    fs.mkdir(__dirname + '/builders/build', {recursive: true}, (err)=>{
       if(err) console.log(err)
     })
   }
+  customComponentsdb.find({}, (err, res)=>{
+    if(err)console.log(err)
+    if(res.length < 1){
+      let files = fs.readdirSync('./nightlyjs')
+      files.forEach(file=>{
+      let fileContent = fs.readFileSync('./nightlyjs/'+ file, {encoding: 'utf-8'})
+      let componentObject = new customComponentsdb({
+      framework: 'nightlyjs',
+      scriptName: file,
+      scriptContent: fileContent
+      })
+      componentObject.save((err, res)=>{
+        if(err) console.log(err)
+        if(res){
+          console.log(res)
+        }
+      })
+    })                                    
+    }
+  })
 })
 
 module.exports = xcms
