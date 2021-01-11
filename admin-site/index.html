@@ -1539,7 +1539,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         theframe.appendChild(xcmsRootContainer)
         theframe.classList.add('re-edit-zone')
         //LOADING CONTENT
-        theframe.innerHTML = editablePages[e.target.dataset.index].page
+        xcmsRootContainer.innerHTML = editablePages[e.target.dataset.index].page
         let niceJS = beautifier.js(editablePages[e.target.dataset.index].js, { indent_size: 2, space_in_empty_paren: true })
         let niceCSS = beautifier.css(editablePages[e.target.dataset.index].css, { indent_size: 2, space_in_empty_paren: true })
         jseditor.setValue(niceJS)

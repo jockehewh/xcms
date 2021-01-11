@@ -37,7 +37,7 @@ bundleSocket.on('message', ctx=>{
       }
       if(ress){
         ctx.socket.emit('success', "Successfully updated the component: " + updateComponent.scriptName)
-        res.save((errr, ress)=>{
+        ress.save((errr, ress)=>{
           if(errr) console.log(errr, 'saving')
         })
       }

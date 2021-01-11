@@ -469,9 +469,9 @@ xcms.listen(the.port, () => {
   customComponentsdb.find({}, (err, res)=>{
     if(err)console.log(err)
     if(res.length < 1){
-      let files = fs.readdirSync('./nightlyjs')
+      let files = fs.readdirSync(__dirname + '/nightlyjs')
       files.forEach(file=>{
-      let fileContent = fs.readFileSync('./nightlyjs/'+ file, {encoding: 'utf-8'})
+      let fileContent = fs.readFileSync(__dirname + '/nightlyjs/'+ file, {encoding: 'utf-8'})
       let componentObject = new customComponentsdb({
       framework: 'nightlyjs',
       scriptName: file,
@@ -480,7 +480,7 @@ xcms.listen(the.port, () => {
       componentObject.save((err, res)=>{
         if(err) console.log(err)
         if(res){
-          console.log(res)
+          console.log(`Successfully created the ${res.scriptName} component for the framework ${res.framework}`)
         }
       })
     })                                    
