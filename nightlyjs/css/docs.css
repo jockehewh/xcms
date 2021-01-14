@@ -1,0 +1,79 @@
+*{
+  margin:0; padding:0; user-select: none; cursor: initial;
+  --baseGreen : rgba(0, 204, 102, 1);
+  --baselightblack:  rgba(26, 24, 27, 1);
+  --darkgrey: rgba(53, 53, 49, 1);
+  --white: rgba(255, 255, 255, 1);
+  --orange: rgba(255, 149, 5, 1);
+  --niceblue: rgba(173, 216, 230, 1);
+  }
+  body{
+    background-color: var(--darkgrey);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Coda-Regular';
+  }
+main{
+  height: max-content;
+  min-height: 550px;
+  display: grid;
+  grid-template-columns: 2fr 4fr;
+}
+main div{
+  display: flex;
+  flex-direction: column;
+}
+a{
+  color: var(--white);
+  cursor: initial;
+  text-shadow: white 3px -1px 5px;
+  text-decoration: none;
+  margin: 0px 16px;
+  max-width: fit-content;
+}
+p{
+  border-radius: 5px;
+  text-shadow: white 3px -1px 5px;
+  padding: 20px 20px 20px 10px;
+  box-shadow: inset 5px -5px 10px #151514, inset -5px 5px 10px #55554e;
+    width: fit-content;
+    position: relative;
+    left: 16px;
+}
+a:hover{
+  cursor: pointer;
+}
+h1{
+  font-family: 'permanentMarker';
+}
+.menu{
+  position: fixed;
+  left: 0;
+  top: 75px;
+  grid-column: 1;
+  border-radius: 5px;
+  background: #353531;
+  box-shadow: -5px 5px 10px #151514, 
+              5px -5px 10px #55554e;
+}
+.docdiv{
+  grid-column: 2;
+  font-size: 16px;
+}
+.docdiv div{
+  border-radius: 5px;
+  background: #353531;
+  box-shadow: -5px 5px 10px #151514, 
+              5px -5px 10px #55554e;
+  margin: 20px 20px 20px 0;
+}
+.params{
+  color: var(--niceblue);
+  font-weight: 200;
+}
+.intro{
+  position: unset;
+  margin: 20px 20px 20px 0;
+  box-shadow: -5px 5px 10px #151514, 5px -5px 10px #55554e;
+}

@@ -132,6 +132,16 @@ body{
 .editor-options{
   min-height: 50px;
   grid-column: 1/6;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.editor-options label{
+  width: 80px;
+  padding: 0 15px;
+  align-items: center;
+  justify-content: space-evenly;
 }
 .code-editors{
   grid-column: 1/6;
@@ -180,6 +190,12 @@ body{
     padding: 4px 8px 4px 8px;
     background: var(--white-0);
 }
+.build-items-list-react,
+.build-items-list-vue,
+.components-list-react,
+.components-list-vue{
+  display: none;
+}
 @keyframes statusmove{
     from {right: -22%; left: 76%}
     to {right: 76%; left: 0%;}
@@ -193,7 +209,9 @@ body{
   <div class="first-class">
     <div class="all-components">
       <h3>Edit components:</h3>
-      <ul></ul>
+      <ul class="components-list-react"></ul>
+      <ul class="components-list-vanilla"></ul>
+      <ul class="components-list-vue"></ul>
     </div>
     <div class="editors">
       <div class="code-editors">
@@ -205,7 +223,12 @@ body{
         </div>
         <div class="editor-options">
           <h3>Select options:</h3>
-          <input type="radio" id="vanilla" name="editor-options-option" checked="true">
+          <label for="react">react<input type="radio" id="react" name="editor-options-option"></label>
+          
+          <label for="vanilla">vanilla<input type="radio" id="vanilla" name="editor-options-option" checked></label>
+          
+          <label for="vue">vue<input type="radio" id="vue" name="editor-options-option"></label>
+          
           <!-- options? --></div>
       </div>
       <div class="editor-actions">
@@ -220,10 +243,9 @@ body{
   </div>
   <div class="create-build">
     <h3>Configure build:</h3>
-    <ul><!-- liste des composant 
-ajouter un main
-bouton reset et bouton enregistrer
- --></ul>
+    <ul class="build-items-list-react"></ul>
+    <ul class="build-items-list-vanilla"></ul>
+    <ul class="build-items-list-vue"></ul>
     <div class="actions">
       <input type="text" id="bundled-page" placeholder="path" disabled value="">
       <button>build page</button>
@@ -258,8 +280,6 @@ bouton reset et bouton enregistrer
     bundles.on('normal', data=>{
       let datainfo = JSON.parse(data)
       if(datainfo.existingComponents){
-        let allComponents = document.querySelector('.all-components ul')
-        let createBuildListing = document.querySelector('.create-build ul')
         let createBtn = document.querySelector('.create-build button')
         let existingComponents = datainfo.existingComponents
         let componentsList = []
@@ -270,14 +290,17 @@ bouton reset et bouton enregistrer
           a.dataset.content = component.scriptContent
           a.dataset.framework = component.framework
           li.appendChild(a)
-          allComponents.appendChild(li)
+          if(component.framework == "react"){
+            document.querySelector('.components-list-react').appendChild(li)
+          }else if(component.framework == "vue"){
+            document.querySelector('.components-list-vue').appendChild(li)
+          }else if(component.framework != 'react' && component.framework != "vue"){
+            document.querySelector('.components-list-vanilla').appendChild(li)
+          }
           a.addEventListener('click', (e)=>{
             jseditor.setValue(component.scriptContent)
             jseditor.navigateFileEnd()
             currentlyEditing = component.scriptName
-            /* 
-              CREER LES BOUTONS ENREGISTRER ET REINITIALISER
-             */
           })
           let buildLi = document.createElement('li')
           let label = document.createElement('label')
@@ -298,7 +321,13 @@ bouton reset et bouton enregistrer
           div.appendChild(isMain)
           div.appendChild(isSelected)
           buildLi.appendChild(label)
-          createBuildListing.appendChild(buildLi)
+          if(component.framework === "react"){
+            document.querySelector('.build-items-list-react').appendChild(buildLi)
+          }else if(component.framework === "vue"){
+            document.querySelector('.build-items-list-vue').appendChild(buildLi)
+          }else{
+            document.querySelector('.build-items-list-vanilla').appendChild(buildLi)
+          }
           isMain.addEventListener('change', (e)=>{
             e.preventDefault()
             document.querySelectorAll('.main-selector').forEach(selector=>{
@@ -350,7 +379,7 @@ bouton reset et bouton enregistrer
         if(btn.className === "new"){
           let filename = prompt('New file name: ')
           let newComp = {
-            framework: 'vanilla',
+            framework: document.querySelector('input[name=editor-options-option]:checked').id,
             scriptName: filename,
             scriptContent: ""
           }
@@ -359,7 +388,7 @@ bouton reset et bouton enregistrer
         }
         if(btn.className === "save"){
           let updateObject = {
-            framework: document.querySelector('.editor-options input:checked').id,
+            framework: document.querySelector('input[name=editor-options-option]:checked').id,
             scriptName: currentlyEditing,
             scriptContent: jseditor.getValue()
           }
@@ -372,6 +401,25 @@ bouton reset et bouton enregistrer
           jseditor.setValue('')
         }
       })
+    })
+    document.querySelectorAll('input[name=editor-options-option]').forEach(framework=>{
+      framework.addEventListener('click', (e)=>{
+        document.querySelectorAll('.all-components ul').forEach(list =>{
+          if(list.className.includes(framework.id)){
+            list.style.display = "block"
+          }else{
+            list.style.display = "none"
+          }
+        })
+        document.querySelectorAll('.create-build ul').forEach(list =>{
+          if(list.className.includes(framework.id)){
+            list.style.display = "block"
+          }else{
+            list.style.display = "none"
+          }
+        })
+      })
+      
     })
   </script>
 </body>
