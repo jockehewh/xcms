@@ -209,6 +209,7 @@ body{
   <div class="first-class">
     <div class="all-components">
       <h3>Edit components:</h3>
+      <ul class="components-list-nightlyjs"></ul>
       <ul class="components-list-react"></ul>
       <ul class="components-list-vanilla"></ul>
       <ul class="components-list-vue"></ul>
@@ -218,15 +219,14 @@ body{
         <div id="js-editor"></div>
         <div id="css-editor"></div>
         <div class="editor-buttons">
-          <button>JS Editor</button>
-          <button>CSS Editor</button>
+          <button name="js">JS Editor</button>
+          <button name="css">CSS Editor</button>
         </div>
         <div class="editor-options">
           <h3>Select options:</h3>
+          <label for="nightly">nightly<input type="radio" id="nightly" name="editor-options-option" checked></label>
           <label for="react">react<input type="radio" id="react" name="editor-options-option"></label>
-          
-          <label for="vanilla">vanilla<input type="radio" id="vanilla" name="editor-options-option" checked></label>
-          
+          <label for="vanilla">vanilla<input type="radio" id="vanilla" name="editor-options-option"></label>
           <label for="vue">vue<input type="radio" id="vue" name="editor-options-option"></label>
           
           <!-- options? --></div>
@@ -243,6 +243,7 @@ body{
   </div>
   <div class="create-build">
     <h3>Configure build:</h3>
+    <ul class="build-items-list-nightlyjs"></ul>
     <ul class="build-items-list-react"></ul>
     <ul class="build-items-list-vanilla"></ul>
     <ul class="build-items-list-vue"></ul>
@@ -289,8 +290,11 @@ body{
           a.innerText = component.scriptName
           a.dataset.content = component.scriptContent
           a.dataset.framework = component.framework
+          a.dataset.css = component.attachedCSS
           li.appendChild(a)
-          if(component.framework == "react"){
+          if(component.framework == "nightlyjs"){
+            document.querySelector('.components-list-nightlyjs').appendChild(li)
+          }else if(component.framework == "react"){
             document.querySelector('.components-list-react').appendChild(li)
           }else if(component.framework == "vue"){
             document.querySelector('.components-list-vue').appendChild(li)
@@ -300,6 +304,8 @@ body{
           a.addEventListener('click', (e)=>{
             jseditor.setValue(component.scriptContent)
             jseditor.navigateFileEnd()
+            csseditor.setValue(component.attachedCSS)
+            csseditor.navigateFileEnd()
             currentlyEditing = component.scriptName
           })
           let buildLi = document.createElement('li')
@@ -314,6 +320,7 @@ body{
           isMain.type = "radio"
           isMain.name= 'is-main'
           isMain.classList.add('main-selector')
+          isMain.dataset.framework = component.framework
           isMain.value = component.scriptName
           span.innerText = component.scriptName
           label.appendChild(span)
@@ -321,7 +328,9 @@ body{
           div.appendChild(isMain)
           div.appendChild(isSelected)
           buildLi.appendChild(label)
-          if(component.framework === "react"){
+          if(component.framework === "nightlyjs"){
+            document.querySelector('.build-items-list-nightlyjs').appendChild(buildLi)
+          }else if(component.framework === "react"){
             document.querySelector('.build-items-list-react').appendChild(buildLi)
           }else if(component.framework === "vue"){
             document.querySelector('.build-items-list-vue').appendChild(buildLi)
@@ -343,7 +352,7 @@ body{
           })
           let buildObject = {
             pageName: document.querySelector('#bundled-page').value.replace('.js', '.html'),
-            framework: document.querySelector('.editor-options input:checked').id,
+            framework: document.querySelector('[name=is-main]:checked').dataset.framework,
             main: document.querySelector('#bundled-page').value,
             componentsList
           }
@@ -381,16 +390,17 @@ body{
           let newComp = {
             framework: document.querySelector('input[name=editor-options-option]:checked').id,
             scriptName: filename,
-            scriptContent: ""
+            scriptContent: "",
+            attachedCSS: ""
           }
           jseditor.setValue('')
           bundles.emit('message', JSON.stringify({newComponent: newComp}))
         }
         if(btn.className === "save"){
           let updateObject = {
-            framework: document.querySelector('input[name=editor-options-option]:checked').id,
             scriptName: currentlyEditing,
-            scriptContent: jseditor.getValue()
+            scriptContent: jseditor.getValue(),
+            attachedCSS: csseditor.getValue()
           }
           bundles.emit('message', JSON.stringify({updateComponent: updateObject}))
           setTimeout(()=>{
@@ -420,6 +430,14 @@ body{
         })
       })
       
+    })
+    document.querySelector('button[name=css]').addEventListener('click', e=>{
+      document.querySelector('#css-editor').style.display = "block"
+      document.querySelector('#js-editor').style.display = "none"
+    })
+    document.querySelector('button[name=js]').addEventListener('click', e=>{
+      document.querySelector('#js-editor').style.display = "block"
+      document.querySelector('#css-editor').style.display = "none"
     })
   </script>
 </body>

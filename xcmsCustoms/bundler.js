@@ -1,6 +1,8 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackPluginWithoutScriptTag = require('./HtmlWebpackPluginWithoutScriptTag')
+const miniCssExtractPlugin = require('mini-css-extract-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const fs = require('fs')
 const webpack = require('webpack')
 var pagesCollection = require('../xcmsCustoms/pageCollection.js')
@@ -11,6 +13,7 @@ const htmlTemplate = `<!doctype html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title><%= htmlWebpackPlugin.options.title %></title>
+  <style><%= htmlWebpackPlugin.options.inlinecss %></style>
 </head>
 <body>
   <div id="root"></div>
@@ -20,15 +23,9 @@ const htmlTemplate = `<!doctype html>
 </html>
 `
 
-
-
-/* 
-INCLURE LE CSS DANS LE BUNDLE ET LE PASSER EN INLINE
-POUR INTEGRER REACT ? UTILISER CREATE APP
- */
-
 const Bundler = (buildConfig, ctx) => {
   let postBuildConfig = {}
+  let prebuildConfig = {}
   customComponentsdb.find({}, (err, res) => {
     if (err) {
       console.log(err)
@@ -45,6 +42,9 @@ const Bundler = (buildConfig, ctx) => {
             oneComp.on('close', () => {
               ctx.socket.emit('success', `Gathered: ${existingComponent.scriptName}`)
             })
+            let cssComp = fs.createWriteStream(__dirname + '/../builders/css/' + existingComponent.scriptName.replace('.js', '.css'))
+            cssComp.write(existingComponent.attachedCSS)
+            cssComp.end()
           }
         })
       })
@@ -52,99 +52,96 @@ const Bundler = (buildConfig, ctx) => {
     let templateFile = fs.createWriteStream(__dirname + '/../builders/indexTemplate.html')
     templateFile.write(htmlTemplate)
     templateFile.end()
-
-    webpack({
-      entry: path.resolve(__dirname, '../builders/' + buildConfig.main),
-      output: {
-        path: path.resolve(__dirname, '../builders/prebuild'),
-        filename: 'prebuild.js'
-      }
-    }, (errb, stats) => {
-      if (errb || stats.hasErrors()) {
-        // [Handle errors here](#error-handling)
-      }
-      //AJOUTER L'INTERBUILD
-      let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.js', { encoding: 'utf-8' })
-      if (buildConfig.framework === "vanilla") {
-        postBuildConfig = {
-          entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
-          module: {
-            rules: [
-              {
-                test: /\.css$/i,
-                use: [
-                  { loader: 'style-loader', options: { injectType: 'singletonStyleTag' } },
-                  'css-loader',
-                ],
-              }
-            ]
-          },
-          plugins: [
-            new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
-            new HtmlWebpackPlugin({
-              filename: buildConfig.pageName,
-              template: path.resolve(__dirname, '../builders/indexTemplate.html'),
-              title: buildConfig.pageName.replace('.html', ''),
-              bundle: prebuild
-            })
+    if(buildConfig.framework === 'vanilla' || buildConfig.framework === "nightlyjs"){
+      prebuildConfig = {
+        entry: path.resolve(__dirname, '../builders/' + buildConfig.main),
+        output: {
+          path: path.resolve(__dirname, '../builders/prebuild'),
+          filename: 'prebuild.js'
+        },
+        plugins: [
+          new miniCssExtractPlugin({
+            filename: "prebuild.css"
+          }),
+        ],
+        module: {
+          rules: [
+            {
+              test: /\.css$/i,
+              use: [
+                { loader: 'style-loader', options: { injectType: 'singletonStyleTag' } },
+                miniCssExtractPlugin.loader,
+                'css-loader',
+              ],
+            }
+          ]
+        },
+        optimization: {
+          minimize: true,
+          minimizer: [
+            new CssMinimizerPlugin(),
           ],
-          output: {
-            path: path.resolve(__dirname, '../builders/build'),
-            filename: 'post.build.bundle.js'
-          }
-        }
+        },
       }
-      if (buildConfig.framework === "react") {
-        postBuildConfig = {
-          entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
-          module: {
-            rules: [
-              {
-                test: /\.(js|jsx)$/,
-                use: {
-                  loader: 'babel-loader',
-                  options: {
-                    presets: ['@babel/preset-env', '@babel/preset-react'],
-                    plugins: ['@babel/plugin-transform-runtime']
-                  }
-                },
-                exclude: /node_modules/
+    }
+    if(buildConfig.framework === 'react'){
+      prebuildConfig = {
+        entry: path.resolve(__dirname, '../builders/' + buildConfig.main),
+        output: {
+          path: path.resolve(__dirname, '../builders/prebuild'),
+          filename: 'prebuild.js'
+        },
+        plugins: [
+          new miniCssExtractPlugin({
+            filename: "prebuild.css"
+          }),
+        ],
+        module: {
+          rules: [
+            {
+              test: /\.(js|jsx)$/,
+              use: {
+                loader: 'babel-loader',
+                options: {
+                  presets: ['@babel/preset-env', '@babel/preset-react'],
+                  plugins: ['@babel/plugin-transform-runtime']
+                }
               },
-              {
-                test: /\.css$/i,
-                use: [
-                  { loader: 'style-loader', options: { injectType: 'singletonStyleTag' } },
-                  'css-loader',
-                ],
-              }
-            ]
-          },
-          resolve: {
-            extensions: [
-              '.js',
-              '.jsx',
-              '.css'
-            ]
-          },
-          plugins: [
-            new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
-            new HtmlWebpackPlugin({
-              filename: buildConfig.pageName,
-              template: path.resolve(__dirname, '../builders/indexTemplate.html'),
-              title: buildConfig.pageName.replace('.html', ''),
-              bundle: prebuild
-            })
+              exclude: /node_modules/
+            },
+            {
+              test: /\.css$/i,
+              use: [
+                { loader: 'style-loader', options: { injectType: 'singletonStyleTag' } },
+                miniCssExtractPlugin.loader,
+                'css-loader',
+              ],
+            }
+          ]
+        },
+        resolve: {
+          extensions: [
+            '.js',
+            '.jsx',
+            '.css'
+          ]
+        },
+        optimization: {
+          minimize: true,
+          minimizer: [
+            new CssMinimizerPlugin(),
           ],
-          output: {
-            path: path.resolve(__dirname, '../builders/build'),
-            filename: 'post.build.bundle.js'
-          }
-        }
+        },
       }
-      if (buildConfig.framework === "vue") {
-        postBuildConfig = {
-          entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
-          module: {
+    }
+    if(buildConfig.framework === 'vue'){
+      prebuildConfig = {
+        entry: path.resolve(__dirname, '../builders/' + buildConfig.main),
+        output: {
+          path: path.resolve(__dirname, '../builders/prebuild'),
+          filename: 'prebuild.js'
+        },
+        module: {
             rules: [
               {
                 test: /\.vue$/,
@@ -153,9 +150,10 @@ const Bundler = (buildConfig, ctx) => {
               {
                 test: /\.css$/i,
                 use: [
-                  { loader: 'style-loader', options: { injectType: 'singletonStyleTag' } },
-                  'css-loader',
-                ],
+                { loader: 'style-loader', options: { injectType: 'singletonStyleTag' } },
+                miniCssExtractPlugin.loader,
+                'css-loader',
+              ],
               }
             ]
           },
@@ -166,20 +164,53 @@ const Bundler = (buildConfig, ctx) => {
               '.css'
             ]
           },
-          plugins: [
-            new require('vue-loader/lib/plugin')(),
-            new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
-            new HtmlWebpackPlugin({
-              filename: buildConfig.pageName,
-              template: path.resolve(__dirname, '../builders/indexTemplate.html'),
-              title: buildConfig.pageName.replace('.html', ''),
-              bundle: prebuild
-            })
+        optimization: {
+          minimize: true,
+          minimizer: [
+            new CssMinimizerPlugin(),
           ],
-          output: {
-            path: path.resolve(__dirname, '../builders/build'),
-            filename: 'post.build.bundle.js'
-          }
+        },
+        plugins: [
+          new require('vue-loader/lib/plugin')(),
+          new miniCssExtractPlugin({
+            filename: "prebuild.css"
+          }),
+        ],
+      }
+    }
+    if(buildConfig.framework === 'vanilla'){
+      /* 
+      POST CONFIG
+       */
+    }
+    webpack(prebuildConfig, (errb, stats) => {
+      if (errb || stats.hasErrors()) {
+        // [Handle errors here](#error-handling)
+        console.log(errb)
+        console.log(stats)
+        /* 
+        UI
+        METTRE LE SYSTEME DE BUILD EN EVIDENCE (IMPORTANCE DES IMPORT)
+         */
+
+      }
+      let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.js', { encoding: 'utf-8' })
+      let inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
+      postBuildConfig = {
+        entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
+        plugins: [
+          new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
+          new HtmlWebpackPlugin({
+            filename: buildConfig.pageName,
+            template: path.resolve(__dirname, '../builders/indexTemplate.html'),
+            title: buildConfig.pageName.replace('.html', ''),
+            bundle: prebuild,
+            inlinecss : inlineCSS
+          })
+        ],
+        output: {
+          path: path.resolve(__dirname, '../builders/build'),
+          filename: 'post.build.bundle.js'
         }
       }
       webpack(postBuildConfig, (err, ress) => {
@@ -207,6 +238,9 @@ const Bundler = (buildConfig, ctx) => {
                 })
                 fs.mkdir(__dirname + '/../builders/build', { recursive: true }, (err) => {
                   if (err) console.log(err)
+                })
+                fs.mkdir(__dirname + '/../builders/css', {recursive: true}, (err)=>{
+                  if(err) console.log(err)
                 })
               }
             })

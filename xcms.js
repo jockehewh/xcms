@@ -433,7 +433,6 @@ bundleSocket.on('connection', (ctx)=>{
 /* SOCKET IO END */
 
 xcms.listen(the.port, () => {
-  console.log("listenning on port:", the.port)
   if(!fs.existsSync('./medias')){
     fs.mkdir('./medias/imgs', {recursive: true}, (err)=>{
       if(err) console.log(err)
@@ -465,27 +464,41 @@ xcms.listen(the.port, () => {
     fs.mkdir(__dirname + '/builders/build', {recursive: true}, (err)=>{
       if(err) console.log(err)
     })
+    fs.mkdir(__dirname + '/builders/css', {recursive: true}, (err)=>{
+      if(err) console.log(err)
+    })
   }
   customComponentsdb.find({}, (err, res)=>{
     if(err)console.log(err)
     if(res.length < 1){
       let files = fs.readdirSync(__dirname + '/nightlyjs')
+      let cssfiles = fs.readdirSync(__dirname + '/nightlyjs/css')
       files.forEach(file=>{
-      let fileContent = fs.readFileSync(__dirname + '/nightlyjs/'+ file, {encoding: 'utf-8'})
-      let componentObject = new customComponentsdb({
-      framework: 'nightlyjs',
-      scriptName: file,
-      scriptContent: fileContent
-      })
-      componentObject.save((err, res)=>{
-        if(err) console.log(err)
-        if(res){
-          console.log(`Successfully created the ${res.scriptName} component for the framework ${res.framework}`)
+        if(/.js$/.test(file)){
+          let fileContent = fs.readFileSync(__dirname + '/nightlyjs/'+ file, {encoding: 'utf-8'})
+          let cssContent = ""
+          cssfiles.forEach(css=>{
+            if(css.replace('.css', '') == file.replace('.js', '')){
+              cssContent = fs.readFileSync(__dirname + '/nightlyjs/css/'+ css, {encoding: 'utf-8'})
+            }
+          })
+          let componentObject = new customComponentsdb({
+          framework: 'nightlyjs',
+          scriptName: file,
+          scriptContent: fileContent,
+          attachedCSS: cssContent
+          })
+          componentObject.save((err, res)=>{
+            if(err) console.log(err)
+            if(res){
+              console.log(`Successfully created the ${res.scriptName} component for the framework ${res.framework}`)
+            }
+          })
         }
-      })
-    })                                    
+    })
     }
   })
+  console.log("listenning on port:", the.port)
 })
 
 module.exports = xcms

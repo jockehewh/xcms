@@ -31,7 +31,8 @@ const menu = new Schema({
   const customComponent = new Schema({
     framework: String,
     scriptName: String,
-    scriptContent: String
+    scriptContent: String,
+    attachedCSS: String
   })
   /* 
   BUNDLED PAGES MODEL WITH CSS

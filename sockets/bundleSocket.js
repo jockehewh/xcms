@@ -28,8 +28,7 @@ bundleSocket.on('message', ctx=>{
     let updateComponent = datainfo.updateComponent
     customComponentsdb.findOneAndUpdate({scriptName: updateComponent.scriptName}, 
     {
-      scriptContent: updateComponent.scriptContent,
-      framework: updateComponent.framework
+      scriptContent: updateComponent.scriptContent
     }, (err, ress)=>{
       if(err){
         ctx.socket.emit("errorr", 'Could not update the component: ' + updateComponent.scriptName)
@@ -37,7 +36,7 @@ bundleSocket.on('message', ctx=>{
       }
       if(ress){
         ctx.socket.emit('success', "Successfully updated the component: " + updateComponent.scriptName)
-        ress.save((errr, ress)=>{
+        ress.save((errr)=>{
           if(errr) console.log(errr, 'saving')
         })
       }
