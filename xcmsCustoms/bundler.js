@@ -7,6 +7,7 @@ const fs = require('fs')
 const webpack = require('webpack')
 var pagesCollection = require('../xcmsCustoms/pageCollection.js')
 const { customComponentsdb, pagedb } = require("../cmsModels")
+const { VueLoaderPlugin } = require('vue-loader')
 const htmlTemplate = `<!doctype html>
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@ const htmlTemplate = `<!doctype html>
   <style><%= htmlWebpackPlugin.options.inlinecss %></style>
 </head>
 <body>
-  <div id="root"></div>
+  <div class="xcms-root-container" id="root"></div>
   <script><%= htmlWebpackPlugin.options.bundle %></script>
   
 </body>
@@ -121,11 +122,6 @@ const Bundler = (buildConfig, ctx) => {
           path: path.resolve(__dirname, '../builders/prebuild'),
           filename: 'prebuild.js'
         },
-        plugins: [
-          new miniCssExtractPlugin({
-            filename: "prebuild.css"
-          }),
-        ],
         module: {
           rules: [
             {
@@ -165,6 +161,7 @@ const Bundler = (buildConfig, ctx) => {
     }
     if(buildConfig.framework === 'vue'){
       prebuildConfig = {
+        mode: 'production',
         entry: path.resolve(__dirname, '../builders/' + buildConfig.main),
         output: {
           path: path.resolve(__dirname, '../builders/prebuild'),
@@ -173,13 +170,34 @@ const Bundler = (buildConfig, ctx) => {
         module: {
             rules: [
               {
+                test: /\.js$/,
+                use:{
+                  loader: 'babel-loader',
+                  options: {
+                    presets: ['@babel/preset-env'],
+                    plugins: ['transform-vue-jsx','@babel/plugin-transform-runtime']
+                  }
+                },
+                exclude: /node_modules/
+              },
+              {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                use: [
+                  {loader: 'vue-loader'},
+                  {
+                    loader: 'babel-loader',
+                    options: {
+                      presets: [ "vue"],
+                      plugins: ['babel-plugin-transform-vue-jsx','@babel/plugin-transform-runtime']
+                    }
+                  },
+                  'vue-loader'
+                ]
               },
               {
                 test: /\.css$/i,
                 use: [
-                  miniCssExtractPlugin.loader,
+                  'vue-style-loader',
                   'css-loader',
                 ],
               }
@@ -188,21 +206,11 @@ const Bundler = (buildConfig, ctx) => {
           resolve: {
             extensions: [
               '.js',
-              '.vue',
-              '.css'
+              '.vue'
             ]
           },
-        optimization: {
-          minimize: true,
-          minimizer: [
-            new CssMinimizerPlugin(),
-          ],
-        },
         plugins: [
-          new require('vue-loader/lib/plugin')(),
-          new miniCssExtractPlugin({
-            filename: "prebuild.css"
-          }),
+          new VueLoaderPlugin(),
         ],
       }
     }
@@ -282,9 +290,9 @@ const Bundler = (buildConfig, ctx) => {
             })
           })
         })
-      }else{
+      }else{//react ok Faire aussi un loop pour Vue et React
         let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.js', { encoding: 'utf-8' })
-        let inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
+        //let inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
         postBuildConfig = {
           stats: "errors-only",
           entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
@@ -295,7 +303,7 @@ const Bundler = (buildConfig, ctx) => {
               template: path.resolve(__dirname, '../builders/indexTemplate.html'),
               title: buildConfig.pageName.replace('.html', ''),
               bundle: prebuild,
-              inlinecss : inlineCSS
+              inlinecss : ""
             })
           ],
           output: {
