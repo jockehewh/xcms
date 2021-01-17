@@ -28,7 +28,8 @@ bundleSocket.on('message', ctx=>{
     let updateComponent = datainfo.updateComponent
     customComponentsdb.findOneAndUpdate({scriptName: updateComponent.scriptName}, 
     {
-      scriptContent: updateComponent.scriptContent
+      scriptContent: updateComponent.scriptContent,
+      attachedCSS: updateComponent.attachedCSS
     }, (err, ress)=>{
       if(err){
         ctx.socket.emit("errorr", 'Could not update the component: ' + updateComponent.scriptName)

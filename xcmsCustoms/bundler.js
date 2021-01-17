@@ -22,6 +22,21 @@ const htmlTemplate = `<!doctype html>
 </body>
 </html>
 `
+const cleanBuildFolders = ()=>{
+  fs.rmdir(__dirname + '/../builders/', { recursive: true, force: true }, (err) => {
+    if (err === null) {
+      fs.mkdir(__dirname + '/../builders/prebuild', { recursive: true }, (err) => {
+        if (err) console.log(err)
+      })
+      fs.mkdir(__dirname + '/../builders/build', { recursive: true }, (err) => {
+        if (err) console.log(err)
+      })
+      fs.mkdir(__dirname + '/../builders/css', {recursive: true}, (err)=>{
+        if(err) console.log(err)
+      })
+    }
+  })
+}
 
 const Bundler = (buildConfig, ctx) => {
   let postBuildConfig = {}
@@ -59,6 +74,11 @@ const Bundler = (buildConfig, ctx) => {
           path: path.resolve(__dirname, '../builders/prebuild'),
           filename: 'prebuild.js'
         },
+        stats: "errors-only",
+        stats: {
+          preset: "errors-only",
+          warnings: false
+        },
         plugins: [
           new miniCssExtractPlugin({
             filename: "prebuild.css"
@@ -67,9 +87,19 @@ const Bundler = (buildConfig, ctx) => {
         module: {
           rules: [
             {
+              test: /\.js$/,
+              use: {
+                loader: 'babel-loader',
+                options: {
+                  presets: ['@babel/preset-env'],
+                  plugins: ['@babel/plugin-transform-runtime']
+                }
+              },
+              exclude: /node_modules/
+            },
+            {
               test: /\.css$/i,
               use: [
-                { loader: 'style-loader', options: { injectType: 'singletonStyleTag' } },
                 miniCssExtractPlugin.loader,
                 'css-loader',
               ],
@@ -112,7 +142,6 @@ const Bundler = (buildConfig, ctx) => {
             {
               test: /\.css$/i,
               use: [
-                { loader: 'style-loader', options: { injectType: 'singletonStyleTag' } },
                 miniCssExtractPlugin.loader,
                 'css-loader',
               ],
@@ -150,10 +179,9 @@ const Bundler = (buildConfig, ctx) => {
               {
                 test: /\.css$/i,
                 use: [
-                { loader: 'style-loader', options: { injectType: 'singletonStyleTag' } },
-                miniCssExtractPlugin.loader,
-                'css-loader',
-              ],
+                  miniCssExtractPlugin.loader,
+                  'css-loader',
+                ],
               }
             ]
           },
@@ -178,11 +206,7 @@ const Bundler = (buildConfig, ctx) => {
         ],
       }
     }
-    if(buildConfig.framework === 'vanilla'){
-      /* 
-      POST CONFIG
-       */
-    }
+    
     webpack(prebuildConfig, (errb, stats) => {
       if (errb || stats.hasErrors()) {
         // [Handle errors here](#error-handling)
@@ -192,61 +216,116 @@ const Bundler = (buildConfig, ctx) => {
         UI
         METTRE LE SYSTEME DE BUILD EN EVIDENCE (IMPORTANCE DES IMPORT)
          */
-
       }
-      let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.js', { encoding: 'utf-8' })
-      let inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
-      postBuildConfig = {
-        entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
-        plugins: [
-          new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
-          new HtmlWebpackPlugin({
-            filename: buildConfig.pageName,
-            template: path.resolve(__dirname, '../builders/indexTemplate.html'),
-            title: buildConfig.pageName.replace('.html', ''),
-            bundle: prebuild,
-            inlinecss : inlineCSS
-          })
-        ],
-        output: {
-          path: path.resolve(__dirname, '../builders/build'),
-          filename: 'post.build.bundle.js'
-        }
-      }
-      webpack(postBuildConfig, (err, ress) => {
-        if (err || ress.hasErrors()) {
-          // [Handle errors here](#error-handling)
-        }
-        let lastBundle = fs.readFileSync(__dirname + '/../builders/build/' + buildConfig.pageName, { encoding: "utf-8" })
-        let saveBundle = new pagedb({
-          name: buildConfig.pageName,
-          page: lastBundle,
-          js: "",
-          css: ""
-        })
-        saveBundle.save((err, res) => {
-          if (err) {
-            ctx.socket.emit('errorr', "Couldnt save the bundle into the database.")
+      if(buildConfig.framework === 'vanilla' || buildConfig.framework === 'nightlyjs'){
+        let rebuildJSConfig = {
+          mode: 'production',
+          stats: "errors-only",
+          stats: {
+            preset: "errors-only",
+            warnings: false
+          },
+          entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
+          output: {
+            path: path.resolve(__dirname, '../builders/prebuild'),
+            filename: 'vanillaBuild.js'
           }
-          if (res) {
-            pagesCollection.push(res)
-            ctx.socket.emit('success', "The bundle was saved at: " + buildConfig.pageName)
-            fs.rmdir(__dirname + '/../builders/', { recursive: true, force: true }, (err) => {
-              if (err === null) {
-                fs.mkdir(__dirname + '/../builders/prebuild', { recursive: true }, (err) => {
-                  if (err) console.log(err)
-                })
-                fs.mkdir(__dirname + '/../builders/build', { recursive: true }, (err) => {
-                  if (err) console.log(err)
-                })
-                fs.mkdir(__dirname + '/../builders/css', {recursive: true}, (err)=>{
-                  if(err) console.log(err)
-                })
+        }
+        webpack(rebuildJSConfig, (err, res)=>{
+          if(err || res.hasErrors()){
+            console.log(err, res)
+          }
+          let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/vanillaBuild.js', { encoding: 'utf-8' })
+          let inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
+          postBuildConfig = {
+            stats: "errors-only",
+            stats: {
+              preset: "errors-only",
+              warnings: false
+            },
+            entry: path.resolve(__dirname, '../builders/prebuild/vanillaBuild.js'),
+            plugins: [
+              new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
+              new HtmlWebpackPlugin({
+                filename: buildConfig.pageName,
+                template: path.resolve(__dirname, '../builders/indexTemplate.html'),
+                title: buildConfig.pageName.replace('.html', ''),
+                bundle: prebuild,
+                inlinecss : inlineCSS
+              })
+            ],
+            output: {
+              path: path.resolve(__dirname, '../builders/build'),
+              filename: 'post.build.bundle.js'
+            }
+          }
+          webpack(postBuildConfig, (err, ress) => {
+            if (err || ress.hasErrors()) {
+              // [Handle errors here](#error-handling)
+            }
+            let lastBundle = fs.readFileSync(__dirname + '/../builders/build/' + buildConfig.pageName, { encoding: "utf-8" })
+            let saveBundle = new pagedb({
+              name: buildConfig.pageName,
+              page: lastBundle,
+              js: "",
+              css: ""
+            })
+            saveBundle.save((err, res) => {
+              if (err) {
+                ctx.socket.emit('errorr', "Couldnt save the bundle into the database.")
+              }
+              if (res) {
+                pagesCollection.push(res)
+                ctx.socket.emit('success', "The bundle was saved at: " + buildConfig.pageName)
+                cleanBuildFolders()
               }
             })
-          }
+          })
         })
-      })
+      }else{
+        let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.js', { encoding: 'utf-8' })
+        let inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
+        postBuildConfig = {
+          stats: "errors-only",
+          entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
+          plugins: [
+            new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
+            new HtmlWebpackPlugin({
+              filename: buildConfig.pageName,
+              template: path.resolve(__dirname, '../builders/indexTemplate.html'),
+              title: buildConfig.pageName.replace('.html', ''),
+              bundle: prebuild,
+              inlinecss : inlineCSS
+            })
+          ],
+          output: {
+            path: path.resolve(__dirname, '../builders/build'),
+            filename: 'post.build.bundle.js'
+          }
+        }
+        webpack(postBuildConfig, (err, ress) => {
+          if (err || ress.hasErrors()) {
+            // [Handle errors here](#error-handling)
+          }
+          let lastBundle = fs.readFileSync(__dirname + '/../builders/build/' + buildConfig.pageName, { encoding: "utf-8" })
+          let saveBundle = new pagedb({
+            name: buildConfig.pageName,
+            page: lastBundle,
+            js: "",
+            css: ""
+          })
+          saveBundle.save((err, res) => {
+            if (err) {
+              ctx.socket.emit('errorr', "Couldnt save the bundle into the database.")
+            }
+            if (res) {
+              pagesCollection.push(res)
+              ctx.socket.emit('success', "The bundle was saved at: " + buildConfig.pageName)
+              cleanBuildFolders()
+            }
+          })
+        })
+      }
     });
   })
   /* 

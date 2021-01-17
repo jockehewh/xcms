@@ -6,7 +6,6 @@ class HtmlWebpackPluginWithoutScriptTag {
         'HtmlWebpackPluginWithoutScriptTag',
         (data, cb) => {
           data.assetTags.scripts.length = 0
-          console.log(data.assetTags.scripts)
           cb(null, data)
         }
       )
