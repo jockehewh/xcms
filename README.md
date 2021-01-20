@@ -133,14 +133,14 @@ to use custom fonts, import it via CDN.
 use an '@import' statement at the top of your CSS file.
 
 
-##### CRM part
-__Data manager:__
+##### Data manager
+__Data editor:__
 
 Allows you to create data models (mongoose Schema) for mongodb.
 The model name is the "dbName" key.
 The model fields are represented as a JSON object named "identifiers".  
 
-__CRUD API manager:__
+__API manager:__
 
 The CRUD API manager allows you to create custom routes to gather or record your data.
 {"authenticated":false,"name":"deleteuser","model":"xavdb","route":"deleteuser","action":"delete"}
@@ -256,3 +256,11 @@ Clicking the 'Export medias' button will generate a zip file containing all your
 __Import medias:__
 
 Clicking the 'Import medias' button will allow you to pick an "xcmsMediaExport.zip" file that will be uploaded to your server. You can then access all your assets as if you didn't migrate.
+
+##### Bundle editor
+
+The bundle editor allows you to use modern Javascript frameworks to build any kind of application. It is mainly composed in three parts: 
+- A listing of your components ordered by frameworks.
+- A JS editor and a CSS editor (notice that each component had its css linked in the CSS editor. use a relative path to import it in your JS eg:```
+import ./myCSS.css
+```

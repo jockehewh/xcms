@@ -3,6 +3,6 @@ latest update:
 Adds:
   - Added the bundle-editor page to bundle ES6, React or Vue components.
 Changes:
-  - 
+  - moved the data manager to a separate file
 BugFixes:
   - 
