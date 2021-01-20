@@ -261,7 +261,9 @@ Clicking the 'Import medias' button will allow you to pick an "xcmsMediaExport.z
 
 The bundle editor allows you to use modern Javascript frameworks to build any kind of application. It is mainly composed in three parts: 
 - A listing of your components ordered by frameworks.
-- A JS editor and a CSS editor (notice that each component had its css linked in the CSS editor. use a relative path to import it in your JS eg:
-```
-import ./myCSS.css
-```
+- A JS editor and a CSS editor (notice that each component had its css linked in the CSS editor. use a relative path to import it in your JS. 
+example:
+- ```
+- import ./myCSS.css
+- ```
+- 
