@@ -339,7 +339,13 @@ xcms.use(r.get('/admin', (ctx) => {
 }))
 xcms.use(r.get('/bundle-editor', (ctx) => {
   ctx.type = "html"
-  ctx.body = fs.createReadStream(__dirname + '/admin-site/bundlemaker.html', {
+  ctx.body = fs.createReadStream(__dirname + '/admin-site/bundle-editor.html', {
+    autoClose: true
+  })
+}))
+xcms.use(r.get('/data-manager', (ctx) => {
+  ctx.type = "html"
+  ctx.body = fs.createReadStream(__dirname + '/admin-site/data-manager.html', {
     autoClose: true
   })
 }))
