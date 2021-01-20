@@ -11,7 +11,7 @@
   <script src="./admin-site/beautifier.js"></script>
   <script src="./admin-site/ace-editor/ext-language_tools.js"></script>
 <style>
-  .nav p:hover{
+  .nav p:hover, .data-manager:hover, .bundle-editor:hover{
     background-color: var(--white-1);
     position: relative;
     top: 1px;
@@ -25,7 +25,7 @@
       justify-content: space-between;
       align-items: center;
   }
-  .nav p{
+  .nav p, .data-manager, .bundle-editor, .cm-span{
       cursor: pointer;
       width: 150px;
       color: #000;
@@ -33,6 +33,15 @@
       position: relative;
       right: 1.7rem;
       line-height: 2;
+  }
+  .cm-span{
+    display: inline-flex;
+    align-items: center;
+    width: 250px;
+  }
+  .data-manager, .bundle-editor{
+      display: block;
+      margin: 0;
   }
   .nav span{
       line-height: 2;
@@ -80,6 +89,7 @@ label div{
 }
 a{
     cursor:pointer;
+    text-decoration: none;
 }
 a:hover{
     font-weight: bold;
@@ -204,7 +214,7 @@ body{
 </head>
 <body>
   <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
-    <p>Go to the Content manager</p>
+    <span class="cm-span"><a href="/admin" class="bundle-editor">Content editor</a></span>
   </div>
   <div class="first-class">
     <div class="all-components">

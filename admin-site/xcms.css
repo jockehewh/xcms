@@ -134,7 +134,7 @@ hr{
     justify-content: space-between;
     line-height: 2;
 }
-.editables li:hover, .list li:hover, .nav p:hover{
+.editables li:hover, .list li:hover, .nav p:hover, .data-manager:hover, .bundle-editor:hover{
     background-color: var(--white-1);
     position: relative;
     top: 1px;
@@ -283,7 +283,7 @@ iframe{
     justify-content: space-between;
     align-items: center;
 }
-.nav p{
+.nav p, .data-manager, .bundle-editor, .cm-span{
     cursor: pointer;
     width: 150px;
     color: #000;
@@ -291,6 +291,15 @@ iframe{
     position: relative;
     right: 1.7rem;
     line-height: 2;
+}
+.cm-span{
+    display: inline-flex;
+    align-items: center;
+    width: 250px;
+}
+.data-manager, .bundle-editor{
+    display: block;
+    margin: 0;
 }
 .nav span{
     line-height: 2;

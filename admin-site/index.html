@@ -41,7 +41,7 @@
   </div>
   <div class="content-manager">
     <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
-      <p>Go to the Data manager</p>
+      <span class="cm-span"><a href="/bundle-editor" class="bundle-editor">Bundle editor</a><a href="#" class="data-manager">Data manager</a></span>
     </div>
     <main class="mw-100">
       <div class="first-class-editor-button">
@@ -1748,7 +1748,8 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
     //****************** version mobile fin
   </script>
   <script>
-    document.querySelector('.nav p').addEventListener('click', e => {
+    document.querySelector('.data-manager').addEventListener('click', e => {
+      e.preventDefault()
       if(mews != ""){
         mews.close()
       }
@@ -1938,9 +1939,22 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           align-items: center;
         }
 
-        :scope .nav p {
+        :scope .nav p,
+        :scope .data-manager,
+        :scope .bundle-editor,
+        :scope .cm-span {
           cursor: pointer;
           width: 150px;
+        }
+        :scope .cm-span {
+          display: inline-flex;
+          align-items: center;
+          width: 250px;
+        }
+        :scope .data-manager,
+        :scope .bundle-editor{
+          display: block;
+          margin: 0;
         }
 
         :scope .minimenu {
@@ -1988,7 +2002,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         }
       </style>
       <div class="nav"><span style="padding-left: 20px;">XCMS <a href="/logout">logout</a></span>
-        <p>Go to the CMS page</p>
+        <span class="cm-span"><a href="/bundle-editor" class="bundle-editor">Bundle editor</a><a href="/admin" class="data-manager">Content manager</a></span>
       </div>
       <div class="minimenu">
         <ul><hr>
@@ -2111,9 +2125,6 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       </div>
       <div class="crm-status-box"></div>
       <script>
-        document.querySelector('.crm-body .nav p').addEventListener('click', (e) => {
-          window.location.href = window.location.origin+ "/admin"
-        })
         document.querySelectorAll('a').forEach(link => {
           link.addEventListener('click', e => {
             if (e.target.dataset.link === 'conf') {
