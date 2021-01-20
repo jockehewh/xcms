@@ -267,15 +267,16 @@ The bundle editor allows you to use modern Javascript frameworks to build any ki
 __1. A listing of your components:__
 
 //Liste des composant
+Each component has its css linked to it.
+Use the CSS editor to add your css and as an example with "myJS.js" to use your CSS you will do:
+```
+import ./myJS.css
+```
 //Description des boutons
 
 
 __2. A JS editor and A CSS editor:__
 
-each component had its css linked in the CSS editor. use a relative path to import it in your JS. 
-example:
-```
-import ./myCSS.css
-```
+
 
 __3. A builder to build your application:__
