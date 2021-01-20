@@ -105,7 +105,7 @@ Right-clicking a container allows you to quickly add some essential css to that 
 __inlining CSS__
 after editing you CSS press 'Alt+Enter' to inline it into the HTML elements.
 
-##### Generating Javascript Snippets step by step
+### Generating Javascript Snippets step by step
 
 __Activating a container component:__
 To activate a container component click it in the viewport. Some options will appear on the right.
@@ -133,7 +133,7 @@ to use custom fonts, import it via CDN.
 use an '@import' statement at the top of your CSS file.
 
 
-##### Data manager
+### Data manager
 __Data editor:__
 
 Allows you to create data models (mongoose Schema) for mongodb.
@@ -257,13 +257,25 @@ __Import medias:__
 
 Clicking the 'Import medias' button will allow you to pick an "xcmsMediaExport.zip" file that will be uploaded to your server. You can then access all your assets as if you didn't migrate.
 
-##### Bundle editor
+### Bundle editor
 
 The bundle editor allows you to use modern Javascript frameworks to build any kind of application. It is mainly composed in three parts: 
-- A listing of your components ordered by frameworks.
-- A JS editor and a CSS editor (notice that each component had its css linked in the CSS editor. use a relative path to import it in your JS. 
+1. A listing of your components.
+2. A JS editor and a CSS editor.
+3. A builder to build your application.
+
+__1. A listing of your components:__
+
+//Liste des composant
+//Description des boutons
+
+
+__2. A JS editor and A CSS editor:__
+
+each component had its css linked in the CSS editor. use a relative path to import it in your JS. 
 example:
-- ```
-- import ./myCSS.css
-- ```
-- 
+```
+import ./myCSS.css
+```
+
+__3. A builder to build your application:__
