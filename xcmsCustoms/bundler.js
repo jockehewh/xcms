@@ -8,7 +8,6 @@ const webpack = require('webpack')
 var pagesCollection = require('../xcmsCustoms/pageCollection.js')
 const { customComponentsdb, pagedb } = require("../cmsModels")
 const { VueLoaderPlugin } = require('vue-loader')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const htmlVanillaTemplate = `<!doctype html>
 <html lang="en">
 <head>
@@ -69,6 +68,38 @@ const cleanBuildFolders = ()=>{
     }
   })
 }
+const saveBundle = (bundleName, ctx) => {
+  let lastBundle = fs.readFileSync(__dirname + '/../builders/build/' + bundleName, { encoding: "utf-8" })
+  let saveBundle = new pagedb({
+    isBundle: true,
+    name: bundleName,
+    page: lastBundle,
+    js: "",
+    css: ""
+  })
+  //FRONT EMPECHER DE RETOUCHER LES BUILD GENERES
+  pagedb.find({name: bundleName}, (error, response)=>{
+    if(error) console.log(error)
+    if(response.length > 0){
+      response[0].page = lastBundle
+      response[0].isBundle = true
+      response[0].save()
+      ctx.socket.emit('success', "Successfully updated the bundle: " + bundleName)
+      cleanBuildFolders()
+    }else{
+      saveBundle.save((err, res) => {
+        if (err) {
+          ctx.socket.emit('errorr', "Couldnt save the bundle into the database.")
+        }
+        if (res) {
+          pagesCollection.push(res)
+          ctx.socket.emit('success', "The bundle was saved at: " + bundleName)
+          cleanBuildFolders()
+        }
+      })
+    }
+  })
+}
 
 const Bundler = (buildConfig, ctx) => {
   let postBuildConfig = {}
@@ -107,10 +138,6 @@ const Bundler = (buildConfig, ctx) => {
           filename: 'prebuild.js'
         },
         stats: "errors-only",
-        stats: {
-          preset: "errors-only",
-          warnings: false
-        },
         plugins: [
           new miniCssExtractPlugin({
             filename: "prebuild.css"
@@ -171,6 +198,7 @@ const Bundler = (buildConfig, ctx) => {
             let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/vanillaBuild.js', { encoding: 'utf-8' })
             let inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
             postBuildConfig = {
+              mode: 'production',
               stats: "errors-only",
               stats: {
                 preset: "errors-only",
@@ -196,23 +224,7 @@ const Bundler = (buildConfig, ctx) => {
               if (err || ress.hasErrors()) {
                 // [Handle errors here](#error-handling)
               }
-              let lastBundle = fs.readFileSync(__dirname + '/../builders/build/' + buildConfig.pageName, { encoding: "utf-8" })
-              let saveBundle = new pagedb({
-                name: buildConfig.pageName,
-                page: lastBundle,
-                js: "",
-                css: ""
-              })
-              saveBundle.save((err, res) => {
-                if (err) {
-                  ctx.socket.emit('errorr', "Couldnt save the bundle into the database.")
-                }
-                if (res) {
-                  pagesCollection.push(res)
-                  ctx.socket.emit('success', "The bundle was saved at: " + buildConfig.pageName)
-                  cleanBuildFolders()
-                }
-              })
+              saveBundle(buildConfig.pageName, ctx)
             })
           })
       })
@@ -271,6 +283,7 @@ const Bundler = (buildConfig, ctx) => {
         }
           let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.js', { encoding: 'utf-8' })
           postBuildConfig = {
+            mode: 'production',
             stats: "errors-only",
             entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
             plugins: [
@@ -291,23 +304,7 @@ const Bundler = (buildConfig, ctx) => {
             if (err || ress.hasErrors()) {
               // [Handle errors here](#error-handling)
             }
-            let lastBundle = fs.readFileSync(__dirname + '/../builders/build/' + buildConfig.pageName, { encoding: "utf-8" })
-            let saveBundle = new pagedb({
-              name: buildConfig.pageName,
-              page: lastBundle,
-              js: "",
-              css: ""
-            })
-            saveBundle.save((err, res) => {
-              if (err) {
-                ctx.socket.emit('errorr', "Couldnt save the bundle into the database.")
-              }
-              if (res) {
-                pagesCollection.push(res)
-                ctx.socket.emit('success', "The bundle was saved at: " + buildConfig.pageName)
-                cleanBuildFolders()
-              }
-            })
+            saveBundle(buildConfig.pageName, ctx)
           })
       })
     }
@@ -317,6 +314,7 @@ const Bundler = (buildConfig, ctx) => {
       templateFile.end()
       prebuildConfig = {
         mode: 'production',
+        stats: "errors-only",
         entry: path.resolve(__dirname, '../builders/' + buildConfig.main),
         output: {
           path: path.resolve(__dirname, '../builders/prebuild'),
@@ -366,7 +364,8 @@ const Bundler = (buildConfig, ctx) => {
           },
         plugins: [
           new VueLoaderPlugin()
-        ]
+        ],
+            stats: {moduleTrace: true},
       }
       webpack(prebuildConfig, (errb, stats) => {
         if (errb || stats.hasErrors()) {
@@ -376,6 +375,7 @@ const Bundler = (buildConfig, ctx) => {
           }
           let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.js', { encoding: 'utf-8' })
           postBuildConfig = {
+            mode: 'production',
             stats: "errors-only",
             entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
             plugins: [
@@ -397,23 +397,7 @@ const Bundler = (buildConfig, ctx) => {
             if (err || ress.hasErrors()) {
               // [Handle errors here](#error-handling)
             }
-            let lastBundle = fs.readFileSync(__dirname + '/../builders/build/' + buildConfig.pageName, { encoding: "utf-8" })
-            let saveBundle = new pagedb({
-              name: buildConfig.pageName,
-              page: lastBundle,
-              js: "",
-              css: ""
-            })
-            saveBundle.save((err, res) => {
-              if (err) {
-                ctx.socket.emit('errorr', "Couldnt save the bundle into the database.")
-              }
-              if (res) {
-                pagesCollection.push(res)
-                ctx.socket.emit('success', "The bundle was saved at: " + buildConfig.pageName)
-                cleanBuildFolders()
-              }
-            })
+            saveBundle(buildConfig.pageName, ctx)
           })
       })
     }

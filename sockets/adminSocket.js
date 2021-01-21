@@ -29,6 +29,7 @@ adminSocket.on('message', async (ctx) => {
           ctx.socket.emit('errorr', 'This page already exist.')
         } else {
           let newPage = new pagedb({
+            isBundle: false,
             name: datainfo.name + ".html",
             page: datainfo.page,
             js: datainfo.js,
@@ -128,10 +129,6 @@ adminSocket.on('message', async (ctx) => {
         isIndex.length = 0
       }
     }
-    /* 
-    faciliter la création le stockage et l'utilisation de composants
-    integrer avec webpack
-     */
   }
 })
 let extensionCheck = /(\.(jpeg)|(png)|(PNG)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const saltfactor = 10
 
 const page = new Schema({
+    isBundle: Boolean,
     name: String,
     page: String,
     js: String,

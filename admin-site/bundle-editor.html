@@ -203,6 +203,8 @@ body{
 .build-items-list-react,
 .build-items-list-vue,
 .components-list-react,
+.build-items-list-nightlyjs,
+.components-list-nightlyjs,
 .components-list-vue{
   display: none;
 }
@@ -233,12 +235,11 @@ body{
           <button name="css">CSS Editor</button>
         </div>
         <div class="editor-options">
-          <h3>Select options:</h3>
-          <label for="nightly">nightly<input type="radio" id="nightly" name="editor-options-option" checked></label>
+          <h3>Frameworks:</h3>
+          <label for="nightly">nightly<input type="radio" id="nightly" name="editor-options-option"></label>
           <label for="react">react<input type="radio" id="react" name="editor-options-option"></label>
-          <label for="vanilla">vanilla<input type="radio" id="vanilla" name="editor-options-option"></label>
+          <label for="vanilla">vanilla<input type="radio" id="vanilla" name="editor-options-option" checked></label>
           <label for="vue">vue<input type="radio" id="vue" name="editor-options-option"></label>
-          
           <!-- options? --></div>
       </div>
       <div class="editor-actions">
@@ -308,7 +309,7 @@ body{
             document.querySelector('.components-list-react').appendChild(li)
           }else if(component.framework == "vue"){
             document.querySelector('.components-list-vue').appendChild(li)
-          }else if(component.framework != 'react' && component.framework != "vue"){
+          }else if(component.framework == 'vanilla'){
             document.querySelector('.components-list-vanilla').appendChild(li)
           }
           a.addEventListener('click', (e)=>{

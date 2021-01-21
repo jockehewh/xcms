@@ -266,17 +266,40 @@ The bundle editor allows you to use modern Javascript frameworks to build any ki
 
 __1. A listing of your components:__
 
-//Liste des composant
+On the left side of the screen is a list of your components filtred by framework.
 Each component has its css linked to it.
+So a "myJS.js" file will have a "myJS.css" file linked to it.
 Use the CSS editor to add your css and as an example with "myJS.js" to use your CSS you will do:
 ```
-import ./myJS.css
+//inside myJS.js
+import './myJS.css'
 ```
-//Description des boutons
-
 
 __2. A JS editor and A CSS editor:__
 
+In the middle are the CSS and JS editors.
+this is where you will edit your components.
+on the top-right corner of the editor are 3 buttons:
 
+###### New
+
+It will prompt you with the name of your component. (due to the nature of the bundler you will have to enter the correct extension for your file, it can be: .js, .jsx and .vue)
+
+###### Save
+
+It will save the currently editing component.
+
+###### Reset
+
+It will restore the component to its original state.
+
+Below the editors is a framework selector:
+1. It allows you to create your components under the good framework for later use.
+2. It is also used to setup the right target at compilation time.
 
 __3. A builder to build your application:__
+
+On the right side of the screen is the Builder.
+To bundle your application, select the needed components using the checkbox and select the entrypoint of the bundle by using the radio-button.
+For now the resulting bundle will be named after the entrypoint 
+as an example: for an "index.js" file the bundle will be named "index.html"

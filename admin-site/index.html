@@ -1525,6 +1525,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       a.href = '#'
       a.innerText = onePage.name
       a.dataset.index = editablePages.length - 1
+      a.dataset.isBundle = onePage.isBundle
       a.className += "link"
       span.innerText = "delete page"
       li.appendChild(a);
@@ -1532,6 +1533,10 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
       //EDITING PAGES
       a.addEventListener('click', (e) => {
         e.preventDefault();
+        if(e.target.dataset.isBundle == "true"){
+          alert('You cannot edit a page made from the bundle editor.')
+          return
+        }
         myframe = document.querySelector('.maFrame')
         let xcmsRootContainer = document.createElement('div')
         xcmsRootContainer.classList.add('xcms-root-container')
