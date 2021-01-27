@@ -35,9 +35,7 @@ const menu = new Schema({
     scriptContent: String,
     attachedCSS: String
   })
-  /* 
-  BUNDLED PAGES MODEL WITH CSS
-   */
+  
   const customComponentsdb = mongoose.model('custom-components', customComponent)
 
   const pagedb = mongoose.model('pages', page)

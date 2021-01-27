@@ -178,7 +178,6 @@ const Bundler = (buildConfig, ctx) => {
       }
       webpack(prebuildConfig, (errb, stats) => {
         if (errb || stats.hasErrors()) {
-          // [Handle errors here](#error-handling)
           console.log(errb)
           console.log(stats)
         }
