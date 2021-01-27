@@ -317,7 +317,9 @@ let unidentifiedRoutes = customAPI.map(route=>{
 })
 unidentifiedRoutes.forEach(conf=>{
   if(conf !== undefined){
-    makeCustomRoute(conf)
+    if(conf.available){
+      makeCustomRoute(conf)
+    }
   }
 })
 
@@ -379,8 +381,11 @@ xcms.use(r.get(/column/, ctx => {
 }))
 /* ENABLE CUSTOM API AUTHENTIFIED ROUTES */
 identifiedRoutes.forEach(conf=>{
-  if(conf !== undefined)
-  makeCustomRoute(conf)
+  if(conf !== undefined){
+    if(conf.available){
+      makeCustomRoute(conf)
+    }
+  }
 })
 
 xcms.use(r.get('/logout', (ctx) => {

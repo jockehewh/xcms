@@ -232,7 +232,9 @@ crmSocket.on('message', async (ctx) => {
         updatedRoutes.write(latestRoutes)
         updatedRoutes.end()
         ctx.socket.emit('success', `Successfully created the new route: ${newRoute.route}`)
-        restart()
+        if(newRoute.available){
+            restart()
+        }
     }
     if(datainfo.updateRoute){
         let updateRoute = datainfo.updateRoute
@@ -250,7 +252,9 @@ crmSocket.on('message', async (ctx) => {
         updatedRoutes.write(latestRoutesUpdated)
         updatedRoutes.end()
         ctx.socket.emit('success', `Successfully updated the route: ${updateRoute.route.name} ...Restarting.`)
-        restart()
+        if(updateRoute.available){
+            restart()
+        }
     }
     if(datainfo.updateModel){
         let updateModel = datainfo.updateModel

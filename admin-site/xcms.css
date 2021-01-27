@@ -117,6 +117,7 @@ hr{
     color: var(--grey-2);
     height: 0px;
     background: var(--grey-2);
+    margin-top: 1px;
 }
 .boutons a{
     line-height: 2;

@@ -38,10 +38,6 @@
         color: var(--grey-2);
       }
 
-      button:last-of-type:hover {
-        background: unset;
-      }
-
       a:hover,
       button:hover {
         position: relative;
@@ -73,7 +69,15 @@
         cursor: pointer;
         line-height: 2;
       }
-
+      .save, .reset, .new{
+        background: transparent;
+        border: none;
+        padding: 8px;
+        cursor: pointer;
+      }
+      .save:hover, .reset:hover, .new:hover{
+        background-color: var(--white-1);
+      }
       .configuration,
       .admin-configuration,
       .password-configuration {
@@ -109,6 +113,7 @@
       .make-routes {
         margin-top: 10px;
         margin-left: 10px;
+        width: 84%;
       }
 
       .existing-models,
@@ -165,7 +170,33 @@
         line-height: 2;
         display: flex;
         flex-direction: row;
-        justify-content: space-between
+        justify-content: space-between;
+      }
+      .existing-routes li{
+        width: 84%;
+        justify-content: unset;
+        margin: 1px;
+        align-items: center;
+      }
+      .existing-routes .online-indicator{
+        width: 8px;
+        margin: 0 8px 0 4px;
+      }
+      .existing-routes hr{
+        width: 90%;
+      }
+      .existing-routes{
+        flex-direction: row;
+      }
+      .online-indicator {
+        display: grid;
+        height: 100%;
+        grid-template-rows: 1fr 1fr;
+      }
+      .online-indicator div{
+        border-radius: 50%;
+        height: 10px;
+        width: 10px;
       }
 
       .existing-models li:hover,
@@ -192,6 +223,7 @@
         flex-direction: row;
         width: 400px;
         justify-content: space-evenly;
+        justify-self: center;
       }
 
       .route-types button:hover {
@@ -416,9 +448,9 @@
         <div>
           <ul>
             <h3>My Routes:</h3>
-            <hr>
+            <hr style="width:90%">
           </ul>
-          <hr style="width: 84%;align-self: center;">
+          <hr style="width: 84%;">
           <button class="add-route">New route</button>
           <div class="config-import-export">
             <button class='export-routes'>Export routes</button>
@@ -434,12 +466,21 @@
             <button data-message-type="delete">DELETE</button>
           </div>
         </div>
+        <div class="editor-actions">
+          <h3>Editors actions:</h3>
+          <div>
+            <button class='save'>Save</button>
+            <button class='reset'>Reset</button>
+            <button class='new'>New</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="crm-status-box"></div>
     <script>
       const jss = JSON.stringify
       const jsp = JSON.parse
+      let currentlyEditing = {}
       document.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', e => {
           if (e.target.dataset.link === 'conf') {
@@ -769,6 +810,7 @@
               routeeditor.setValue(
                 `{
 "authenticated": false,
+"available": false,
 "name": "exampleName",
 "model": "exampleModeldb",
 "route":"exampleRoute",
@@ -781,6 +823,7 @@
               routeeditor.setValue(
                 `{
 "authenticated": false,
+"available": false,
 "name": "exampleName",
 "model": "exampleModeldb",
 "route":"exampleRoute",
@@ -792,6 +835,7 @@
               routeeditor.setValue(
                 `{
 "authenticated": false,
+"available": false,
 "name": "exampleName",
 "model": "exampleModeldb",
 "route":"exampleRoute",
@@ -804,6 +848,7 @@
               routeeditor.setValue(
                 `{
 "authenticated": false,
+"available": false,
 "name": "exampleName",
 "model": "exampleModeldb",
 "route":"exampleRoute",
@@ -823,6 +868,7 @@
           routeeditor.setValue(
             `{
 "authenticated": false,
+"available": false,
 "name": "exampleName",
 "model": "exampleModeldb",
 "route":"exampleRoute",
@@ -845,7 +891,7 @@
             newRoute.route !== "" &&
             newRoute.model !== "" &&
             newRoute.model !== " " &&
-            newRoute.model !== "exampleModel+db") {
+            newRoute.model !== "exampleModeldb") {
             crms.emit('message', JSON.stringify({ newRoute: newRoute }))
           } else {
             showStatusMessage2(0, "Incorrect route model, verify your data and retry.")
@@ -875,7 +921,65 @@
         enableLiveAutocompletion: true,
         showGutter: false
       })
-
+      document.querySelector('.editor-actions .save').addEventListener('click', e=>{
+        if(document.querySelector('.add-route').textContent === "Save"){
+          let newRoute = routeeditor.getValue()
+          while (newRoute.indexOf('\n') != -1) {
+            newRoute = newRoute.replace('\n', '')
+          }
+          while (newRoute.indexOf(' ') != -1) {
+            newRoute = newRoute.replace(' ', '')
+          }
+          newRoute = JSON.parse(newRoute)
+          newRoute.action = newRoute.action.toLowerCase()
+          let reservedWords = ["contact", "connect", "admin", "logout"]
+          if (!reservedWords.includes(newRoute.route) &&
+            newRoute.route !== "" &&
+            newRoute.model !== "" &&
+            newRoute.model !== " " &&
+            newRoute.model !== "exampleModeldb") {
+            crms.emit('message', JSON.stringify({ newRoute: newRoute }))
+          } else {
+            showStatusMessage2(0, "Incorrect route model, verify your data and retry.")
+          }
+          routeeditor.setValue('')
+          document.querySelector('#model-editor').style.display = 'none'
+          document.querySelector('.add-route').textContent = "New route"
+        }else{
+          let activeRoute = document.querySelector(currentlyEditing.selector)
+          let updateRoute = routeeditor.getValue()
+          while (updateRoute.indexOf('\n') != -1) {
+            updateRoute = updateRoute.replace('\n', '')
+          }
+          while (updateRoute.indexOf(' ') != -1) {
+            updateRoute = updateRoute.replace(' ', '')
+          }
+          updateRoute = JSON.parse(updateRoute)
+          updateRoute.action = updateRoute.action.toLowerCase()
+          crms.emit('message', JSON.stringify({ updateRoute: { oldName: currentlyEditing.name, route: updateRoute } }))
+          routeeditor.setValue('')
+          if(document.querySelector('.editor-actions .delete'))
+          document.querySelector('.editor-actions .delete').remove()
+        }
+      })
+      document.querySelector('.editor-actions .reset').addEventListener('click', e=>{
+          routeeditor.setValue('')
+          if(document.querySelector('.editor-actions .delete'))
+          document.querySelector('.editor-actions .delete').remove()
+      })
+      document.querySelector('.editor-actions .new').addEventListener('click', e=>{
+          routeeditor.setValue(
+            `{
+"authenticated": false,
+"available": false,
+"name": "exampleName",
+"model": "exampleModeldb",
+"route":"exampleRoute",
+"action":"read",
+"targetValues": ["exampleNameKey"]
+}`)
+          routeeditor.navigateFileEnd()
+      })
       document.querySelector('.export-routes').addEventListener('click', (e) => {
         crms.emit('message', JSON.stringify({ exportRoutes: true }))
       })
@@ -930,12 +1034,27 @@
       })
       const makeEditableRouteButton = (route) => {
         let li = document.createElement('li')
+        let div = document.createElement('div')
+        let isOnline = document.createElement('div')
+        let isNotOnline = document.createElement('div')
         let a = document.createElement('a')
         let hr = document.createElement('hr')
         let oldName = route.name
+        div.classList.add('online-indicator')
+        div.appendChild(isOnline)
+        div.appendChild(isNotOnline)
+        li.appendChild(div)
         li.appendChild(a)
         a.innerText = `${route.action}: /${route.route}`
         a.href = "#"
+        a.id = `${route.action}-${route.route}`
+        if(route.available){
+          isOnline.style.backgroundColor = 'green'
+          isNotOnline.style.backgroundColor = 'var(--white-3)'
+        }else{
+          isOnline.style.backgroundColor = 'var(--white-3)'
+          isNotOnline.style.backgroundColor = 'red'
+        }
         route = JSON.stringify(route)
         document.querySelector('.existing-routes ul').appendChild(li)
         document.querySelector('.existing-routes ul').appendChild(hr)
@@ -943,29 +1062,17 @@
           e.preventDefault()
           routeeditor.setValue(beautifier.js(route))
           routeeditor.navigateFileEnd()
+          currentlyEditing = {
+            name: oldName,
+            selector: '#'+a.id
+          }
           let deleteBtn = document.createElement('button')
           deleteBtn.innerText = "Delete"
-          let btn = document.createElement('button')
-          btn.innerText = "Save"
-          li.appendChild(deleteBtn)
-          li.appendChild(btn)
-          btn.addEventListener('click', (ev) => {
-            let updateRoute = routeeditor.getValue()
-            while (updateRoute.indexOf('\n') != -1) {
-              updateRoute = updateRoute.replace('\n', '')
-            }
-            while (updateRoute.indexOf(' ') != -1) {
-              updateRoute = updateRoute.replace(' ', '')
-            }
-            updateRoute = JSON.parse(updateRoute)
-            updateRoute.action = updateRoute.action.toLowerCase()
-            crms.emit('message', JSON.stringify({ updateRoute: { oldName, route: updateRoute } }))
-            routeeditor.setValue('')
-            btn.remove()
-            deleteBtn.remove()
-          })
+          deleteBtn.classList.add('delete')
+          document.querySelector('.editor-actions div').appendChild(deleteBtn)
           deleteBtn.addEventListener('click', (ev) => {
             crms.emit('message', JSON.stringify({ deleteRoute: { name: oldName } }))
+            routeeditor.setValue()
             li.remove()
           })
         })

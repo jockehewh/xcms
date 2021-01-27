@@ -8,6 +8,7 @@ const webpack = require('webpack')
 var pagesCollection = require('../xcmsCustoms/pageCollection.js')
 const { customComponentsdb, pagedb } = require("../cmsModels")
 const { VueLoaderPlugin } = require('vue-loader')
+
 const htmlVanillaTemplate = `<!doctype html>
 <html lang="en">
 <head>
@@ -77,13 +78,15 @@ const saveBundle = (bundleName, ctx) => {
     js: "",
     css: ""
   })
-  //FRONT EMPECHER DE RETOUCHER LES BUILD GENERES
   pagedb.find({name: bundleName}, (error, response)=>{
     if(error) console.log(error)
     if(response.length > 0){
       response[0].page = lastBundle
       response[0].isBundle = true
       response[0].save()
+      /* 
+      METTRE EN PLACE UN LOADER LE TEMPS DE LA COMPILATION
+       */
       ctx.socket.emit('success', "Successfully updated the bundle: " + bundleName)
       cleanBuildFolders()
     }else{
@@ -102,6 +105,7 @@ const saveBundle = (bundleName, ctx) => {
 }
 
 const Bundler = (buildConfig, ctx) => {
+  process.noDeprecation = true
   let postBuildConfig = {}
   let prebuildConfig = {}
   customComponentsdb.find({}, (err, res) => {
