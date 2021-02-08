@@ -26,14 +26,22 @@ const menu = new Schema({
   const admin = new Schema({
     xcmsAdmin: String,
     password: String,
-    superAdmin: Boolean
+    superAdmin: Boolean,
+    access: Array,
+    projects: Array
   })
 
   const customComponent = new Schema({
     framework: String,
     scriptName: String,
     scriptContent: String,
-    attachedCSS: String
+    attachedCSS: String,
+    project: String,
+  })
+  const projects = new Schema({
+    name: String,
+    framework: String,
+    participants: Array
   })
   
   const customComponentsdb = mongoose.model('custom-components', customComponent)
@@ -43,6 +51,8 @@ const menu = new Schema({
   const menudb = mongoose.model('menus', menu)
 
   const userdb = mongoose.model('users', user)
+
+  const projectsdb = mongoose.model('projects', projects)
 
   admin.pre('save', function(next){
   var user = this;
@@ -66,4 +76,4 @@ admin.methods.comparePassword = function(candidatePassword, cb){
 
 const admindb = mongoose.model('admins', admin)
 
-  module.exports = {pagedb, menudb, userdb, admindb, customComponentsdb}
+  module.exports = {pagedb, menudb, userdb, admindb, customComponentsdb, projectsdb}

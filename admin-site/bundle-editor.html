@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Bundle editor</title>
   
   <script src="./admin-site/socket.io.js"></script>
   <script src="./admin-site/ace-editor/ace.js"></script>
@@ -221,10 +221,7 @@ body{
   <div class="first-class">
     <div class="all-components">
       <h3>Edit components:</h3>
-      <ul class="components-list-nightlyjs"></ul>
-      <ul class="components-list-react"></ul>
-      <ul class="components-list-vanilla"></ul>
-      <ul class="components-list-vue"></ul>
+      <ul class="components-list"></ul>
     </div>
     <div class="editors">
       <div class="code-editors">
@@ -245,6 +242,11 @@ body{
       <div class="editor-actions">
         <h3>Editors actions:</h3>
         <div>
+          <select name="projects-list" id="projects-list">
+            <option value="text">test</option>
+          </select>
+        </div>
+        <div>
           <button class='save'>Save</button>
           <button class='reset'>Reset</button>
           <button class='new'>New</button>
@@ -254,10 +256,7 @@ body{
   </div>
   <div class="create-build">
     <h3>Configure build:</h3>
-    <ul class="build-items-list-nightlyjs"></ul>
-    <ul class="build-items-list-react"></ul>
-    <ul class="build-items-list-vanilla"></ul>
-    <ul class="build-items-list-vue"></ul>
+    <ul class="build-items-list"></ul>
     <div class="actions">
       <input type="text" id="bundled-page" placeholder="path" disabled value="">
       <button>build page</button>
@@ -295,66 +294,34 @@ body{
         let createBtn = document.querySelector('.create-build button')
         let existingComponents = datainfo.existingComponents
         let componentsList = []
-        existingComponents.forEach(component=>{
-          let li = document.createElement('li')
-          let a = document.createElement('a')
-          a.innerText = component.scriptName
-          a.dataset.content = component.scriptContent
-          a.dataset.framework = component.framework
-          a.dataset.css = component.attachedCSS
-          li.appendChild(a)
-          if(component.framework == "nightlyjs"){
-            document.querySelector('.components-list-nightlyjs').appendChild(li)
-          }else if(component.framework == "react"){
-            document.querySelector('.components-list-react').appendChild(li)
-          }else if(component.framework == "vue"){
-            document.querySelector('.components-list-vue').appendChild(li)
-          }else if(component.framework == 'vanilla'){
-            document.querySelector('.components-list-vanilla').appendChild(li)
-          }
-          a.addEventListener('click', (e)=>{
-            jseditor.setValue(component.scriptContent)
-            jseditor.navigateFileEnd()
-            csseditor.setValue(component.attachedCSS)
-            csseditor.navigateFileEnd()
-            currentlyEditing = component.scriptName
-          })
-          let buildLi = document.createElement('li')
-          let label = document.createElement('label')
-          let span = document.createElement('span')
-          let div = document.createElement('div')
-          let isSelected = document.createElement("input")
-          let isMain = document.createElement('input')
-          isSelected.type = "checkbox"
-          isSelected.name= 'is-selected'
-          isSelected.dataset.cname = component.scriptName
-          isMain.type = "radio"
-          isMain.name= 'is-main'
-          isMain.classList.add('main-selector')
-          isMain.dataset.framework = component.framework
-          isMain.value = component.scriptName
-          span.innerText = component.scriptName
-          label.appendChild(span)
-          label.appendChild(div)
-          div.appendChild(isMain)
-          div.appendChild(isSelected)
-          buildLi.appendChild(label)
-          if(component.framework === "nightlyjs"){
-            document.querySelector('.build-items-list-nightlyjs').appendChild(buildLi)
-          }else if(component.framework === "react"){
-            document.querySelector('.build-items-list-react').appendChild(buildLi)
-          }else if(component.framework === "vue"){
-            document.querySelector('.build-items-list-vue').appendChild(buildLi)
+        Object.keys(existingComponents).forEach(project=>{
+          let option = document.createElement('option')
+          option.dataset.name = project
+          option.innerText = project
+          if(existingComponents[project].length > 0){
+            localStorage[project] = JSON.stringify(existingComponents[project])
           }else{
-            document.querySelector('.build-items-list-vanilla').appendChild(buildLi)
+            localStorage[project] = []
           }
-          isMain.addEventListener('change', (e)=>{
-            e.preventDefault()
-            document.querySelectorAll('.main-selector').forEach(selector=>{
-                document.querySelector('#bundled-page').value = component.scriptName
-                isMain.nextElementSibling.setAttribute('checked', '')
-            })
+          document.querySelector('#projects-list').appendChild(option)
+        })
+        if(Object.keys(existingComponents).length === 1){
+          existingComponents[Object.keys(existingComponents)[0]].forEach(component=>{
+            createEditableComponentButton(component)
           })
+        }
+        document.querySelector('#projects-list').addEventListener('change', (e)=>{
+          e.preventDefault()
+          while(document.querySelector('.components-list').childElementCount > 0){
+            document.querySelector('.components-list').lastElementChild.remove()
+            document.querySelector('.build-items-list').lastElementChild.remove()
+          }
+          let currentProject = e.target[e.target.selectedIndex].dataset.name
+          if(localStorage[currentProject].length > 0){
+            JSON.parse(localStorage[currentProject]).forEach(component=>{
+              createEditableComponentButton(component)
+            })
+          }
         })
         createBtn.addEventListener('click', (e)=>{
           e.cancelBubble = true
@@ -363,7 +330,7 @@ body{
           })
           let buildObject = {
             pageName: document.querySelector('#bundled-page').value.replace('.js', '.html'),
-            framework: document.querySelector('[name=is-main]:checked').dataset.framework,
+            framework: document.querySelector('input[name=editor-options-option]:checked').id,
             main: document.querySelector('#bundled-page').value,
             componentsList
           }
@@ -398,11 +365,14 @@ body{
       btn.addEventListener('click', (e)=>{
         if(btn.className === "new"){
           let filename = prompt('New file name: ')
+          let project = prompt("Add to project?", localStorage.lastProject || "default")
+          localStorage.lastProject = project
           let newComp = {
             framework: document.querySelector('input[name=editor-options-option]:checked').id,
             scriptName: filename,
-            scriptContent: "",
-            attachedCSS: ""
+            scriptContent: jseditor.getValue(),
+            attachedCSS: csseditor.getValue(),
+            project: project
           }
           jseditor.setValue('')
           bundles.emit('message', JSON.stringify({newComponent: newComp}))
@@ -423,25 +393,6 @@ body{
         }
       })
     })
-    document.querySelectorAll('input[name=editor-options-option]').forEach(framework=>{
-      framework.addEventListener('click', (e)=>{
-        document.querySelectorAll('.all-components ul').forEach(list =>{
-          if(list.className.includes(framework.id)){
-            list.style.display = "block"
-          }else{
-            list.style.display = "none"
-          }
-        })
-        document.querySelectorAll('.create-build ul').forEach(list =>{
-          if(list.className.includes(framework.id)){
-            list.style.display = "block"
-          }else{
-            list.style.display = "none"
-          }
-        })
-      })
-      
-    })
     document.querySelector('button[name=css]').addEventListener('click', e=>{
       document.querySelector('#css-editor').style.display = "block"
       document.querySelector('#js-editor').style.display = "none"
@@ -450,6 +401,52 @@ body{
       document.querySelector('#js-editor').style.display = "block"
       document.querySelector('#css-editor').style.display = "none"
     })
+
+    const createEditableComponentButton = (component)=>{
+      let li = document.createElement('li')
+      let a = document.createElement('a')
+      a.innerText = component.scriptName
+      a.dataset.content = component.scriptContent
+      a.dataset.framework = component.framework
+      a.dataset.css = component.attachedCSS
+      li.appendChild(a)
+      document.querySelector('.components-list').appendChild(li)
+      a.addEventListener('click', (e)=>{
+        jseditor.setValue(component.scriptContent)
+        jseditor.navigateFileEnd()
+        csseditor.setValue(component.attachedCSS)
+        csseditor.navigateFileEnd()
+        currentlyEditing = component.scriptName
+      })
+      let buildLi = document.createElement('li')
+      let label = document.createElement('label')
+      let span = document.createElement('span')
+      let div = document.createElement('div')
+      let isSelected = document.createElement("input")
+      let isMain = document.createElement('input')
+      isSelected.type = "checkbox"
+      isSelected.name= 'is-selected'
+      isSelected.dataset.cname = component.scriptName
+      isMain.type = "radio"
+      isMain.name= 'is-main'
+      isMain.classList.add('main-selector')
+      isMain.dataset.framework = component.framework
+      isMain.value = component.scriptName
+      span.innerText = component.scriptName
+      label.appendChild(span)
+      label.appendChild(div)
+      div.appendChild(isMain)
+      div.appendChild(isSelected)
+      buildLi.appendChild(label)
+      document.querySelector('.build-items-list').appendChild(buildLi)
+      isMain.addEventListener('change', (e)=>{
+        e.preventDefault()
+        document.querySelectorAll('.main-selector').forEach(selector=>{
+            document.querySelector('#bundled-page').value = component.scriptName
+            isMain.nextElementSibling.setAttribute('checked', '')
+        })
+      })
+    }
   </script>
 </body>
 </html>

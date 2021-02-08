@@ -10,7 +10,8 @@ admindb.find({}, (err, res)=>{
     const defaultAdmin = new admindb({
       xcmsAdmin: 'superuser',
       password: '2one0time2password1',
-      superAdmin: true
+      superAdmin: true,
+      projects: ["default"]
     })
     defaultAdmin.save((err, res)=>{
       if(err) console.log(err)

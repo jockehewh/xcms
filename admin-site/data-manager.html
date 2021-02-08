@@ -69,13 +69,13 @@
         cursor: pointer;
         line-height: 2;
       }
-      .save, .reset, .new{
+      .save, .reset, .new, .delete{
         background: transparent;
         border: none;
         padding: 8px;
         cursor: pointer;
       }
-      .save:hover, .reset:hover, .new:hover{
+      .save:hover, .reset:hover, .new:hover, .delete:hover{
         background-color: var(--white-1);
       }
       .configuration,
@@ -96,7 +96,8 @@
 
       .mail,
       .configuration-block,
-      .make-routes {
+      .make-routes,
+      .projects-manager {
         display: none;
         width: 80%;
         min-height: 50vh;
@@ -110,14 +111,15 @@
         margin-left: 10px;
       }
 
-      .make-routes {
+      .make-routes, .projects-manager {
         margin-top: 10px;
         margin-left: 10px;
         width: 84%;
       }
 
       .existing-models,
-      .existing-routes {
+      .existing-routes,
+      .projects-handler {
         display: flex;
         min-height: 50vh;
         margin-top: 22px;
@@ -341,6 +343,8 @@
         <hr>
         <li><a href="#" data-link="make-routes">API manager</a></li>
         <hr>
+        <li><a href="#" data-link="projects-manager">Projects manager</a></li>
+        <hr>
         <li><a href="#" data-link="conf">Email configuration</a></li>
         <hr>
         <li><a href="#" data-link="emails">Send emails</a></li>
@@ -476,6 +480,31 @@
         </div>
       </div>
     </div>
+    <div class="projects-manager">
+      <h1>Manage your projects</h1>
+      <div class="projects-handler">
+        <div class="projects-list">
+          <ul>
+            <h3>My projects:</h3>
+            <hr>
+          </ul>
+        </div>
+        <div class="project-editor">
+          <div class="participants">
+            <textarea name="participants" id="participants" cols="30" rows="10"></textarea>
+          </div>
+          <div class="project-options">
+            <button class="save">Save changes</button>
+            <button class="reset">Reset changes</button>
+            <button class="delete">Delete project</button>
+          </div>
+          <div class="project-creator">
+            <input type="text" id="new-project-name" style="display: none;" placeholder="project name">
+            <button class="new">New project</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="crm-status-box"></div>
     <script>
       const jss = JSON.stringify
@@ -489,6 +518,7 @@
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
+            document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.configuration-block').style.display = 'block'
           } else if (e.target.dataset.link === 'emails') {
             document.querySelector('.configuration-block').style.display = 'none'
@@ -496,6 +526,7 @@
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
+            document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.mail').style.display = 'flex'
           } else if (e.target.dataset.link === 'addAdmin') {
             document.querySelector('.mail').style.display = 'none'
@@ -503,6 +534,7 @@
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
+            document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.add-admin').style.display = 'block'
           } else if (e.target.dataset.link === 'changePassword') {
             document.querySelector('.mail').style.display = 'none'
@@ -510,6 +542,7 @@
             document.querySelector('.add-admin').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
+            document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.change-password').style.display = 'block'
           } else if (e.target.dataset.link === 'edit-models') {
             document.querySelector('.mail').style.display = 'none'
@@ -517,6 +550,7 @@
             document.querySelector('.add-admin').style.display = 'none'
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
+            document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'block'
           } else if (e.target.dataset.link === 'make-routes') {
             document.querySelector('.mail').style.display = 'none'
@@ -524,7 +558,16 @@
             document.querySelector('.add-admin').style.display = 'none'
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
+            document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'block'
+          } else if (e.target.dataset.link === 'projects-manager') {
+            document.querySelector('.mail').style.display = 'none'
+            document.querySelector('.configuration-block').style.display = 'none'
+            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.change-password').style.display = 'none'
+            document.querySelector('.edit-models').style.display = 'none'
+            document.querySelector('.make-routes').style.display = 'none'
+            document.querySelector('.projects-manager').style.display = 'block'
           }
         })
       })
@@ -609,6 +652,12 @@
           let customModels = datainfo.customModels.models
           customModels.forEach(model => {
             makeEditableModelButton(model)
+          })
+        }
+        if(datainfo.allProjects){
+          let allProjects = datainfo.allProjects
+          allProjects.forEach(project =>{
+            makeEditableProjectButton(project)
           })
         }
       })
@@ -1119,6 +1168,48 @@
           })
         })
       }
+      const makeEditableProjectButton = (project)=>{
+        let li = document.createElement('li')
+        let a = document.createElement('a')
+        a.innerText = project.name
+        a.dataset.participants = project.participants.join(', ')
+        li.appendChild(a)
+        document.querySelector('.projects-list ul').appendChild(li)
+        a.addEventListener('click', e=>{
+          e.preventDefault()
+          document.querySelector('#participants').innerText = e.target.dataset.participants
+          document.querySelector('#participants').dataset.project = project.name
+        })
+      }
+      document.querySelector('.project-options .save').addEventListener('click', e=>{
+        let participants = document.querySelector('#participants').value.split('\n').join('').split(', ')
+        let updateProject = {
+          name: document.querySelector('#participants').dataset.project,
+          participants
+        }
+        crms.emit('message', JSON.stringify({updateProject: updateProject}))
+      })
+      document.querySelector('.project-creator .new').addEventListener('click', e=>{
+        e.preventDefault()
+        switch (e.target.innerText){
+          case "New project":
+            document.querySelector('.project-creator input').style.display = "block"
+            e.target.innerText = "Save new project"
+          break
+          case "Save new project":
+            let projectName = document.querySelector('.project-creator input').value
+            crms.emit('message', JSON.stringify({createProject: {name: projectName}}))
+            document.querySelector('.project-creator input').style.display = "none"
+            e.target.innerText = "New project"
+            makeEditableProjectButton({
+              name: projectName,
+              participants: ["superuser"]
+            })
+        }
+        
+      })
+      document.querySelector('.project-options .delete').addEventListener('click', e=>{})
+      document.querySelector('.project-options .reset').addEventListener('click', e=>{})
     </script>
   </div>
 </body>

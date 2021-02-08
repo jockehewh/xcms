@@ -1,7 +1,11 @@
 const IO = require('koa-socket-2')
 const fs = require('fs')
 const sharp = require('sharp')
-const {pagedb, menudb} = require('../cmsModels.js')
+const {pagedb, menudb, projectsdb} = require('../cmsModels.js')
+/* 
+AJOUTER UNE OPTION AJOUTER AU PROJET
+POUR LES PAGES CUSTOMISÉES
+ */
 var pagesCollection = require('../xcmsCustoms/pageCollection.js')
 var isIndex = require('../xcmsCustoms/isIndex.js')
 let gtag = ''

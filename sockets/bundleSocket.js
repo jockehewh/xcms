@@ -1,8 +1,17 @@
 const IO = require('koa-socket-2')
 const fs = require('fs')
 const mongoose = require('mongoose')
-const { customComponentsdb } = require('../cmsModels.js')
+const { customComponentsdb, projectsdb } = require('../cmsModels.js')
 const {Bundler} = require('../xcmsCustoms/bundler.js')
+const theBundleListener = require(__dirname + '/../xcmsCustoms/innerEvents')
+let isSuperAdmin = false
+let availableProjects = []
+theBundleListener.on('isSuperAdmin', (b) => {
+  availableProjects = b[1]
+  if (b[0]) {
+    isSuperAdmin = true
+  }
+})
 
 const bundleSocket = new IO({
     namespace: 'bundler-socket'

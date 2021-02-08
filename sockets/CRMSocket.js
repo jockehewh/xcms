@@ -4,13 +4,15 @@ const { spawn, exec } = require('child_process')
 const archiver = require("archiver")
 const extract = require("extract-zip")
 const process = require('process')
-const { userdb, admindb } = require('../cmsModels.js')
+const { userdb, admindb, projectsdb } = require('../cmsModels.js')
 const nodemailer = require('nodemailer')
 const mongoose = require('mongoose')
 const theEventListener = require(__dirname + '/../xcmsCustoms/innerEvents')
 let isSuperAdmin = false
+let availableProjects = []
 theEventListener.on('isSuperAdmin', (b) => {
-  if (b) {
+  availableProjects = b[1]
+  if (b[0]) {
     isSuperAdmin = true
   }
 })
@@ -128,7 +130,8 @@ crmSocket.on('message', async (ctx) => {
           const addAnAdmin = new admindb({
             xcmsAdmin: newAdmin.username,
             password: newAdmin.password,
-            superAdmin: newAdmin.isSuperAdmin == 1 ? true : false
+            superAdmin: newAdmin.isSuperAdmin == 1 ? true : false,
+            projects: ["default"]
           })
           addAnAdmin.save()
           ctx.socket.emit('success', 'The admin was successfully added')
@@ -327,6 +330,78 @@ crmSocket.on('message', async (ctx) => {
             restart()
           }
         })
+      }
+    })
+  }
+  if(datainfo.createProject){
+    let projectName = datainfo.createProject.name
+    projectsdb.find({name: projectName}, (err, res)=>{
+      if(err){
+        console.log(err)
+      }
+      if(res.length > 0){
+        ctx.socket.emit('errorr', `The project named ${projectName} already exsits.`)
+      }else{
+        let newProject = new projectsdb({
+          name: projectName,
+          participants: ["superuser"]
+        })
+        newProject.save((e, r)=>{
+          if(e)console.log(e)
+          if(r){
+            ctx.socket.emit('success', `Successfully created the project ${projectName}`)
+          }
+        })
+      }
+    })
+  }
+  if(datainfo.updateProject){
+    let updateProject = datainfo.updateProject
+    let previousPraticipants = []
+    projectsdb.findOne({name: updateProject.name}, (err, res)=>{
+      if(err){
+        console.log(err)
+      }
+      if(res){
+        previousPraticipants = res.participants
+        res.participants = updateProject.participants
+        res.save()
+        updateProject.participants.forEach(participant=>{
+          admindb.findOne({xcmsAdmin: participant}, (e, r)=>{
+            if(e){
+              console.log(e)
+            }
+            if(r){
+              if(r.projects.includes(updateProject.name)){
+                
+              }else{
+                r.projects.push(updateProject.name)
+                r.save()
+                ctx.socket.emit('success', `Successfully added ${r.xcmsAdmin} to the project: ${updateProject.name}`)
+              }
+            }
+          })
+        })
+        if(previousPraticipants.length > updateProject.participants.length){
+          let removedParticipants = []
+          previousPraticipants.forEach(previousParticipant=>{
+            if(updateProject.participants.indexOf(previousParticipant) === -1){
+              removedParticipants.push(previousParticipant)
+            }
+          })
+          removedParticipants.forEach(removedParticipant=>{
+            admindb.findOne({xcmsAdmin: removedParticipant}, (er, re)=>{
+              if(er){
+                console.log(er)
+              }
+              if(re){
+                re.projects.pull(updateProject.name)
+                re.save()
+              }
+            })
+          })
+        }
+
       }
     })
   }

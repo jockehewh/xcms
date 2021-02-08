@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer')
 const passport = require('koa-passport')
 const r = require('koa-route')
 const session = require('koa-session')
+const CRMSocket = require(__dirname + '/sockets/CRMSocket.js')
 const adminSocket = require('./sockets/adminSocket.js')
 const bundleSocket = require('./sockets/bundleSocket.js')
 const xcms = new koa();
@@ -12,6 +13,7 @@ const jsp = JSON.parse;
 const mongoose = require('mongoose')
 const theEventListener = require(__dirname + "/xcmsCustoms/innerEvents")
 let allModels = {}
+let currentProjects = []
 let the = ''
 try {
   const env = fs.readFileSync('./config.xcms.json')
@@ -26,7 +28,7 @@ mongoose.connect(the.mongoURI + '/xcms', the.mongoOptions)
 var pagesCollection = require(__dirname + '/xcmsCustoms/pageCollection.js')
 
 var isIndex = require(__dirname + '/xcmsCustoms/isIndex.js')
-const { pagedb, menudb, customComponentsdb } = require(__dirname + '/cmsModels.js')
+const { pagedb, menudb, customComponentsdb, projectsdb } = require(__dirname + '/cmsModels.js')
 allModels = Object.assign({pagedb}, allModels)
 allModels = Object.assign({menudb}, allModels)
 
@@ -296,7 +298,8 @@ xcms.use(r.post('/admin', (ctx)=>{
       }
     if(res){
       const evem = require(__dirname + "/xcmsCustoms/innerEvents")
-      evem.emit('isSuperAdmin', res.superAdmin)
+      evem.emit('isSuperAdmin', [res.superAdmin, res.projects])
+      currentProjects = res.projects
       ctx.login(res)
       ctx.redirect('/admin')
     }
@@ -427,7 +430,17 @@ adminSocket.on('connection', (ctx) => {
   })
 })
 
-require(__dirname + '/sockets/CRMSocket.js').attach(xcms)
+CRMSocket.attach(xcms)
+CRMSocket.on('connection', ctx=>{
+  projectsdb.find({}, (err, res)=>{
+    if(err){
+      console.log(err)
+    }
+    if(res.length > 0){
+      ctx.emit("normal", JSON.stringify({allProjects: res}))
+    }
+  })
+})
 bundleSocket.attach(xcms)
 bundleSocket.on('connection', (ctx)=>{
   customComponentsdb.find({}, (err, res)=>{
@@ -436,7 +449,17 @@ bundleSocket.on('connection', (ctx)=>{
       ctx.emit('errorr', "Error gathering all components")
     }
     if(res){
-      ctx.emit('normal', JSON.stringify({existingComponents: res}))
+      let filteredComponents = {}
+      res.forEach(component=>{
+        if(currentProjects.includes(component.project)){
+          if(filteredComponents[component.project]){
+            filteredComponents[component.project].push(component)
+          } else {
+            filteredComponents[component.project] = [component]
+          }
+        }
+      })
+      ctx.emit('normal', JSON.stringify({existingComponents: filteredComponents}))
     }
   })
 })
@@ -445,6 +468,7 @@ bundleSocket.on('connection', (ctx)=>{
 
 xcms.listen(the.port, () => {
   if(!fs.existsSync('./medias')){
+    console.log("Creating media folders")
     fs.mkdir('./medias/imgs', {recursive: true}, (err)=>{
       if(err) console.log(err)
     })
@@ -453,6 +477,7 @@ xcms.listen(the.port, () => {
     })
   }
   if(!fs.existsSync('./mail.config.json')){
+    console.log("Creating mail configuration file")
     let transporter = fs.createWriteStream('./mail.config.json', {
           encoding: 'utf8'
       })
@@ -469,6 +494,7 @@ xcms.listen(the.port, () => {
     transporter.end()
   }
   if(!fs.existsSync(__dirname + '/builders')){
+    console.log("Creating the bundle environment")
     fs.mkdir(__dirname + '/builders/prebuild', {recursive: true}, (err)=>{
       if(err) console.log(err)
     })
@@ -480,8 +506,10 @@ xcms.listen(the.port, () => {
     })
   }
   customComponentsdb.find({}, (err, res)=>{
+    console.log("Looking for existing components")
     if(err)console.log(err)
     if(res.length < 1){
+      console.log("Creating default components")
       let files = fs.readdirSync(__dirname + '/nightlyjs')
       let cssfiles = fs.readdirSync(__dirname + '/nightlyjs/css')
       files.forEach(file=>{
@@ -497,7 +525,8 @@ xcms.listen(the.port, () => {
           framework: 'nightlyjs',
           scriptName: file,
           scriptContent: fileContent,
-          attachedCSS: cssContent
+          attachedCSS: cssContent,
+          project: "default"
           })
           componentObject.save((err, res)=>{
             if(err) console.log(err)
@@ -506,10 +535,29 @@ xcms.listen(the.port, () => {
             }
           })
         }
-    })
+      })
+    }else{
+      console.log("Existing components found")
     }
   })
-  console.log("listenning on port:", the.port)
+  projectsdb.find({}, (err, res)=>{
+    console.log("Looking for existing projects")
+    if(err){
+      console.log(err)
+    }
+    if(res.length === 0){
+      console.log("Creating 'default' project")
+      let defaultProject = new projectsdb({
+        name: 'default',
+        framework: "vanilla",
+        participants: ["superuser"]
+      })
+      defaultProject.save()
+    }else{
+      console.log("Existing projects found")
+    }
+  })
+  console.log("Listenning on port:", the.port)
 })
 
 module.exports = xcms
