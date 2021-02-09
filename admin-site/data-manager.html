@@ -135,7 +135,8 @@
       }
 
       .existing-models>div:first-of-type ul,
-      .existing-routes>div:first-of-type ul {
+      .existing-routes>div:first-of-type ul,
+      .projects-list ul {
         min-height: 200px;
         border-left: solid 1px var(--grey-2);
         padding: 0 16px;
@@ -260,7 +261,25 @@
         justify-content: space-between;
         align-items: center;
       }
-
+      .projects-list{
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 50vh;
+        position: relative;
+        max-width: 17vw;
+      }
+      .project-editor{
+        margin: 0 auto;
+      }
+      #participants{
+        width:100%;
+      }
+      .project-creator{
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+      }
       .nav p,
       .data-manager,
       .bundle-editor,
@@ -488,6 +507,7 @@
             <h3>My projects:</h3>
             <hr>
           </ul>
+          <hr style="width: 84%;margin: 0 auto;">
         </div>
         <div class="project-editor">
           <div class="participants">
