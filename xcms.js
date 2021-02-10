@@ -14,6 +14,7 @@ const mongoose = require('mongoose')
 const theEventListener = require(__dirname + "/xcmsCustoms/innerEvents")
 let allModels = {}
 let currentProjects = []
+let isSuperAdmin = false
 let the = ''
 try {
   const env = fs.readFileSync('./config.xcms.json')
@@ -67,10 +68,6 @@ customModels.forEach(model =>{
     registerModel(model)
   }
 })
-theEventListener.on('RegisterNewModel', (model)=>{
-  registerModel(model)
-})
-
 
 xcms.proxy = true
 xcms.keys = [the.passportKeys]
@@ -297,8 +294,7 @@ xcms.use(r.post('/admin', (ctx)=>{
       ctx.redirect('/')
       }
     if(res){
-      const evem = require(__dirname + "/xcmsCustoms/innerEvents")
-      evem.emit('isSuperAdmin', [res.superAdmin, res.projects])
+      isSuperAdmin = res.superAdmin
       currentProjects = res.projects
       ctx.session.customAccess = res.access
       ctx.login(res)
@@ -440,6 +436,7 @@ adminSocket.on('connection', (ctx) => {
 
 CRMSocket.attach(xcms)
 CRMSocket.on('connection', ctx=>{
+  ctx.isSuperAdmin = isSuperAdmin
   projectsdb.find({}, (err, res)=>{
     if(err){
       console.log(err)
@@ -451,6 +448,7 @@ CRMSocket.on('connection', ctx=>{
 })
 bundleSocket.attach(xcms)
 bundleSocket.on('connection', (ctx)=>{
+  ctx.currentProjects = currentProjects
   customComponentsdb.find({}, (err, res)=>{
     if(err){
       console.log(err)

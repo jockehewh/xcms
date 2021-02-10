@@ -7,15 +7,6 @@ const process = require('process')
 const { userdb, admindb, projectsdb } = require('../cmsModels.js')
 const nodemailer = require('nodemailer')
 const mongoose = require('mongoose')
-const theEventListener = require(__dirname + '/../xcmsCustoms/innerEvents')
-let isSuperAdmin = false
-let availableProjects = []
-theEventListener.on('isSuperAdmin', (b) => {
-  availableProjects = b[1]
-  if (b[0]) {
-    isSuperAdmin = true
-  }
-})
 
 let mongoURI = ''
 try {
@@ -123,7 +114,7 @@ crmSocket.on('message', async (ctx) => {
   }
   if (datainfo.addAdmin) {
     const newAdmin = datainfo.addAdmin
-    if (isSuperAdmin === true) {
+    if (ctx.socket.isSuperAdmin === true) {
       admindb.find({ xcmsAdmin: newAdmin.username }, (err, res) => {
         if (err) console.log(err)
         if (res.length === 0) {
@@ -146,7 +137,7 @@ crmSocket.on('message', async (ctx) => {
   }
   if (datainfo.updateAdmin) {
     const toUpdate = datainfo.updateAdmin
-    if (isSuperAdmin === true) {
+    if (ctx.socket.isSuperAdmin === true) {
       admindb.findOne({ xcmsAdmin: toUpdate.username }, (err, res) => {
         if (err) {
           console.log("err", err)
