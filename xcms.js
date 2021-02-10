@@ -300,6 +300,7 @@ xcms.use(r.post('/admin', (ctx)=>{
       const evem = require(__dirname + "/xcmsCustoms/innerEvents")
       evem.emit('isSuperAdmin', [res.superAdmin, res.projects])
       currentProjects = res.projects
+      ctx.session.customAccess = res.access
       ctx.login(res)
       ctx.redirect('/admin')
     }
@@ -335,7 +336,6 @@ xcms.use((ctx, next) => {
     ctx.redirect('/')
   }
 })
-
 xcms.use(r.get('/admin', (ctx) => {
   ctx.type = "html"
   ctx.body = fs.createReadStream(__dirname + '/admin-site/index.html', {
@@ -343,16 +343,24 @@ xcms.use(r.get('/admin', (ctx) => {
   })
 }))
 xcms.use(r.get('/bundle-editor', (ctx) => {
-  ctx.type = "html"
-  ctx.body = fs.createReadStream(__dirname + '/admin-site/bundle-editor.html', {
-    autoClose: true
-  })
+  if(ctx.session.customAccess == "bundle" || ctx.session.customAccess == "both"){
+    ctx.type = "html"
+    ctx.body = fs.createReadStream(__dirname + '/admin-site/bundle-editor.html', {
+      autoClose: true
+    })
+  }else{
+    ctx.redirect('/admin')
+  }
 }))
 xcms.use(r.get('/data-manager', (ctx) => {
-  ctx.type = "html"
-  ctx.body = fs.createReadStream(__dirname + '/admin-site/data-manager.html', {
-    autoClose: true
-  })
+  if(ctx.session.customAccess == "data" || ctx.session.customAccess == "both"){
+    ctx.type = "html"
+    ctx.body = fs.createReadStream(__dirname + '/admin-site/data-manager.html', {
+      autoClose: true
+    })
+  }else{
+    ctx.redirect('/admin')
+  }
 }))
 xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css$/, ctx => {
   ctx.type = 'text/css'

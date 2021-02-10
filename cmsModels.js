@@ -27,7 +27,7 @@ const menu = new Schema({
     xcmsAdmin: String,
     password: String,
     superAdmin: Boolean,
-    access: Array,
+    access: String,
     projects: Array
   })
 

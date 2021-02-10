@@ -414,14 +414,20 @@
       <div class="admin-configuration">
         <label for="host">Admin name:</label>
         <input type="text" name="new-admin" id="new-admin">
-        <label for="password">password:</label>
+        <label for="password">Password:</label>
         <input type="password" name="password" id="password">
-        <label for="verify-password">verify password</label>
+        <label for="verify-password">Verify password</label>
         <input type="password" name="verify-password" id="verify-password">
-        <label for="super-admin">super admin?</label>
+        <label for="super-admin">Super admin?</label>
         <select name="super-admin" id="super-admin">
           <option value="0">No</option>
           <option value="1">Yes</option>
+        </select>
+        <label for="admin-access">Access</label>
+        <select name="admin-access" id="admin-access">
+          <option value="bundle">Bundle editor</option>
+          <option value="data">Data manager</option>
+          <option value="both">Both</option>
         </select>
         <br>
         <button class="submit">Save admin</button>
@@ -686,11 +692,13 @@
         const password = document.querySelector('.add-admin #password').value
         const verifyPassword = document.querySelector('.add-admin #verify-password').value
         const isSuperAdmin = document.querySelector('.add-admin #super-admin').selectedIndex
+        const adminAccess = document.querySelector('.add-admin #admin-access').value 
         if (password === verifyPassword) {
           const addAdmin = {
             username,
             password,
-            isSuperAdmin
+            isSuperAdmin,
+            adminAccess
           }
           crms.emit('message', jss({ addAdmin: addAdmin }))
         } else {

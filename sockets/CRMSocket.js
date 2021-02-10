@@ -131,7 +131,8 @@ crmSocket.on('message', async (ctx) => {
             xcmsAdmin: newAdmin.username,
             password: newAdmin.password,
             superAdmin: newAdmin.isSuperAdmin == 1 ? true : false,
-            projects: ["default"]
+            projects: ["default"],
+            access: newAdmin.adminAccess
           })
           addAnAdmin.save()
           ctx.socket.emit('success', 'The admin was successfully added')
