@@ -88,7 +88,7 @@
       }
 
       .configuration-block h1,
-      .add-admin h1,
+      .add-developer h1,
       .change-password h1 {
         text-align: center;
         padding-top: 68px;
@@ -234,7 +234,7 @@
       }
 
       .mail,
-      .add-admin,
+      .add-developer,
       .change-password {
         display: none;
       }
@@ -368,7 +368,7 @@
         <hr>
         <li><a href="#" data-link="emails">Send emails</a></li>
         <hr>
-        <li><a href="#" data-link="addAdmin">Add an admin</a></li>
+        <li><a href="#" data-link="addAdmin">Add a developer</a></li>
         <hr>
         <li><a href="#" data-link="changePassword">Update an account</a></li>
         <hr>
@@ -409,16 +409,16 @@
         <button class="sendbtn">Send</button>
       </div>
     </div>
-    <div class='add-admin'>
-      <h1>Add an admin</h1>
+    <div class='add-developer'>
+      <h1>Add a developer</h1>
       <div class="admin-configuration">
-        <label for="host">Admin name:</label>
-        <input type="text" name="new-admin" id="new-admin">
+        <label for="host">Developer name:</label>
+        <input type="text" name="new-developer" id="new-developer">
         <label for="password">Password:</label>
         <input type="password" name="password" id="password">
         <label for="verify-password">Verify password</label>
         <input type="password" name="verify-password" id="verify-password">
-        <label for="super-admin">Super admin?</label>
+        <label for="super-admin">Can manage other developers?</label>
         <select name="super-admin" id="super-admin">
           <option value="0">No</option>
           <option value="1">Yes</option>
@@ -430,22 +430,28 @@
           <option value="both">Both</option>
         </select>
         <br>
-        <button class="submit">Save admin</button>
+        <button class="submit">Save developer</button>
       </div>
     </div>
     <div class='change-password'>
-      <h1>Change Password</h1>
+      <h1>Update a developers account</h1>
       <div class="password-configuration">
-        <label for="admin">Admin name:</label>
+        <label for="admin">Developer name:</label>
         <input type="text" name="admin" id="admin">
         <label for="new-password">password:</label>
         <input type="password" name="new-password" id="new-password">
         <label for="verify-password">verify password</label>
         <input type="password" name="verify-new-password" id="verify-new-password">
-        <label for="super-admin">super admin?</label>
+        <label for="super-admin">Can manage other developers?</label>
         <select name="super-admin" id="super-admin">
           <option value="0">No</option>
           <option value="1">Yes</option>
+        </select>
+        <label for="admin-access">Access</label>
+        <select name="admin-access" id="admin-access">
+          <option value="bundle">Bundle editor</option>
+          <option value="data">Data manager</option>
+          <option value="both">Both</option>
         </select>
         <br>
         <button class="submit">Update account</button>
@@ -540,7 +546,7 @@
         link.addEventListener('click', e => {
           if (e.target.dataset.link === 'conf') {
             document.querySelector('.mail').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.add-developer').style.display = 'none'
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
@@ -548,7 +554,7 @@
             document.querySelector('.configuration-block').style.display = 'block'
           } else if (e.target.dataset.link === 'emails') {
             document.querySelector('.configuration-block').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.add-developer').style.display = 'none'
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
@@ -561,11 +567,11 @@
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'block'
+            document.querySelector('.add-developer').style.display = 'block'
           } else if (e.target.dataset.link === 'changePassword') {
             document.querySelector('.mail').style.display = 'none'
             document.querySelector('.configuration-block').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.add-developer').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
@@ -573,7 +579,7 @@
           } else if (e.target.dataset.link === 'edit-models') {
             document.querySelector('.mail').style.display = 'none'
             document.querySelector('.configuration-block').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.add-developer').style.display = 'none'
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
@@ -581,7 +587,7 @@
           } else if (e.target.dataset.link === 'make-routes') {
             document.querySelector('.mail').style.display = 'none'
             document.querySelector('.configuration-block').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.add-developer').style.display = 'none'
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
@@ -589,7 +595,7 @@
           } else if (e.target.dataset.link === 'projects-manager') {
             document.querySelector('.mail').style.display = 'none'
             document.querySelector('.configuration-block').style.display = 'none'
-            document.querySelector('.add-admin').style.display = 'none'
+            document.querySelector('.add-developer').style.display = 'none'
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
@@ -687,12 +693,12 @@
           })
         }
       })
-      document.querySelector('.add-admin button').addEventListener('click', e => {
-        const username = document.querySelector('.add-admin #new-admin').value
-        const password = document.querySelector('.add-admin #password').value
-        const verifyPassword = document.querySelector('.add-admin #verify-password').value
-        const isSuperAdmin = document.querySelector('.add-admin #super-admin').selectedIndex
-        const adminAccess = document.querySelector('.add-admin #admin-access').value 
+      document.querySelector('.add-developer button').addEventListener('click', e => {
+        const username = document.querySelector('.add-developer #new-developer').value
+        const password = document.querySelector('.add-developer #password').value
+        const verifyPassword = document.querySelector('.add-developer #verify-password').value
+        const isSuperAdmin = document.querySelector('.add-developer #super-admin').selectedIndex
+        const adminAccess = document.querySelector('.add-developer #admin-access').value 
         if (password === verifyPassword) {
           const addAdmin = {
             username,
@@ -704,20 +710,22 @@
         } else {
           alert('The passwords are not identical please retry.')
         }
-        document.querySelector('.add-admin #new-admin').value = ""
-        document.querySelector('.add-admin #password').value = ""
-        document.querySelector('.add-admin #verify-password').value = ""
+        document.querySelector('.add-developer #new-developer').value = ""
+        document.querySelector('.add-developer #password').value = ""
+        document.querySelector('.add-developer #verify-password').value = ""
       })
       document.querySelector('.change-password button').addEventListener('click', e => {
         const username = document.querySelector('.change-password #admin').value
         const password = document.querySelector('.change-password #new-password').value
         const verifyPassword = document.querySelector('.change-password #verify-new-password').value
         const isSuperAdmin = document.querySelector('.change-password #super-admin').selectedIndex
+        const adminAccess = document.querySelector('.change-password #admin-access').value 
         if (password === verifyPassword) {
           const updateAdmin = {
             username,
             password,
-            isSuperAdmin
+            isSuperAdmin,
+            adminAccess
           }
           crms.emit('message', jss({ updateAdmin: updateAdmin }))
           document.querySelector('.change-password #admin').value = ""

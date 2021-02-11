@@ -193,6 +193,16 @@ Delete:
 }
 ```
 
+__Projects manager:__
+
+The project manager allows you to create and manage your projects.
+Use the "New project" button to start a project.
+Then add your developers to the project by clicking its name under "My projects" and add your developers names using a comma as a separator.
+Click save when you are done.
+Now the developers accessing the bundle editor will have the components sorted by projects.
+N.B: the developers must disconnect and reconnect before they can access the project files.
+
+
 __Email configuration:__
 
 The email configuration form allows you to connect your email provider to the CMS.
@@ -232,13 +242,18 @@ Clicking __Send emails__ opens the WYSIWYG editor in the workspace.
   * ![Remove all formating](https://github.com/jockehewh/xcms/blob/master/readme-imgs/btnremovestyle.PNG)
   To remove all formating click on the ‘paragraph’ button
 
-__Add an admin:__
+__Add a developer:__
 
-Allows you to create more admins (N.B.. only admins can update the content of the apps).
+Allows you to create more developers (N.B.. only developers can update the content of the apps).
+To create an developer you have to fill the following form:
+Developer name: name
+password: password
+super developer: yes | no (a super developer is able to create more developers and to change passwords)
+Access: bundle editor(give access to the bundle editor) | data manager(give access to the data manager) | both (give access to both)
 
-__Change an admins password:__
+__Change an developers password:__
 
-Fill the form with an existing admin username and set the new password.
+Fill the form with an existing developer username and set the new password.
 Then click the 'Update password' button to save your changes.
 
 __Export database:__

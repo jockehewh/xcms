@@ -474,7 +474,6 @@ bundleSocket.on('connection', (ctx)=>{
 
 xcms.listen(the.port, () => {
   if(!fs.existsSync('./medias')){
-    console.log("Creating media folders")
     fs.mkdir('./medias/imgs', {recursive: true}, (err)=>{
       if(err) console.log(err)
     })
@@ -483,7 +482,6 @@ xcms.listen(the.port, () => {
     })
   }
   if(!fs.existsSync('./mail.config.json')){
-    console.log("Creating mail configuration file")
     let transporter = fs.createWriteStream('./mail.config.json', {
           encoding: 'utf8'
       })
@@ -500,7 +498,6 @@ xcms.listen(the.port, () => {
     transporter.end()
   }
   if(!fs.existsSync(__dirname + '/builders')){
-    console.log("Creating the bundle environment")
     fs.mkdir(__dirname + '/builders/prebuild', {recursive: true}, (err)=>{
       if(err) console.log(err)
     })
@@ -512,10 +509,8 @@ xcms.listen(the.port, () => {
     })
   }
   customComponentsdb.find({}, (err, res)=>{
-    console.log("Looking for existing components")
     if(err)console.log(err)
     if(res.length < 1){
-      console.log("Creating default components")
       let files = fs.readdirSync(__dirname + '/nightlyjs')
       let cssfiles = fs.readdirSync(__dirname + '/nightlyjs/css')
       files.forEach(file=>{
@@ -542,25 +537,19 @@ xcms.listen(the.port, () => {
           })
         }
       })
-    }else{
-      console.log("Existing components found")
     }
   })
   projectsdb.find({}, (err, res)=>{
-    console.log("Looking for existing projects")
     if(err){
       console.log(err)
     }
     if(res.length === 0){
-      console.log("Creating 'default' project")
       let defaultProject = new projectsdb({
         name: 'default',
         framework: "vanilla",
         participants: ["superuser"]
       })
       defaultProject.save()
-    }else{
-      console.log("Existing projects found")
     }
   })
   console.log("Listenning on port:", the.port)
