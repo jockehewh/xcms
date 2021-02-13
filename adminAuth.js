@@ -11,7 +11,8 @@ admindb.find({}, (err, res)=>{
       xcmsAdmin: 'superuser',
       password: '2one0time2password1',
       superAdmin: true,
-      projects: ["default"]
+      projects: ["default"],
+      access: "both"
     })
     defaultAdmin.save((err, res)=>{
       if(err) console.log(err)
