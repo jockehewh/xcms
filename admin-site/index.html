@@ -375,7 +375,7 @@
                     <style scoped>
                     @import "./frontend-site/style.css";
                     </style>
-                    <div class="xcms-root-container">${document.querySelector('.edit-zone .xcms-root-container').innerHTML}</div>
+                    <div class="xcms-root">${document.querySelector('.edit-zone .xcms-root-container').innerHTML}</div>
                     <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
       } else {
         contenu =
@@ -392,7 +392,7 @@
                     <style scoped>
                     @import "./frontend-site/style.css";
                     </style>
-                    <div class="xcms-root-container">${document.querySelector('.edit-zone .xcms-root-container').innerHTML}</div>
+                    <div class="xcms-root">${document.querySelector('.edit-zone .xcms-root-container').innerHTML}</div>
                     <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
       }
       const pageJS = jseditor.getValue()
@@ -875,9 +875,6 @@
     //*************SHOW BORDER
     let CurrentlyHoveredElement = []
     function showBorder(node) {
-      /* 
-      VOIR LE BUG ISHOVER
-       */
       node.addEventListener('mouseenter', (e) => {
         e.cancelBubble = true
         let xnode = e.target
@@ -953,14 +950,7 @@
           })
           generateSnippet.addEventListener('click', (e)=>{
             node.classList.remove('isSelected')
-            if(node.parentElement.dataset.willRepeat === "true"){
-              startLinking(node.parentElement)
-            }else if(node.dataset.willRepeat === "true"){
-              startLinking(node)
-            }else{
-              console.log('cannot make repeatble with node')
-              return
-            }
+            document.querySelectorAll('[data-will-repeat]').forEach(repeater => {createLinkingFunctions(repeater)})
           })
         }
       })
@@ -1074,23 +1064,13 @@
           jseditor.removeLines()
           jseditor.navigateLeft(1)
           jseditor.insert('\n  '+ htmplate)
-          jseditor.navigateLineEnd()
+          jseditor.navigateFileEnd()
         }
       })
     }
-    //***************VERIFIE LES CLASSES EXISTANTE
     let linkedFunctions = []
-    const startLinking = (node)=>{
-      if(linkedFunctions.length === 0 && node.dataset.willRepeat === "true") {
-        createLinkingFunction(node)
-        return
-      }
-      if(node.dataset.willRepeat === "true"){
-        createLinkingFunction(node)
-      }
-    }
-    //***************CREATION DES SNIPPETS
-    const createLinkingFunction = (node)=>{
+    //***************CREATING CODE SNIPPETS
+    const createLinkingFunctions = (node)=>{
       if(/xcms-repeater-[0,9]{0,4}/.test(node.className)){
         updateExistentLinkingFunction(node)
         return
@@ -1106,6 +1086,7 @@
         node.classList.add(repeaterUniqueID)
         let parsedKeys = repeatableHTML.match(/::[a-zA-Z0-9_-]{0,10}::/gm)
         let count = 0
+        if(parsedKeys === null) return
         parsedKeys.forEach(key=>{
           while(repeatableHTML.includes(key)){
             repeatableHTML = repeatableHTML.replace(key, `::parameter_${count}::`)
@@ -1127,7 +1108,9 @@
             countr++
           }else{}
         })
-        let templateFunction = `const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
+        let templateFunction = `
+//**********SNIPET ${randomized} START**********\\\\
+const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
 //run the next function to intialize you repeater element
 const ${parentElementUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
   htmlReference${randomized}.querySelectorAll('[data-is-repeatable]').forEach(n=>{
@@ -1142,10 +1125,10 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
 
   htmlReference${randomized}.insertAdjacentHTML('beforeend', htmlTemplate${randomized}) 
 }
-/* uncomment the next line createElement on start */
+/* uncomment the next line to run the preceding snippet */
 //${parentElementUniqueFunctionID}("x")
 
-//********************\\\\
+//**********SNIPET ${randomized} END**********\\\\
 
 `
       jseditor.navigateFileEnd()
@@ -1197,7 +1180,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             templateElement.appendChild(demoElement)
             makeBorderColor(templateElement)
             xAppend(templateContainer)
-            startLinking(templateContainer)
+            createLinkingFunctions(templateContainer)
           }
           if (preset === "100") {
             xAppend(div)
@@ -1492,7 +1475,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
         }
       })
     })
-    //******************APPLY AND CLOSE ON CTRL+S
+    //******************APPLY AND CLOSE ON ALT+ENTER
     document.body.addEventListener('keydown', keyEvent=>{
       if(keyEvent.key === "Alt"){
         altKey = true
@@ -1595,7 +1578,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
             }
           })
           let rebuiltPage = document.implementation.createHTMLDocument(/* */)
-          for (var nde of theframe.children) {
+          for (var nde of xcmsRootContainer.children) {
             rebuiltPage.head.appendChild(nde.cloneNode(true))
             if (nde.getAttribute('src') === "./frontend-site/designer.js") {
               break
@@ -1604,7 +1587,7 @@ const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
           theframe.querySelectorAll('.re-edit-zone > style').forEach(element => {
             rebuiltPage.body.appendChild(element.cloneNode(true))
           })
-          theframe.querySelectorAll('.re-edit-zone > [class^="xcms-root-container"]').forEach(element => {
+          xcmsRootContainer.querySelectorAll('.xcms-root').forEach(element => {
             rebuiltPage.body.appendChild(element.cloneNode(true))
           })
 

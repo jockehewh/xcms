@@ -31,9 +31,7 @@
     --bleu-indigo-eclatant: #536dfe;
 }
 #isActive{}
-#isHover{
-    border: solid var(--bleu-indigo-eclatant) 4px;
-}
+#isHover{}
 a{
     cursor:pointer;
 }
@@ -96,6 +94,9 @@ main{
     border-left: solid 1px;
     border-color: var(--grey-2);
     float: left;
+}
+.xcms-container, .xcms-root-container{
+    min-height: 60px;
 }
 input[type="range"] {
   -webkit-appearance: slider-vertical;
