@@ -17,13 +17,15 @@ bundleSocket.on('message', ctx=>{
   }
   if(datainfo.newComponent){
     let newComponent = datainfo.newComponent
-    let saveComp = new customComponentsdb(newComponent)
-    saveComp.save((err, res)=>{
-      if(err) console.log(err)
-      if(res) {
-        ctx.socket.emit('success', "Successfully created new component: " + newComponent.scriptName)
-      }
-    })
+    if(ctx.socket.currentProjects.includes(newComponent.project)){
+      let saveComp = new customComponentsdb(newComponent)
+      saveComp.save((err, res)=>{
+        if(err) console.log(err)
+        if(res) {
+          ctx.socket.emit('success', "Successfully created new component: " + newComponent.scriptName)
+        }
+      })
+    }
   }
   if(datainfo.updateComponent){
     let updateComponent = datainfo.updateComponent
