@@ -96,7 +96,7 @@ const saveBundle = (bundleName, ctx) => {
         }
         if (res) {
           pagesCollection.push(res)
-          ctx.socket.emit('success', "The bundle was saved at: " + bundleName)
+          ctx.socket.emit('success', "Successfully created the bundle: " + bundleName)
           cleanBuildFolders()
         }
       })

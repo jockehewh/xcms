@@ -141,6 +141,7 @@ crmSocket.on('message', async (ctx) => {
       if (res) {
         res.password = toUpdate.password
         res.superAdmin = toUpdate.isSuperAdmin == 1 ? true : false
+        res.access = toUpdate.adminAccess
         res.save()
         ctx.socket.emit('success', `The admin "${datainfo.updateAdmin.username}" was successfully updated.`)
       } else {

@@ -212,9 +212,164 @@ body{
     from {right: -22%; left: 76%}
     to {right: 76%; left: 0%;}
 }
+.bundle-compiling {
+  display: none;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.bundle-compiling div {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--grey-2);
+  animation: bundle-compiling 1.2s linear infinite;
+}
+.bundle-compiling div:nth-child(1) {
+  top: 8px;
+  left: 8px;
+  animation-delay: 0s;
+}
+.bundle-compiling div:nth-child(2) {
+  top: 8px;
+  left: 32px;
+  animation-delay: -0.4s;
+}
+.bundle-compiling div:nth-child(3) {
+  top: 8px;
+  left: 56px;
+  animation-delay: -0.8s;
+}
+.bundle-compiling div:nth-child(4) {
+  top: 32px;
+  left: 8px;
+  animation-delay: -0.4s;
+}
+.bundle-compiling div:nth-child(5) {
+  top: 32px;
+  left: 32px;
+  animation-delay: -0.8s;
+}
+.bundle-compiling div:nth-child(6) {
+  top: 32px;
+  left: 56px;
+  animation-delay: -1.2s;
+}
+.bundle-compiling div:nth-child(7) {
+  top: 56px;
+  left: 8px;
+  animation-delay: -0.8s;
+}
+.bundle-compiling div:nth-child(8) {
+  top: 56px;
+  left: 32px;
+  animation-delay: -1.2s;
+}
+.bundle-compiling div:nth-child(9) {
+  top: 56px;
+  left: 56px;
+  animation-delay: -1.6s;
+}
+@keyframes bundle-compiling {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loader-box{
+  height: 95%;
+  width: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--white-0);
+  position: absolute;
+  z-index: 10;
+  top: 41px;
+}
+.bundle-complete-grid {
+  width: 80px;
+  height: 80px;
+  margin: 100px auto;
+  display: none;
+}
+
+.bundle-complete-grid .bundle-complete {
+  width: 33%;
+  height: 33%;
+  background-color: var(--grey-2);
+  float: left;
+  -webkit-animation: bundleCompleteGridScaleDelay 1.3s ease-in-out;
+          animation: bundleCompleteGridScaleDelay 1.3s ease-in-out; 
+}
+.bundle-complete-grid .bundle-complete1 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+.bundle-complete-grid .bundle-complete2 {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s; }
+.bundle-complete-grid .bundle-complete3 {
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s; }
+.bundle-complete-grid .bundle-complete4 {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s; }
+.bundle-complete-grid .bundle-complete5 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+.bundle-complete-grid .bundle-complete6 {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s; }
+.bundle-complete-grid .bundle-complete7 {
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s; }
+.bundle-complete-grid .bundle-complete8 {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s; }
+.bundle-complete-grid .bundle-complete9 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+
+@-webkit-keyframes bundleCompleteGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1);
+  } 35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1); 
+  }
+}
+
+@keyframes bundleCompleteGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1);
+  } 35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1);
+  } 
+}
 </style>
 </head>
 <body>
+  <div class="loader-box">
+    <div class="bundle-compiling"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  <div class="bundle-complete-grid">
+  <div class="bundle-complete bundle-complete1"></div>
+  <div class="bundle-complete bundle-complete2"></div>
+  <div class="bundle-complete bundle-complete3"></div>
+  <div class="bundle-complete bundle-complete4"></div>
+  <div class="bundle-complete bundle-complete5"></div>
+  <div class="bundle-complete bundle-complete6"></div>
+  <div class="bundle-complete bundle-complete7"></div>
+  <div class="bundle-complete bundle-complete8"></div>
+  <div class="bundle-complete bundle-complete9"></div>
+  </div>
+</div>
   <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
     <span class="cm-span"><a href="/admin" class="bundle-editor">Content editor</a><a href="/data-manager" class="data-manager">Data manager</a></span>
   </div>
@@ -268,6 +423,14 @@ body{
     //*****************STATUS HANDLER
     bundles.on('success', data => {
       showStatusMessage(1, data)
+      if(document.querySelector(".loader-box").style.display == "flex" && data.includes("Successfully")){
+        document.querySelector(".bundle-compiling").style.display = "none"
+        document.querySelector(".bundle-complete-grid").style.display = "block"
+        setTimeout(()=>{
+          document.querySelector(".bundle-complete-grid").style.display = "none"
+          document.querySelector(".loader-box").style.display = "none"
+        },1400)
+      }
     })
     bundles.on('errorr', data => {
       showStatusMessage(0, data)
@@ -334,6 +497,9 @@ body{
             componentsList
           }
           bundles.emit('message', JSON.stringify({createBuild: buildObject}))
+          document.querySelector(".bundle-compiling").style.display = "block"
+          document.querySelector(".loader-box").style.display = "flex"
+          /* METTRE A JOUR UN LOADER AVANT SOCKET SUCCESS */
         })
       }
     })
