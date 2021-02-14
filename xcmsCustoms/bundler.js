@@ -199,7 +199,12 @@ const Bundler = (buildConfig, ctx) => {
               console.log(err, res)
             }
             let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/vanillaBuild.js', { encoding: 'utf-8' })
-            let inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
+            let inlineCSS = ""
+            try{
+              inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
+            } catch {
+              inlineCSS = ""
+            }
             postBuildConfig = {
               mode: 'production',
               stats: "errors-only",
