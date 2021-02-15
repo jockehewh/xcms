@@ -142,7 +142,12 @@ crmSocket.on('message', async (ctx) => {
         res.password = toUpdate.password
         res.superAdmin = toUpdate.isSuperAdmin == 1 ? true : false
         res.access = toUpdate.adminAccess
-        res.save()
+        if(res.projects && res.projects.length > 0){
+          res.save()
+        }else{
+          res.projects = ["default"]
+          res.save()
+        }
         ctx.socket.emit('success', `The admin "${datainfo.updateAdmin.username}" was successfully updated.`)
       } else {
         ctx.socket.emit('errorr', `The admin "${datainfo.updateAdmin.username}" does not exist.`)
