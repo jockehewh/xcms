@@ -94,7 +94,7 @@ crmSocket.on('message', async (ctx) => {
         ctx.socket.emit('success', `Your email to ${contact.email} was sent successfully.`)
       })
     })
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.host) {
     let transporter = fs.createWriteStream('./mail.config.json', {
       encoding: 'utf8'
@@ -111,7 +111,7 @@ crmSocket.on('message', async (ctx) => {
     transporter.write(JSON.stringify(transporterData))
     transporter.end()
     ctx.socket.emit('success', `Your email provider was updated successfully.`)
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.addAdmin) {
     const newAdmin = datainfo.addAdmin
     admindb.find({ xcmsAdmin: newAdmin.username }, (err, res) => {
@@ -130,7 +130,7 @@ crmSocket.on('message', async (ctx) => {
         ctx.socket.emit('errorr', `The admin ${newAdmin.username} already exist`)
       }
     })
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.updateAdmin) {
     const toUpdate = datainfo.updateAdmin
     admindb.findOne({ xcmsAdmin: toUpdate.username }, (err, res) => {
@@ -153,7 +153,7 @@ crmSocket.on('message', async (ctx) => {
         ctx.socket.emit('errorr', `The admin "${datainfo.updateAdmin.username}" does not exist.`)
       }
     })
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.exportPages) {
     const mongodumpCommand = [`--uri=${mongoURI}/xcms`, `-o="mongoExport"`, "--excludeCollection=admins", "--gzip"]
     const exportAction = spawn("mongodump", mongodumpCommand)
@@ -176,7 +176,7 @@ crmSocket.on('message', async (ctx) => {
         ctx.socket.emit('errorr', "Your database export generated an error.", err)
       }
     })
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.exportMedias) {
     const out = fs.createWriteStream(__dirname + '/../xcmsMediaExport.zip')
     var archive = archiver('zip', { zlib: { level: 9 } });
@@ -191,7 +191,7 @@ crmSocket.on('message', async (ctx) => {
     archive.directory('./medias/', false)
     archive.finalize();
     ctx.socket.emit('success', "Gathering your media files...")
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.exportMailConfig) {
     let mailConf = fs.createReadStream('./mail.config.json', { autoClose: true })
     let mailJSON = ""
@@ -202,7 +202,7 @@ crmSocket.on('message', async (ctx) => {
       ctx.socket.emit('exporting-mail-config', mailJSON)
       ctx.socket.emit('success', "Your mail configuration was successfully exported.")
     })
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.newModel) {
     let newModel = datainfo.newModel
     let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', { autoClose: true })
@@ -214,7 +214,7 @@ crmSocket.on('message', async (ctx) => {
     updatedModels.end()
     ctx.socket.emit('success', `Successfully created the new model: ${newModel.dbName + 'db'}`)
     restart()
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.newRoute) {
     let newRoute = datainfo.newRoute
     let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
@@ -228,7 +228,7 @@ crmSocket.on('message', async (ctx) => {
     if (newRoute.available) {
       restart()
     }
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.updateRoute) {
     let updateRoute = datainfo.updateRoute
     let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
@@ -248,7 +248,7 @@ crmSocket.on('message', async (ctx) => {
     if (updateRoute.available) {
       restart()
     }
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.updateModel) {
     let updateModel = datainfo.updateModel
     let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', { autoClose: true })
@@ -271,12 +271,12 @@ crmSocket.on('message', async (ctx) => {
     let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
     let latestRoutes = JSON.parse(customAPIJson)
     ctx.socket.emit('exporting-routes', JSON.stringify(latestRoutes))
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.exportModels) {
     let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', { autoClose: true })
     let latestModels = JSON.parse(customModelsJson)
     ctx.socket.emit('exporting-models', JSON.stringify(latestModels))
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.deleteRoute) {
     let deletedRoute = datainfo.deleteRoute.name
     let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
@@ -293,7 +293,7 @@ crmSocket.on('message', async (ctx) => {
       ctx.socket.emit('success', `The route named ${deletedRoute} was successfully deleted`)
       restart()
     })
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.deleteModel) {
     let deletedModel = datainfo.deleteModel
     let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', { autoClose: true })
@@ -322,7 +322,7 @@ crmSocket.on('message', async (ctx) => {
         })
       }
     })
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.createProject) {
     let projectName = datainfo.createProject.name
     projectsdb.find({ name: projectName }, (err, res) => {
@@ -344,7 +344,7 @@ crmSocket.on('message', async (ctx) => {
         })
       }
     })
-  } else { ctx.socket.emit('errorr', "") }
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.updateProject) {
     let updateProject = datainfo.updateProject
     let previousPraticipants = []
@@ -391,7 +391,15 @@ crmSocket.on('message', async (ctx) => {
             })
           })
         }
-
+      }
+    })
+  }
+  if (ctx.socket.isSuperAdmin === true && datainfo.deleteProject) {
+    let deleteProject = datainfo.deleteProject
+    projectsdb.deleteOne({name: deleteProject.name}, (err, res)=>{
+      if(err)console.log(err)
+      if(res){
+        ctx.socket.emit('success', `Successfully deleted the project: ${deleteProject.name}`)
       }
     })
   }

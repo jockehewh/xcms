@@ -1209,11 +1209,13 @@
         let a = document.createElement('a')
         a.innerText = project.name
         a.dataset.participants = project.participants.join(', ')
+        a.id = project.name
         li.appendChild(a)
         document.querySelector('.projects-list ul').appendChild(li)
         a.addEventListener('click', e=>{
           e.preventDefault()
           document.querySelector('#participants').innerText = e.target.dataset.participants
+          document.querySelector('#participants').value = e.target.dataset.participants
           document.querySelector('#participants').dataset.project = project.name
         })
       }
@@ -1223,7 +1225,13 @@
           name: document.querySelector('#participants').dataset.project,
           participants
         }
-        crms.emit('message', JSON.stringify({updateProject: updateProject}))
+        if(document.querySelector('#participants').dataset.project !== ""){
+          crms.emit('message', JSON.stringify({updateProject: updateProject}))
+          document.querySelector('#'+updateProject.name).remove()
+          document.querySelector('#participants').value = ""
+          document.querySelector('#participants').dataset.project = ""
+          makeEditableProjectButton(updateProject)
+        }
       })
       document.querySelector('.project-creator .new').addEventListener('click', e=>{
         e.preventDefault()
@@ -1244,8 +1252,30 @@
         }
         
       })
-      document.querySelector('.project-options .delete').addEventListener('click', e=>{})
-      document.querySelector('.project-options .reset').addEventListener('click', e=>{})
+      document.querySelector('.project-options .delete').addEventListener('click', e=>{
+        if(document.querySelector('#participants').dataset.project !== ""){
+          let deleteProject = {
+            name: document.querySelector('#participants').dataset.project
+            }
+          crms.emit('message', JSON.stringify({deleteProject: deleteProject}))
+          document.querySelector('#'+deleteProject.name).remove()
+          document.querySelector('#participants').value = ""
+          document.querySelector('#participants').dataset.project = ""
+        }
+      })
+      document.querySelector('.project-options .reset').addEventListener('click', e=>{
+        if(document.querySelector('#participants').dataset.project !== ""){
+          let updateProject = {
+            name: document.querySelector('#participants').dataset.project
+          }
+          let participants = document.querySelector('#'+updateProject.name).dataset.participants.split(', ')
+          document.querySelector('#'+updateProject.name).remove()
+          document.querySelector('#participants').value = ""
+          document.querySelector('#participants').dataset.project = ""
+          updateProject.participants = participants
+          makeEditableProjectButton(updateProject)
+        }
+      })
     </script>
   </div>
 </body>
