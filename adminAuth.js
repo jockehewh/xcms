@@ -16,6 +16,7 @@ admindb.find({}, (err, res)=>{
     })
     defaultAdmin.save((err, res)=>{
       if(err) console.log(err)
+      if(res) console.log(res)
     })
   }
 })
