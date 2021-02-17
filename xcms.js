@@ -32,9 +32,16 @@ var isIndex = require(__dirname + '/xcmsCustoms/isIndex.js')
 const { pagedb, menudb, customComponentsdb, projectsdb } = require(__dirname + '/cmsModels.js')
 allModels = Object.assign({pagedb}, allModels)
 allModels = Object.assign({menudb}, allModels)
+let customModelsJson
+let customModels
+try{
+  customModelsJson = fs.readFileSync('./customModels.json')
+  customModels = JSON.parse(customModelsJson)
+}catch{
+  customModelsJson = fs.readFileSync(__dirname + '/xcmsCustoms/customModels.json')
+  customModels = JSON.parse(customModelsJson)
+}
 
-let customModelsJson = fs.readFileSync(__dirname + '/xcmsCustoms/customModels.json')
-let customModels = JSON.parse(customModelsJson)
 const registerModel = (model)=>{
   let identifiers = model.identifiers
   for (let id in identifiers){
@@ -305,8 +312,15 @@ xcms.use(r.post('/admin', (ctx)=>{
 
 /* ENABLE CUSTOM API ROUTES */
 
-let customAPIReader = fs.readFileSync(__dirname +'/xcmsCustoms/customAPI.json')
-let customAPI = JSON.parse(customAPIReader)
+let customAPIReader
+let customAPI
+try{
+  customAPIReader = fs.readFileSync('./customAPI.json')
+  customAPI = JSON.parse(customAPIReader)
+}catch{
+  customAPIReader = fs.readFileSync(__dirname +'/xcmsCustoms/customAPI.json')
+  customAPI = JSON.parse(customAPIReader)
+}
 let identifiedRoutes = customAPI.map(route=>{
   if(route.authenticated === true)
   return route

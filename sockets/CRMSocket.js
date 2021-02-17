@@ -21,6 +21,18 @@ try {
 const crmSocket = new IO({
   namespace: 'crm-socket'
 })
+
+const saveCustomAPI = (latestRoutes)=>{
+  let saveCustomAPI = fs.createWriteStream('./customAPI.json')
+  saveCustomAPI.write(latestRoutes)
+  saveCustomAPI.end()
+}
+const saveCustomModels = (latestModels)=>{
+  let updatedModels = fs.createWriteStream('./customModels.json')
+  updatedModels.write(latestModels)
+  updatedModels.end()
+}
+
 crmSocket.on('message', async (ctx) => {
   function restart() {
     ctx.socket.emit('restarting', "")
@@ -212,6 +224,7 @@ crmSocket.on('message', async (ctx) => {
     let updatedModels = fs.createWriteStream(__dirname + '/../xcmsCustoms/customModels.json')
     updatedModels.write(latestModels)
     updatedModels.end()
+    saveCustomModels(latestModels)
     ctx.socket.emit('success', `Successfully created the new model: ${newModel.dbName + 'db'}`)
     restart()
   }
@@ -224,6 +237,7 @@ crmSocket.on('message', async (ctx) => {
     let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsCustoms/customAPI.json')
     updatedRoutes.write(latestRoutes)
     updatedRoutes.end()
+    saveCustomAPI(latestRoutes)
     ctx.socket.emit('success', `Successfully created the new route: ${newRoute.route}`)
     if (newRoute.available) {
       restart()
@@ -244,6 +258,7 @@ crmSocket.on('message', async (ctx) => {
     let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
     updatedRoutes.write(latestRoutesUpdated)
     updatedRoutes.end()
+    saveCustomAPI(latestRoutesUpdated)
     ctx.socket.emit('success', `Successfully updated the route: ${updateRoute.route.name} ...Restarting.`)
     if (updateRoute.available) {
       restart()
@@ -264,6 +279,7 @@ crmSocket.on('message', async (ctx) => {
     let updatedModels = fs.createWriteStream(__dirname + '/../xcmsCustoms/customModels.json')
     updatedModels.write(latestModelsUpdated)
     updatedModels.end()
+    saveCustomModels(latestModelsUpdated)
     ctx.socket.emit('success', `Successfully updated the model: ${updateModel.model.dbName + 'db'} ...Restarting.`)
     restart()
   }
@@ -290,6 +306,7 @@ crmSocket.on('message', async (ctx) => {
     customAPIJson.write(JSON.stringify(updatedAPI))
     customAPIJson.end()
     customAPIJson.on('close', () => {
+      saveCustomAPI(updatedAPI)
       ctx.socket.emit('success', `The route named ${deletedRoute} was successfully deleted`)
       restart()
     })
@@ -308,6 +325,7 @@ crmSocket.on('message', async (ctx) => {
     customModelsJson.end()
     customModelsJson.on('close', () => {
       ctx.socket.emit('success', `The model named ${deletedModel} was successfully deleted`)
+      saveCustomModels(latestModels)
       if (deletedModel.purge) {
         mongoose.model(deletedModel.name).remove((err, res) => {
           if (err) {
@@ -315,7 +333,6 @@ crmSocket.on('message', async (ctx) => {
             ctx.socket.emit('errorr', `Something went wrong: ${err}`)
           }
           if (res) {
-            console.log("res", res)
             ctx.socket.emit('success', `Successfully removed all the documents from the collection ${deletedModel.name}`)
             restart()
           }
