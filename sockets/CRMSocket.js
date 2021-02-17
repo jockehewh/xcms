@@ -24,7 +24,7 @@ const crmSocket = new IO({
 crmSocket.on('message', async (ctx) => {
   function restart() {
     ctx.socket.emit('restarting', "")
-    exec('pm2', (err, res) => {
+    exec('pm2 -v', (err, res) => {
       if (err) {
         process.on('exit', () => {
           if (process.exitCode == "custom") {
