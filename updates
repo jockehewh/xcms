@@ -1,11 +1,10 @@
 latest update:
 
 Adds:
-  - In the documentation you can find links for the embeded frameworks
+  - Added axios
 Changes:
-  - Now developers need a special authorization to access different part of the app. (data manager, bundle editor or both)
-  - In the bundle editor the components are not sorted by framework anymore, they are sorted by projects.
+  - 
 BugFixes:
-  - No more error messages when connecting to the data manager.
+  - 
 Troubleshooting:
   - If you have a problem seeing your files after the update delete the admins collection in mongodb and restart the app, this will create an updated superuser with all the new authorizations.
