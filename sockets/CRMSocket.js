@@ -74,12 +74,22 @@ crmSocket.on('message', async (ctx) => {
     })
   }
   if (datainfo.routeslist) {
-    let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
+    let customAPIJson = ""
+    try{
+      customAPIJson = fs.readFileSync('./customAPI.json', { autoClose: true })
+    }catch{
+      customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
+    }
     let customAPI = JSON.parse(customAPIJson)
     ctx.socket.emit('normal', JSON.stringify({ customRoutes: { routes: customAPI } }))
   }
   if (datainfo.modelslist) {
-    let customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', { autoClose: true })
+    let customModelsJson = ""
+    try{
+      customModelsJson = fs.readFileSync('./customModels.json', { autoClose: true })
+    } catch {
+      customModelsJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customModels.json', { autoClose: true })
+    }
     let customModels = JSON.parse(customModelsJson)
     ctx.socket.emit('normal', JSON.stringify({ customModels: { models: customModels } }))
   }
