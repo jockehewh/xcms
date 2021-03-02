@@ -14,6 +14,7 @@ const mongoose = require('mongoose')
 const theEventListener = require(__dirname + "/xcmsCustoms/innerEvents")
 let allModels = {}
 let currentProjects = []
+let currentUser =''
 let isSuperAdmin = false
 let the = ''
 try {
@@ -303,6 +304,7 @@ xcms.use(r.post('/admin', (ctx)=>{
     if(res){
       isSuperAdmin = res.superAdmin
       currentProjects = res.projects
+      currentUser = res.xcmsAdmin
       ctx.session.customAccess = res.access
       ctx.login(res)
       ctx.redirect('/admin')
@@ -463,6 +465,7 @@ CRMSocket.on('connection', ctx=>{
 bundleSocket.attach(xcms)
 bundleSocket.on('connection', (ctx)=>{
   ctx.currentProjects = currentProjects
+  ctx.bundleUser = currentUser
   customComponentsdb.find({}, (err, res)=>{
     if(err){
       console.log(err)

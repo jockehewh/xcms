@@ -1,10 +1,10 @@
 latest update:
 
 Adds:
-  - Added axios
+  - 
 Changes:
-  - 
+  - [bundle editor] now add an editable component button to the component list 'on create' instead of refresh.
 BugFixes:
-  - 
+  - [bundle editor] now add the "superuser" to a project 'on create'.
 Troubleshooting:
   - If you have a problem seeing your files after the update delete the admins collection in mongodb and restart the app, this will create an updated superuser with all the new authorizations.

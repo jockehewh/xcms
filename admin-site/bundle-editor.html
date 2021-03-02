@@ -499,7 +499,6 @@ body{
           bundles.emit('message', JSON.stringify({createBuild: buildObject}))
           document.querySelector(".bundle-compiling").style.display = "block"
           document.querySelector(".loader-box").style.display = "flex"
-          /* METTRE A JOUR UN LOADER AVANT SOCKET SUCCESS */
         })
       }
     })
@@ -541,6 +540,7 @@ body{
           }
           jseditor.setValue('')
           bundles.emit('message', JSON.stringify({newComponent: newComp}))
+          createEditableComponentButton(newComp)
         }
         if(btn.className === "save"){
           let updateObject = {

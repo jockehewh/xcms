@@ -1,7 +1,7 @@
 const IO = require('koa-socket-2')
 const fs = require('fs')
 const mongoose = require('mongoose')
-const { customComponentsdb, projectsdb } = require('../cmsModels.js')
+const { customComponentsdb, projectsdb, admindb } = require('../cmsModels.js')
 const {Bundler} = require('../xcmsCustoms/bundler.js')
 
 
@@ -17,15 +17,23 @@ bundleSocket.on('message', ctx=>{
   }
   if(datainfo.newComponent){
     let newComponent = datainfo.newComponent
-    if(ctx.socket.currentProjects.includes(newComponent.project)){
-      let saveComp = new customComponentsdb(newComponent)
-      saveComp.save((err, res)=>{
-        if(err) console.log(err)
-        if(res) {
-          ctx.socket.emit('success', "Successfully created new component: " + newComponent.scriptName)
+    admindb.findOne({xcmsAdmin: ctx.socket.bundleUser}, (err, res)=>{
+      if(err){
+        ctx.socket.emit("errorr", 'Could not update the component: ' + newComponent.scriptName)
+        console.log(err)
+      }
+      if(res){
+        if(res.projects.includes(newComponent.project)){
+          let saveComp = new customComponentsdb(newComponent)
+          saveComp.save((err, res)=>{
+            if(err) console.log(err)
+            if(res) {
+              ctx.socket.emit('success', "Successfully created new component: " + newComponent.scriptName)
+            }
+          })
         }
-      })
-    }
+      }
+    })
   }
   if(datainfo.updateComponent){
     let updateComponent = datainfo.updateComponent

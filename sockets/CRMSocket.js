@@ -369,6 +369,13 @@ crmSocket.on('message', async (ctx) => {
             ctx.socket.emit('success', `Successfully created the project ${projectName}`)
           }
         })
+        admindb.findOne({xcmsAdmin: 'superuser'}, (errb, resb)=>{
+          if(errb){console.log(errb)}
+          if(resb){
+            resb.projects.push(projectName)
+            resb.save()
+          }
+        })
       }
     })
   }
