@@ -160,6 +160,11 @@ const makeCustomRoute = (conf)=>{
           }
         })
       }
+      if(conf.action === "user-account"){
+        let onTheFlyStrategie = require('passport-local').Strategy
+        if(conf.authenticate)
+        if(conf.register)
+      }
     }))
   }
 }
