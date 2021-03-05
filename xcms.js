@@ -163,7 +163,17 @@ const makeCustomRoute = (conf)=>{
       if(conf.action === "user-account"){
         let onTheFlyStrategie = require('passport-local').Strategy
         if(conf.authenticate)
-        if(conf.register)
+        if(conf.register){
+          allModels[conf.model].findOne({username:reqBody.username}, (err,res)=>{
+            if(err) console.log(err)
+            if(res && res.username){
+              return
+            }else{
+              let newAppUser = new allModels[conf.model](reqBody)
+              newAppUser.save()
+            }
+          })
+        }
       }
     }))
   }
