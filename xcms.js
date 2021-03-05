@@ -67,9 +67,14 @@ const registerModel = (model)=>{
     if(identifiers[id] === "Decimal128")
       identifiers[id] = mongoose.Decimal128
   }
-  allModels = Object.assign({
+  if(model.isAccount){
+    let appUserSchema = new mongoose.Schema(identifiers)
+    
+  }else{
+    allModels = Object.assign({
     [model.dbName + 'db' ]: mongoose.model(model.dbName, new mongoose.Schema (identifiers))
-  }, allModels)
+  }, allModels)    
+  }
 }
 customModels.forEach(model =>{
   if(model != undefined){
