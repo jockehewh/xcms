@@ -1033,6 +1033,11 @@
             newRoute.model !== " " &&
             newRoute.model !== "exampleModeldb") {
             crms.emit('message', JSON.stringify({ newRoute: newRoute }))
+            if(newRoute.available){
+              showStatusMessage2(1, "Saving route before restart.")
+            }else{
+              makeEditableRouteButton(newRoute)
+            }
           } else {
             showStatusMessage2(0, "Incorrect route model, verify your data and retry.")
           }
