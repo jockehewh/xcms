@@ -190,7 +190,33 @@ const makeCustomRoute = (conf)=>{
       }
       if(conf.action === "user-account"){
         let onTheFlyStrategie = require('passport-local').Strategy
-        if(conf.authenticate)
+        if(conf.authenticate){
+          passport.use('connectuser', new LocalStrategy(function(username, password, done) {
+              allModels.findOne({username: reqBody.username}, (err, res)=>{
+                if(res === null){
+                  return done(null, false)
+                }else{
+                  res.comparePassword(password, (err, isMatch)=>{
+                    if(isMatch){
+                      done(null, res)
+                    }else{
+                      done(null, false)
+                    }
+                  })
+                }
+              })
+            }))
+          return passport.authenticate('connectuser', function(err, res){
+              if(err){
+                  console.log(err)
+                  ctx.redirect('/')
+              }
+              if(res){
+                  ctx.login(res)
+                  ctx.redirect(ctx.url)
+              }
+          })(ctx)
+        }
         if(conf.register){
           allModels[conf.model].findOne({username:reqBody.username}, (err,res)=>{
             if(err) console.log(err)
