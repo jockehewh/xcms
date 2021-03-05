@@ -69,7 +69,25 @@ const registerModel = (model)=>{
   }
   if(model.isAccount){
     let appUserSchema = new mongoose.Schema(identifiers)
+    appUserSchema.pre('save', function(next){
+      var user = this;
+      if(!user.isModified('password')) return next();
+      bcrypt.genSalt(saltfactor, function(err, salt){
+        if(err) return next(err);
+        bcrypt.hash(user.password, salt, function(err, hash){
+          if(err) return next(err);
+          user.password = hash;
+          next();
+        })
+      })
+    })
     
+    appUserSchema.methods.comparePassword = function(candidatePassword, cb){
+      bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
+        if(err) return next(err);
+        cb(null, isMatch)
+      })
+    }
   }else{
     allModels = Object.assign({
     [model.dbName + 'db' ]: mongoose.model(model.dbName, new mongoose.Schema (identifiers))
