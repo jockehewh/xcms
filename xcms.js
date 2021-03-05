@@ -67,7 +67,9 @@ const registerModel = (model)=>{
     if(identifiers[id] === "Decimal128")
       identifiers[id] = mongoose.Decimal128
   }
-  if(model.isAccount){
+  if(model.isAccount === true){
+    let bcrypt = require('bcrypt')
+    let satlfactor = 10
     let appUserSchema = new mongoose.Schema(identifiers)
     appUserSchema.pre('save', function(next){
       var user = this;
@@ -88,6 +90,9 @@ const registerModel = (model)=>{
         cb(null, isMatch)
       })
     }
+    allModels = Object.assign({
+        [model.dbName + 'db' ]: mongoose.model(model.dbName, appUserSchema)
+    }, allModels)
   }else{
     allModels = Object.assign({
     [model.dbName + 'db' ]: mongoose.model(model.dbName, new mongoose.Schema (identifiers))
