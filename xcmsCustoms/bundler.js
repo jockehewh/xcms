@@ -270,6 +270,14 @@ const Bundler = (buildConfig, ctx) => {
           ]
         },
         resolve: {
+          /* alias: {
+            'react-tap-event-plugin': 'preact-tap-event-plugin',
+            'react-addons-shallow-compare': 'shallow-compare',
+            'create-react-class': 'preact-compat/lib/create-react-class',
+            'react-dom-factories': 'preact-compat/lib/react-dom-factories',
+            "react": "preact-compat",
+            "react-dom": "preact-compat"
+          }, */
           extensions: [
             '.js',
             '.jsx',
@@ -311,8 +319,36 @@ const Bundler = (buildConfig, ctx) => {
           webpack(postBuildConfig, (err, ress) => {
             if (err || ress.hasErrors()) {
               // [Handle errors here](#error-handling)
+              console.log(err)
+              console.log(ress)
             }
-            saveBundle(buildConfig.pageName, ctx)
+            let postBuild = fs.readFileSync(__dirname + '/../builders/build/post.build.bundle.js', { encoding: 'utf-8' })
+            const wpOptimizeConfig = {
+              mode: 'production',
+              stats: "errors-only",
+              entry: path.resolve(__dirname, '../builders/build/post.build.bundle.js'),
+              plugins: [
+                new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
+                new HtmlWebpackPlugin({
+                  filename: buildConfig.pageName,
+                  template: path.resolve(__dirname, '../builders/indexTemplate.html'),
+                  title: buildConfig.pageName.replace('.html', ''),
+                  bundle: postBuild,
+                })
+              ],
+              output: {
+                path: path.resolve(__dirname, '../builders/build'),
+                filename: 'optimized.build.bundle.js'
+              }
+            }
+            webpack(wpOptimizeConfig, (optiErr, optiRes)=>{
+              if (optiErr || optiRes.hasErrors()) {
+                // [Handle errors here](#error-handling)
+                console.log(optiErr)
+                console.log("Optimisation error", optiRes)
+              }
+              saveBundle(buildConfig.pageName, ctx)
+            })
           })
       })
     }
