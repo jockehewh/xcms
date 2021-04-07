@@ -157,8 +157,10 @@ const makeCustomRoute = (conf)=>{
       let reqBody = ctx.request.body
       ctx.status = 200
       if(conf.action === "create"){
+            ctx.type = "text/json"
         let addItem = new allModels[conf.model](reqBody)
         addItem.save()
+        ctx.body = JSON.stringify({success: "Data updated successfully."})
       }
       if(conf.action === "update"){
         allModels[conf.model].findOneAndUpdate({[conf.targetValue]: reqBody[conf.targetValue]},reqBody,

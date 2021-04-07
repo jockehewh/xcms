@@ -84,9 +84,6 @@ const saveBundle = (bundleName, ctx) => {
       response[0].page = lastBundle
       response[0].isBundle = true
       response[0].save()
-      /* 
-      METTRE EN PLACE UN LOADER LE TEMPS DE LA COMPILATION
-       */
       ctx.socket.emit('success', "Successfully updated the bundle: " + bundleName)
       cleanBuildFolders()
     }else{
@@ -124,9 +121,11 @@ const Bundler = (buildConfig, ctx) => {
             oneComp.on('close', () => {
               ctx.socket.emit('success', `Gathered: ${existingComponent.scriptName}`)
             })
-            let cssComp = fs.createWriteStream(__dirname + '/../builders/css/' + existingComponent.scriptName.replace('.js', '.css'))
-            cssComp.write(existingComponent.attachedCSS)
-            cssComp.end()
+            if(!/.vue$/.test(existingComponent.scriptName)){
+              let cssComp = fs.createWriteStream(__dirname + '/../builders/css/' + existingComponent.scriptName.replace('.js', '.css'))
+              cssComp.write(existingComponent.attachedCSS)
+              cssComp.end()
+            }
           }
         })
       })
@@ -384,6 +383,7 @@ const Bundler = (buildConfig, ctx) => {
                 test: /\.css$/,
                 use: [
                   'vue-style-loader',
+                  //miniCssExtractPlugin.loader,
                   'css-loader',
                 ],
               },
@@ -403,13 +403,19 @@ const Bundler = (buildConfig, ctx) => {
             },
             extensions: [
               '.js',
-              '.vue'
+              '.vue',
+              '.css',
+              '.sass'
             ]
           },
         plugins: [
-          new VueLoaderPlugin()
+          new VueLoaderPlugin(),
+          //new miniCssExtractPlugin()
         ],
-            stats: {moduleTrace: true},
+        stats: {moduleTrace: true},
+        optimization: {
+          minimize: true,
+        },
       }
       webpack(prebuildConfig, (errb, stats) => {
         if (errb || stats.hasErrors()) {
@@ -435,7 +441,13 @@ const Bundler = (buildConfig, ctx) => {
             output: {
               path: path.resolve(__dirname, '../builders/build'),
               filename: 'post.build.bundle.js'
-            }
+            },
+            optimization: {
+              minimize: true,
+              minimizer: [
+                new CssMinimizerPlugin(),
+              ],
+            },
           }
           webpack(postBuildConfig, (err, ress) => {
             if (err || ress.hasErrors()) {

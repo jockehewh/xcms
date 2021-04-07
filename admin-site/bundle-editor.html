@@ -152,7 +152,16 @@ body{
   padding: 0 15px;
   align-items: center;
   justify-content: space-evenly;
+  line-height: 2;
 }
+.editor-options input[type="radio"]:checked + label{
+  background: var(--white-2);
+}
+.editor-options input{
+  position: relative;
+  left: 20px;
+}
+
 .code-editors{
   grid-column: 1/6;
 }
@@ -388,10 +397,10 @@ body{
         </div>
         <div class="editor-options">
           <h3>Frameworks:</h3>
-          <label for="nightly">nightly<input type="radio" id="nightly" name="editor-options-option"></label>
-          <label for="react">react<input type="radio" id="react" name="editor-options-option"></label>
-          <label for="vanilla">vanilla<input type="radio" id="vanilla" name="editor-options-option" checked></label>
-          <label for="vue">vue<input type="radio" id="vue" name="editor-options-option"></label>
+          <input type="radio" id="nightly" name="editor-options-option"><label for="nightly">nightly</label>
+          <input type="radio" id="react" name="editor-options-option"><label for="react">react</label>
+          <input type="radio" id="vanilla" name="editor-options-option" checked><label for="vanilla">vanilla</label>
+          <input type="radio" id="vue" name="editor-options-option"><label for="vue">vue</label>
           <!-- options? --></div>
       </div>
       <div class="editor-actions">

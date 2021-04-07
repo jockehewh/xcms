@@ -316,7 +316,8 @@ It will restore the component to its original state.
 __3. A builder to build your application:__
 
 On the right side of the screen is the Builder.
-To bundle your application, select the needed components using the checkbox and select the entrypoint of the bundle by using the radio-button.
+To bundle your application, select the needed components using the checkboxes and select the entrypoint of the bundle by using the radio-buttons.
 The resulting bundle will be named after the entrypoint 
 as an example: for an "index.js" file the bundle will be named "index.html"
 remember to select your framework before starting the build.
+(The build system will copy all the selected components in the same folder before starting the build. Adjust your imports accordingly when using custom components)
