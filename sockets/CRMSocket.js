@@ -35,6 +35,7 @@ const saveCustomModels = (latestModels)=>{
 
 crmSocket.on('message', async (ctx) => {
   function restart() {
+    ctx.socket.broadcast.emit('restarting', "")
     ctx.socket.emit('restarting', "")
     exec('pm2 -v', (err, res) => {
       if (err) {
@@ -144,7 +145,8 @@ crmSocket.on('message', async (ctx) => {
           password: newAdmin.password,
           superAdmin: newAdmin.isSuperAdmin == 1 ? true : false,
           projects: ["default"],
-          access: newAdmin.adminAccess
+          access: newAdmin.adminAccess,
+          isBackendUser: true
         })
         addAnAdmin.save()
         ctx.socket.emit('success', 'The admin was successfully added')
@@ -236,7 +238,6 @@ crmSocket.on('message', async (ctx) => {
     updatedModels.end()
     saveCustomModels(latestModels)
     ctx.socket.emit('success', `Successfully created the new model: ${newModel.dbName + 'db'}`)
-    restart()
   }
   if (ctx.socket.isSuperAdmin === true && datainfo.newRoute) {
     let newRoute = datainfo.newRoute
@@ -249,9 +250,6 @@ crmSocket.on('message', async (ctx) => {
     updatedRoutes.end()
     saveCustomAPI(latestRoutes)
     ctx.socket.emit('success', `Successfully created the new route: ${newRoute.route}`)
-    if (newRoute.available) {
-      restart()
-    }
   }
   if (ctx.socket.isSuperAdmin === true && datainfo.updateRoute) {
     let updateRoute = datainfo.updateRoute
@@ -264,15 +262,15 @@ crmSocket.on('message', async (ctx) => {
         return route
       }
     })
+    /* 
+    AJOUTER UN BOUTON RECHARGER LA CONFIGURATION
+     */
     latestRoutesUpdated = JSON.stringify(latestRoutesUpdated)
     let updatedRoutes = fs.createWriteStream(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
     updatedRoutes.write(latestRoutesUpdated)
     updatedRoutes.end()
     saveCustomAPI(latestRoutesUpdated)
-    ctx.socket.emit('success', `Successfully updated the route: ${updateRoute.route.name} ...Restarting.`)
-    if (updateRoute.available) {
-      restart()
-    }
+    ctx.socket.emit('success', `Successfully updated the route: ${updateRoute.route.name} ...Reload your configuration.`)
   }
   if (ctx.socket.isSuperAdmin === true && datainfo.updateModel) {
     let updateModel = datainfo.updateModel
@@ -290,8 +288,7 @@ crmSocket.on('message', async (ctx) => {
     updatedModels.write(latestModelsUpdated)
     updatedModels.end()
     saveCustomModels(latestModelsUpdated)
-    ctx.socket.emit('success', `Successfully updated the model: ${updateModel.model.dbName + 'db'} ...Restarting.`)
-    restart()
+    ctx.socket.emit('success', `Successfully updated the model: ${updateModel.model.dbName + 'db'} ...Reload your configuration.`)
   }
   if (ctx.socket.isSuperAdmin === true && datainfo.exportRoutes) {
     let customAPIJson = fs.readFileSync(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
@@ -318,7 +315,6 @@ crmSocket.on('message', async (ctx) => {
     customAPIJson.on('close', () => {
       saveCustomAPI(updatedAPI)
       ctx.socket.emit('success', `The route named ${deletedRoute} was successfully deleted`)
-      restart()
     })
   }
   if (ctx.socket.isSuperAdmin === true && datainfo.deleteModel) {
@@ -344,7 +340,6 @@ crmSocket.on('message', async (ctx) => {
           }
           if (res) {
             ctx.socket.emit('success', `Successfully removed all the documents from the collection ${deletedModel.name}`)
-            restart()
           }
         })
       }
@@ -437,6 +432,11 @@ crmSocket.on('message', async (ctx) => {
       }
     })
   }
+  if (ctx.socket.isSuperAdmin === true && datainfo.restart){
+    let restartVal = datainfo.restart.restart
+    console.log(restartVal)
+    if(restartVal) restart()
+  }
 })
 
 crmSocket.on("importing", async (ctx) => {
@@ -477,53 +477,13 @@ crmSocket.on('importing-routes', async ctx => {
   let customAPIJson = fs.createWriteStream(__dirname + '/../xcmsCustoms/customAPI.json', { autoClose: true })
   customAPIJson.write(ctx.data)
   customAPIJson.end()
-  ctx.socket.emit('success', "API configuration imported successfully. Restarting...")
-  customAPIJson.on('close', async () => {
-    ctx.socket.emit('restarting', "")
-    exec('pm2', (err, res) => {
-      if (err) {
-        process.on('exit', () => {
-          spawn(process.argv.shift(), process.argv, {
-            cwd: process.cwd(),
-            detached: true,
-            stdio: "inherit"
-          })
-        })
-        console.log('restarting without PM2...')
-        process.exit()
-      }
-      if (res) {
-        console.log('restarting...')
-        process.exit()
-      }
-    })
-  })
+  ctx.socket.emit('success', "API configuration imported successfully. Reload your configuration...")
 })
 crmSocket.on('importing-models', async ctx => {
   let customModelsJson = fs.createWriteStream(__dirname + '/../xcmsCustoms/customModels.json', { autoClose: true })
   customModelsJson.write(ctx.data)
   customModelsJson.end()
-  ctx.socket.emit('success', "Models configuration imported successfully. Restarting...")
-  customModelsJson.on('close', async () => {
-    ctx.socket.emit('restarting', "")
-    exec('pm2', (err, res) => {
-      if (err) {
-        process.on('exit', () => {
-          spawn(process.argv.shift(), process.argv, {
-            cwd: process.cwd(),
-            detached: true,
-            stdio: "inherit"
-          })
-        })
-        console.log('restarting without PM2...')
-        process.exit()
-      }
-      if (res) {
-        console.log('restarting...')
-        process.exit()
-      }
-    })
-  })
+  ctx.socket.emit('success', "Models configuration imported successfully. Reload your configuration...")
 })
 
 module.exports = crmSocket

@@ -300,6 +300,13 @@ body{
   z-index: 10;
   top: 41px;
 }
+.progression-text{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  left: 80px;
+  width: max-content;
+}
 .bundle-complete-grid {
   width: 80px;
   height: 80px;
@@ -401,6 +408,7 @@ body{
           <input type="radio" id="react" name="editor-options-option"><label for="react">react</label>
           <input type="radio" id="vanilla" name="editor-options-option" checked><label for="vanilla">vanilla</label>
           <input type="radio" id="vue" name="editor-options-option"><label for="vue">vue</label>
+          <input type="radio" id="svelte" name="editor-options-option"><label for="svelte">svelte</label>
           <!-- options? --></div>
       </div>
       <div class="editor-actions">
@@ -431,18 +439,32 @@ body{
     let currentlyEditing = ""
     //*****************STATUS HANDLER
     bundles.on('success', data => {
-      showStatusMessage(1, data)
       if(document.querySelector(".loader-box").style.display == "flex" && data.includes("Successfully")){
         document.querySelector(".bundle-compiling").style.display = "none"
         document.querySelector(".bundle-complete-grid").style.display = "block"
+        document.querySelector('.progression-text').remove()
         setTimeout(()=>{
           document.querySelector(".bundle-complete-grid").style.display = "none"
           document.querySelector(".loader-box").style.display = "none"
         },1400)
       }
+      showStatusMessage(1, data)
     })
     bundles.on('errorr', data => {
+      if(document.querySelector(".loader-box").style.display == "flex"){
+        document.querySelector('.progression-text').remove()
+        document.querySelector(".loader-box").style.display = "none"
+      }
       showStatusMessage(0, data)
+    })
+    bundles.on('builder', data=>{
+      console.log(data.split('\n\n')[1][0].charCodeAt(0))
+      let val = document.createElement('code')
+      val.innerText = data.split('\n\n')[1]
+      document.querySelector('.first-class').appendChild(val)
+      /* 
+      PLACER LE MESSAGE D ERREUR EN OVERLAY
+       */
     })
     function showStatusMessage(status, data){
       if(status){
@@ -452,12 +474,16 @@ body{
       }
       let p = document.createElement('p')
       p.innerText = data
-      document.querySelector('.status-box').appendChild(p)
-      document.querySelector('.status-box').style.display = "block"
-      setTimeout(function () {
-        p.remove()
-        document.querySelector('.status-box').style.display = "none"
-      }, 2500)
+      if(document.querySelector(".progression-text")){
+        document.querySelector('.progression-text').appendChild(p)
+      }else{
+        document.querySelector('.status-box').appendChild(p)
+        document.querySelector('.status-box').style.display = "block"
+        setTimeout(function () {
+          p.remove()
+          document.querySelector('.status-box').style.display = "none"
+        }, 2500)
+      }
     }
     bundles.on('normal', data=>{
       let datainfo = JSON.parse(data)
@@ -508,6 +534,13 @@ body{
           bundles.emit('message', JSON.stringify({createBuild: buildObject}))
           document.querySelector(".bundle-compiling").style.display = "block"
           document.querySelector(".loader-box").style.display = "flex"
+          let progressionText = document.createElement('code')
+          let buildTitle = document.createElement('h3')
+          buildTitle.innerText = `Bundling ${buildObject.framework} project in ${buildObject.pageName}`
+          progressionText.classList.add('progression-text')
+          progressionText.appendChild(buildTitle)
+          document.querySelector(".bundle-compiling").appendChild(progressionText)
+          componentsList = []
         })
       }
     })

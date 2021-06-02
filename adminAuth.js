@@ -12,7 +12,8 @@ admindb.find({}, (err, res)=>{
       password: '2one0time2password1',
       superAdmin: true,
       projects: ["default"],
-      access: "both"
+      access: "both",
+      isBackendUser: true
     })
     defaultAdmin.save((err, res)=>{
       if(err) console.log(err)

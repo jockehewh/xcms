@@ -28,7 +28,8 @@ const menu = new Schema({
     password: String,
     superAdmin: Boolean,
     access: String,
-    projects: Array
+    projects: Array,
+    isBackendUser: Boolean
   })
 
   const customComponent = new Schema({

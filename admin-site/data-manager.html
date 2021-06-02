@@ -89,11 +89,13 @@
 
       .configuration-block h1,
       .add-developer h1,
+      .reload-configuration h1,
       .change-password h1 {
         text-align: center;
         padding-top: 68px;
       }
 
+      .reload-configuration,
       .mail,
       .configuration-block,
       .make-routes,
@@ -103,6 +105,37 @@
         min-height: 50vh;
       }
 
+      .reload-configuration div{
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .reload-configuration input[type="range"]{
+        -webkit-appearance: slider-horizontal;
+        width: 80%;
+        align-self: center;
+      }
+      .reload-configuration h1{
+        margin-bottom: 20px;
+      }
+      .reload-configuration button{
+        height: 100px;
+        width: 100px;
+        align-self: center;
+        font-size: 22px;
+      }
+      .reload-configuration span{
+        color: rgb(214, 57, 57);
+      }
+      .reload-configuration p{
+        font-size: 16px;
+      }
+      .reload-configuration button:disabled{
+        background-color: var(--grey-2);
+        text-decoration: line-through;
+      }
       .edit-models {
         display: block;
         width: 80%;
@@ -150,7 +183,8 @@
       }
 
       .add-model:hover,
-      .add-route:hover {
+      .add-route:hover,
+      .reload-configuration button:hover {
         background-color: var(--white-2) !important;
       }
 
@@ -358,6 +392,8 @@
     <div class="minimenu">
       <ul>
         <hr>
+        <li><a href="#" data-link="reload-configuration">Reload configuration</a></li>
+        <hr>
         <li><a href="#" data-link="edit-models">Data editor</a></li>
         <hr>
         <li><a href="#" data-link="make-routes">API manager</a></li>
@@ -385,6 +421,14 @@
         <li><a href="#" class="import-mail-btn" data-link="importMail">Import mail configuration</a></li>
         <hr>
       </ul>
+    </div>
+    <div class="reload-configuration">
+      <h1>Reload configuration</h1>
+      <div>
+        <p>I am <span>0 %</span> ready to reload my configuration!</p>
+        <button disabled>Reload</button>
+        <input type="range" min="0" max="100" value="0">
+      </div>
     </div>
     <div class="configuration-block">
       <h1>Email configuration</h1>
@@ -500,7 +544,7 @@
             <button data-message-type="read">READ</button>
             <button data-message-type="update">UPDATE</button>
             <button data-message-type="delete">DELETE</button>
-            <button data-manager-type="user-account">USER ACCOUNT</button>
+            <button data-message-type="user-account">USER ACCOUNT</button>
           </div>
         </div>
         <div class="editor-actions">
@@ -546,6 +590,16 @@
       let currentlyEditing = {}
       document.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', e => {
+          if(e.target.dataset.link === "reload-configuration"){
+            document.querySelector('.mail').style.display = 'none'
+            document.querySelector('.add-developer').style.display = 'none'
+            document.querySelector('.change-password').style.display = 'none'
+            document.querySelector('.make-routes').style.display = 'none'
+            document.querySelector('.edit-models').style.display = 'none'
+            document.querySelector('.projects-manager').style.display = 'none'
+            document.querySelector('.configuration-block').style.display = 'none'
+            document.querySelector('.reload-configuration').style.display = 'block'
+          }
           if (e.target.dataset.link === 'conf') {
             document.querySelector('.mail').style.display = 'none'
             document.querySelector('.add-developer').style.display = 'none'
@@ -553,6 +607,7 @@
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
+            document.querySelector('.reload-configuration').style.display = 'none'
             document.querySelector('.configuration-block').style.display = 'block'
           } else if (e.target.dataset.link === 'emails') {
             document.querySelector('.configuration-block').style.display = 'none'
@@ -561,6 +616,7 @@
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
+            document.querySelector('.reload-configuration').style.display = 'none'
             document.querySelector('.mail').style.display = 'flex'
           } else if (e.target.dataset.link === 'addAdmin') {
             document.querySelector('.mail').style.display = 'none'
@@ -569,6 +625,7 @@
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
+            document.querySelector('.reload-configuration').style.display = 'none'
             document.querySelector('.add-developer').style.display = 'block'
           } else if (e.target.dataset.link === 'changePassword') {
             document.querySelector('.mail').style.display = 'none'
@@ -577,6 +634,7 @@
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
+            document.querySelector('.reload-configuration').style.display = 'none'
             document.querySelector('.change-password').style.display = 'block'
           } else if (e.target.dataset.link === 'edit-models') {
             document.querySelector('.mail').style.display = 'none'
@@ -585,6 +643,7 @@
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
+            document.querySelector('.reload-configuration').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'block'
           } else if (e.target.dataset.link === 'make-routes') {
             document.querySelector('.mail').style.display = 'none'
@@ -593,6 +652,7 @@
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
+            document.querySelector('.reload-configuration').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'block'
           } else if (e.target.dataset.link === 'projects-manager') {
             document.querySelector('.mail').style.display = 'none'
@@ -601,6 +661,7 @@
             document.querySelector('.change-password').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
+            document.querySelector('.reload-configuration').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'block'
           }
         })
@@ -693,6 +754,42 @@
           allProjects.forEach(project =>{
             makeEditableProjectButton(project)
           })
+        }
+        if(datainfo.hasStatus){
+          let status = datainfo.hasStatus.status
+          if(!status){
+            document.querySelector('.minimenu hr').remove()
+            document.querySelector('.minimenu li').style.display = "none"
+          }else{
+            let restartBtn = document.querySelector('.reload-configuration button')
+            let restartCount = document.querySelector('.reload-configuration span')
+            restartBtn.addEventListener('click', i=>{
+                crms.emit('message', jss({restart: {restart: 1}}))
+              })
+            document.querySelector('.reload-configuration input').addEventListener('input', e=>{
+              let currentValue = parseInt(e.srcElement.value)
+              restartCount.innerText = currentValue + "%"
+              restartCount.style.zoom = currentValue / 10
+              if( currentValue >= 0 && currentValue < 40){
+                restartBtn.style.backgroundColor = 'var(--grey-2)'
+              }
+              if( currentValue >= 40 &&currentValue < 60){
+                restartBtn.style.backgroundColor = 'var(--grey-1)'
+              }
+              if( currentValue >= 60 &&currentValue < 80){
+                restartBtn.style.backgroundColor = 'var(--grey-0)'
+              }
+              if( currentValue >= 80 &&currentValue < 100){
+                restartBtn.style.backgroundColor = 'var(--white-0)'
+                restartBtn.setAttribute('disabled', '')
+                restartCount.style.color = "rgb(214, 57, 57)"
+              }
+              if(currentValue === 100){
+                restartBtn.removeAttribute('disabled')
+                restartCount.style.color = "rgb(57, 214, 83)"
+              }
+            })
+          }
         }
       })
       document.querySelector('.add-developer button').addEventListener('click', e => {
@@ -892,7 +989,7 @@
         }
       })
       document.querySelector('.add-user-model').addEventListener('click', (e) => {
-        if (e.target.textContent === 'New model') {
+        if (e.target.textContent === 'New user model') {
           e.target.textContent = "Save"
           document.querySelector('#model-editor').style.display = 'block'
           modeleditor.setValue(
@@ -901,7 +998,8 @@
   "isAccount": true,
   "identifiers": {
     "exampleUsername": "String",
-    "exampleUserpassword": "String"
+    "exampleUserPassword": "String",
+    "isUser": "Boolean"
   }
 }`)
           modeleditor.navigateFileEnd()
@@ -995,7 +1093,8 @@
 "route":"exampleRoute",
 "action":"user-account"
 }`
-                    )
+              )
+              break;
           }
           routeeditor.navigateFileEnd()
           document.querySelector('.add-route').textContent = "Save"

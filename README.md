@@ -138,15 +138,43 @@ __Data editor:__
 
 Allows you to create data models (mongoose Schema) for mongodb.
 The model name is the "dbName" key.
-The model fields are represented as a JSON object named "identifiers".  
+The model fields are represented as a JSON object named "identifiers".
+
+The model creation comes with two examples/options:
+
+- "New model"
+```
+ {
+  "dbName": "exampleModel",
+  "isAccount": false,
+  "identifiers": {"exampleNameKey": "String"}
+}
+```
+
+- "New user model"
+```
+{
+  "dbName": "exampleUserModel",
+  "isAccount": true,
+  "identifiers": {
+    "exampleUsername": "String",
+    "exampleUserPassword": "String",
+    "isUser": "Boolean"
+  }
+}
+```
+
+Notice: 
+Because the "dbName" key represents a model, the document for that model will be suffixed with "db".
+See the next section look for the "model" key and notice the "db" at the end of the model name.
 
 __API manager:__
 
 The CRUD API manager allows you to create custom routes to gather or record your data.
-{"authenticated":false,"name":"deleteuser","model":"xavdb","route":"deleteuser","action":"delete"}
 Use the different verbs to create a custom route. 
 A route is a JSON object with at least the following 5 keys: "authenticated", "name", "model", "route" and "action"
 see the templates below for more informations.
+
 Create:
 ```
 {
@@ -190,6 +218,20 @@ Delete:
   "model": "exampleModeldb",
   "route":"exampleRoute",
   "action":"delete" // "delete" is expecting a post request with an unique identifier from the model you want to delete.
+}
+```
+
+User Account:
+```
+{
+  "authenticated": false,
+  "authenticate": false,
+  "register": true, // register a new user, if set to false it will connect the user.
+  "available": false,
+  "name": "exampleUsername",
+  "model": "exampleUserdb",
+  "route":"exampleRoute",
+  "action":"user-account" // "user-account" is expecting a post request with user credentials.
 }
 ```
 
@@ -287,7 +329,7 @@ So a "myJS.js" file will have a "myJS.css" file linked to it.
 Use the CSS editor to add your css and as an example with "myJS.js" to use your CSS you will do:
 ```
 //inside myJS.js
-import './myJS.css'
+import './css/myJS.css'
 ```
 The default components are not listed in this editor.
 To use the default components refer to their documentation.
@@ -302,7 +344,7 @@ on the top-right corner of the editor are 3 buttons:
 
 ###### New
 
-It will prompt you with the name of your component. (due to the nature of the bundler you will have to enter the correct extension for your file, it can be: .js, .jsx and .vue).
+It will prompt you with the name of your component. (due to the nature of the bundler you will have to enter the correct extension for your file, it can be: .js, .jsx, .vue or .svelte).
 Then you will be promted in which project to add the component. 
 
 ###### Save

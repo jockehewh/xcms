@@ -11,6 +11,7 @@ const bundleSocket = require('./sockets/bundleSocket.js')
 const xcms = new koa();
 const jsp = JSON.parse;
 const mongoose = require('mongoose')
+const { admindb } = require('./cmsModels.js')
 const theEventListener = require(__dirname + "/xcmsCustoms/innerEvents")
 let allModels = {}
 let currentProjects = []
@@ -69,7 +70,7 @@ const registerModel = (model)=>{
   }
   if(model.isAccount === true){
     let bcrypt = require('bcrypt')
-    let satlfactor = 10
+    let saltfactor = 10
     let appUserSchema = new mongoose.Schema(identifiers)
     appUserSchema.pre('save', function(next){
       var user = this;
@@ -130,7 +131,8 @@ updatePageCollection()
 
 const makeCustomRoute = (conf)=>{
   if(conf.action === "read"){
-    return xcms.use(r.get('/'+conf.route, (ctx)=>{
+    return xcms.use(r.get('/'+conf.route, async (ctx, next)=>{
+      await next()
       ctx.status = 200
       return allModels[conf.model].find({}, (err, res)=>{
         if(err) console.log(err)
@@ -153,7 +155,7 @@ const makeCustomRoute = (conf)=>{
       })
     }))
   }else{
-    return xcms.use(r.post('/'+conf.route, (ctx)=>{
+    return xcms.use(r.post('/'+conf.route, async (ctx, next)=>{
       let reqBody = ctx.request.body
       ctx.status = 200
       if(conf.action === "create"){
@@ -193,8 +195,8 @@ const makeCustomRoute = (conf)=>{
       if(conf.action === "user-account"){
         let onTheFlyStrategie = require('passport-local').Strategy
         if(conf.authenticate){
-          passport.use('connectuser', new LocalStrategy(function(username, password, done) {
-              allModels.findOne({username: reqBody.username}, (err, res)=>{
+          passport.use('connectuser', new onTheFlyStrategie(function(username, password, done) {
+              allModels[conf.model].findOne({username: reqBody.username}, (err, res)=>{
                 if(res === null){
                   return done(null, false)
                 }else{
@@ -231,6 +233,7 @@ const makeCustomRoute = (conf)=>{
           })
         }
       }
+      await next()
     }))
   }
 }
@@ -426,23 +429,23 @@ xcms.use(r.get('/admin', (ctx) => {
   })
 }))
 xcms.use(r.get('/bundle-editor', (ctx) => {
-  if(ctx.session.customAccess == "bundle" || ctx.session.customAccess == "both"){
+  if(ctx.session.isBackendUser && ctx.session.customAccess == "bundle" || ctx.session.customAccess == "both"){
     ctx.type = "html"
     ctx.body = fs.createReadStream(__dirname + '/admin-site/bundle-editor.html', {
       autoClose: true
     })
   }else{
-    ctx.redirect('/admin')
+    ctx.redirect('/')
   }
 }))
 xcms.use(r.get('/data-manager', (ctx) => {
-  if(ctx.session.customAccess == "data" || ctx.session.customAccess == "both"){
+  if(ctx.session.isBackendUser && ctx.session.customAccess == "data" || ctx.session.customAccess == "both"){
     ctx.type = "html"
     ctx.body = fs.createReadStream(__dirname + '/admin-site/data-manager.html', {
       autoClose: true
     })
   }else{
-    ctx.redirect('/admin')
+    ctx.redirect('/')
   }
 }))
 xcms.use(r.get(/\/admin-site\/[a-zA-Z0-9/._-]{2,}?[a-zA-Z0-9/._-]{2,}.css$/, ctx => {
@@ -481,6 +484,7 @@ identifiedRoutes.forEach(conf=>{
     }
   }
 })
+
 
 xcms.use(r.get('/logout', (ctx) => {
   ctx.logout();
@@ -524,6 +528,7 @@ adminSocket.on('connection', (ctx) => {
 CRMSocket.attach(xcms)
 CRMSocket.on('connection', ctx=>{
   ctx.isSuperAdmin = isSuperAdmin
+  ctx.emit('normal', JSON.stringify({hasStatus: { status: isSuperAdmin }}))
   projectsdb.find({}, (err, res)=>{
     if(err){
       console.log(err)
@@ -558,8 +563,17 @@ bundleSocket.on('connection', (ctx)=>{
   })
 })
 
-/* SOCKET IO END */
+admindb.find({}, (err, res) =>{
+  if(err) console.log(err)
+  if(res){
+    res.forEach((admin) =>{
+      admin.isBackendUser = true
+      admin.save()
+    })
+  }
+})
 
+/* SOCKET IO END */
 xcms.listen(the.port, () => {
   if(!fs.existsSync('./medias')){
     fs.mkdir('./medias/imgs', {recursive: true}, (err)=>{
