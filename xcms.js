@@ -542,6 +542,20 @@ bundleSocket.attach(xcms)
 bundleSocket.on('connection', (ctx)=>{
   ctx.currentProjects = currentProjects
   ctx.bundleUser = currentUser
+  let userProjects = []
+  projectsdb.find({}, (err, res)=>{
+    if(err) console.log(err)
+    if(res){
+      res.forEach(project => {
+        project.participants.forEach(dev => {
+          if(dev == currentUser){
+            userProjects.push(project)
+          }
+        })
+      })
+    }
+    ctx.emit('normal', JSON.stringify({existingProjects: userProjects}))
+  })
   customComponentsdb.find({}, (err, res)=>{
     if(err){
       console.log(err)

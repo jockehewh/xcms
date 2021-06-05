@@ -139,28 +139,6 @@ body{
   grid-template-columns: repeat(6, 1fr);
   grid-column-gap: 16px;
 }
-.editor-options{
-  min-height: 50px;
-  grid-column: 1/6;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-}
-.editor-options label{
-  width: 80px;
-  padding: 0 15px;
-  align-items: center;
-  justify-content: space-evenly;
-  line-height: 2;
-}
-.editor-options input[type="radio"]:checked + label{
-  background: var(--white-2);
-}
-.editor-options input{
-  position: relative;
-  left: 20px;
-}
 
 .code-editors{
   grid-column: 1/6;
@@ -402,14 +380,6 @@ body{
           <button name="js">JS Editor</button>
           <button name="css">CSS Editor</button>
         </div>
-        <div class="editor-options">
-          <h3>Frameworks:</h3>
-          <input type="radio" id="nightly" name="editor-options-option"><label for="nightly">nightly</label>
-          <input type="radio" id="react" name="editor-options-option"><label for="react">react</label>
-          <input type="radio" id="vanilla" name="editor-options-option" checked><label for="vanilla">vanilla</label>
-          <input type="radio" id="vue" name="editor-options-option"><label for="vue">vue</label>
-          <input type="radio" id="svelte" name="editor-options-option"><label for="svelte">svelte</label>
-          <!-- options? --></div>
       </div>
       <div class="editor-actions">
         <h3>Editors actions:</h3>
@@ -487,20 +457,25 @@ body{
     }
     bundles.on('normal', data=>{
       let datainfo = JSON.parse(data)
+      if(datainfo.existingProjects){
+        let existingProjects = datainfo.existingProjects
+        existingProjects.forEach(project => {
+          let option = document.createElement('option')
+          option.dataset.name = project.name
+          option.dataset.framework = project.framework
+          option.innerText = project.name
+          document.querySelector('#projects-list').appendChild(option)
+          localStorage[project.name] = []
+        })
+      }
       if(datainfo.existingComponents){
         let createBtn = document.querySelector('.create-build button')
         let existingComponents = datainfo.existingComponents
         let componentsList = []
         Object.keys(existingComponents).forEach(project=>{
-          let option = document.createElement('option')
-          option.dataset.name = project
-          option.innerText = project
           if(existingComponents[project].length > 0){
             localStorage[project] = JSON.stringify(existingComponents[project])
-          }else{
-            localStorage[project] = []
           }
-          document.querySelector('#projects-list').appendChild(option)
         })
         if(Object.keys(existingComponents).length === 1){
           existingComponents[Object.keys(existingComponents)[0]].forEach(component=>{
@@ -514,6 +489,7 @@ body{
             document.querySelector('.build-items-list').lastElementChild.remove()
           }
           let currentProject = e.target[e.target.selectedIndex].dataset.name
+          localStorage.currentProject = e.target[e.target.selectedIndex].dataset.framework
           if(localStorage[currentProject].length > 0){
             JSON.parse(localStorage[currentProject]).forEach(component=>{
               createEditableComponentButton(component)
@@ -527,7 +503,7 @@ body{
           })
           let buildObject = {
             pageName: document.querySelector('#bundled-page').value.replace('.js', '.html'),
-            framework: document.querySelector('input[name=editor-options-option]:checked').id,
+            framework: localStorage.currentProject,
             main: document.querySelector('#bundled-page').value,
             componentsList
           }
@@ -571,14 +547,13 @@ body{
       btn.addEventListener('click', (e)=>{
         if(btn.className === "new"){
           let filename = prompt('New file name: ')
-          let project = prompt("Add to project?", localStorage.lastProject || "default")
-          localStorage.lastProject = project
+          localStorage.lastProject = document.querySelector('#projects-list').selectedOptions[0].dataset.name
           let newComp = {
-            framework: document.querySelector('input[name=editor-options-option]:checked').id,
+            framework: document.querySelector('#projects-list').selectedOptions[0].dataset.framework,
             scriptName: filename,
             scriptContent: jseditor.getValue(),
             attachedCSS: csseditor.getValue(),
-            project: project
+            project: document.querySelector('#projects-list').selectedOptions[0].dataset.name
           }
           jseditor.setValue('')
           bundles.emit('message', JSON.stringify({newComponent: newComp}))

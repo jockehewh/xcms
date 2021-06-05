@@ -1,13 +1,12 @@
 latest update:
 
 Adds:
-  - [data manager] added a second user authentication system for connecting your users to your app.
+  - 
 Changes:
-  - [data manager] added a reload configuration button instead of reloading it at every changes.
-  - [bundle editor] optimized the ReactJS build by reducing its size by 50%.
+  - [data manager] Reworked the project creation to add the framework at that moment.
+  - [bundle editor] No longer ask for a framework when creating a new file.
+  - [bundle editor] now display empty projects.
 BugFixes:
-  - [bundle editor] now properly extract the CSS for VueJS bundles.
-  - [bundle editor] the building messages are now displayed near the build spinner.
-  - [bundle editor] now disable the build spinner if an error occurs.
+  - 
 Troubleshooting:
   - If you have a problem seeing your files after the update delete the admins collection in mongodb and restart the app, this will create an updated superuser with all the new authorizations.

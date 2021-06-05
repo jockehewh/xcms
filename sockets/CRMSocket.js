@@ -7,6 +7,7 @@ const process = require('process')
 const { userdb, admindb, projectsdb } = require('../cmsModels.js')
 const nodemailer = require('nodemailer')
 const mongoose = require('mongoose')
+const sharp = require('sharp')
 
 let mongoURI = ''
 try {
@@ -346,28 +347,29 @@ crmSocket.on('message', async (ctx) => {
     })
   }
   if (ctx.socket.isSuperAdmin === true && datainfo.createProject) {
-    let projectName = datainfo.createProject.name
-    projectsdb.find({ name: projectName }, (err, res) => {
+    let project = datainfo.createProject
+    projectsdb.find({ name: project.name }, (err, res) => {
       if (err) {
         console.log(err)
       }
       if (res.length > 0) {
-        ctx.socket.emit('errorr', `The project named ${projectName} already exsits.`)
+        ctx.socket.emit('errorr', `The project named ${project.name} already exsits.`)
       } else {
         let newProject = new projectsdb({
-          name: projectName,
+          name: project.name,
+          framework: project.framework,
           participants: ["superuser"]
         })
         newProject.save((e, r) => {
           if (e) console.log(e)
           if (r) {
-            ctx.socket.emit('success', `Successfully created the project ${projectName}`)
+            ctx.socket.emit('success', `Successfully created the project ${project.name}`)
           }
         })
         admindb.findOne({xcmsAdmin: 'superuser'}, (errb, resb)=>{
           if(errb){console.log(errb)}
           if(resb){
-            resb.projects.push(projectName)
+            resb.projects.push(project.name)
             resb.save()
           }
         })
@@ -432,6 +434,26 @@ crmSocket.on('message', async (ctx) => {
       }
     })
   }
+  if (ctx.socket.isSuperAdmin === true && datainfo.getimages){
+    let images = fs.readdirSync(__dirname + "/../medias/imgs")
+    ctx.socket.emit('normal', JSON.stringify({images}))
+  }
+  if (ctx.socket.isSuperAdmin === true && datainfo.getvideos){
+    let videos = fs.readdirSync(__dirname + "/../medias/videos")
+    ctx.socket.emit('normal', JSON.stringify({videos}))
+  }
+  if (ctx.socket.isSuperAdmin === true && datainfo.deleteImage){
+    fs.unlink(`${__dirname}/../medias/imgs/${datainfo.deleteImage}`, err =>{
+      if(err) return console.log(err)
+      ctx.socket.emit('success', `Successfully deleted the image: ${datainfo.deleteImage}`)
+    })
+  }
+  if (ctx.socket.isSuperAdmin === true && datainfo.deleteVideo){
+    fs.unlink(`${__dirname}/../medias/videos/${datainfo.deleteVideo}`, err =>{
+      if(err) return console.log(err)
+      ctx.socket.emit('success', `Successfully deleted the video: ${datainfo.deleteVideo}`)
+    })
+  }
   if (ctx.socket.isSuperAdmin === true && datainfo.restart){
     let restartVal = datainfo.restart.restart
     console.log(restartVal)
@@ -484,6 +506,23 @@ crmSocket.on('importing-models', async ctx => {
   customModelsJson.write(ctx.data)
   customModelsJson.end()
   ctx.socket.emit('success', "Models configuration imported successfully. Reload your configuration...")
+})
+let extensionCheck = /(\.(jpeg)|(png)|(PNG)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/
+crmSocket.on('image', ctx => {
+  let extensionIndex = extensionCheck.exec(ctx.data.name).index
+  let newName = ctx.data.name.slice(0, extensionIndex) + 'webp'
+  sharp(ctx.data.image).toFile('./medias/imgs/' + newName, (err, info)=>{
+    if(err)console.log(err)
+    ctx.socket.emit('success', `New image saved as ${newName}.`)
+  })
+})
+crmSocket.on('video', ctx => {
+  var newImg = fs.createWriteStream('./medias/videos/' + ctx.data.name, {
+    encoding: "binary"
+  })
+  newImg.write(ctx.data.video)
+  newImg.end()
+  ctx.socket.emit('success', `New video saved as ${ctx.data.name}.`)
 })
 
 module.exports = crmSocket

@@ -497,6 +497,9 @@
                 img.classList.add('xcms-img')
                 xAppend(img)
                 let imageName = file.name.split(' ').join('_')
+                .split('/').join('_')
+                .split('..').join('_')
+                .split('\\').join('_')
                 mews.emit('image', {
                   name: imageName,
                   image: file

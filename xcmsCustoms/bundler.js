@@ -69,7 +69,7 @@ const htmlSvelteTemplate = `<!DOCTYPE html>
 </body>
 </html>`
 
-const cleanBuildFolders = ()=>{
+const cleanBuildFolders = () => {
   fs.rmdir(__dirname + '/../builders/', { recursive: true, force: true }, (err) => {
     if (err === null) {
       fs.mkdir(__dirname + '/../builders/prebuild', { recursive: true }, (err) => {
@@ -78,8 +78,8 @@ const cleanBuildFolders = ()=>{
       fs.mkdir(__dirname + '/../builders/build', { recursive: true }, (err) => {
         if (err) console.log(err)
       })
-      fs.mkdir(__dirname + '/../builders/css', {recursive: true}, (err)=>{
-        if(err) console.log(err)
+      fs.mkdir(__dirname + '/../builders/css', { recursive: true }, (err) => {
+        if (err) console.log(err)
       })
     }
   })
@@ -93,15 +93,15 @@ const saveBundle = (bundleName, ctx) => {
     js: "",
     css: ""
   })
-  pagedb.find({name: bundleName}, (error, response)=>{
-    if(error) console.log(error)
-    if(response.length > 0){
+  pagedb.find({ name: bundleName }, (error, response) => {
+    if (error) console.log(error)
+    if (response.length > 0) {
       response[0].page = lastBundle
       response[0].isBundle = true
       response[0].save()
       ctx.socket.emit('success', "Successfully updated the bundle: " + bundleName)
       cleanBuildFolders()
-    }else{
+    } else {
       saveBundle.save((err, res) => {
         if (err) {
           ctx.socket.emit('errorr', "Couldnt save the bundle into the database.")
@@ -136,7 +136,7 @@ const Bundler = (buildConfig, ctx) => {
             oneComp.on('close', () => {
               ctx.socket.emit('success', `Gathered: ${existingComponent.scriptName}`)
             })
-            if(!/.vue$/.test(existingComponent.scriptName)){
+            if (!/.vue$/.test(existingComponent.scriptName)) {
               let cssComp = fs.createWriteStream(__dirname + '/../builders/css/' + existingComponent.scriptName.replace('.js', '.css'))
               cssComp.write(existingComponent.attachedCSS)
               cssComp.end()
@@ -145,7 +145,7 @@ const Bundler = (buildConfig, ctx) => {
         })
       })
     }
-    if(buildConfig.framework === 'vanilla' || buildConfig.framework === "nightly"){
+    if (buildConfig.framework === 'vanilla' || buildConfig.framework === "nightly") {
       let templateFile = fs.createWriteStream(__dirname + '/../builders/indexTemplate.html')
       templateFile.write(htmlVanillaTemplate)
       templateFile.end()
@@ -194,32 +194,33 @@ const Bundler = (buildConfig, ctx) => {
         if (errb || stats.hasErrors()) {
           let errs = stats.compilation.errors
           ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the Vanilla configuration.`)
-          ctx.socket.emit('builder', `error bundling ${buildConfig.framework} project with the Vanilla configuration: \n ${errs}`)
+          //ctx.socket.emit('builder', `error bundling ${buildConfig.framework} project with the Vanilla configuration: \n ${errs}`)
           /* 
           CREER UN EVENEMENT WEBPACK ERROR
            */
         }
-          let rebuildJSConfig = {
-            mode: 'production',
-            stats: "errors-only",
-            stats: {
-              preset: "errors-only",
-              warnings: false
-            },
-            entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
-            output: {
-              path: path.resolve(__dirname, '../builders/prebuild'),
-              filename: 'vanillaBuild.js'
-            }
+        let rebuildJSConfig = {
+          mode: 'production',
+          stats: "errors-only",
+          stats: {
+            preset: "errors-only",
+            warnings: false
+          },
+          entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
+          output: {
+            path: path.resolve(__dirname, '../builders/prebuild'),
+            filename: 'vanillaBuild.js'
           }
-          webpack(rebuildJSConfig, (err, res)=>{
-            if(err || res.hasErrors()){
-              //console.log(err, res)
-              ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the Vanilla configuration.`)
-            }
+        }
+        webpack(rebuildJSConfig, (err, res) => {
+          if (err || res.hasErrors()) {
+            //console.log(err, res)
+            ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the Vanilla configuration.`)
+          }
+          try {
             let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/vanillaBuild.js', { encoding: 'utf-8' })
             let inlineCSS = ""
-            try{
+            try {
               inlineCSS = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.css', { encoding: 'utf-8' })
             } catch {
               inlineCSS = ""
@@ -239,7 +240,7 @@ const Bundler = (buildConfig, ctx) => {
                   template: path.resolve(__dirname, '../builders/indexTemplate.html'),
                   title: buildConfig.pageName.replace('.html', ''),
                   bundle: prebuild,
-                  inlinecss : inlineCSS
+                  inlinecss: inlineCSS
                 })
               ],
               output: {
@@ -253,10 +254,14 @@ const Bundler = (buildConfig, ctx) => {
               }
               saveBundle(buildConfig.pageName, ctx)
             })
-          })
+          } catch {
+            ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the Vanilla configuration.`)
+            cleanBuildFolders()
+          }
+        })
       })
     }
-    if(buildConfig.framework === 'react'){
+    if (buildConfig.framework === 'react') {
       let templateFile = fs.createWriteStream(__dirname + '/../builders/indexTemplate.html')
       templateFile.write(htmlReactTemplate)
       templateFile.end()
@@ -305,10 +310,9 @@ const Bundler = (buildConfig, ctx) => {
       webpack(prebuildConfig, (errb, stats) => {
         if (errb || stats.hasErrors()) {
           // [Handle errors here](#error-handling)
-          console.log(errb)
-          console.log(stats)
           ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the ReactJS configuration.`)
         }
+        try {
           let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.js', { encoding: 'utf-8' })
           postBuildConfig = {
             mode: 'production',
@@ -354,19 +358,21 @@ const Bundler = (buildConfig, ctx) => {
                 filename: 'optimized.build.bundle.js'
               }
             }
-            webpack(wpOptimizeConfig, (optiErr, optiRes)=>{
+            webpack(wpOptimizeConfig, (optiErr, optiRes) => {
               if (optiErr || optiRes.hasErrors()) {
                 // [Handle errors here](#error-handling)
-                console.log(optiErr)
-                console.log("Optimisation error", optiRes)
                 ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the ReactJS configuration.`)
               }
               saveBundle(buildConfig.pageName, ctx)
             })
           })
+        } catch {
+          ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the ReactJS configuration.`)
+          cleanBuildFolders()
+        }
       })
     }
-    if(buildConfig.framework === 'vue'){
+    if (buildConfig.framework === 'vue') {
       let templateFile = fs.createWriteStream(__dirname + '/../builders/indexTemplate.html')
       templateFile.write(htmlVueTemplate)
       templateFile.end()
@@ -379,55 +385,55 @@ const Bundler = (buildConfig, ctx) => {
           filename: 'prebuild.js'
         },
         module: {
-            rules: [
-              {
-                test: /\.js$/,
-                use: 'babel-loader',
-                exclude: /node_modules/
-              },
-              {
-                test: /\.vue$/,
-                loader: 'vue-loader',
-                options: {
-                  loaders: {
-                    js: 'babel-loader'
-                  }
-                }
-              },
-              {
-                test: /\.css$/,
-                use: [
-                  'vue-style-loader',
-                  miniCssExtractPlugin.loader,
-                  'css-loader',
-                ],
-              },
-              {
-                test: /\.scss$/,
-                use: [
-                  'vue-style-loader',
-                  'css-loader',
-                  'sass-loader'
-                ],
-              }
-            ]
-          },
-          resolve: {
-            alias: {
-              'vue$': 'vue/dist/vue.esm.js'
+          rules: [
+            {
+              test: /\.js$/,
+              use: 'babel-loader',
+              exclude: /node_modules/
             },
-            extensions: [
-              '.js',
-              '.vue',
-              '.css',
-              '.sass'
-            ]
+            {
+              test: /\.vue$/,
+              loader: 'vue-loader',
+              options: {
+                loaders: {
+                  js: 'babel-loader'
+                }
+              }
+            },
+            {
+              test: /\.css$/,
+              use: [
+                'vue-style-loader',
+                miniCssExtractPlugin.loader,
+                'css-loader',
+              ],
+            },
+            {
+              test: /\.scss$/,
+              use: [
+                'vue-style-loader',
+                'css-loader',
+                'sass-loader'
+              ],
+            }
+          ]
+        },
+        resolve: {
+          alias: {
+            'vue$': 'vue/dist/vue.esm.js'
           },
+          extensions: [
+            '.js',
+            '.vue',
+            '.css',
+            '.sass'
+          ]
+        },
         plugins: [
           new VueLoaderPlugin(),
           new miniCssExtractPlugin()
         ],
-        stats: {moduleTrace: true},
+        stats: { moduleTrace: true },
         optimization: {
           minimize: true,
         },
@@ -435,10 +441,9 @@ const Bundler = (buildConfig, ctx) => {
       webpack(prebuildConfig, (errb, stats) => {
         if (errb || stats.hasErrors()) {
           // [Handle errors here](#error-handling)
-          console.log(errb)
-          console.log(stats)
           ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the VueJS configuration.`)
-          }
+        }
+        try {
           let prebuild = fs.readFileSync(__dirname + '/../builders/prebuild/prebuild.js', { encoding: 'utf-8' })
           let inpagecss = fs.readFileSync(__dirname + `/../builders/prebuild/${buildConfig.main.replace('.js', '.css')}`, { encoding: 'utf-8' })
           postBuildConfig = {
@@ -474,124 +479,126 @@ const Bundler = (buildConfig, ctx) => {
             }
             saveBundle(buildConfig.pageName, ctx)
           })
+        } catch {
+          ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the VueJS configuration.`)
+          cleanBuildFolders()
+        }
+
       })
     }
-    if(buildConfig.framework === 'svelte'){
+    if (buildConfig.framework === 'svelte') {
       let templateFile = fs.createWriteStream(__dirname + '/../builders/indexTemplate.html')
       templateFile.write(htmlSvelteTemplate)
       templateFile.end()
       let svelteCSS = ""
-      let sveltePrebuildConfig = {
-        external: ['svelte', 'svelte/internal'],
-        input: path.resolve(__dirname + '/../builders/' + buildConfig.main),
-        plugins: [
-          svelte({
-            preprocess: {
-              style: ({ content }) => {
-                svelteCSS += content
-                return
+      process.setUncaughtExceptionCaptureCallback(e =>{
+        ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the SvelteJS configuration.`)
+        cleanBuildFolders()
+        process.setUncaughtExceptionCaptureCallback(null)
+      })
+        let sveltePrebuildConfig = {
+          external: ['svelte', 'svelte/internal'],
+          input: path.resolve(__dirname + '/../builders/' + buildConfig.main),
+          plugins: [
+            svelte({
+              preprocess: {
+                style: ({ content }) => {
+                  svelteCSS += content
+                  return
+                }
+              },
+              emitCss: false,
+              onwarn: (warning, handler) => {
+                // e.g. don't warn on <marquee> elements, cos they're cool
+                if (warning.code === 'a11y-distracting-elements') return;
+                // let Rollup handle all other warnings normally
+                handler(warning);
+              },
+              // You can pass any of the Svelte compiler options
+              compilerOptions: {
+                customElement: false
               }
-            },
-            emitCss: false,
-            onwarn: (warning, handler) => {
-              // e.g. don't warn on <marquee> elements, cos they're cool
-              if (warning.code === 'a11y-distracting-elements') return;
-              // let Rollup handle all other warnings normally
-              handler(warning);
-            },
-            // You can pass any of the Svelte compiler options
-            compilerOptions: {
-              customElement: false
-            }
-          }),
-        ]
-      }
-      let svelteOutputConfig = {
-        file: path.resolve(__dirname + '/../builders/prebuild/prebuild.js'),
-        format: 'es',
-        name: buildConfig.main,
-        globals: {
-          "svelte/internal": "internal"
-        },
-        paths:{
-          "svelte/internal": "svelte/internal"
+            }),
+          ]
         }
-      }
-      
-      rollup.rollup(sveltePrebuildConfig).then(cfg=>{
-        cfg.write(svelteOutputConfig)
-        cfg.close()
-        return svelteCSS
-      }).then((css)=>{
-        let watcherCount = 0
-        if (fs.existsSync(__dirname + '/../builders/prebuild')){
-            let myWatcher = fs.watch(__dirname + '/../builders/prebuild',{persistent: false}, (ev, filename)=>{
-            watcherCount++
-            if(watcherCount == 2){
-              let convertConfig = {
-                mode: 'production',
-                stats: "errors-only",
-                entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
-                output: {
-                  path: path.resolve(__dirname, '../builders/build'),
-                  filename: 'post.build.bundle.js'
-                },
-                optimization: {
-                  minimize: true
-                },
-              }
-              webpack(convertConfig, (hasErrors, stats)=>{
-                if (hasErrors || stats.hasErrors()) {
+        let svelteOutputConfig = {
+          file: path.resolve(__dirname + '/../builders/prebuild/prebuild.js'),
+          format: 'es',
+          name: buildConfig.main,
+          globals: {
+            "svelte/internal": "internal"
+          },
+          paths: {
+            "svelte/internal": "svelte/internal"
+          }
+        }
+        rollup.rollup(sveltePrebuildConfig).then(cfg => {
+            cfg.write(svelteOutputConfig)
+            cfg.close()
+            return svelteCSS
+        }).then((css) => {
+          let watcherCount = 0
+          if (fs.existsSync(__dirname + '/../builders/prebuild')) {
+            let myWatcher = fs.watch(__dirname + '/../builders/prebuild', { persistent: false }, (ev, filename) => {
+              watcherCount++
+              if (watcherCount == 2) {
+                let convertConfig = {
+                  mode: 'production',
+                  stats: "errors-only",
+                  entry: path.resolve(__dirname, '../builders/prebuild/prebuild.js'),
+                  output: {
+                    path: path.resolve(__dirname, '../builders/build'),
+                    filename: 'post.build.bundle.js'
+                  },
+                  optimization: {
+                    minimize: true
+                  },
+                }
+                webpack(convertConfig, (hasErrors, stats) => {
+                  if (hasErrors || stats.hasErrors()) {
                     // [Handle errors here](#error-handling)
-                    console.log(err)
-                    console.log(stats)
                     ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the SvelteJS configuration.`)
                   }
                   let postbuild = fs.readFileSync(__dirname + '/../builders/build/post.build.bundle.js', { encoding: 'utf-8' })
                   postBuildConfig = {
-                      mode: 'production',
-                      stats: "errors-only",
-                      entry: path.resolve(__dirname, '../builders/build/post.build.bundle.js'),
-                      plugins: [
-                        new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
-                        new HtmlWebpackPlugin({
-                          appMountId: 'app',
-                          filename: buildConfig.pageName,
-                          template: path.resolve(__dirname, '../builders/indexTemplate.html'),
-                          title: buildConfig.pageName.replace('.html', ''),
-                          bundle: postbuild
-                        })
+                    mode: 'production',
+                    stats: "errors-only",
+                    entry: path.resolve(__dirname, '../builders/build/post.build.bundle.js'),
+                    plugins: [
+                      new HtmlWebpackPluginWithoutScriptTag({ options: "" }),
+                      new HtmlWebpackPlugin({
+                        appMountId: 'app',
+                        filename: buildConfig.pageName,
+                        template: path.resolve(__dirname, '../builders/indexTemplate.html'),
+                        title: buildConfig.pageName.replace('.html', ''),
+                        bundle: postbuild
+                      })
+                    ],
+                    output: {
+                      path: path.resolve(__dirname, '../builders/build'),
+                      filename: 'post.build.bundle.js'
+                    },
+                    optimization: {
+                      minimize: true,
+                      minimizer: [
+                        new CssMinimizerPlugin(),
                       ],
-                      output: {
-                        path: path.resolve(__dirname, '../builders/build'),
-                        filename: 'post.build.bundle.js'
-                      },
-                      optimization: {
-                        minimize: true,
-                        minimizer: [
-                          new CssMinimizerPlugin(),
-                        ],
-                      },
+                    },
+                  }
+                  webpack(postBuildConfig, (err, stats) => {
+                    if (err || stats.hasErrors()) {
+                      // [Handle errors here](#error-handling)
+                      ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the SvelteJS configuration.`)
                     }
-                    webpack(postBuildConfig, (err, stats)=>{
-                      if (err || stats.hasErrors()) {
-                        // [Handle errors here](#error-handling)
-                        console.log(err)
-                        console.log(stats)
-                        ctx.socket.emit('errorr', `error bundling ${buildConfig.framework} project with the SvelteJS configuration.`)
-                      }
-                      saveBundle(buildConfig.pageName, ctx)
-                    })
-                    watcherCount = 0
-                    myWatcher.close()
-              })
-              
-            }
-          })
-        }
-        
-        
-      })
+                    saveBundle(buildConfig.pageName, ctx)
+                  })
+                  watcherCount = 0
+                  myWatcher.close()
+                })
+              }
+            })
+          }
+        })
     }
   })
 }

@@ -99,7 +99,8 @@
       .mail,
       .configuration-block,
       .make-routes,
-      .projects-manager {
+      .projects-manager,
+      .medias-manager {
         display: none;
         width: 80%;
         min-height: 50vh;
@@ -384,6 +385,60 @@
         background-color: var(--grey-2) !important;
         color: var(--grey-2) !important;
       }
+      .medias-manager p{
+        cursor: pointer;
+        background-color: var(--white-3);
+      }
+      .imgs-block, .vids-block{
+        display: flex;
+        flex-direction: row;
+      }
+      .imgs-list, .vids-list{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        width: 60%;
+        height: min-content;
+        gap: 10px;
+      }
+      .img-display{
+        width: 40%;
+      }
+      .img-display img{
+        height: 250px;
+        max-width: 350px;
+      }
+      .img-display button{
+        position: relative;
+        top: -233px !important;
+      }
+      .image-input, .video-input{
+        padding: 25px;
+        border: solid 1px;
+        max-width: min-content;
+      }
+      .editor-options{
+        min-height: 50px;
+        grid-column: 1/6;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .editor-options label{
+        width: 80px;
+        padding: 0 15px;
+        align-items: center;
+        justify-content: space-evenly;
+        line-height: 2;
+        display: flex;
+      }
+      .editor-options input[type="radio"]:checked + label{
+        background: var(--white-2);
+      }
+      .editor-options input{
+        position: relative;
+        left: 20px;
+      }
     </style>
     <div class="nav"><span style="padding-left: 20px;">XCMS <a href="/logout">logout</a></span>
       <span class="cm-span"><a href="/bundle-editor" class="bundle-editor">Bundle editor</a><a href="/admin"
@@ -397,6 +452,8 @@
         <li><a href="#" data-link="edit-models">Data editor</a></li>
         <hr>
         <li><a href="#" data-link="make-routes">API manager</a></li>
+        <hr>
+        <li><a href="#" class="media-manager-btn" data-link="medias-manager">Medias manager</a></li>
         <hr>
         <li><a href="#" data-link="projects-manager">Projects manager</a></li>
         <hr>
@@ -557,6 +614,29 @@
         </div>
       </div>
     </div>
+    <div class="medias-manager">
+      <h1>Medias manager</h1>
+      <div class="image-input">
+        <label for="add-images-input">Add image(s)</label>
+        <input class="add-images-input" name="add-images-input" type="file" accept="image/*" multiple>
+      </div>
+      
+      <div class="imgs-block">
+        <!-- liste de paragraphe dans une grid 2 -->
+        <div class="imgs-list"></div>
+        <div class="img-display"></div>
+        
+      </div>
+      <br><hr>
+      <div class="video-input">
+        <label for="add-videos-input">Add video(s)</label>
+        <input class="add-videos-input" name="add-videos-input" type="file" accept="video/*" multiple>
+      </div>
+      <div class="vids-block">
+        <div class="vids-list"></div>
+        <div class="vid-display"></div>
+      </div>
+    </div>
     <div class="projects-manager">
       <h1>Manage your projects</h1>
       <div class="projects-handler">
@@ -578,6 +658,13 @@
           </div>
           <div class="project-creator">
             <input type="text" id="new-project-name" style="display: none;" placeholder="project name">
+            <div class="editor-options" style="display: none;">
+            <input type="radio" id="nightly" name="editor-options-option"><label for="nightly">nightly</label>
+            <input type="radio" id="react" name="editor-options-option"><label for="react">react</label>
+            <input type="radio" id="vanilla" name="editor-options-option" checked><label for="vanilla">vanilla</label>
+            <input type="radio" id="vue" name="editor-options-option"><label for="vue">vue</label>
+            <input type="radio" id="svelte" name="editor-options-option"><label for="svelte">svelte</label>
+            <!-- options? --></div>
             <button class="new">New project</button>
           </div>
         </div>
@@ -608,6 +695,7 @@
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.reload-configuration').style.display = 'none'
+            document.querySelector('.medias-manager').style.display = 'none'
             document.querySelector('.configuration-block').style.display = 'block'
           } else if (e.target.dataset.link === 'emails') {
             document.querySelector('.configuration-block').style.display = 'none'
@@ -616,6 +704,7 @@
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
+            document.querySelector('.medias-manager').style.display = 'none'
             document.querySelector('.reload-configuration').style.display = 'none'
             document.querySelector('.mail').style.display = 'flex'
           } else if (e.target.dataset.link === 'addAdmin') {
@@ -626,6 +715,7 @@
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.reload-configuration').style.display = 'none'
+            document.querySelector('.medias-manager').style.display = 'none'
             document.querySelector('.add-developer').style.display = 'block'
           } else if (e.target.dataset.link === 'changePassword') {
             document.querySelector('.mail').style.display = 'none'
@@ -635,6 +725,7 @@
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.reload-configuration').style.display = 'none'
+            document.querySelector('.medias-manager').style.display = 'none'
             document.querySelector('.change-password').style.display = 'block'
           } else if (e.target.dataset.link === 'edit-models') {
             document.querySelector('.mail').style.display = 'none'
@@ -644,6 +735,7 @@
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.reload-configuration').style.display = 'none'
+            document.querySelector('.medias-manager').style.display = 'none'
             document.querySelector('.edit-models').style.display = 'block'
           } else if (e.target.dataset.link === 'make-routes') {
             document.querySelector('.mail').style.display = 'none'
@@ -653,6 +745,7 @@
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'none'
             document.querySelector('.reload-configuration').style.display = 'none'
+            document.querySelector('.medias-manager').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'block'
           } else if (e.target.dataset.link === 'projects-manager') {
             document.querySelector('.mail').style.display = 'none'
@@ -662,7 +755,18 @@
             document.querySelector('.edit-models').style.display = 'none'
             document.querySelector('.make-routes').style.display = 'none'
             document.querySelector('.reload-configuration').style.display = 'none'
+            document.querySelector('.medias-manager').style.display = 'none'
             document.querySelector('.projects-manager').style.display = 'block'
+          } else if (e.target.dataset.link === 'medias-manager') {
+            document.querySelector('.mail').style.display = 'none'
+            document.querySelector('.configuration-block').style.display = 'none'
+            document.querySelector('.add-developer').style.display = 'none'
+            document.querySelector('.change-password').style.display = 'none'
+            document.querySelector('.edit-models').style.display = 'none'
+            document.querySelector('.make-routes').style.display = 'none'
+            document.querySelector('.reload-configuration').style.display = 'none'
+            document.querySelector('.projects-manager').style.display = 'none'
+            document.querySelector('.medias-manager').style.display = 'block'
           }
         })
       })
@@ -753,6 +857,56 @@
           let allProjects = datainfo.allProjects
           allProjects.forEach(project =>{
             makeEditableProjectButton(project)
+          })
+        }
+        if(datainfo.images){
+          let images = datainfo.images
+          let imgsList = document.querySelector(".imgs-list")
+          let imgDisplay = document.createElement("img")
+          images.forEach(img => {
+            let p = document.createElement('p')
+            p.innerText = img
+            imgsList.appendChild(p)
+            p.addEventListener('click', e => {
+              if(document.querySelector('.img-display button'))
+              document.querySelector('.img-display button').remove()
+              let deleteBtn = document.createElement('button')
+              deleteBtn.innerText = "Delete image"
+              imgDisplay.src = "/imgs/"+ img
+              document.querySelector('.img-display').appendChild(imgDisplay)
+              document.querySelector('.img-display').appendChild(deleteBtn)
+              deleteBtn.addEventListener('click', e => {
+                crms.emit('message', jss({deleteImage: img}))
+                p.remove()
+                deleteBtn.remove()
+              })
+            })
+          })
+        }
+        if(datainfo.videos){
+          let videos = datainfo.videos
+          let vidsList= document.querySelector('.vids-list')
+          let videoDisplay = document.createElement('video')
+          videoDisplay.setAttribute('controls', "")
+          videos.forEach(vid => {
+            let p = document.createElement('p')
+            p.innerText = vid
+            vidsList.appendChild(p)
+            p.addEventListener('click', e => {
+              console.log(vid)
+              if(document.querySelector('.vid-display button'))
+              document.querySelector('.vid-display button').remove()
+              let deleteBtn = document.createElement('button')
+              deleteBtn.innerText = "Delete video"
+              videoDisplay.src = "/videos/"+ vid
+              document.querySelector('.vid-display').appendChild(videoDisplay)
+              document.querySelector('.vid-display').appendChild(deleteBtn)
+              deleteBtn.addEventListener('click', e => {
+                crms.emit('message', jss({deleteVideo: vid}))
+                p.remove()
+                deleteBtn.remove()
+              })
+            })
           })
         }
         if(datainfo.hasStatus){
@@ -1397,11 +1551,13 @@
         switch (e.target.innerText){
           case "New project":
             document.querySelector('.project-creator input').style.display = "block"
+            document.querySelector('.project-creator .editor-options').style.display = "flex"
             e.target.innerText = "Save new project"
           break
           case "Save new project":
             let projectName = document.querySelector('.project-creator input').value
-            crms.emit('message', JSON.stringify({createProject: {name: projectName}}))
+            let projectFramework = document.querySelector('input[name=editor-options-option]:checked').id
+            crms.emit('message', JSON.stringify({createProject: {framework: projectFramework,name: projectName}}))
             document.querySelector('.project-creator input').style.display = "none"
             e.target.innerText = "New project"
             makeEditableProjectButton({
@@ -1433,6 +1589,34 @@
           document.querySelector('#participants').dataset.project = ""
           updateProject.participants = participants
           makeEditableProjectButton(updateProject)
+        }
+      })
+      document.querySelector('.media-manager-btn').addEventListener('click', e=>{
+        crms.emit('message' ,jss({getimages: true}))
+        crms.emit('message' ,jss({getvideos: true}))
+      })
+      document.querySelector('.add-images-input').addEventListener('change', e=>{
+        for (let file of e.target.files){
+          let imageName = file.name.split(' ').join('_')
+                .split('/').join('_')
+                .split('..').join('_')
+                .split('\\').join('_')
+          crms.emit('image', {
+            name: imageName,
+            image: file
+          })
+        }
+      })
+      document.querySelector('.add-videos-input').addEventListener('change', e=>{
+        for (let file of e.target.files){
+          let videoName = file.name.split(' ').join('_')
+                .split('/').join('_')
+                .split('..').join('_')
+                .split('\\').join('_')
+          crms.emit('video', {
+            name: videoName,
+            video: file
+          })
         }
       })
     </script>
