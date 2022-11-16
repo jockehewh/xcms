@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Creative side</title>
+
+  <link rel="stylesheet" href="./admin-site/xcms.css">
+  <link rel="stylesheet" href="./admin-site/dragula.min.css">
+  <link rel="stylesheet" href="./admin-site/quill.snow.css">    
+  <script src="./admin-site/quill.js"></script>
+  <script src="./admin-site/socket.io.js"></script>
+  <script src="./admin-site/ace-editor/ace.js"></script>
+  <script src="./admin-site/ace-editor/theme-monokai.js"></script>
+  <script src="./admin-site/beautifier.js"></script>
+  <script src="./admin-site/ace-editor/ext-language_tools.js"></script>
+  <script src="./admin-site/css.min.js"></script>
+</head>
+
+<body>
+  <div class="xcms-popd">
+    <!--Master menu maker-->
+    <div id="options-selectd" class="">
+      <h4>New menu:</h4>
+      <p>select the number of links bellow.</p>
+      <br>
+      <ul>
+        <li><select id="menusize"></select></li>
+      </ul>
+      <br>
+      <div id="mymenus">
+        <h4>Saved menus:</h4>
+      </div>
+        <h4>Compose menu:</h4>
+      <div id="option-menu-picker"></div>
+      <button class="save">Close [x]
+      </button>
+    </div>
+  </div>
+  <div class="content-manager">
+    <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
+      <span class="cm-span"><a href="/bundle-editor" class="bundle-editor">Bundle editor</a><a href="/data-manager" class="data-manager">Data manager</a></span>
+    </div>
+    <main class="mw-100">
+      <div class="first-class-editor-button">
+        <p>Menu</p>
+      </div>
+      <div class="first-class">
+        <!--Master page maker-->
+        <input type="file" accept="image; video/mp4" multiple id="imgpiker">
+        <div class="edit-zone" style="display:block;">
+          <style scoped>
+            * {
+              margin: 0;
+              padding: 0;
+              user-select: none;
+            }
+            .xcms-custom{
+              flex:1 1 0%;
+            }
+          </style>
+          <div class="xcms-root-container"></div>
+        </div>
+        <div class="maFrame">
+
+        </div>
+        <div class="ace-editor-block">
+          <div class="editor-btn-flexbox">
+            <a data-editor="js" id="js-editor-btn">Edit your JS</a> <a data-editor="html" id="html-editor-btn">Edit your HTML</a> <a data-editor="css" id="css-editor-btn">Edit your CSS</a>
+          </div>
+          <p id="shortcut-save">Use ALT+Enter or double-click the [Edit your CODE]  button to apply changes.</p>
+          <div id="css-editor"></div>
+          <div id="js-editor"></div>
+          <div id="html-editor"></div>
+          <div id="text-editor"></div>
+        </div>
+      </div>
+      <div class="first-class-editor">
+        <hr>
+        <section id="nodemaker" class="">
+          <label for="titrepage">
+            <h4>Page name:</h4>
+          </label>
+          <input name="titrepage" id="titrepage" type="text" placeholder="New page name"><br><br>
+          <section class="boutons">
+            <ul class='list'>
+              <li>
+                <a id="crepage">Save page</a>
+              </li>
+              <li>
+                <a id="crenew">New page</a>
+              </li>
+              <li>
+                <a id="efface">Delete content</a>
+              </li>
+            </ul>
+          </section><br>
+          <hr>
+          <section>
+            <h4 class="" style="margin-bottom: 3px;">Edit content:</h4><br>
+            <ul class="list">
+              <li><a class="link" href="#" data-demande="div">Add a container</a>
+              <li><a class="link" href="#" data-demande="menu">Add a menu</a>
+              <li><a class="link" href="#" data-demande="image">Add image(s)</a>
+              <li><a class="link" href="#" data-demande="video">Add video(s)</a>
+            </ul>
+          </section><br>
+          <hr>
+          <section class="">
+            <h4>Edit an old page:</h4><br>
+            <ul class="editables list">
+
+            </ul>
+          </section>
+        </section><br><br>
+      </div>
+    </main>
+  </div>
+  
+  <div class="xcms-custom-menu">
+    <style>
+      .xcms-custom-menu {
+        width: 232px;
+      }
+
+      dt {
+        font-weight: bold;
+      }
+
+      dd {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+      }
+
+      hr {
+        margin: 0;
+      }
+
+      dd:hover {
+        background-color: #82b1ff;
+      }
+    </style>
+    <dl class="xcms-custom-menu-options">
+      <hr>
+      <dt>Quick CSS</dt>
+      <hr>
+      <dd data-cssopt="">Create a custom class</dd>
+      <hr>
+      <dd data-cssopt="display: flex;">display: flex;</dd>
+      <hr>
+      <dd data-cssopt="flex-direction: row;">flex-direction: row;</dd>
+      <hr>
+      <dd data-cssopt="flex-direction: column;">flex-direction: column;</dd>
+      <hr>
+      <dd data-cssopt="justify-content: flex-start;">justify-content: flex-start;</dd>
+      <hr>
+      <dd data-cssopt="justify-content: flex-end;">justify-content: flex-end;</dd>
+      <hr>
+      <dd data-cssopt="justify-content: center;">justify-content: center;</dd>
+      <hr>
+      <dd data-cssopt="align-items: flex-start;">align-items: flex-start;</dd>
+      <hr>
+      <dd data-cssopt="align-items: flex-end;">align-items: flex-end;</dd>
+      <hr>
+      <dd data-cssopt="align-items: center;">align-items: center;</dd>
+      <hr>
+      <dd data-cssopt='display: grid;'>display: grid;</dd>
+      <hr>
+      <dd data-cssopt='grid-template-rows: repeat(2, 1fr); grid-template-columns: repeat(2, 1fr);'>grid-template: 2x2</dd>
+      <hr>
+      <dd data-cssopt='grid-template-rows: repeat(3, 1fr); grid-template-columns: repeat(3, 1fr);'>grid-template: 3x3</dd>
+      <hr>
+      <dd data-cssopt='text-align:left;'>text-align: left;</dd>
+      <hr>
+      <dd data-cssopt='text-align:center;'>text-align: center;</dd>
+      <hr>
+      <dd data-cssopt='text-align:right;'>text-align: right;</dd>
+      <hr>
+      <dt>Quick Action</dt>
+      <hr>
+      <dd data-cssopt='duplicate'>duplicate node</dd>
+    </dl>
+  </div>
+  <div class="page-duplicate">
+    <button><a href="" target="_blank" referrerpolicy="no-referrer">Visit page <span></span></a></button><br>
+    <button href="#" class="duplicate-btn">Duplicate page</button>
+    <input type="text" placeholder="Duplicata name">
+    <br>
+    <button href="#" class="rename-btn">Rename page</button>
+    <input type="text" placeholder="New name">
+  </div>
+  <div id="svg-temp">
+  </div>
+  <div class="status-box"></div>
+  <template id="custom-container">
+    <div class="cc-outer">
+      <div class="cc-inner">
+        <div class="cc-title">
+          <h4>Containers:</h4>
+        </div>
+        <div class="cc-body">
+          <div>
+            <button data-preset="smart template">
+              <p>Smart template</p>
+              <img src="/admin-site/smart-template.png" alt="">
+            </button>
+          </div>
+          <div>
+            <button data-preset="100">
+              <p>1 column</p>
+              <img src="/admin-site/1-column.png" alt="">
+            </button>
+          </div>
+
+          <div>
+            <button data-preset="50/50">
+              <p>2 columns</p>
+              <img src="/admin-site/2-columns-center.png" alt="">
+            </button>
+          </div>
+
+          <div>
+            <button data-preset="35/65">
+              <p>2 columns</p>
+              <img src="/admin-site/2-columns-35-65.png" alt="">
+            </button>
+          </div>
+
+          <div>
+            <button data-preset="65/35">
+              <p>2 columns</p>
+              <img src="/admin-site/2-columns-65-35.png" alt="">
+            </button>
+          </div>
+
+          <div>
+            <button data-preset="30/30/30">
+              <p>3 columns</p>
+              <img src="/admin-site/3-columns.png" alt="">
+            </button>
+          </div>
+          <div>
+            <button data-preset="cancel">Close [x]
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template id="video-poster">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg"
+    style="isolation:isolate" viewBox="0 0 600 400" width="600" height="400">
+    <defs>
+      <clipPath id="_clipPath_ftW9NGJ4IzBx297g6OOgEVEu0UjWHA0S">
+        <rect width="600" height="400" />
+      </clipPath>
+    </defs>
+    <g clip-path="url(#_clipPath_ftW9NGJ4IzBx297g6OOgEVEu0UjWHA0S)">
+      <linearGradient id="_lgradient_1" x1="0.49666666666666665" y1="0.46249999999999997" x2="0.49833333333333335"
+        y2="0.9650000000000001">
+        <stop offset="0%" style="stop-color:#FFFFFF" />
+        <stop offset="100%" style="stop-color:#000000" />
+      </linearGradient>
+      <rect width="600" height="400" style="fill:url(#_lgradient_1);" />
+      <path
+        d=" M 317.269 197.144 L 291.13 182.059 C 290.123 181.455 288.846 181.455 287.838 182.059 C 286.83 182.664 286.192 183.739 286.192 184.915 L 286.192 215.085 C 286.192 216.261 286.83 217.336 287.838 217.941 C 288.342 218.243 288.913 218.377 289.484 218.377 C 290.055 218.377 290.627 218.243 291.13 217.941 L 317.269 202.856 C 318.276 202.251 318.915 201.176 318.915 200 C 318.915 198.824 318.276 197.715 317.269 197.144 L 317.269 197.144 Z  M 292.777 209.373 L 292.777 190.627 L 309.004 200 L 292.777 209.373 L 292.777 209.373 Z  M 299.832 168.822 C 282.731 168.822 268.822 182.731 268.822 199.832 C 268.822 216.933 282.731 230.842 299.832 230.842 C 316.933 230.842 330.842 216.933 330.842 199.832 C 330.875 182.731 316.933 168.822 299.832 168.822 Z  M 299.832 226.474 C 285.15 226.474 273.224 214.547 273.224 199.866 C 273.224 185.184 285.15 173.257 299.832 173.257 C 314.514 173.257 326.44 185.184 326.44 199.866 C 326.474 214.514 314.514 226.474 299.832 226.474 Z  M 324.257 154.544 L 275.743 154.544 C 264.052 154.544 254.544 164.052 254.544 175.743 L 254.544 224.257 C 254.544 235.948 264.052 245.456 275.743 245.456 L 324.257 245.456 C 335.948 245.456 345.456 235.948 345.456 224.257 L 345.456 175.743 C 345.49 164.052 335.982 154.544 324.257 154.544 L 324.257 154.544 Z  M 338.871 224.257 C 338.871 232.32 332.32 238.871 324.257 238.871 L 275.743 238.871 C 267.68 238.871 261.129 232.32 261.129 224.257 L 261.129 175.743 C 261.129 167.68 267.68 161.129 275.743 161.129 L 324.257 161.129 C 332.32 161.129 338.871 167.68 338.871 175.743 L 338.871 224.257 L 338.871 224.257 Z "
+        fill="rgb(86,89,92)" />
+      <g transform="matrix(1,0,0,1,210,274)"><text transform="matrix(1,0,0,1,36.575,18.555)" id="svg-video-poster"
+          style="font-family:'Roboto';;font-weight:400;font-size:20px;font-style:normal;fill:#ffffff;stroke:none;">Video
+          name</text></g>
+    </g>
+  </svg>
+  </template>
+  <script src="./admin-site/dragula.min.js"></script>
+  <script>
+    let mews = io('/asocket')
+    var crepage = document.querySelector('#crepage');
+    var jss = JSON.stringify
+    var jsp = JSON.parse
+    const pushToDom = document.querySelector('.edit-zone').appendChild
+    var titre, contenu, nouvellepage;
+    var imgpicker = document.querySelector('#imgpiker');
+    let editablePages = []
+    let extensionCheck = /(\.(jpeg)|(png)|(PNG)|(tiff)|(tif)|(jpg)|(gif)|(svg)|(webp))$/
+
+
+    //*****************STATUS HANDLER
+    mews.on('success', data => {
+      showStatusMessage(1, data)
+    })
+    mews.on('errorr', data => {
+      showStatusMessage(0, data)
+    })
+    function showStatusMessage(status, data){
+      let statusEvent
+      if(status){
+        if(data.includes('created')){
+          statusEvent = new Event('page-created')
+        }else{
+          statusEvent = new Event('no-event')
+        }
+        document.querySelector('.status-box').style.borderLeft = "solid 8px #aff9ba"
+      }else{
+        statusEvent = new Event('internal-error')
+        document.querySelector('.status-box').style.borderLeft = "solid 8px #f7acac"
+      }
+      let p = document.createElement('p')
+      p.innerText = data
+      document.querySelector('.status-box').appendChild(p)
+      document.querySelector('.status-box').style.display = "block"
+      setTimeout(function () {
+        p.remove()
+        document.querySelector('.status-box').style.display = "none"
+        document.body.dispatchEvent(statusEvent)
+      }, 2500)
+    }
+
+    crepage.addEventListener('click', e => {
+      e.cancelBubble = true
+      let parser = new cssjs()
+      const pageCSS = csseditor.getValue()
+      let parsed = parser.parseCSS(pageCSS)
+      parsed.forEach(cssSelector => {
+        let selectedStyle = cssSelector.rules.map(rule => {
+          return `${rule.directive}:${rule.value};`
+        })
+        document.querySelector('.edit-zone .xcms-root-container').querySelectorAll(cssSelector.selector).forEach(existent => {
+          existent.setAttribute('style', selectedStyle.join(''))
+        })
+      })
+      document.querySelector('.edit-zone .xcms-root-container').childNodes.forEach(node => {
+        if (node instanceof HTMLElement) {
+          if (node.hasAttribute('class')) {
+            if (node.className !== "xcms-img" && node.className !== "xcms-video") {
+              node.removeAttribute('contenteditable')
+            }
+          }
+        }
+      })
+      document.querySelector('.edit-zone .xcms-root-container').querySelectorAll('link').forEach(link => {
+        link.remove()
+      })
+      e.preventDefault();
+      titre = document.querySelector('#titrepage').value;
+      let googleTag = ''
+      let scriptTag
+      if (titre === "" || titre === undefined) {
+        titre = prompt("Please enter a name for your new page.")
+      }
+
+      if (localStorage.gtag != "") {
+        //TODO workerjs
+        googleTag = localStorage.gtag
+        contenu =
+          `<!DOCTYPE html>
+                    <html lang="${localStorage.lang}">
+                    <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                    <title>${titre}</title>
+                    <!-- Global site tag (gtag.js) - Google Analytics -->
+                    <script async src="https://www.googletagmanager.com/gtag/js?id=${googleTag}"><\/script><script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+
+                    gtag('config', '${googleTag}');
+                    <\/script>
+                    <link rel="stylesheet" href="./frontend-site/onthefly/${titre}.css">
+                    <script src='./frontend-site/designer.js'><\/script>
+                    </head><body>
+                    <style scoped>
+                    @import "./frontend-site/style.css";
+                    </style>
+                    <div class="xcms-root">${document.querySelector('.edit-zone .xcms-root-container').innerHTML}</div>
+                    <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
+      } else {
+        contenu =
+          `<!DOCTYPE html>
+                    <html lang="${localStorage.lang}">
+                    <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                    <title>${titre}</title>
+                    <link rel="stylesheet" href="./frontend-site/onthefly/${titre}.css">
+                    <script src='./frontend-site/designer.js'><\/script>
+                    </head><body>
+                    <style scoped>
+                    @import "./frontend-site/style.css";
+                    </style>
+                    <div class="xcms-root">${document.querySelector('.edit-zone .xcms-root-container').innerHTML}</div>
+                    <script src='./frontend-site/onthefly/${titre}.js'><\/script></body></html>`;
+      }
+      const pageJS = jseditor.getValue()
+
+      nouvellepage = {
+        name: titre,
+        page: contenu,
+        js: pageJS,
+        css: pageCSS
+      }
+      mews.emit('message', jss(nouvellepage))
+      document.body.addEventListener('internal-error', ie=>{
+        console.log('error', ie)
+        return
+      })
+      document.body.addEventListener('page-created', ie=>{
+        ie.cancelBubble = true
+        var allnodes = document.querySelector('.edit-zone .xcms-root-container').childNodes
+        var j = allnodes.length
+        while (j > 0) {
+          document.querySelector('.edit-zone .xcms-root-container').lastChild.remove()
+          j--
+        }
+        nouvellepage.index = editablePages.length
+        nouvellepage.name = nouvellepage.name + '.html'
+        editablePages.push(nouvellepage)
+        createEditablesPageLinks(nouvellepage)
+        nouvellepage = {}
+        jseditor.setValue('')
+        csseditor.setValue('')
+        htmleditor.setValue('')
+        document.querySelector('.status-box').addEventListener('animationend', ()=>{
+          window.location.href = `${window.location.origin}/admin`
+        })
+        
+      }, {once: true})
+    }, false)
+    mews.on('normal', data => {
+      parsed = jsp(data)
+      if (parsed.lien && parsed.lien !== "") {
+        if (editablePages != undefined && editablePages.includes(parsed.lien)) {
+          return
+        } else {
+          editablePages.push({
+            ...parsed.lien,
+            index: editablePages.length
+          })
+          createEditablesPageLinks(parsed.lien)
+        }
+      }
+      if (parsed.formfield) {
+        if (document.querySelector('#formbtn') === null) {
+          const nodemaker = document.querySelector('#nodemaker ul')
+          let li = document.createElement('li')
+          let a = document.createElement('a')
+          let br = document.createElement('br')
+          a.href = '#'
+          a.innerText = "Contact form"
+          a.className += "link "
+          a.id = "formbtn"
+          li.appendChild(a)
+          li.appendChild(br)
+          nodemaker.appendChild(li)
+          a.addEventListener('click', (e) => {
+            let formblock = document.createElement("h1")
+            formblock.innerText = "Contact form will be here..."
+            formblock.dataset.form = "true"
+            xAppend(formblock)
+          })
+        }
+      }
+    })
+    /* 
+    CREATION DES ELEMENTS
+    */
+    document.querySelectorAll('.first-class-editor a').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.cancelBubble = true
+        switch (e.target.dataset.demande) {
+          case 'div':
+            desactive()
+            customContainer()
+            break;
+          case 'image':
+            desactive()
+            var imgpicker = document.querySelector('#imgpiker');
+            imgpicker.setAttribute('accept', 'image')
+            imgpicker.style.display = 'block'
+            imgpicker.click()
+            var imgpicklone = document.createElement('input');
+            imgpicklone.setAttribute('type', 'file')
+            imgpicklone.setAttribute('accept', 'image')
+            imgpicklone.setAttribute('multiple', true)
+            imgpicklone.id = 'imgpiker'
+            imgpicklone.style.display = 'none'
+            imgpicker.addEventListener('change', function (ev) {
+              ev.stopPropagation()
+              for (let file of imgpicker.files) {
+                var img = document.createElement('img');
+                img.classList.add('xcms-img')
+                xAppend(img)
+                let imageName = file.name.split(' ').join('_')
+                .split('/').join('_')
+                .split('..').join('_')
+                .split('\\').join('_')
+                mews.emit('image', {
+                  name: imageName,
+                  image: file
+                })
+                let extensionIndex = extensionCheck.exec(imageName).index
+                let newName = imageName.slice(0, extensionIndex) + 'webp'
+                setTimeout(function(){
+                  img.src = "/imgs/" + newName
+                }, 800)
+                img.addEventListener('click', event => {
+                  scaleImage(event)
+                })
+                img.onload = function (eve) {
+                  img.id = ""
+                  img = ''
+                }
+                makeBorderColor(img)
+              }
+              imgpicker.replaceWith(imgpicklone);
+              imgpicker.style.display = 'none'
+            }, false)
+            break;
+          case 'video':
+            desactive()
+            var videopicker = document.querySelector('#imgpiker');
+            videopicker.style.display = 'block'
+            videopicker.setAttribute('accept', 'video/mp4')
+            videopicker.click()
+            var videopicklone = document.createElement('input');
+            videopicklone.setAttribute('type', 'file')
+            videopicklone.setAttribute('accept', 'video/mp4')
+            videopicklone.setAttribute('multiple', true)
+            videopicklone.id = 'imgpiker'
+            videopicklone.style.display = 'none'
+            videopicker.addEventListener('change', function (ev) {
+              let videoTemp = document.querySelector('#svg-temp')
+              ev.stopPropagation()
+              for (let file of videopicker.files) {
+                var video = document.createElement('video');
+                video.type = 'video/mp4'
+                video.setAttribute('controls', 'true')
+                video.classList.add('xcms-video')
+                video.width = 600
+                video.height = 400
+                let videoName = file.name.split(' ').join('_')
+                mews.emit('video', {
+                  name: videoName,
+                  video: file
+                })
+                let videoPoster = document.querySelector('#video-poster').innerHTML
+                videoTemp.insertAdjacentHTML('beforeEnd', videoPoster)
+                videoTemp.querySelector('#svg-video-poster').textContent = videoName
+                videoPoster = videoTemp.innerHTML
+                video.poster = "data:image/svg+xml;base64," + btoa(videoPoster)
+                videoTemp.innerHTML = ""
+                /* 
+                  AVANT L'ENREGISTREMENT AJOUTER UN BOUTON CHANGER LA MINIATURE DE LA VIDEO
+                 */
+                setTimeout(function(){
+                  video.src = "/videos/" + videoName
+                }, 1000)
+                xAppend(video)
+                video.load()
+                video.onload = function (eve) {
+                  video = ""
+                }
+                video.addEventListener('click', e => {
+                  e.preventDefault()
+                  scaleImage(e)
+                })
+              }
+              videopicker.replaceWith(videopicklone);
+              videopicker.style.display = 'none'
+            }, false)
+            break;
+          case 'menu':
+            desactive()
+            var menuSize;
+            let mymenus = []
+            document.querySelector('#options-selectd').style.width = document.querySelector('.first-class-editor').offsetWidth -1 + 'px'
+            document.querySelector('.xcms-popd').style.width = document.querySelector('.first-class-editor').offsetWidth + 'px'
+            document.querySelector('.xcms-popd').style.top = e.clientY -45 + 'px'
+            document.querySelector('.xcms-popd').style.display = 'flex'
+            if (!document.querySelector('#menusize').hasChildNodes()) {
+              let i = 0
+              while (i <= 10) {
+                let option = document.createElement('option')
+                option.value = i
+                if (i === 1) {
+                  option.innerText = i + " link"
+                } else {
+                  option.innerText = i + " links"
+                }
+                document.querySelector('#menusize').appendChild(option)
+                i++
+              }
+            }
+            if (document.querySelector('#mymenus').childElementCount == 1) {
+              if (localStorage.mymenus) {
+                mymenus = jsp(localStorage.mymenus)
+                mymenus.forEach((menu, i) => {
+                  let menulink = document.createElement('a')
+                  menulink.innerText = 'menu ' + i
+                  menulink.href = '#'
+                  menulink.addEventListener('click', (menuevent) => {
+                    let div = document.createElement('div')
+                    div.innerHTML = menu.menu
+                    xAppend(div)
+                    makeBorderColor(div)
+                    document.querySelector('.xcms-popd').style.display = 'none'
+                    cssEditorApply()
+                  })
+                  document.querySelector('#mymenus').appendChild(menulink)
+                })
+              } else {
+                mymenus = []
+              }
+            }
+            document.querySelector('#menusize').addEventListener("change",  che=>{
+              if(che.target.selectedIndex == 0){
+                document.querySelector('.save').innerText = "Close [x]"
+              }else{
+                document.querySelector('.save').innerText = "Save [!]"
+              }
+            })
+            let omp = document.querySelector('#option-menu-picker')
+            if(!omp.hasChildNodes()){
+              editablePages.forEach(page =>{
+                let pageName = page.name.slice(0, -5)
+                let div = document.createElement('label')
+                let inp = document.createElement('input')
+                div.for = pageName
+                inp.id = pageName
+                inp.name = pageName
+                inp.type = "checkbox"
+                div.textContent = pageName
+                inp.value = pageName
+                div.appendChild(inp)
+                omp.appendChild(div)
+              })
+            }
+            document.querySelector('.xcms-popd .save').addEventListener('click', (e) => {
+              e.cancelBubble = true
+              let selectedOptions = document.querySelectorAll('#option-menu-picker input[type=checkbox]:checked')
+              let selectedIndex = document.querySelector('#menusize').selectedIndex
+              if(selectedOptions.length > 0 && parseInt(selectedIndex) > 0){
+                alert('you can not select premade links and custom links at the same time. set your premade links to "Zero links"')
+                return
+              }else{
+                if(selectedOptions.length > 0){
+                  var ul = document.createElement('ul');
+                  selectedOptions.forEach(opt=>{
+                    var li = document.createElement('li');
+                    var alink = document.createElement('a');
+                    li.appendChild(alink)
+                    alink.innerText = opt.value
+                    alink.href = opt.value
+                    ul.appendChild(li)
+                    ul.classList.add('xcms-menu')
+                  })
+                  xAppend(ul)
+                  if (confirm("do you want to save this menu for later use?")) {
+                      let newMenu = { menu: ul.outerHTML }
+                      mymenus.push(newMenu)
+                      mews.emit('message', jss(newMenu))
+                      let menulink = document.createElement('a')
+                      menulink.innerText = 'menu ' + mymenus.length
+                      menulink.href = '#'
+                      menulink.addEventListener('click', (menuevent) => {
+                        let div = document.createElement('div')
+                        div.innerHTML = ul.outerHTML
+                        xAppend(div)
+                        document.querySelector('.xcms-popd').style.display = 'none'
+                        cssEditorApply()
+                      })
+                      document.querySelector('#mymenus').appendChild(menulink)
+                      localStorage.mymenus = jss(mymenus)
+                    }
+                  cssEditorApply()
+                }
+                if(selectedIndex > 0){
+                  let desiredSize = document.querySelector('#menusize').options[
+                    document.querySelector('#menusize').selectedIndex
+                  ].value
+                  var ul = document.createElement('ul');
+                  ul.classList.add('xcms-menu')
+                  menuSize = 0
+                  e.stopImmediatePropagation()
+                  while (menuSize < desiredSize) {
+                    menuSize++
+                    var li = document.createElement('li');
+                    var alink = document.createElement('a');
+                    var titrelien = prompt(
+                      "Enter the navigation destination for the link n°" + (
+                        menuSize) + "/" + desiredSize + ":\n1. For in-page navigation use the '#' prefix.\n2. For outter-page navigation use the '/' prefix.")
+                    if (titrelien.charAt(0) === '#') {
+                      alink.href = titrelien
+                      alink.innerText = titrelien.split('#').join('')
+                    } else if (titrelien.charAt(0) === '/') {
+                      if (!/.html$/.test(titrelien)) {
+                        alink.href = titrelien + '.html'
+                        alink.innerText = titrelien.split('/').join('')
+                      } else {
+                        alink.href = titrelien
+                        alink.innerText = titrelien.split('/').join('').split('.html').join('')
+                      }
+                    } else {
+                      alink.href = '#' + titrelien
+                      alink.innerText = titrelien
+                    }
+                    alink.id = "isActive"
+                    li.style.margin = "5px 10px"
+                    li.style.display = 'inline'
+                    li.appendChild(alink);
+                    ul.appendChild(li);
+                    makeBorderColor(ul)
+                    alink.id = ""
+                  }
+                  menuSize = 0
+                  if (desiredSize === '0') {
+                    ul = ""
+                    document.querySelector('.xcms-popd').style.display = 'none'
+                    return
+                  } else {
+                    xAppend(ul)
+                    if (confirm("do you want to save this menu for later use?")) {
+                      let newMenu = { menu: ul.outerHTML }
+                      mymenus.push(newMenu)
+                      mews.emit('message', jss(newMenu))
+                      let menulink = document.createElement('a')
+                      menulink.innerText = 'menu ' + mymenus.length
+                      menulink.href = '#'
+                      menulink.addEventListener('click', (menuevent) => {
+                        let div = document.createElement('div')
+                        div.innerHTML = ul.outerHTML
+                        xAppend(div)
+                        document.querySelector('.xcms-popd').style.display = 'none'
+                        cssEditorApply()
+                      })
+                      document.querySelector('#mymenus').appendChild(menulink)
+                      localStorage.mymenus = jss(mymenus)
+                    }
+                  }
+                }
+              }
+              document.querySelector('.xcms-popd').style.display = 'none'
+            })
+            break;
+        }
+      }, false)
+    })
+    //***************GET MENUS
+    mews.emit('message', jss({menulist: 1}))
+    mews.on('menulist', data=>{
+      localStorage.mymenus = data
+    })
+    //***************GET GTAG
+    mews.emit('message', jss({getgtag: 1}))
+    mews.on('gtag', data=>{
+      localStorage.gtag = data.gtag
+    })
+    //***************GET LANG
+    mews.emit('message', jss({getlang: 1}))
+    mews.on('lang', data=>{
+      localStorage.lang = data.lang
+    })
+    //***************LIVE ON PAGE LIVE
+    document.querySelector('.edit-zone').addEventListener('dblclick', function (e) {
+      if (/xcms-/.test(e.target.classList.value)) {
+        if (!e.target.classList.contains('xcms-img') || !e.target.classList.contains('xcms-video')) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (e.target.id === "isContainer") {
+            e.target.id = ""
+          } else {
+            e.target.id = "isContainer"
+          }
+        }
+      }
+    })
+    //******************CREATION DE PAGE
+    document.querySelector('#crenew').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelector('.edit-zone .xcms-root-container').innerHTML = ""
+      document.querySelector('.edit-zone').style.display = "block"
+      jseditor.setValue('')
+      csseditor.setValue('')
+      htmleditor.setValue('')
+    })
+    //*****************RESET
+    document.querySelector('#efface').addEventListener('click', e => {
+      var allnodes = document.querySelector('.edit-zone .xcms-root-container').childNodes
+      var j = allnodes.length
+      while (j > 0) {
+        document.querySelector('.edit-zone .xcms-root-container').lastChild.remove()
+        j--
+      }
+    })
+    //******************APPEND
+    function xAppend(item) {
+      if (document.querySelector('.isSelected')) {
+        document.querySelector('.isSelected').appendChild(item)
+        document.querySelector('.isSelected').classList.remove('isSelected')
+      } else {
+        if (document.querySelector('#isContainer') !== null) {
+          document.querySelector('#isContainer').appendChild(item)
+          document.querySelector('#isContainer').classList.add('not-empty-container')
+        } else {
+          if (document.querySelector('.edit-zone').style.display === "block") {
+            document.querySelector('.edit-zone .xcms-root-container').appendChild(item)
+          } else {
+            document.querySelector('.re-edit-zone .xcms-root-container').appendChild(item)
+          }
+        }
+      }
+      if (item.nodeName === 'IMG') {
+        document.querySelectorAll('.isSelected').forEach(opt => {
+          opt.classList.remove('isSelected')
+        })
+        document.querySelectorAll('#isContainer').forEach(opt => {
+          opt.id = ''
+        })
+      }
+    }
+    //******************SCALE IMAGE
+    function scaleImage(event) {
+      let div = document.createElement('div')
+      let label = document.createElement('label')
+      label.innerText = 'Scale'
+      let button = document.createElement('button')
+      button.classList.add('save-scale')
+      button.innerText = 'save scaling'
+      button.style.width = "min-content"
+      let scaler = document.createElement('input')
+      scaler.setAttribute('type', 'range')
+      scaler.setAttribute('min', 1)
+      scaler.setAttribute('max', 20)
+      scaler.setAttribute('step', 0.1)
+      scaler.setAttribute('value', 10)
+      scaler.style.height = '100%'
+      div.appendChild(label)
+      div.appendChild(scaler)
+      div.appendChild(button)
+      div.style.display = 'flex'
+      div.style.flexDirection = 'column'
+      div.style.height = '350px'
+      div.style.width = '45px'
+      div.style.justifyContent = 'space-between'
+      div.style.alignItems = "center"
+      div.style.position = 'absolute'
+      div.style.left = document.querySelector('.re-edit-zone') ?
+        document.querySelector('.re-edit-zone').getBoundingClientRect().right + 'px' :
+        document.querySelector('.edit-zone').getBoundingClientRect().right + 'px'
+      div.style.top = document.querySelector('.re-edit-zone') ?
+        document.querySelector('.re-edit-zone').getBoundingClientRect().top - 35 + 'px' :
+        document.querySelector('.edit-zone').getBoundingClientRect().top - 35 + 'px'
+      document.body.appendChild(div)
+      button.addEventListener('click', () => {
+        event.target.style.width = event.target.getBoundingClientRect().width + 'px'
+        event.target.style.transform = `scale(${1})`
+        div.remove()
+        if (document.body.querySelector('.container-editor-options')) {
+          document.body.querySelector('.container-editor-options').remove()
+        }
+      })
+      scaler.addEventListener('change', (ev) => {
+        event.target.style.transform = `scale(${ev.target.value / 10})`
+        event.target.dataset.lastScale = ev.target.value
+      })
+    }
+    //*************MAKE BORDER COLOR
+    function makeBorderColor(node){
+      node.style.borderColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+      showBorder(node)
+    }
+    //*************SHOW BORDER
+    let CurrentlyHoveredElement = []
+    function showBorder(node) {
+      node.addEventListener('mouseenter', (e) => {
+        e.cancelBubble = true
+        let xnode = e.target
+        CurrentlyHoveredElement.push(e.target)
+        node.id = "isHover"
+      })
+      node.addEventListener('mouseleave', () => {
+        node.id = ""
+      })
+      node.addEventListener('click', (e) => {
+        e.cancelBubble = true
+        document.querySelectorAll('.isSelected').forEach(opt => {
+          opt.classList.remove('isSelected')
+        })
+        node = CurrentlyHoveredElement.pop()
+        CurrentlyHoveredElement.length = 0
+        document.querySelectorAll('#isHover').forEach(n=>{
+          n.id = ""
+        })
+        node.id = 'isHover'
+        node.classList.add('isSelected')
+        if (document.body.querySelector('.container-editor-options')) {
+          document.body.querySelector('.container-editor-options').remove()
+        }
+        if(document.body.querySelector('.will-repeat')){
+          document.body.querySelector('.will-repeat').remove()
+        }
+        if(document.body.querySelector('.is-repeatable')){
+          document.body.querySelector('.is-repeatable').remove()
+        }
+        if (!document.body.querySelector('.container-editor-options')) {
+          let div = document.createElement('div')
+          let btnRemove = document.createElement('button')
+          btnRemove.innerText = 'remove'
+          div.classList.add('container-editor-options')
+          document.querySelector('main.mw-100').appendChild(div)
+          div.appendChild(btnRemove)
+          btnRemove.addEventListener('click', () => {
+            node.remove()
+            div.remove()
+          })
+          let btnWillRepeat = document.createElement("button")
+          let btnIsRepeatable = document.createElement("button")
+          let generateSnippet = document.createElement("button")
+          btnWillRepeat.innerText = "mark as repeater"
+          btnIsRepeatable.innerText = "mark as repeatable"
+          generateSnippet.innerText = "generate snippet"
+          btnWillRepeat.classList.add("will-repeat")
+          btnIsRepeatable.classList.add("is-repeatable")
+          generateSnippet.classList.add('generate-snippet')
+          div.appendChild(btnWillRepeat)
+          div.appendChild(btnIsRepeatable)
+          div.appendChild(generateSnippet)
+          btnWillRepeat.addEventListener('click', (e)=>{
+            e.preventDefault()
+          if(node.dataset.willRepeat !== "true"){
+            node.dataset.willRepeat = true
+          }else{
+            node.dataset.willRepeat = false
+          }
+            div.remove()
+          })
+          btnIsRepeatable.addEventListener('click', (e)=>{
+            e.preventDefault()
+            if(node.parentElement.classList.contains('edit-zone') ||
+                node.parentElement.classList.contains('xcms-root-container') ||
+                node.parentElement.dataset.willRepeat !== "true") {
+              alert("You can not spawn a repatable element outside of a container.")
+              return
+            }
+            node.dataset.isRepeatable = true
+            div.remove()
+          })
+          generateSnippet.addEventListener('click', (e)=>{
+            node.classList.remove('isSelected')
+            document.querySelectorAll('[data-will-repeat]').forEach(repeater => {createLinkingFunctions(repeater)})
+          })
+        }
+      })
+      
+      //*************MENU CONTEXTUEL
+      if(CurrentlyHoveredElement.length > 0){
+        node = CurrentlyHoveredElement.pop()
+        CurrentlyHoveredElement.length = 0
+      }
+      
+      node.addEventListener('contextmenu', ce => {
+        ce.preventDefault();
+        ce.cancelBubble = true
+        let menu = document.querySelector('.xcms-custom-menu')
+        let origin = {
+          left: ce.pageX,
+          top: ce.pageY
+        }
+        
+        menu.style.display = "block"
+        menu.style.left = origin.left + 'px'
+        menu.style.top = origin.top + 'px'
+        //*************EVENEMENT DU MENU CONTEXTUEL
+        menu.querySelectorAll('dd').forEach(dd => {
+          dd.onclick = (ne)=>{
+            if(dd.dataset.cssopt === "duplicate"){
+              let nodebis = node.cloneNode(true)
+              node.parentElement.appendChild(nodebis)
+              makeBorderColor(nodebis)
+              menu.style.display = "none"
+              return
+            }
+            let random = Math.floor(Math.random()*5000)
+            let contextClass = `xcms-custom_${random}`
+            let hasCustomClass = node.classList.value.match(/xcms-custom_[0-9]{0,4}/)
+            let existingStyle = node.getAttribute('style').split(';')
+            if(hasCustomClass !== null){
+              let classIndex = csseditor.find(hasCustomClass[0]).start.row
+              csseditor.gotoLine(classIndex+1)
+              csseditor.navigateLineEnd()
+              csseditor.insert('\n')
+              csseditor.insert(dd.dataset.cssopt)
+            }else{
+              node.classList.add(contextClass)
+              csseditor.navigateFileEnd()
+              csseditor.insert(`\n.${contextClass}{\n}`)
+              let classIndex = csseditor.find(contextClass).start.row
+              csseditor.gotoLine(classIndex+1)
+              csseditor.navigateLineEnd()
+              csseditor.insert('\n')
+              existingStyle.forEach(style => {
+                if(style != "")
+                csseditor.insert(style +";\n")
+              })
+              csseditor.insert(dd.dataset.cssopt)
+            }
+            menu.style.display = "none"
+          }
+        })
+      })
+    }
+    //***************UPDATE EXISTING LINKING FUNCTION
+    const updateExistentLinkingFunction = (node)=>{
+      node.querySelectorAll('[data-is-repeatable]').forEach(linkedElement =>{
+        if(/xcms-repeater-[0-9]{0,4}/.test(node.className)){
+          let currentClassName = node.className.match(/xcms-repeater-[0-9]{0,4}/)[0].split('-')[2]
+          let repeatableHTML = linkedElement.outerHTML
+
+          let parsedKeys = repeatableHTML.match(/::[a-zA-Z0-9_-]{0,10}::/gm)
+          let count = 0
+          parsedKeys.forEach(key=>{
+            while(repeatableHTML.includes(key)){
+              repeatableHTML = repeatableHTML.replace(key, `::parameter_${count}::`)
+            }
+            count++
+          })
+          let parsedNewKeys = repeatableHTML.match(/::(parameter_[0-9]){0,10}::/gm)
+          let countr = 0
+          let variablesBindingNames = []
+          let checkDuplicate = []
+          parsedNewKeys.forEach(key=>{
+            let currentParameterName = "parameter"+countr
+            while(repeatableHTML.includes(key)){
+              repeatableHTML = repeatableHTML.replace(key, "${"+currentParameterName+"}")
+            }
+            if(checkDuplicate.indexOf(key) === -1){
+              variablesBindingNames.push(currentParameterName)
+              checkDuplicate.push(key)
+              countr++
+            }else{}
+          })
+          
+          let parentElementId = `const xcmsRepeater_${currentClassName} = (${variablesBindingNames.join(', ')})=>{`
+          let funcOne = `xcmsRepeatable_${currentClassName}(${variablesBindingNames.join(', ')})`
+          let funcTwo = `const xcmsRepeatable_${currentClassName} = (${variablesBindingNames.join(', ')})=>{`
+          let htmplate = `const htmlTemplate${currentClassName} = \`${repeatableHTML.replace('data-is-repeatable="true"', '').split('\n').join('')}\``
+          jseditor.navigateFileStart()
+          jseditor.find(`const xcmsRepeater_${currentClassName}`)
+          jseditor.removeLines()
+          jseditor.navigateLeft(1)
+          jseditor.insert('\n'+ parentElementId)
+          jseditor.find(`xcmsRepeatable_${currentClassName}`)
+          jseditor.removeLines()
+          jseditor.navigateLeft(1)
+          jseditor.insert('\n  '+ funcOne)
+          jseditor.find(`const xcmsRepeatable_${currentClassName}`)
+          jseditor.removeLines()
+          jseditor.navigateLeft(1)
+          jseditor.insert('\n'+ funcTwo)
+          jseditor.find('const htmlTemplate'+currentClassName)
+          jseditor.removeLines()
+          jseditor.navigateLeft(1)
+          jseditor.insert('\n  '+ htmplate)
+          jseditor.navigateFileEnd()
+        }
+      })
+    }
+    let linkedFunctions = []
+    //***************CREATING CODE SNIPPETS
+    const createLinkingFunctions = (node)=>{
+      if(/xcms-repeater-[0,9]{0,4}/.test(node.className)){
+        updateExistentLinkingFunction(node)
+        return
+      }
+      node.querySelectorAll('[data-is-repeatable]').forEach(repeatable=>{
+        let repeatableHTML = repeatable.outerHTML
+        let randomized = makeRandom(10)
+        if(linkedFunctions.indexOf("xcms-repeater-"+randomized) !== -1) return
+        let repeaterUniqueID = "xcms-repeater-"+randomized
+        let repeatableUniqueFunctionID = "xcmsRepeatable_"+randomized
+        let parentElementUniqueFunctionID = "xcmsRepeater_"+randomized
+        linkedFunctions.push(repeaterUniqueID)
+        node.classList.add(repeaterUniqueID)
+        let parsedKeys = repeatableHTML.match(/::[a-zA-Z0-9_-]{0,10}::/gm)
+        let count = 0
+        if(parsedKeys === null) return
+        parsedKeys.forEach(key=>{
+          while(repeatableHTML.includes(key)){
+            repeatableHTML = repeatableHTML.replace(key, `::parameter_${count}::`)
+          }
+          count++
+        })
+        let parsedNewKeys = repeatableHTML.match(/::(parameter_[0-9]){0,10}::/gm)
+        let countr = 0
+        let variablesBindingNames = []
+        let checkDuplicate = []
+        parsedNewKeys.forEach(key=>{
+          let currentParameterName = "parameter"+countr
+          while(repeatableHTML.includes(key)){
+            repeatableHTML = repeatableHTML.replace(key, "${"+currentParameterName+"}")
+          }
+          if(checkDuplicate.indexOf(key) === -1){
+            variablesBindingNames.push(currentParameterName)
+            checkDuplicate.push(key)
+            countr++
+          }else{}
+        })
+        let templateFunction = `
+//**********SNIPET ${randomized} START**********\\\\
+const htmlReference${randomized} = document.querySelector(".${repeaterUniqueID}")
+//run the next function to intialize you repeater element
+const ${parentElementUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
+  htmlReference${randomized}.querySelectorAll('[data-is-repeatable]').forEach(n=>{
+    n.remove()
+  })
+/* YOUR CODE GOES HERE */
+${repeatableUniqueFunctionID}(${variablesBindingNames.join(', ')})
+}
+const ${repeatableUniqueFunctionID} = (${variablesBindingNames.join(', ')})=>{
+  /* YOUR CODE GOES HERE */
+  const htmlTemplate${randomized} = \`${repeatableHTML.replace('data-is-repeatable="true"', '').split('\n').join('')}\`
+
+  htmlReference${randomized}.insertAdjacentHTML('beforeend', htmlTemplate${randomized}) 
+}
+/* uncomment the next line to run the preceding snippet */
+//${parentElementUniqueFunctionID}("x")
+
+//**********SNIPET ${randomized} END**********\\\\
+
+`
+      jseditor.navigateFileEnd()
+      jseditor.insert(templateFunction)
+      jseditor.navigateFileEnd()
+      })
+    }
+
+    //*************HIDE CONTEXT MENU IF VISIBLE
+    document.querySelector("main").addEventListener('click', (e)=>{
+      let menu = document.querySelector('.xcms-custom-menu')
+      if(menu.style.display === "block") menu.style.display = "none"
+    })
+    //*************GET CONTAINER NODENAME
+    function getContainerNodeName(){
+      if (document.querySelector('.isSelected')) {
+        if(document.querySelector('.isSelected').nodeName === 'DIV'){
+          let selectedContainer = document.querySelector('.isSelected')
+          return {isDiv: 1, selectedContainer}
+        }
+        return {isDiv: 0, selectedContainer: 0}
+      }
+      return {isDiv: 0, selectedContainer: 0}
+    }
+    //*************CREATE CUSTOM CONTAINER
+    function customContainer() {
+      var div = document.createElement('div')
+      let isSelected = getContainerNodeName()
+      if(isSelected.isDiv){
+        div = isSelected.selectedContainer
+      }
+      div.classList.add('xcms-container')
+      div.id = "isContainer"
+      let menu = document.importNode(document.querySelector('#custom-container').content, true)
+      document.body.appendChild(menu)
+      document.querySelector('.cc-inner').style.width = document.querySelector('.first-class-editor').offsetWidth -1 + 'px'
+      document.querySelector('.cc-body').querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.cancelBubble = true
+          let preset = btn.dataset.preset
+          if(preset === "smart template"){
+            let templateContainer = document.createElement("div")
+            let templateElement = document.createElement('div')
+            let demoElement = document.createElement('h1')
+            templateContainer.dataset.willRepeat = true
+            templateElement.dataset.isRepeatable = true
+            templateContainer.appendChild(templateElement)
+            demoElement.innerText = "Hello ::name:: !"
+            templateElement.appendChild(demoElement)
+            makeBorderColor(templateElement)
+            xAppend(templateContainer)
+            createLinkingFunctions(templateContainer)
+          }
+          if (preset === "100") {
+            xAppend(div)
+            makeBorderColor(div)
+            drake.containers.push(div)
+          }
+          if (preset === "50/50") {
+            div.classList.add('flex-row')
+            let leftDiv = document.createElement('div')
+            let rightDiv = document.createElement('div')
+            leftDiv.classList.add('flex-column-centered')
+            leftDiv.classList.add('flex-1')
+            rightDiv.classList.add('flex-column-centered')
+            rightDiv.classList.add('flex-1')
+            div.appendChild(leftDiv)
+            div.appendChild(rightDiv)
+            if(!isSelected.isDiv)xAppend(div)
+            makeBorderColor(leftDiv)
+            makeBorderColor(rightDiv)
+            drake.containers.push(div)
+            drake.containers.push(leftDiv)
+            drake.containers.push(rightDiv)
+          }
+          if (preset === "35/65") {
+            div.classList.add('flex-row')
+            let leftDiv = document.createElement('div')
+            let rightDiv = document.createElement('div')
+            leftDiv.classList.add('flex-column-centered')
+            leftDiv.classList.add('flex-1')
+            rightDiv.classList.add('flex-column-centered')
+            rightDiv.classList.add('flex-2')
+            div.appendChild(leftDiv)
+            div.appendChild(rightDiv)
+            if(!isSelected.isDiv)xAppend(div)
+            makeBorderColor(leftDiv)
+            makeBorderColor(rightDiv)
+            drake.containers.push(div)
+            drake.containers.push(leftDiv)
+            drake.containers.push(rightDiv)
+          }
+          if (preset === "65/35") {
+            div.classList.add('flex-row')
+            let leftDiv = document.createElement('div')
+            let rightDiv = document.createElement('div')
+            leftDiv.classList.add('flex-column-centered')
+            leftDiv.classList.add('flex-2')
+            rightDiv.classList.add('flex-column-centered')
+            rightDiv.classList.add('flex-1')
+            div.appendChild(leftDiv)
+            div.appendChild(rightDiv)
+            if(!isSelected.isDiv)xAppend(div)
+            makeBorderColor(leftDiv)
+            makeBorderColor(rightDiv)
+            drake.containers.push(div)
+            drake.containers.push(leftDiv)
+            drake.containers.push(rightDiv)
+          }
+          if (preset === "30/30/30") {
+            div.classList.add('flex-row')
+            let leftDiv = document.createElement('div')
+            let middleDiv = document.createElement('div')
+            let rightDiv = document.createElement('div')
+            leftDiv.classList.add('flex-column-centered')
+            leftDiv.classList.add('flex-1')
+            rightDiv.classList.add('flex-column-centered')
+            rightDiv.classList.add('flex-1')
+            middleDiv.classList.add('flex-column-centered')
+            middleDiv.classList.add('flex-1')
+            div.appendChild(leftDiv)
+            div.appendChild(middleDiv)
+            div.appendChild(rightDiv)
+            if(!isSelected.isDiv)xAppend(div)
+            makeBorderColor(leftDiv)
+            makeBorderColor(middleDiv)
+            makeBorderColor(rightDiv)
+            drake.containers.push(div)
+            drake.containers.push(leftDiv)
+            drake.containers.push(rightDiv)
+            drake.containers.push(middleDiv)
+          }
+          if (preset === 'cancel') {
+            document.querySelector('.cc-outer').remove()
+            return
+          }
+          document.querySelector('.cc-outer').remove()
+          cssEditorApply()
+        })
+      })
+
+    }
+
+    //*************DEACTIVR
+    function desactive() {
+      document.querySelectorAll('#isActive').forEach(active => {
+        active.id = ''
+      })
+    }
+    //**************DRAG & DROP
+    let drake = dragula([document.querySelector('.edit-zone .xcms-root-container')],{revertOnSpill: true})
+    //**************ACE EDITORS
+    ace.require("ace/ext/language_tools")
+    let csseditor = ace.edit('css-editor')
+    csseditor.setTheme("ace/theme/monokai")
+    csseditor.session.setMode("ace/mode/css")
+    csseditor.scrollToLine(0, true, true, function () { });
+    csseditor.gotoLine(0, 0, true);
+    csseditor.session.setTabSize(2);
+    csseditor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true
+    })
+    const defaultCss = `.flex-row{
+  display: flex;
+  flex-direction: row;
+}
+.xcms-menu{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  list-style: none;
+}
+.flex-column-centered{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 60px;
+  min-width: 60px;
+}
+.flex-1{
+  flex: 1;
+}
+.flex-2{
+  flex: 2;
+}
+.flex-3{
+  flex: 3;
+}
+.flex-4{
+  flex: 4;
+}
+`
+    csseditor.setValue(defaultCss)
+    csseditor.navigateFileEnd()
+    let jseditor = ace.edit('js-editor')
+    jseditor.setTheme("ace/theme/monokai")
+    jseditor.session.setMode("ace/mode/javascript")
+    jseditor.scrollToLine(0, true, true, function () { });
+    jseditor.gotoLine(0, 0, true);
+    jseditor.session.setTabSize(2);
+    jseditor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true
+    })
+    let htmleditor = ace.edit('html-editor')
+    htmleditor.setTheme("ace/theme/monokai")
+    htmleditor.getSession().setMode("ace/mode/php")
+    htmleditor.scrollToLine(0, true, true, function () { });
+    htmleditor.gotoLine(0, 0, true);
+    htmleditor.session.setTabSize(2);
+    htmleditor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true
+    })
+    function cssEditorApply(){
+      let parser = new cssjs()
+      let pageCSS = csseditor.getValue()
+      let parsed = parser.parseCSS(pageCSS)
+      parsed.forEach(cssSelector => {
+        let selectedStyle = cssSelector.rules.map(rule => {
+          return `${rule.directive}:${rule.value};`
+        })
+        if (document.querySelector('.re-edit-zone')) {
+          document.querySelector('.re-edit-zone .xcms-root-container').querySelectorAll(cssSelector.selector).forEach(existent => {
+            let existingcss = existent.getAttribute('style') ? existent.getAttribute('style') : ""
+            selectedStyle.forEach(rule=>{
+              if(existingcss.includes(rule)){
+                return
+              }else{
+                existingcss += rule
+              }
+            })
+            existent.setAttribute('style', existingcss)
+          })
+        } else {
+          document.querySelector('.edit-zone .xcms-root-container').querySelectorAll(cssSelector.selector).forEach(existent => {
+            let existingcss = existent.getAttribute('style') ? existent.getAttribute('style') : ""
+            selectedStyle.forEach(rule=>{
+              if(existingcss.includes(rule)){
+                return
+              }else{
+                existingcss += rule
+              }
+            })
+            existent.setAttribute('style', existingcss)
+          })
+        }
+      })
+    }
+    function removeStyleAttr(){
+      if(document.querySelector('.edit-zone').style.display === "block"){
+        for(nd of document.querySelector('.edit-zone .xcms-root-container').children){
+          nd.removeAttribute('style')
+        }
+      }else{
+        for(nd of document.querySelector('.re-edit-zone .xcms-root-container').children){
+          nd.removeAttribute('style')
+        }
+      }
+    }
+    function updateDOMEditor(){
+      htmleditor.selectAll()
+      htmleditor.remove()
+      let niceHTML = document.querySelector('.edit-zone').style.display === "block" ? 
+      beautifier.html(document.querySelector('.edit-zone .xcms-root-container').innerHTML, { indent_size: 2, space_in_empty_paren: true }) :
+      beautifier.html(document.querySelector('.re-edit-zone .xcms-root-container').innerHTML, { indent_size: 2, space_in_empty_paren: true })
+      let findStyleAttr = /(style="[^transform][a-zA-Z -_]{1,}:[\sa-zA-Z0-9\s\(\),]{1,};")/
+      while(findStyleAttr.test(niceHTML)){
+        niceHTML = niceHTML.replace(findStyleAttr, 'style=""')
+      }
+      htmleditor.setValue(niceHTML)
+      htmleditor.navigateFileEnd()
+    }
+    function activateBorders(rootNode){
+      if(!rootNode.className.includes('edit-zone') &&
+         !rootNode.className.includes('re-edit-zone') &&
+         !rootNode.className.includes(' .xcms-root-container')){
+        makeBorderColor(rootNode)
+      }
+      for(let i = 1; i<rootNode.childElementCount; i++){
+        makeBorderColor(rootNode.children[i])
+        if(rootNode.children[i].childElementCount > 0){
+          for(nd of rootNode.children[i].children){
+            activateBorders(nd)
+          }
+        }
+      }
+    }
+
+    document.querySelectorAll('.ace-editor-block a').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.target.style.borderBottom = "solid 1px"
+        document.querySelector('#shortcut-save').style.display = "block"
+        if (e.target.dataset.editor === 'js') {
+          document.querySelector('#js-editor').style.display = "block"
+          document.querySelector('#css-editor').style.display = "none"
+          document.querySelector('#html-editor').style.display = "none"
+          document.querySelector('#css-editor-btn').style.borderBottom = "none"
+          document.querySelector('#html-editor-btn').style.borderBottom = "none"
+        }
+        if (e.target.dataset.editor === 'css') {
+          document.querySelector('#js-editor').style.display = "none"
+          document.querySelector('#html-editor').style.display = "none"
+          document.querySelector('#js-editor-btn').style.borderBottom = "none"
+          document.querySelector('#html-editor-btn').style.borderBottom = "none"
+          document.querySelector('#css-editor').style.display = "block"
+        }
+        if (e.target.dataset.editor === 'html') {
+          document.querySelector('#js-editor').style.display = "none"
+          document.querySelector('#css-editor').style.display = "none"
+          document.querySelector('#css-editor-btn').style.borderBottom = "none"
+          document.querySelector('#js-editor-btn').style.borderBottom = "none"
+          document.querySelector('#html-editor').style.display = "block"
+          setTimeout(updateDOMEditor, 500)
+        }
+      })
+    })
+    
+    document.querySelectorAll('.ace-editor-block a').forEach(btn => {
+      btn.addEventListener('dblclick', e => {
+        e.target.style.borderBottom = "none"
+        document.querySelector('#shortcut-save').style.display = "none"
+        if (e.target.dataset.editor === 'js') {
+          document.querySelector('#js-editor').style.display = "none"
+        }
+        if (e.target.dataset.editor === 'html') {
+          clearTimeout(updateDOMEditor, 500)
+          if(document.querySelector('.edit-zone').style.display == "block"){
+            document.querySelector('.edit-zone .xcms-root-container').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.edit-zone .xcms-root-container'))
+          }else{
+            document.querySelector('.re-edit-zone .xcms-root-container').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.re-edit-zone .xcms-root-container'))
+          }
+          document.querySelector('#html-editor').style.display = "none"
+        }
+        if (e.target.dataset.editor === 'css') {
+          cssEditorApply()
+          document.querySelector('#css-editor').style.display = "none"
+        }
+      })
+    })
+    //******************APPLY AND CLOSE ON ALT+ENTER
+    document.body.addEventListener('keydown', keyEvent=>{
+      if(keyEvent.key === "Alt"){
+        altKey = true
+      }
+      if(keyEvent.key === "Enter" && altKey){
+        if(htmleditor.getValue() !== ""){
+          if(document.querySelector('.edit-zone').style.display == "block"){
+            document.querySelector('.edit-zone .xcms-root-container').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.edit-zone .xcms-root-container'))
+          }else{
+            document.querySelector('.re-edit-zone .xcms-root-container').innerHTML = htmleditor.getValue()
+            activateBorders(document.querySelector('.re-edit-zone .xcms-root-container'))
+          }
+        }
+        cssEditorApply()
+      }
+    })
+    let altKey = false
+    document.body.addEventListener('keyup', keyEvent=>{
+      keyEvent.preventDefault()
+      if(keyEvent.key === "Alt"){
+        altKey = false
+      }
+    })
+    //******************CREATE EDITABLE PAGES LINKS
+    function createEditablesPageLinks(onePage) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      let span = document.createElement('span');
+      a.href = '#'
+      a.innerText = onePage.name
+      a.dataset.index = editablePages.length - 1
+      a.dataset.isBundle = onePage.isBundle
+      a.className += "link"
+      span.innerText = "delete page"
+      li.appendChild(a);
+      li.appendChild(span)
+      //EDITING PAGES
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        if(e.target.dataset.isBundle == "true"){
+          alert('You cannot edit a page made from the bundle editor.')
+          return
+        }
+        myframe = document.querySelector('.maFrame')
+        let xcmsRootContainer = document.createElement('div')
+        xcmsRootContainer.classList.add('xcms-root-container')
+        var theframe = document.createElement('div')
+        theframe.appendChild(xcmsRootContainer)
+        theframe.classList.add('re-edit-zone')
+        //LOADING CONTENT
+        xcmsRootContainer.innerHTML = editablePages[e.target.dataset.index].page
+        let niceJS = beautifier.js(editablePages[e.target.dataset.index].js, { indent_size: 2, space_in_empty_paren: true })
+        let niceCSS = beautifier.css(editablePages[e.target.dataset.index].css, { indent_size: 2, space_in_empty_paren: true })
+        jseditor.setValue(niceJS)
+        csseditor.setValue(niceCSS)
+        myframe.appendChild(theframe)
+        drake.destroy();
+        drake = dragula([document.querySelector('.re-edit-zone .xcms-root-container')],{revertOnSpill: true})
+        document.querySelector('.edit-zone').style.display = 'none'
+        //PREPARING CHANGES
+        theframe.childNodes.forEach(node => {
+          if (node instanceof HTMLElement) {
+            if (node.hasAttribute('class')) {
+              if (node.className !== "xcms-img" && node.className !== "xcms-video") {
+                if (node.hasChildNodes) {
+                  drake.containers.push(node)
+                }
+                try {
+                  node.childNodes.forEach(n => {
+                    if (n != undefined) {
+                      makeBorderColor(n)
+                    }
+                  })
+                } catch{
+                  makeBorderColor(node)
+                }
+              } else {
+                makeBorderColor(node)
+              }
+            }
+          }
+        })
+        //SAVE CHANGES
+        let button = document.createElement('a')
+        button.innerText = 'Save & Close'
+        button.href = "#"
+        document.querySelector('.boutons').appendChild(button)
+        button.addEventListener('click', ev => {
+          //APPLY INLINE CSS
+          const pageCSS = csseditor.getValue()
+          //REMOVE ATTRIBUT CONTENTEDITABLE
+          theframe.childNodes.forEach(node => {
+            if (node instanceof HTMLElement) {
+              if (node.hasAttribute('class')) {
+                if (node.className !== "xcms-img" && node.className !== "xcms-video") {
+                  node.removeAttribute('contenteditable')
+                }
+              }
+            }
+          })
+          let rebuiltPage = document.implementation.createHTMLDocument(/* */)
+          for (var nde of xcmsRootContainer.children) {
+            rebuiltPage.head.appendChild(nde.cloneNode(true))
+            if (nde.getAttribute('src') === "./frontend-site/designer.js") {
+              break
+            }
+          }
+          theframe.querySelectorAll('.re-edit-zone > style').forEach(element => {
+            rebuiltPage.body.appendChild(element.cloneNode(true))
+          })
+          xcmsRootContainer.querySelectorAll('.xcms-root').forEach(element => {
+            rebuiltPage.body.appendChild(element.cloneNode(true))
+          })
+
+          rebuiltPage.body.appendChild(theframe.querySelector('script:last-of-type').cloneNode(true))
+          var gluedPage = `<!DOCTYPE html>
+                    <html lang="${localStorage.lang}">
+                    ${rebuiltPage.head.outerHTML} ${rebuiltPage.body.outerHTML}</html>`
+          let name = e.target.innerText
+          let page = gluedPage
+          let js = jseditor.getValue()
+          let changedPage = {
+            name: name.toLowerCase(),
+            page,
+            css: pageCSS,
+            js
+          }
+          mews.emit('message', jss({
+            update: changedPage
+          }))
+          jseditor.setValue('')
+          csseditor.setValue('')
+          htmleditor.setValue('') 
+          editablePages[e.target.dataset.index].page = theframe.innerHTML
+          theframe.remove()
+          document.querySelector('.edit-zone').style.display = 'block'
+          drake.destroy()
+          drake = dragula([document.querySelector('.edit-zone .xcms-root-container')],{revertOnSpill: true})
+          button.remove()
+          document.querySelector('.status-box').addEventListener('animationend', ()=>{
+            window.location.href = `${window.location.origin}/admin`
+          })
+        })
+      }, false)
+      span.addEventListener("click", (e) => {
+        let pagename = e.target.parentElement.querySelector('a').innerText
+        mews.emit('message', jss({ deletePage: pagename }))
+        e.target.parentElement.remove()
+        editablePages = editablePages.filter(pageData => { if (pageData.name !== pagename) return pageData })
+      })
+      document.querySelector('.editables').appendChild(li)
+      a.addEventListener('contextmenu', ce=>{
+        ce.preventDefault()
+        let pageDuplicateBtn = document.querySelector('.page-duplicate')
+        let selectedPage = editablePages[ce.target.dataset.index]
+        let origin = {
+          x: ce.pageX - 20,
+          y: ce.pageY 
+        }
+        pageDuplicateBtn.style.right = '0px'
+        pageDuplicateBtn.style.top = origin.y - 50 + 'px'
+        pageDuplicateBtn.style.width = document.querySelector('.first-class-editor').offsetWidth + 'px'
+        pageDuplicateBtn.style.display = 'flex'
+        pageDuplicateBtn.querySelector('a').href = window.location.origin + '/' + selectedPage.name
+        pageDuplicateBtn.querySelector('span').innerText = selectedPage.name
+        pageDuplicateBtn.querySelector('span').style.textDecoration = "underline"
+        pageDuplicateBtn.addEventListener('mouseleave', ()=>{
+          pageDuplicateBtn.style.display = 'none'
+        }, {once: true})
+        pageDuplicateBtn.querySelector('.duplicate-btn').onclick = (oce)=>{
+          if(oce.target.nextElementSibling.value !== ""){
+            nouvellepage = {
+              name: pageDuplicateBtn.querySelector('input').value,
+              page: selectedPage.page,
+              js: selectedPage.js,
+              css: selectedPage.css
+            }
+            mews.emit('message', jss(nouvellepage))
+            pageDuplicateBtn.style.display = 'none'
+            window.location.href = `${window.location.origin}/admin`
+          }else{
+            let selectedPageNewName = prompt('Please enter a name for the duplicated page.')
+            if(selectedPageNewName !== ""){
+              nouvellepage = {
+                name: selectedPageNewName,
+                page: selectedPage.page,
+                js: selectedPage.js,
+                css: selectedPage.css
+              }
+              mews.emit('message', jss(nouvellepage))
+              pageDuplicateBtn.style.display = 'none'
+              window.location.href = `${window.location.origin}/admin`
+            }
+          }
+        }
+        pageDuplicateBtn.querySelector('.rename-btn').onclick = (oce) =>{
+          if(oce.target.nextElementSibling.value === ""){
+            alert('You can not rename with an empty name.')
+          }else{
+            let toBeRenamed = {
+              oldName: selectedPage.name,
+              newName: oce.target.nextElementSibling.value
+            }
+            mews.emit('message', jss(toBeRenamed))
+            pageDuplicateBtn.style.display = 'none'
+            window.location.href = `${window.location.origin}/admin`
+          }
+        }
+      }, false)
+      li = a = span = ""
+    }
+    //*************** generate random
+    const makeRandom = (seed) =>{
+      return Math.floor(Math.random() * seed * 1000)
+    }
+  </script>
+  <script>
+    //************* version mobile
+    const menubtn = document.querySelector('.first-class-editor-button')
+    const editor = document.querySelector('.first-class')
+    const editorMenu = document.querySelector('.first-class-editor')
+    menubtn.addEventListener('touchend', (e) => {
+      menubtn.style.display = 'none'
+      editor.style.display = 'none'
+      editorMenu.style.display = 'block'
+      editorMenu.querySelectorAll('a').forEach(a => {
+        a.addEventListener('touchend', (e) => {
+          e.stopImmediatePropagation()
+          e.target.click()
+          menubtn.style.display = 'block'
+          editor.style.display = 'block'
+          editorMenu.style.display = 'none'
+          return
+        }, false)
+      })
+    }, false)
+    document.querySelector('#crenew').addEventListener('touchend', (e) => {
+      e.preventDefault();
+      document.querySelector('.edit-zone .xcms-root-container').innerHTML = ""
+      document.querySelector('.edit-zone').style.display = "block"
+      menubtn.style.display = 'block'
+      editor.style.display = 'block'
+      editorMenu.style.display = 'none'
+    })
+    //*****************RESET
+    document.querySelector('#efface').addEventListener('touchend', e => {
+      var allnodes = document.querySelector('.edit-zone .xcms-root-container').childNodes
+      var j = allnodes.length
+      while (j > 0) {
+        document.querySelector('.edit-zone .xcms-root-container').lastChild.remove()
+        j--
+      }
+      menubtn.style.display = 'block'
+      editor.style.display = 'block'
+      editorMenu.style.display = 'none'
+    })
+    //****************** version mobile fin
+  </script>
+</body>
+
+</html>

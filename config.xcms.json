@@ -1,0 +1,11 @@
+{
+  "port": 9899,
+  "mongoURI": "mongodb+srv://xavier:fe6sYJL7IO1U6Te7@cluster0.fh6t8uh.mongodb.net/xcms?retryWrites=true&w=majority",
+  "mongoOptions": {
+    "useNewUrlParser": true,
+    "useUnifiedTopology": true
+     },
+  "passportKeys": "xavier-cms-key",
+  "gtag": "",
+  "lang": "en"
+}

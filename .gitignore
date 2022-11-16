@@ -1,0 +1,4 @@
+node_modules*
+medias*
+mail.config.json
+package-lock.json

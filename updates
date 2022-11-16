@@ -1,0 +1,12 @@
+latest update:
+
+Adds:
+  - 
+Changes:
+  - [data manager] Reworked the project creation to add the framework at that moment.
+  - [bundle editor] No longer ask for a framework when creating a new file.
+  - [bundle editor] now display empty projects.
+BugFixes:
+  - 
+Troubleshooting:
+  - If you have a problem seeing your files after the update delete the admins collection in mongodb and restart the app, this will create an updated superuser with all the new authorizations.

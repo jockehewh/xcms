@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bundle editor</title>
+  
+  <script src="./admin-site/socket.io.js"></script>
+  <script src="./admin-site/ace-editor/ace.js"></script>
+  <script src="./admin-site/ace-editor/theme-monokai.js"></script>
+  <script src="./admin-site/beautifier.js"></script>
+  <script src="./admin-site/ace-editor/ext-language_tools.js"></script>
+<style>
+  .nav p:hover, .data-manager:hover, .bundle-editor:hover{
+    background-color: var(--white-1);
+    position: relative;
+    top: 1px;
+  }
+  .nav{
+      background: var(--white-0);
+      border-bottom: solid 1px var(--grey-2);
+      font-weight: bold;
+      min-height: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+  .nav p, .data-manager, .bundle-editor, .cm-span{
+      cursor: pointer;
+      width: 150px;
+      color: #000;
+      text-align: center;
+      position: relative;
+      right: 1.7rem;
+      line-height: 2;
+  }
+  .cm-span{
+    display: inline-flex;
+    align-items: center;
+  }
+  .data-manager, .bundle-editor{
+      display: block;
+      margin: 0;
+  }
+  .nav span{
+      line-height: 2;
+  }
+  .nav a{
+      margin-left: 16px;
+  }
+  @font-face{
+  font-family: "Abel";
+  src : url('./admin-site/fonts/Abel-Regular.ttf')
+}
+@font-face{
+  font-family: "Roboto";
+  src : url('./admin-site/fonts/Roboto-Regular.ttf')
+}
+
+*{margin:0; padding:0; user-select: none;
+    --white-0: #ffffff;
+    --white-1: #f2f2f2;
+    --white-2: #e5e5e5;
+    --white-3: #d8d8d8;
+    --grey-0: #555555;
+    --grey-1: #434343;
+    --grey-2: #303030;
+    --teal-bleu-special: #1de9b6;
+    --bleu-indigo-leger: #82b1ff;
+    --bleu-indigo-eclatant: #536dfe;
+}
+ul{
+  list-style-type: none;
+}
+li{
+  line-height: 2;
+  list-style: none;
+}
+.components-list li, .components-list dd {
+    line-height: 1;
+    margin: 0 4px 4px 0px;
+}
+.components-list dd[data-isopen="no"]:before{
+  content: "\21B4";
+}
+.components-list dd[data-isopen="yes"]:before{
+  content: "\21B5";
+}
+dd{
+  padding-left: 5px;
+  border-left: double 3px;
+  border-bottom: solid 1px;
+  border-top: double 3px;
+  margin-top: 8px !important;
+}
+dd[data-isopen="no"]{
+  cursor: pointer;
+}
+dd[data-isopen="yes"]{
+  cursor: row-resize;
+}
+label{
+  display: inline-flex;
+  width: 100%;
+  justify-content: space-between;
+}
+label div{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+a{
+    cursor:pointer;
+    text-decoration: none;
+}
+a:hover{
+    font-weight: bold;
+}
+body{
+    font-family: "Roboto";
+    font-size: 13px;
+    overflow-x: hidden;
+}
+#css-editor, #js-editor{
+    height: 500px;
+    display:none;
+}
+#js-editor{
+  display:block;
+}
+.first-class{
+  display: flex;
+  padding: 4rem 1rem;
+  width: 100%;
+  float: left;
+}
+.package-actions{
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px 0 15px;
+  border-color: var(--grey-2);
+}
+.package-actions .actions{
+  display: flex;
+  flex-direction: column;
+}
+.package-actions button{
+  align-self: center;
+}
+.package-actions .actions a {
+    line-height: 2;
+    margin: 8px;
+}
+.all-components{
+  width:20%
+}
+.editors{
+  width:80%;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-column-gap: 16px;
+}
+
+.code-editors{
+  grid-column: 1/6;
+}
+.editor-buttons{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.editor-buttons button{
+  line-height: 2;
+  background: transparent;
+  border: none;
+  color: var(--grey-2);
+  cursor: pointer;
+}
+.editor-buttons button:hover{
+  background: var(--white-2);
+  position: relative;
+  top: 1px;
+  font-weight: bold;
+}
+.editor-actions{
+  grid-column: 6/7;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+}
+.main-selector{
+  margin: 5px;
+}
+.status-box{
+    display: none;
+    position: absolute;
+    top: 0;
+    right: -22%;
+    left: 76%;
+    animation: statusmove;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(.88,1.15,1,1);
+    font-size: 26px;
+    min-width: max-content;
+}
+.status-box p {
+    padding: 4px 8px 4px 8px;
+    background: var(--white-0);
+}
+.build-items-list-react,
+.build-items-list-vue,
+.components-list-react,
+.build-items-list-nightlyjs,
+.components-list-nightlyjs,
+.components-list-vue{
+  display: none;
+}
+@keyframes statusmove{
+    from {right: -22%; left: 76%}
+    to {right: 76%; left: 0%;}
+}
+.bundle-compiling {
+  display: none;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.bundle-compiling div {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--grey-2);
+  animation: bundle-compiling 1.2s linear infinite;
+}
+.bundle-compiling div:nth-child(1) {
+  top: 8px;
+  left: 8px;
+  animation-delay: 0s;
+}
+.bundle-compiling div:nth-child(2) {
+  top: 8px;
+  left: 32px;
+  animation-delay: -0.4s;
+}
+.bundle-compiling div:nth-child(3) {
+  top: 8px;
+  left: 56px;
+  animation-delay: -0.8s;
+}
+.bundle-compiling div:nth-child(4) {
+  top: 32px;
+  left: 8px;
+  animation-delay: -0.4s;
+}
+.bundle-compiling div:nth-child(5) {
+  top: 32px;
+  left: 32px;
+  animation-delay: -0.8s;
+}
+.bundle-compiling div:nth-child(6) {
+  top: 32px;
+  left: 56px;
+  animation-delay: -1.2s;
+}
+.bundle-compiling div:nth-child(7) {
+  top: 56px;
+  left: 8px;
+  animation-delay: -0.8s;
+}
+.bundle-compiling div:nth-child(8) {
+  top: 56px;
+  left: 32px;
+  animation-delay: -1.2s;
+}
+.bundle-compiling div:nth-child(9) {
+  top: 56px;
+  left: 56px;
+  animation-delay: -1.6s;
+}
+@keyframes bundle-compiling {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loader-box{
+  height: 95%;
+  width: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--white-0);
+  position: absolute;
+  z-index: 10;
+  top: 41px;
+}
+.progression-text{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  left: 80px;
+  width: max-content;
+}
+.bundle-complete-grid {
+  width: 80px;
+  height: 80px;
+  margin: 100px auto;
+  display: none;
+}
+
+.bundle-complete-grid .bundle-complete {
+  width: 33%;
+  height: 33%;
+  background-color: var(--grey-2);
+  float: left;
+  -webkit-animation: bundleCompleteGridScaleDelay 1.3s ease-in-out;
+          animation: bundleCompleteGridScaleDelay 1.3s ease-in-out; 
+}
+.bundle-complete-grid .bundle-complete1 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+.bundle-complete-grid .bundle-complete2 {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s; }
+.bundle-complete-grid .bundle-complete3 {
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s; }
+.bundle-complete-grid .bundle-complete4 {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s; }
+.bundle-complete-grid .bundle-complete5 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+.bundle-complete-grid .bundle-complete6 {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s; }
+.bundle-complete-grid .bundle-complete7 {
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s; }
+.bundle-complete-grid .bundle-complete8 {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s; }
+.bundle-complete-grid .bundle-complete9 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+
+@-webkit-keyframes bundleCompleteGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1);
+  } 35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1); 
+  }
+}
+
+@keyframes bundleCompleteGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1);
+  } 35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1);
+  } 
+}
+
+.management-animation {
+  animation: openManagement linear 1.5s forwards;
+  -webkit-animation: openManagement linear 1.5s forwards;
+}
+.management-animation-close {
+  animation: openManagement linear 1.5s reverse forwards;
+  -webkit-animation: openManagement linear 1.5s reverse forwards;
+}
+#management{
+  display: none;
+  height: 100vh;
+  width: 100vw;
+  margin: auto;
+  position: fixed;
+  right:0;
+  z-index: 9;
+  background: white;
+}
+#management .container{
+  display: flex;
+  flex-direction: row;
+}
+.add-developer,
+.admin-configuration,
+.change-password,
+.password-configuration{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#management #projects, #management #accounts, #management #medias{
+  display: flex;
+  flex-direction: column;
+  min-width: 30px;
+  min-height: 100vh;
+}
+#management .container div h4{
+  margin: 11px;
+}
+#projects{
+  flex:1;
+  background: red;
+}
+#accounts{
+  flex:1;
+  background: green;
+}
+#medias{
+  flex:2;
+  background: blue;
+}
+
+@keyframes openManagement{
+  0%{ top: -100vh; }
+  20%{ top: -70vh; }
+  40%{ top: -40vh; }
+  60%{ top: -15vh; }
+  80%{ top: -7vh; }
+  100%{ top: 5vh; }
+}
+@-webkit-keyframes openManagement{
+  0%{ top: -100vh; }
+  20%{ top: -70vh; }
+  40%{ top: -40vh; }
+  60%{ top: -15vh; }
+  80%{ top: -7vh; }
+  100%{ top: 5vh; }
+}
+
+.component-actions{
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  min-height: 60px;
+}
+.component-actions div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+}
+.component-actions p{
+  padding-bottom: 4px;
+}
+.new{
+  display: flex;
+  margin: 0 auto 10px;
+  padding: 5px;
+}
+.save, .reset{
+  padding: 5px;
+}
+
+</style>
+</head>
+<body>
+  <div class="loader-box">
+    <div class="bundle-compiling"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  <div class="bundle-complete-grid">
+  <div class="bundle-complete bundle-complete1"></div>
+  <div class="bundle-complete bundle-complete2"></div>
+  <div class="bundle-complete bundle-complete3"></div>
+  <div class="bundle-complete bundle-complete4"></div>
+  <div class="bundle-complete bundle-complete5"></div>
+  <div class="bundle-complete bundle-complete6"></div>
+  <div class="bundle-complete bundle-complete7"></div>
+  <div class="bundle-complete bundle-complete8"></div>
+  <div class="bundle-complete bundle-complete9"></div>
+  </div>
+</div>
+  <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
+    <span class="cm-span"><a class="management">Management</a></span>
+  </div>
+  <div class="first-class">
+    <div class="all-components">
+      <h3>Edit components:</h3>
+      <dl class="components-list"></dl>
+    </div>
+    <div class="editors">
+      <div class="code-editors">
+        <div id="js-editor"></div>
+        <div id="css-editor"></div>
+        <div class="editor-buttons">
+          <button name="js">JS Editor</button>
+          <button name="css">CSS Editor</button>
+        </div>
+      </div>
+      <div class="editor-actions">
+        <div>
+          <button class='new'>New components</button>
+        </div>
+        <div class="component-actions">
+          <p></p>
+          <div>
+            <button class='save'>Save</button>
+            <button class='reset'>Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="management">
+    <h3>Management:</h3>
+    <div class="container">
+      <div id="projects">
+        <h4>Projects</h4>
+        <div>
+          <div class="package-actions">
+            <h3>Select a command to run:</h3>
+            <input type="text" placeholder="additional command flags..." style="display: none;"/>
+            <!-- Voir LE DESSIN
+            creer des boutons
+            -->
+            <div class="actions">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="accounts">
+        <h4>Accounts</h4>
+        <div>
+          <div class='add-developer'>
+            <h1>Create an account</h1>
+            <div class="admin-configuration">
+              <label for="host">Developer name:</label>
+              <input type="text" name="new-developer" id="new-developer">
+              <label for="password">Password:</label>
+              <input type="password" name="password" id="password">
+              <label for="verify-password">Verify password</label>
+              <input type="password" name="verify-password" id="verify-password">
+              <label for="super-admin">Can manage other developers?</label>
+              <select name="super-admin" id="super-admin">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+              <br>
+              <button class="submit">Save developer</button>
+            </div>
+          </div>
+          <br>
+          <div class='change-password'>
+            <h1>Update an account</h1>
+            <div class="password-configuration">
+              <label for="admin">Developer name:</label>
+              <input type="text" name="admin" id="admin">
+              <label for="new-password">password:</label>
+              <input type="password" name="new-password" id="new-password">
+              <label for="verify-password">verify password</label>
+              <input type="password" name="verify-new-password" id="verify-new-password">
+              <label for="super-admin">Can manage other developers?</label>
+              <select name="super-admin" id="super-admin">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+              <br>
+              <button class="submit">Update account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="medias">
+        <h4>medias</h4>
+        <div>
+          <div class="medias-manager">
+            <h1>Medias manager</h1>
+            <div class="image-input">
+              <label for="add-images-input">Add image(s)</label>
+              <input class="add-images-input" name="add-images-input" type="file" accept="image/*" multiple>
+            </div>
+            
+            <div class="imgs-block">
+              <!-- liste de paragraphe dans une grid 2 -->
+              <div class="imgs-list"></div>
+              <div class="img-display"></div>
+              
+            </div>
+            <br><hr>
+            <div class="video-input">
+              <label for="add-videos-input">Add video(s)</label>
+              <input class="add-videos-input" name="add-videos-input" type="file" accept="video/*" multiple>
+            </div>
+            <div class="vids-block">
+              <div class="vids-list"></div>
+              <div class="vid-display"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="status-box"></div>
+  <script>
+    let bundles = io('/bundler-socket')
+    let currentlyEditing = ""
+    let currentPath = ""
+    let currentProject = ""
+    //*****************STATUS HANDLER
+    bundles.on('success', data => {
+      if(document.querySelector(".loader-box").style.display == "flex" && data.includes("Successfully")){
+        document.querySelector(".bundle-compiling").style.display = "none"
+        document.querySelector(".bundle-complete-grid").style.display = "block"
+        document.querySelector('.progression-text').remove()
+        setTimeout(()=>{
+          document.querySelector(".bundle-complete-grid").style.display = "none"
+          document.querySelector(".loader-box").style.display = "none"
+        },1400)
+      }
+      showStatusMessage(1, data)
+    })
+    bundles.on('errorr', data => {
+      if(document.querySelector(".loader-box").style.display == "flex"){
+        document.querySelector('.progression-text').remove()
+        document.querySelector(".loader-box").style.display = "none"
+      }
+      showStatusMessage(0, data)
+    })
+    bundles.on('builder', data=>{
+      console.log(data.split('\n\n')[1][0].charCodeAt(0))
+      let val = document.createElement('code')
+      val.innerText = data.split('\n\n')[1]
+      document.querySelector('.first-class').appendChild(val)
+      /* 
+      PLACER LE MESSAGE D ERREUR EN OVERLAY
+       */
+    })
+    function showStatusMessage(status, data){
+      if(status){
+        document.querySelector('.status-box').style.borderLeft = "solid 8px #aff9ba"
+      }else{
+        document.querySelector('.status-box').style.borderLeft = "solid 8px #f7acac"
+      }
+      let p = document.createElement('p')
+      p.innerText = data
+      if(document.querySelector(".progression-text")){
+        document.querySelector('.progression-text').appendChild(p)
+      }else{
+        document.querySelector('.status-box').appendChild(p)
+        document.querySelector('.status-box').style.display = "block"
+        setTimeout(function () {
+          p.remove()
+          document.querySelector('.status-box').style.display = "none"
+        }, 4500)
+      }
+    }
+    function createFolderView(component){
+      if(component.path != ""){
+        let processedPath = ""
+        let folders = component.path.split("/")
+        console.log("AFTER CREATE",folders, component.path)
+        folders.shift()
+        let folderName = ""
+        while(folders.length >= 1){
+          folderName = folders[0]
+          if(folderName.includes('.')){folderName = folderName.replace('.', "GIT-")}
+          let dd = document.createElement('dd')
+          dd.classList.add(folderName)
+          dd.innerText = folderName
+          dd.dataset.isopen = "no"
+          dd.addEventListener('click', (e)=>{
+            e.stopImmediatePropagation()
+            dd.querySelectorAll("li."+folderName).forEach(child=>{
+              if(child.style.display === "block"){
+                child.style.display = "none"
+                dd.dataset.isopen = "no"
+              }else{
+                child.style.display = "block"
+                dd.dataset.isopen = "yes"
+              }
+            })
+          })
+          if(document.querySelector('.components-list'+processedPath+">."+folderName) == null || document.querySelector('.components-list>'+processedPath+">."+folderName == undefined)){
+            document.querySelector('.components-list'+processedPath).appendChild(dd)
+          }
+          processedPath += `>.${folderName}`
+          folders.shift()
+        }
+        createEditableComponentButton(component, '.components-list'+processedPath, folderName, false)
+      }else{
+        createEditableComponentButton(component, '.components-list', component.name, true)
+      }
+    }
+    const createEditableComponentButton = (component, path = '.components-list', folderName, isAtRoot)=>{
+      console.log(path)
+      let li = document.createElement('li')
+      console.log(folderName)
+      isAtRoot === false ? li.classList.add(folderName) : li.className = "root"
+      li.style.display = isAtRoot === true ? "block" : "none"
+      let a = document.createElement('a')
+      a.innerText = component.scriptName
+      a.dataset.name = component.scriptName
+      a.dataset.content = component.scriptContent
+      a.dataset.framework = component.framework
+      a.dataset.css = component.attachedCSS
+      li.appendChild(a)
+      document.querySelector(path).appendChild(li)
+      a.addEventListener('click', (e)=>{
+        e.stopImmediatePropagation()
+        document.querySelector('.component-actions').style.display = "flex"
+        document.querySelector('.component-actions p').innerText = component.scriptName
+        jseditor.setValue(component.scriptContent)
+        jseditor.navigateFileEnd()
+        csseditor.setValue(component.attachedCSS)
+        csseditor.navigateFileEnd()
+        currentlyEditing = component.scriptName
+        currentPath = path.split('.').join('/').split(">").join('').replace('/components-list', "")
+        console.log(currentPath)
+      })
+    }
+    bundles.on('normal', data=>{
+      let datainfo = JSON.parse(data)
+      if(datainfo.existingComponents){
+        let existingComponents = datainfo.existingComponents.existingComponents
+        if(existingComponents.length > 0){
+          existingComponents.forEach(component=>{
+            if(component.scriptName === "package.json"){
+              let pkgjson = JSON.parse(component.scriptContent)
+              let currentOptions = Object.keys(pkgjson.scripts)
+              document.querySelector('.package-actions input').style.display = "block"
+              currentOptions.forEach(opt =>{
+                let btn = document.createElement('a')
+                btn.dataset.script = opt
+                btn.innerText = "npm run " + opt
+                document.querySelector('.package-actions .actions').appendChild(btn)
+                btn.addEventListener('click', (e)=>{
+                  opt = opt + " " + document.querySelector('.package-actions input').value.trim()
+                  opt = opt.split(" ")
+                  bundles.emit('message', JSON.stringify({pkgopt: {script: opt, name: pkgjson.name}}))
+                })
+              })
+            }
+            createFolderView(component)
+          })
+        }
+      }
+    })
+    ace.require("ace/ext/language_tools")
+    let csseditor = ace.edit('css-editor')
+    csseditor.setTheme("ace/theme/monokai")
+    csseditor.session.setMode("ace/mode/css")
+    csseditor.scrollToLine(0, true, true, function () { });
+    csseditor.gotoLine(0, 0, true);
+    csseditor.session.setTabSize(2);
+    csseditor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true
+    })
+    let jseditor = ace.edit('js-editor')
+    jseditor.setTheme("ace/theme/monokai")
+    jseditor.session.setMode("ace/mode/javascript")
+    jseditor.scrollToLine(0, true, true, function () { });
+    jseditor.gotoLine(0, 0, true);
+    jseditor.session.setTabSize(2);
+    jseditor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true
+    })
+    document.querySelectorAll('.editor-actions div button').forEach( (btn)=>{
+      btn.addEventListener('click', (e)=>{
+        if(btn.className === "new"){
+          let filename = prompt('New file name: ')
+          let filepath = prompt('enter the path to the destination of the component e.g /src/components where the first "/" is the root of your project (it can be an empty string).')
+          let rootFolder = document.querySelector('.components-list:nth-child(2) dd').className
+          let newComp = {
+            scriptName: filename,
+            path: `/${rootFolder}${filepath}`,
+            scriptContent: "console.log('Hello world');",
+            attachedCSS: ""
+          }
+          jseditor.setValue('')
+          bundles.emit('message', JSON.stringify({newComponent: newComp}))
+          if(filepath == ""){
+            createEditableComponentButton(newComp, '.components-list>.'+rootFolder, filename, true)
+          }else{
+            createFolderView(newComp)
+          }
+        }
+        if(btn.className === "save"){
+          let updateObject = {
+            scriptName: currentlyEditing,
+            path: currentPath,
+            scriptContent: jseditor.getValue(),
+            attachedCSS: csseditor.getValue()
+          }
+          document.querySelector('.component-actions').style.display = "none"
+          bundles.emit('message', JSON.stringify({updateComponent: updateObject}))
+          setTimeout(()=>{
+            window.location.href = window.location.origin + window.location.pathname
+          }, 1000)
+        }
+        if(btn.className === "reset"){
+          //SUPPRIMER LE BOUTON RESET OU 
+          document.querySelector('.component-actions').style.display = "none"
+          jseditor.setValue('')
+        }
+      })
+    })
+    document.querySelector('button[name=css]').addEventListener('click', e=>{
+      document.querySelector('#css-editor').style.display = "block"
+      document.querySelector('#js-editor').style.display = "none"
+    })
+    document.querySelector('button[name=js]').addEventListener('click', e=>{
+      document.querySelector('#js-editor').style.display = "block"
+      document.querySelector('#css-editor').style.display = "none"
+    })
+    document.querySelector('.management').addEventListener('click', e=>{
+      let mgmt = document.querySelector('#management')
+      function mgmtAC(){
+        mgmt.classList.remove('management-animation-close')
+        mgmt.style.display = "none"
+        mgmt.removeEventListener('animationend', mgmtAC)
+      }
+      function mgmtA(){
+        mgmt.classList.remove('management-animation')
+        mgmt.style.top = "5vh"
+        mgmt.removeEventListener('animationend', mgmtA)
+      }
+      if(mgmt.style.display === "block"){
+        mgmt.classList.add('management-animation-close')
+        mgmt.addEventListener('animationend', mgmtAC)
+      }else{
+        mgmt.style.display = "block"
+        mgmt.classList.add('management-animation')
+        mgmt.addEventListener('animationend', mgmtA)
+      }
+    })
+
+    /* TODO: 
+      ADAPTER LE SOCKET POUR FAIRE TRANSITER LES MEDIAS
+      récuprer les appels pour enregistrer les admins
+    */
+
+    /* document.querySelector('.media-manager-btn').addEventListener('click', e=>{
+      bundles.emit('message' ,jss({getimages: true}))
+      bundles.emit('message' ,jss({getvideos: true}))
+    }) */
+    document.querySelector('.add-images-input').addEventListener('change', e=>{
+      console.log('change')
+      for (let file of e.target.files){
+        console.log(file)
+        let imageName = file.name.split(' ').join('_')
+              .split('/').join('_')
+              .split('..').join('_')
+              .split('\\').join('_')
+        bundles.emit('image', {
+          name: imageName,
+          image: file
+        })
+        //AFFICHER DES MINIATURES
+      }
+    })
+    document.querySelector('.add-videos-input').addEventListener('change', e=>{
+      for (let file of e.target.files){
+        let videoName = file.name.split(' ').join('_')
+              .split('/').join('_')
+              .split('..').join('_')
+              .split('\\').join('_')
+        bundles.emit('video', {
+          name: videoName,
+          video: file
+        })
+      }
+    })
+
+    /* 
+    GESTION ADMINS 
+    */
+    document.querySelector('.add-developer button').addEventListener('click', e => {
+      const username = document.querySelector('.add-developer #new-developer').value
+      const password = document.querySelector('.add-developer #password').value
+      const verifyPassword = document.querySelector('.add-developer #verify-password').value
+      const isSuperAdmin = document.querySelector('.add-developer #super-admin').selectedIndex
+      const adminAccess = document.querySelector('.add-developer #admin-access').value 
+      if (password === verifyPassword) {
+        const addAdmin = {
+          username,
+          password,
+          isSuperAdmin,
+          adminAccess
+        }
+        crms.emit('message', jss({ addAdmin: addAdmin }))
+      } else {
+        alert('The passwords are not identical please retry.')
+      }
+      document.querySelector('.add-developer #new-developer').value = ""
+      document.querySelector('.add-developer #password').value = ""
+      document.querySelector('.add-developer #verify-password').value = ""
+    })
+    document.querySelector('.change-password button').addEventListener('click', e => {
+      const username = document.querySelector('.change-password #admin').value
+      const password = document.querySelector('.change-password #new-password').value
+      const verifyPassword = document.querySelector('.change-password #verify-new-password').value
+      const isSuperAdmin = document.querySelector('.change-password #super-admin').selectedIndex
+      const adminAccess = document.querySelector('.change-password #admin-access').value 
+      if (password === verifyPassword) {
+        const updateAdmin = {
+          username,
+          password,
+          isSuperAdmin,
+          adminAccess
+        }
+        crms.emit('message', jss({ updateAdmin: updateAdmin }))
+        document.querySelector('.change-password #admin').value = ""
+        document.querySelector('.change-password #new-password').value = ""
+        document.querySelector('.change-password #verify-new-password').value = ""
+      } else {
+        alert('The passwords are not identical please retry.')
+      }
+    })
+
+  </script>
+</body>
+</html>
