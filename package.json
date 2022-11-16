@@ -1,7 +1,7 @@
 {
   "name": "@mrcosmic/x-cms",
-  "version": "4.0.3",
-  "description": "a wysiwyg cms",
+  "version": "5.0.0",
+  "description": "The most modern CMS (Component Management System) to build your apps",
   "main": "xcms.js",
   "scripts": {
     "start": "node xcms.js"
