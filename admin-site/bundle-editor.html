@@ -150,7 +150,7 @@ body{
 }
 .package-actions .actions a {
     line-height: 2;
-    margin: 8px;
+    margin-left: 8px;
 }
 .all-components{
   width:20%
@@ -447,9 +447,9 @@ body{
 }
 .component-actions div{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-evenly;
-  width: 100%;
+  width: 50%;
 }
 .component-actions p{
   padding-bottom: 4px;
@@ -506,6 +506,7 @@ body{
           <div>
             <button class='save'>Save</button>
             <button class='reset'>Reset</button>
+            <button class='delete'>Delete</button>
           </div>
         </div>
       </div>
@@ -519,13 +520,14 @@ body{
         <div>
           <div class="package-actions">
             <h3>Select a command to run:</h3>
-            <input type="text" placeholder="additional command flags..." style="display: none;"/>
             <!-- Voir LE DESSIN
             creer des boutons
             -->
             <div class="actions">
               
             </div>
+            <input type="text" placeholder="additional command flags..."/>
+
           </div>
         </div>
       </div>
@@ -542,10 +544,6 @@ body{
               <label for="verify-password">Verify password</label>
               <input type="password" name="verify-password" id="verify-password">
               <label for="super-admin">Can manage other developers?</label>
-              <select name="super-admin" id="super-admin">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-              </select>
               <br>
               <button class="submit">Save developer</button>
             </div>
@@ -560,11 +558,6 @@ body{
               <input type="password" name="new-password" id="new-password">
               <label for="verify-password">verify password</label>
               <input type="password" name="verify-new-password" id="verify-new-password">
-              <label for="super-admin">Can manage other developers?</label>
-              <select name="super-admin" id="super-admin">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-              </select>
               <br>
               <button class="submit">Update account</button>
             </div>
@@ -659,7 +652,6 @@ body{
       if(component.path != ""){
         let processedPath = ""
         let folders = component.path.split("/")
-        console.log("AFTER CREATE",folders, component.path)
         folders.shift()
         let folderName = ""
         while(folders.length >= 1){
@@ -693,9 +685,7 @@ body{
       }
     }
     const createEditableComponentButton = (component, path = '.components-list', folderName, isAtRoot)=>{
-      console.log(path)
       let li = document.createElement('li')
-      console.log(folderName)
       isAtRoot === false ? li.classList.add(folderName) : li.className = "root"
       li.style.display = isAtRoot === true ? "block" : "none"
       let a = document.createElement('a')
@@ -716,7 +706,74 @@ body{
         csseditor.navigateFileEnd()
         currentlyEditing = component.scriptName
         currentPath = path.split('.').join('/').split(">").join('').replace('/components-list', "")
-        console.log(currentPath)
+      })
+    }
+    const displayImages = (images)=>{
+      let imgsList = document.querySelector(".imgs-list")
+      let imgDisplay = document.createElement("img")
+      imgDisplay.loading = "lazy"
+      imgDisplay.style.height = "300px"
+      imgDisplay.style.width = "400px"
+      while(imgsList.childElementCount > 0){
+        imgsList.firstChild.remove()
+      }
+      while(document.querySelector('.img-display').childElementCount > 0){
+        document.querySelector('.img-display').firstChild.remove()
+      }
+      images.forEach(img => {
+        let p = document.createElement('p')
+        p.innerText = img
+        imgsList.appendChild(p)
+        p.addEventListener('click', e => {
+          if(document.querySelector('.img-display button'))
+          document.querySelector('.img-display button').remove()
+          let deleteBtn = document.createElement('button')
+          deleteBtn.innerText = "Delete image"
+          imgDisplay.src = "/imgs/"+ img
+          document.querySelector('.img-display').appendChild(imgDisplay)
+          document.querySelector('.img-display').appendChild(deleteBtn)
+          deleteBtn.addEventListener('click', e => {
+            bundles.emit('message', JSON.stringify({deleteImage: img}))
+            p.remove()
+            deleteBtn.remove()
+            bundles.emit('message', JSON.stringify({getimages: true}))
+          })
+        })
+      })
+    }
+    const displayVideos = (videos) =>{
+      let vidsList= document.querySelector('.vids-list')
+      let videoDisplay = document.createElement('video')
+      videoDisplay.style.height = "300px"
+      videoDisplay.style.width = "400px"
+      while(vidsList.childElementCount > 0){
+        vidsList.firstChild.remove()
+      }
+      while(document.querySelector('.vid-display').childElementCount > 0){
+        document.querySelector('.vid-display').firstChild.remove()
+      }
+      videoDisplay.setAttribute('controls', "")
+      videoDisplay.preload = "none"
+      videos.forEach(vid => {
+        let p = document.createElement('p')
+        p.innerText = vid
+        vidsList.appendChild(p)
+        p.addEventListener('click', e => {
+          console.log(vid)
+          if(document.querySelector('.vid-display button'))
+          document.querySelector('.vid-display button').remove()
+          let deleteBtn = document.createElement('button')
+          deleteBtn.innerText = "Delete video"
+          videoDisplay.src = "/videos/"+ vid
+          document.querySelector('.vid-display').appendChild(videoDisplay)
+          document.querySelector('.vid-display').appendChild(deleteBtn)
+          deleteBtn.addEventListener('click', e => {
+            bundles.emit('message', JSON.stringify({deleteVideo: vid}))
+            p.remove()
+            deleteBtn.remove()
+            bundles.emit('message', JSON.stringify({getvideos: true}))
+          })
+        })
       })
     }
     bundles.on('normal', data=>{
@@ -735,15 +792,29 @@ body{
                 btn.innerText = "npm run " + opt
                 document.querySelector('.package-actions .actions').appendChild(btn)
                 btn.addEventListener('click', (e)=>{
+                  console.log(opt)
                   opt = opt + " " + document.querySelector('.package-actions input').value.trim()
-                  opt = opt.split(" ")
+                  opt = opt.split(" ").join(' ').trim().split(" ")
                   bundles.emit('message', JSON.stringify({pkgopt: {script: opt, name: pkgjson.name}}))
                 })
+                if(/* if localstorage.devserver === */true){}
               })
             }
             createFolderView(component)
           })
         }
+      }
+      if(datainfo.images){
+        let images = datainfo.images
+        displayImages(images)
+      }
+      if(datainfo.videos){
+        let videos = datainfo.videos
+        displayVideos(videos)
+      }
+      if(datainfo.devServer){
+        console.log(datainfo.devServer.isOn)
+        //créer un objet localstorage et cacher le bouton "npm run dev"
       }
     })
     ace.require("ace/ext/language_tools")
@@ -807,6 +878,13 @@ body{
           document.querySelector('.component-actions').style.display = "none"
           jseditor.setValue('')
         }
+        if(btn.className === "delete"){
+          if(confirm("Dou want to delete the file " + currentlyEditing + "?")){
+            bundles.emit('message', JSON.stringify({deleteComponent: {name: currentlyEditing, path: currentPath}}))
+            jseditor.setValue('')
+            document.querySelector(`.components-list a[data-name="${currentlyEditing}"]`).parentElement.remove()
+          }
+        }
       })
     })
     document.querySelector('button[name=css]').addEventListener('click', e=>{
@@ -839,19 +917,11 @@ body{
       }
     })
 
-    /* TODO: 
-      ADAPTER LE SOCKET POUR FAIRE TRANSITER LES MEDIAS
-      récuprer les appels pour enregistrer les admins
-    */
-
-    /* document.querySelector('.media-manager-btn').addEventListener('click', e=>{
-      bundles.emit('message' ,jss({getimages: true}))
-      bundles.emit('message' ,jss({getvideos: true}))
-    }) */
+    bundles.emit('message', JSON.stringify({getimages: true}))
+    bundles.emit('message', JSON.stringify({getvideos: true}))
     document.querySelector('.add-images-input').addEventListener('change', e=>{
-      console.log('change')
       for (let file of e.target.files){
-        console.log(file)
+        //SUPRIMER LES ACCENTS DANS LES NOM DE FICHIERS AVEC UNE REGEX A CAUSE L'URL
         let imageName = file.name.split(' ').join('_')
               .split('/').join('_')
               .split('..').join('_')
@@ -860,7 +930,6 @@ body{
           name: imageName,
           image: file
         })
-        //AFFICHER DES MINIATURES
       }
     })
     document.querySelector('.add-videos-input').addEventListener('change', e=>{
@@ -876,23 +945,16 @@ body{
       }
     })
 
-    /* 
-    GESTION ADMINS 
-    */
     document.querySelector('.add-developer button').addEventListener('click', e => {
       const username = document.querySelector('.add-developer #new-developer').value
       const password = document.querySelector('.add-developer #password').value
       const verifyPassword = document.querySelector('.add-developer #verify-password').value
-      const isSuperAdmin = document.querySelector('.add-developer #super-admin').selectedIndex
-      const adminAccess = document.querySelector('.add-developer #admin-access').value 
       if (password === verifyPassword) {
         const addAdmin = {
           username,
-          password,
-          isSuperAdmin,
-          adminAccess
+          password
         }
-        crms.emit('message', jss({ addAdmin: addAdmin }))
+        bundles.emit('message', JSON.stringify({ addAdmin: addAdmin }))
       } else {
         alert('The passwords are not identical please retry.')
       }
@@ -904,16 +966,12 @@ body{
       const username = document.querySelector('.change-password #admin').value
       const password = document.querySelector('.change-password #new-password').value
       const verifyPassword = document.querySelector('.change-password #verify-new-password').value
-      const isSuperAdmin = document.querySelector('.change-password #super-admin').selectedIndex
-      const adminAccess = document.querySelector('.change-password #admin-access').value 
       if (password === verifyPassword) {
         const updateAdmin = {
           username,
-          password,
-          isSuperAdmin,
-          adminAccess
+          password
         }
-        crms.emit('message', jss({ updateAdmin: updateAdmin }))
+        bundles.emit('message', JSON.stringify({ updateAdmin: updateAdmin }))
         document.querySelector('.change-password #admin').value = ""
         document.querySelector('.change-password #new-password').value = ""
         document.querySelector('.change-password #verify-new-password').value = ""

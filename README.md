@@ -2,7 +2,9 @@
 
 ### Installation:
 
-before installation make sure Mongodb is installed.
+Dependencies:
+-Mongodb
+-lsof
 
 to install xcms from npm run: `npm i @mrcosmic/x-cms`
 or clone the git `git clone https://github.com/jockehewh/xcms && cd xcms && npm install`
@@ -23,13 +25,17 @@ create a `config.xcms.json` file at the root of your project and follow this mod
 ```
 {
   "port": 1337,
-  "mongoURI": "your mongodb URI",
-  "mongoOptions": {
+  "mongoURI": "your mongodb URI",    # Your MongoDB URI
+  "mongoOptions": {                  # Your MongoDB connection options
     "useNewUrlParser": true,
     "useUnifiedTopology": true
      },
-  "passportKeys": "xavier-cms-key",
-  "gtag": "MY-GA-ID"
+  "projectOptions": {                # Your project options
+    "buildFolder": "build",          # The folder containing build files to be published as production 
+    "devServerPort": "8080"          # the listening port of your non-local dev server
+  },
+  "passportKeys": "xavier-cms-key",  # Your secret encryption key  
+  "gtag": "MY-GA-ID"                 # your google analytics ID
 }
 ```
 
@@ -39,12 +45,10 @@ the default user is `superuser` and the password is `2one0time2password1`
 
 once you are logged-in i invite you to change your password via the 'Management > accounts' section.
 
-To use the "Component Management System" browse to the "builders" folder at the root of your project. From here you can initialize you project with your favorite app generator using npm.
+To use the "Component Management System" browse to the "builders" folder at the root of your project. From here you can initialize you project with your favorite app generator using npm. (If you are not using any app generator make sure to have a "scripts" object containing a ```dev``` script and a ```build``` script in your package.json file)
 
 ### Usage:
 
-on the main page you will face see a rectangle, this is the workspace.
-on the right hand side you have the menu. i will walk you throught the different options from top to bottom:
 
 
 __Media manager:__

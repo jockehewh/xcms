@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer')
 const passport = require('koa-passport')
 const r = require('koa-route')
 const session = require('koa-session')
-const bundleSocket = require('./sockets/bundleSocket.js')
+const {bundleSocket} = require('./sockets/bundleSocket.js')
 const xcms = new koa();
 const jsp = JSON.parse;
 const mongoose = require('mongoose')
@@ -144,19 +144,9 @@ xcms.use((ctx, next) => {
 })
 
 xcms.use(r.get('/bundle-editor', (ctx) => {
-  if(ctx.session.isBackendUser && ctx.session.customAccess == "bundle" || ctx.session.customAccess == "both"){
+  if(ctx.session.customAccess == "bundle" || ctx.session.customAccess == "both"){
     ctx.type = "html"
     ctx.body = fs.createReadStream(__dirname + '/admin-site/bundle-editor.html', {
-      autoClose: true
-    })
-  }else{
-    ctx.redirect('/')
-  }
-}))
-xcms.use(r.get('/data-manager', (ctx) => {
-  if(ctx.session.isBackendUser && ctx.session.customAccess == "data" || ctx.session.customAccess == "both"){
-    ctx.type = "html"
-    ctx.body = fs.createReadStream(__dirname + '/admin-site/data-manager.html', {
       autoClose: true
     })
   }else{
@@ -243,6 +233,8 @@ bundleSocket.on('connection', async (ctx)=>{
   setTimeout(()=>{
     ctx.emit('normal', JSON.stringify({existingComponents: {existingComponents: existingComponents}}))
   }, 1250)
+  let devServer = require('./xcmsCustoms/devServerStatus.js')
+  ctx.emit('normal', JSON.stringify({devServer: {isOn: devServer.isOn}}))
 })
 
 admindb.find({}, (err, res) =>{

@@ -1,11 +1,14 @@
 {
   "port": 9899,
-  "mongoURI": "mongodb+srv://xavier:fe6sYJL7IO1U6Te7@cluster0.fh6t8uh.mongodb.net/xcms?retryWrites=true&w=majority",
+  "mongoURI": "mongodb://localhost:27017/xcms",
   "mongoOptions": {
     "useNewUrlParser": true,
     "useUnifiedTopology": true
      },
+  "projectOptions": {
+    "buildFolder": "build",
+    "devServerPort": "8080"
+  },
   "passportKeys": "xavier-cms-key",
-  "gtag": "",
-  "lang": "en"
+  "gtag": ""
 }
