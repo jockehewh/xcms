@@ -11,41 +11,61 @@ or clone the git `git clone https://github.com/jockehewh/xcms && cd xcms && npm 
 
 ### First start
 
-XCMS is preconfigured, to start the program just import it.
-
-in your `index.js` file:
+Using XCMS is tricky, you first need to init your server project as it will host the GUI to manage your project:
 ```
-const xcms = require('@mrcosmic/x-cms')
-//this will run with the default settings
+npm init -y xcms-server && cd xcms-server && npm i -s @mrcosmic/x-cms
 ```
-
-if you want to customize your environement to use a Mongodb Atlas, or to run on a diferrent port,
-create a `config.xcms.json` file at the root of your project and follow this model:
-
+Before starting your xcms-server create a builder folder at the root of your xcms-server and init your project inside of it.
+```
+mkdir builder && cd builder && npm create vite@latest my-project //follow the prompt.
+```
+After that you have to build you project for the first time to have you app served to the user.
+```
+cd my-project && npm install && npm run build
+```
+XCMS is almost ready, go back the root of your server project and create an `xcms.config.json`.
+You can use the example below but you must adapt the "projectOptions" to suit your project configuration.
 ```
 {
-  "port": 1337,
-  "mongoURI": "your mongodb URI",    # Your MongoDB URI
-  "mongoOptions": {                  # Your MongoDB connection options
+  "port": 1337,                                     # Your server project port
+  "mongoURI": "mongodb://localhost:27017/xcms",     # Your MongoDB URI
+  "mongoOptions": {                                 # Your MongoDB connection options
     "useNewUrlParser": true,
     "useUnifiedTopology": true
      },
-  "projectOptions": {                # Your project options
-    "buildFolder": "build",          # The folder containing build files to be published as production 
-    "devServerPort": "8080"          # the listening port of your non-local dev server
+  "projectOptions": {                               # Your project options
+    "buildFolder": "build",                         # The folder containing the build files inside your "my-project" folder
+    "devServerPort": "8080"                         # the listening port of your "my-project" dev server
   },
-  "passportKeys": "xavier-cms-key",  # Your secret encryption key  
-  "gtag": "MY-GA-ID"                 # your google analytics ID
+  "passportKeys": "xavier-cms-key",                 # Your secret encryption key
 }
 ```
+Now, create your `index.js` file and import XCMS. 
+```
+//index.js
+const xcms = require('@mrcosmic/x-cms')
+```
+Run your xcms-server.
+```
+node index.js
+```
+Once you see the log saying "listening on port: '$PORT'" open your browser and visit the following address `localhost:$PORT/connect` to start using the interface.
 
-open your browser and visit the following address `localhost:$PORT` you will be redirected to the connexion page:
+The default user is `superuser` and the password is `2one0time2password1`
 
-the default user is `superuser` and the password is `2one0time2password1`
+N.B: Once you are logged-in i invite you to change your password via the 'Management > accounts' section.
 
-once you are logged-in i invite you to change your password via the 'Management > accounts' section.
 
-To use the "Component Management System" browse to the "builders" folder at the root of your project. From here you can initialize you project with your favorite app generator using npm. (If you are not using any app generator make sure to have a "scripts" object containing a ```dev``` script and a ```build``` script in your package.json file)
+From here you will have access to your project files on the lefthand side of the screen, unfold the first level by clicking your project name aka. "my-project"
+ NB: If you package.json has a script named dev already you can skip the next step.
+
+Edit your "package.json" file to make sure you have a ```dev``` script inside the ```scripts``` object to run your dev server (make sure that the devServerPort specified in the `xcms.config.json` and the port of your "my-project" dev server are matching.) and click SAVE on the righthand side of the screen.
+
+To start you dev server click on "Management" on the top right corner and then in the first column starting from the lefthand side of the screen you will see a button saying "npm run dev" click it to run your dev server.
+
+You can now see your "my-project" homepage in an other tab at `localhost:$DevServerPort`
+
+Happy coding!
 
 ### Usage:
 

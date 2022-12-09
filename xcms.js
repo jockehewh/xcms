@@ -5,12 +5,13 @@ const nodemailer = require('nodemailer')
 const passport = require('koa-passport')
 const r = require('koa-route')
 const session = require('koa-session')
+const serve = require('koa-static')
+const js_beautify = require('js-beautify')
 const {bundleSocket} = require('./sockets/bundleSocket.js')
 const xcms = new koa();
 const jsp = JSON.parse;
 const mongoose = require('mongoose')
 const { admindb } = require('./cmsModels.js')
-const theEventListener = require(__dirname + "/xcmsCustoms/innerEvents")
 let currentProjects = []
 let currentUser =''
 let isSuperAdmin = false
@@ -57,14 +58,7 @@ const typeCTL = /(html|css|js|jpeg|jpg|PNG|png|woff2|ttf|mp4|webp)/
 
 /* ROUTER START */
 
-xcms.use(r.get('/', ctx => {
-  if (isIndex[0] != undefined) {
-    ctx.type = 'text/html'
-    ctx.body = isIndex[0].page
-  } else {
-    ctx.redirect('/connect')
-  }
-}))
+xcms.use(r.get('/', serve(`builder/${fs.readdirSync('./builder')[0]}/${the.projectOptions.buildFolder}`)))
 
 xcms.use(r.get('/connect', ctx => {
   ctx.type = "text/html"
@@ -88,6 +82,16 @@ xcms.use(r.get(/\/([a-zA-Z0-9_-]{2,}.html)/, ctx => {
       ctx.body = page.page
     }
   })
+}))
+
+xcms.use(r.get(/^(?!\/admin-site\/)[a-zA-Z0-9/._-]{2,}.css$/, ctx => {
+  ctx.type = 'text/css'
+  ctx.body = fs.createReadStream(`builder/${fs.readdirSync('./builder')[0]}/${the.projectOptions.buildFolder}/${ctx.url}`)
+}))
+
+xcms.use(r.get(/^(?!\/admin-site\/)[a-zA-Z0-9/._-]{2,}.js$/, ctx => {
+  ctx.type = 'text/javascript'
+  ctx.body = fs.createReadStream(`builder/${fs.readdirSync('./builder')[0]}/${the.projectOptions.buildFolder}/${ctx.url}`)
 }))
 
 xcms.use(r.get(/^\/videos\/([a-zA-Z0-9_-]{2,})/, ctx => {
@@ -211,8 +215,15 @@ bundleSocket.on('connection', async (ctx)=>{
               let compPath = err2.path.split('/')
               let compName = compPath.pop()
               compPath = compPath.join('/')
-              compPath = compPath.split("builders")[1]
-              //
+              compPath = compPath.split("builder")[1]
+              if(err2.path.includes('package.json')){
+                let packageJ = fs.readFileSync(err2.path, {encoding: "utf8"})
+                packageJ = JSON.parse(packageJ)
+                if(!packageJ.scripts['stop-dev-server']) packageJ.scripts['stop-dev-server'] = ""
+                if(!packageJ.scripts.install) packageJ.scripts.install = ""
+                packageJ = js_beautify(JSON.stringify(packageJ), { indent_size: 2, space_in_empty_paren: true })
+                fs.writeFileSync(err2.path, packageJ, {encoding: "utf8"})
+              }
               let newCustomComp = {
                 scriptName: compName,
                 path: compPath,
@@ -228,13 +239,13 @@ bundleSocket.on('connection', async (ctx)=>{
       }
     })
   }
-  if(fs.readdirSync( "./builders").length > 0)
-  await readNextDir("./builders/"+fs.readdirSync( "./builders")[0] + "/")
+  if(fs.readdirSync( "./builder").length > 0)
+  await readNextDir("./builder/"+fs.readdirSync( "./builder")[0] + "/")
   setTimeout(()=>{
     ctx.emit('normal', JSON.stringify({existingComponents: {existingComponents: existingComponents}}))
+    let devServer = require('./xcmsCustoms/devServerStatus.js')
+    ctx.emit('normal', JSON.stringify({devServer: {isOn: devServer.isOn}}))
   }, 1250)
-  let devServer = require('./xcmsCustoms/devServerStatus.js')
-  ctx.emit('normal', JSON.stringify({devServer: {isOn: devServer.isOn}}))
 })
 
 admindb.find({}, (err, res) =>{
@@ -257,8 +268,8 @@ xcms.listen(the.port, () => {
       if(err) console.log(err)
     })
   }
-  if(!fs.existsSync('./builders')){
-    fs.mkdir('./builders', (err)=>{
+  if(!fs.existsSync('./builder')){
+    fs.mkdir('./builder', (err)=>{
       if(err) console.log(err)
     })
   }

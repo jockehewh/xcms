@@ -65,6 +65,8 @@
     --grey-0: #555555;
     --grey-1: #434343;
     --grey-2: #303030;
+    --light-red: #f7acac;
+    --light-green: #aff9ba;
     --teal-bleu-special: #1de9b6;
     --bleu-indigo-leger: #82b1ff;
     --bleu-indigo-eclatant: #536dfe;
@@ -111,8 +113,9 @@ label div{
   align-items: center;
 }
 a{
-    cursor:pointer;
-    text-decoration: none;
+  cursor:pointer;
+  text-decoration: none !important;
+  color: black;
 }
 a:hover{
     font-weight: bold;
@@ -144,6 +147,7 @@ body{
 .package-actions .actions{
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
 .package-actions button{
   align-self: center;
@@ -170,18 +174,26 @@ body{
   flex-direction: row;
   justify-content: space-evenly;
 }
-.editor-buttons button{
+.editor-buttons button, .editor-actions button, .nav button, a{
   line-height: 2;
   background: transparent;
   border: none;
   color: var(--grey-2);
   cursor: pointer;
+  border: solid 1px;
+  padding: 4px;
+  margin: 4px;
 }
-.editor-buttons button:hover{
+.editor-actions .new{
+  margin: auto;
+  margin-bottom: 6px;
+}
+.editor-buttons button:hover, .editor-actions button:hover, .nav button:hover, a:hover{
   background: var(--white-2);
   position: relative;
   top: 1px;
   font-weight: bold;
+  border: none;
 }
 .editor-actions{
   grid-column: 6/7;
@@ -199,11 +211,12 @@ body{
     right: -22%;
     left: 76%;
     animation: statusmove;
-    animation-duration: 2s;
+    animation-duration: .3s;
     animation-fill-mode: forwards;
     animation-timing-function: cubic-bezier(.88,1.15,1,1);
     font-size: 26px;
     min-width: max-content;
+    transition: all linear;
 }
 .status-box p {
     padding: 4px 8px 4px 8px;
@@ -371,12 +384,14 @@ body{
 }
 
 .management-animation {
-  animation: openManagement linear 1.5s forwards;
-  -webkit-animation: openManagement linear 1.5s forwards;
+  animation: openManagement linear .3s forwards;
+  -webkit-animation: openManagement linear .3s forwards;
+  transition: all linear;
 }
 .management-animation-close {
-  animation: openManagement linear 1.5s reverse forwards;
-  -webkit-animation: openManagement linear 1.5s reverse forwards;
+  animation: openManagement linear .3s reverse forwards;
+  -webkit-animation: openManagement linear .3s reverse forwards;
+  transition: all linear;
 }
 #management{
   display: none;
@@ -411,15 +426,20 @@ body{
 }
 #projects{
   flex:1;
-  background: red;
+  border-top: solid 1px;
 }
 #accounts{
   flex:1;
-  background: green;
+  border-left: solid 1px;
+  border-right: solid 1px;
+  border-top: solid 1px;
 }
 #medias{
   flex:2;
-  background: blue;
+  border-top: solid 1px;
+}
+.medias-manager{
+  margin-left: 8px;
 }
 
 @keyframes openManagement{
@@ -481,7 +501,9 @@ body{
   </div>
 </div>
   <div class="nav"><span style="padding-left: 17px;">XCMS <a href="/logout">logout</a></span>
-    <span class="cm-span"><a class="management">Management</a></span>
+    <span class="cm-span">
+      <button class="management">Management</button>
+    </span>
   </div>
   <div class="first-class">
     <div class="all-components">
@@ -520,14 +542,10 @@ body{
         <div>
           <div class="package-actions">
             <h3>Select a command to run:</h3>
-            <!-- Voir LE DESSIN
-            creer des boutons
-            -->
             <div class="actions">
-              
+              <input type="text" style="padding: 6px; align-self: center" size="36" placeholder="additional command flags..."/>
             </div>
-            <input type="text" placeholder="additional command flags..."/>
-
+            
           </div>
         </div>
       </div>
@@ -568,7 +586,7 @@ body{
         <h4>medias</h4>
         <div>
           <div class="medias-manager">
-            <h1>Medias manager</h1>
+            <h3>Medias manager:</h3>
             <div class="image-input">
               <label for="add-images-input">Add image(s)</label>
               <input class="add-images-input" name="add-images-input" type="file" accept="image/*" multiple>
@@ -645,7 +663,7 @@ body{
         setTimeout(function () {
           p.remove()
           document.querySelector('.status-box').style.display = "none"
-        }, 4500)
+        }, 2500)
       }
     }
     function createFolderView(component){
@@ -790,14 +808,12 @@ body{
                 let btn = document.createElement('a')
                 btn.dataset.script = opt
                 btn.innerText = "npm run " + opt
-                document.querySelector('.package-actions .actions').appendChild(btn)
+                document.querySelector('.package-actions>.actions').insertBefore(btn, document.querySelector('.package-actions>.actions> input'))
                 btn.addEventListener('click', (e)=>{
-                  console.log(opt)
                   opt = opt + " " + document.querySelector('.package-actions input').value.trim()
                   opt = opt.split(" ").join(' ').trim().split(" ")
                   bundles.emit('message', JSON.stringify({pkgopt: {script: opt, name: pkgjson.name}}))
                 })
-                if(/* if localstorage.devserver === */true){}
               })
             }
             createFolderView(component)
@@ -813,8 +829,23 @@ body{
         displayVideos(videos)
       }
       if(datainfo.devServer){
-        console.log(datainfo.devServer.isOn)
-        //créer un objet localstorage et cacher le bouton "npm run dev"
+        const devServer = datainfo.devServer
+        if(document.querySelector('a[data-script="dev"]>span')) document.querySelector('a[data-script="dev"]>span').remove()
+        if(document.querySelector('a[data-script="stop-dev-server"]>span')) document.querySelector('a[data-script="stop-dev-server"]>span').remove()
+        let span = document.createElement('span')
+        span.style.marginLeft = "8px"
+        span.style.padding = "4px"
+        if(devServer.isOn){
+          span.innerText = "Stop"
+          span.style.borderLeft = "solid 1px"
+          span.style.borderTop = "solid 1px"
+          document.querySelector('a[data-script="stop-dev-server"]').appendChild(span)
+        }else{
+          span.innerText = "Start"
+          span.style.borderRight = "solid 1px"
+          span.style.borderBottom = "solid 1px"
+        document.querySelector('a[data-script="dev"]').appendChild(span)
+        }
       }
     })
     ace.require("ace/ext/language_tools")

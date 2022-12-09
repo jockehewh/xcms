@@ -1,13 +1,11 @@
 const IO = require('koa-socket-2')
 const fs = require('fs')
-const mongoose = require('mongoose')
-const { customComponentsdb, projectsdb, admindb } = require('../cmsModels.js')
+const { admindb } = require('../cmsModels.js')
 const {Bundler} = require('../xcmsCustoms/bundler.js')
 const { spawn } = require('child_process')
 const sharp = require('sharp')
 let devServer = require('../xcmsCustoms/devServerStatus')
 const devServerPort = require('../config.xcms.json').projectOptions.devServerPort
-console.log(devServerPort)
 const controller = new AbortController();
 const { signal } = controller;
 
@@ -23,19 +21,19 @@ bundleSocket.on('message', ctx=>{
   }
   if(datainfo.newComponent){
     let newComponent = datainfo.newComponent
-    if(!fs.existsSync(`./builders${newComponent.path}`)){
-      fs.mkdirSync(`./builders${newComponent.path}`)
-      fs.writeFileSync(`./builders${newComponent.path}/${newComponent.scriptName}`, "console.log('Hello world!');")
+    if(!fs.existsSync(`./builder${newComponent.path}`)){
+      fs.mkdirSync(`./builder${newComponent.path}`)
+      fs.writeFileSync(`./builder${newComponent.path}/${newComponent.scriptName}`, "console.log('Hello world!');")
     }else{
-      fs.writeFileSync(`./builders${newComponent.path}/${newComponent.scriptName}`, "console.log('Hello world!');")
+      fs.writeFileSync(`./builder${newComponent.path}/${newComponent.scriptName}`, "console.log('Hello world!');")
     }
   }
   if(datainfo.updateComponent){
     let updateComponent = datainfo.updateComponent
-    fs.writeFileSync(`./builders${updateComponent.path}/${updateComponent.scriptName}`, updateComponent.scriptContent, {encoding: "utf8"})
+    fs.writeFileSync(`./builder${updateComponent.path}/${updateComponent.scriptName}`, updateComponent.scriptContent, {encoding: "utf8"})
   }
   if (datainfo.deleteComponent){
-    fs.unlink(`./builders${datainfo.deleteComponent.path}/${datainfo.deleteComponent.name}`, err =>{
+    fs.unlink(`./builder${datainfo.deleteComponent.path}/${datainfo.deleteComponent.name}`, err =>{
       if(err) return console.log(err)
       ctx.socket.emit('success', `Successfully deleted the component: ${datainfo.deleteComponent.name}`)
     })
@@ -43,42 +41,46 @@ bundleSocket.on('message', ctx=>{
   if(datainfo.pkgopt){
     const pkgOptions = datainfo.pkgopt
     let pkgcmd = ""
-    console.log(pkgOptions.script[0])
     if(pkgOptions.script[0] === "dev"){
+      if(devServer.isOn === true) return
       devServer.isOn = true
-      devServer.devServer = spawn('npm', ['run', ...pkgOptions.script], {cwd: "./builders/"+ pkgOptions.name, signal})
+      devServer.devServer = spawn('npm', ['run', ...pkgOptions.script], {cwd: "./builder/"+ pkgOptions.name, signal})
       bundleSocket.broadcast('normal', JSON.stringify({devServer: {isOn: devServer.isOn}}))
-      //emit devser has started
+      bundleSocket.broadcast('success', `successfuly started the dev server on port: ${devServerPort}`)
     }else if(pkgOptions.script[0] === "stop-dev-server"){
+      if(devServer.isOn === false) return
       devServer.isOn = false
       bundleSocket.broadcast('normal', JSON.stringify({devServer: {isOn: devServer.isOn}}))
       let temp = ""
       let shutDownDevServer = spawn("lsof", ["-i", `TCP:${devServerPort}`])
       shutDownDevServer.stdout.on('data', (c)=>{
-        console.log(c)
         temp += c.toString('utf8')
       })
       shutDownDevServer.stderr.on('error', (e)=>{
         console.log("error", e, devServer.devServer.pid.toString())
       })
       shutDownDevServer.on('close', ()=>{
-        console.log(temp.split('NAME\nnode'))
         let systemPID = temp.split('NAME\nnode')[1].trim()
-        console.log("1",systemPID)
         systemPID = systemPID.split(' ')[0]
-        console.log(systemPID)
         spawn('kill', ["-9", systemPID])
-        console.log("closed the kill command for pid", devServer.devServer.pid)
-        //emit devser has stoped
         devServer.devServer = {}
+        bundleSocket.broadcast('errorr', `Successfuly stoped the dev server on port: ${devServerPort}`)
       })
-    }else{
-      pkgcmd = spawn('npm', ['run', ...pkgOptions.script], {cwd: "./builders/"+ pkgOptions.name})
+    }else if(pkgOptions.script[0] === "install"){
+      pkgcmd = spawn('npm', ['install', ...pkgOptions.script], {cwd: "./builder/"+ pkgOptions.name})
       pkgcmd.stdout.on('data', data=>{
         console.log(data.toString('utf8'))
       })
       pkgcmd.on('close', code =>{
-        console.log("command closed")
+        return
+      })
+    }else{
+      pkgcmd = spawn('npm', ['run', ...pkgOptions.script], {cwd: "./builder/"+ pkgOptions.name})
+      pkgcmd.stdout.on('data', data=>{
+        console.log(data.toString('utf8'))
+      })
+      pkgcmd.on('close', code =>{
+        return
       })
     }
   }
