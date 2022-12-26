@@ -5,8 +5,9 @@ XCMS is a modern component management system providing a web platform to work re
 ### Installation:
 
 Dependencies:
--Mongodb
--lsof
+
+- Mongodb
+- lsof
 
 To install xcms from npm run: `npm i @mrcosmic/x-cms`
 or clone the git `git clone https://github.com/jockehewh/xcms && cd xcms && npm install`
@@ -14,27 +15,34 @@ or clone the git `git clone https://github.com/jockehewh/xcms && cd xcms && npm 
 ### Setting uo the platform
 
 __1. Starting from NPM install:__ 
+
 If you cloned the repository from Github.com start from the step 2.
 ```
 npm init -y xcms-platform
 cd xcms-platform
 npm i -s @mrcosmic/x-cms
 ```
+
 __2. Create the directory to host your project:__
+
 create a builder directory at the root of your xcms-platform and init your project inside of it.
 ```
 mkdir builder
 cd builder
 npm create vite@latest my-project //follow the prompt.
 ```
+
 __3. Prepare your application to be served:__
+
 Build you project for the first time so your app is ready and online when you start your XCMS.
 ```
 cd my-project
 npm install
 npm run build
 ```
+
 __4. Create the config file:__
+
 XCMS is almost ready, go back the root of your server project and create an `xcms.config.json`.
 Use the example below and remember that you must adapt the "projectOptions" to suit your project configuration.
 ```
@@ -52,18 +60,24 @@ Use the example below and remember that you must adapt the "projectOptions" to s
   "passportKeys": "xavier-cms-key",                 # Your secret encryption key
 }
 ```
+
 __5. Import XCMS:__
+
 Now, create your `index.js` file and import XCMS. 
 ```
 //index.js
 const xcms = require('@mrcosmic/x-cms')
 ```
+
 __6. Start the platform:__
+
 Run your xcms-platform.
 ```
 node index.js
 ```
+
 __7. Connect to the platform:__
+
 Once you see the log saying "listening on port: '$PORT'" open your browser and visit the following address `localhost:$PORT/connect` to start using the interface.
 
 The default user is `superuser` and the password is `2one0time2password1`
