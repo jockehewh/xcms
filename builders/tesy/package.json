@@ -1,6 +1,0 @@
-{
-    "name": "tesy",
-    "scripts": {
-        "test": "node"
-    }
-}
